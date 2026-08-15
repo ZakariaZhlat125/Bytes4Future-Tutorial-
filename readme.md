@@ -1,395 +1,104 @@
-# Markdown (MD) Basics
-### A Beginner's Guide
-
----
-
-# Table of Contents
-
-1. [What is Markdown?](#1-what-is-markdown)
-2. [Why Use Markdown?](#2-why-use-markdown)
-3. [Markdown Files](#3-markdown-files)
-4. [Headings](#4-headings)
-5. [Paragraphs](#5-paragraphs)
-6. [Text Formatting](#6-text-formatting)
-7. [Lists](#7-lists)
-8. [Links](#8-links)
-9. [Images](#9-images)
-10. [Code](#10-code)
-11. [Blockquotes](#11-blockquotes)
-12. [Horizontal Rules](#12-horizontal-rules)
-13. [Tables](#13-tables)
-14. [Task Lists](#14-task-lists)
-15. [Escaping Characters](#15-escaping-characters)
-16. [Best Practices](#16-best-practices)
-
----
-
-# 1. What is Markdown?
-
-**Markdown (MD)** is a lightweight markup language used to create formatted text using simple, readable syntax.
-
-Markdown files usually have the extension:
-
-```
-.md
-```
-
-Examples:
-
-```
-README.md
-Notes.md
-Tutorial.md
-Course.md
-```
-
----
-
-# 2. Why Use Markdown?
-
-Markdown is widely used because it is:
-
-- Easy to learn
-- Easy to read
-- Easy to write
-- Platform independent
-- Supported by GitHub, GitLab, VS Code, and many other tools
-
-Common uses:
-
-- Project documentation
-- README files
-- Notes
-- Blogs
-- Technical documentation
-- Course materials
-
----
-
-# 3. Markdown Files
-
-Create a new file with the `.md` extension.
-
-Example:
-
-```
-README.md
-```
-
-You can edit Markdown using:
-
-- Visual Studio Code
-- Cursor
-- Obsidian
-- Typora
-- GitHub Editor
-
----
-
-# 4. Headings
-
-Use `#` symbols to create headings.
-
-```md
-# Heading 1
-
-## Heading 2
-
-### Heading 3
-
-#### Heading 4
-
-##### Heading 5
-
-###### Heading 6
-```
-
----
-
-# 5. Paragraphs
-
-Simply write text on separate lines.
-
-```md
-This is the first paragraph.
-
-This is the second paragraph.
-```
-
----
-
-# 6. Text Formatting
-
-## Bold
-
-```md
-**Bold Text**
-```
-
-Output:
-
-**Bold Text**
-
----
-
-## Italic
-
-```md
-*Italic Text*
-```
-
-Output:
-
-*Italic Text*
-
----
-
-## Bold and Italic
-
-```md
-***Bold and Italic***
-```
-
-Output:
-
-***Bold and Italic***
-
----
-
-## Strikethrough
-
-```md
-~~Deleted Text~~
-```
-
-Output:
-
-~~Deleted Text~~
-
----
-
-# 7. Lists
-
-## Unordered List
-
-```md
-- HTML
-- CSS
-- JavaScript
-```
-
-Output:
-
-- HTML
-- CSS
-- JavaScript
-
----
-
-## Ordered List
-
-```md
-1. Learn HTML
-2. Learn CSS
-3. Learn JavaScript
-```
-
-Output:
-
-1. Learn HTML
-2. Learn CSS
-3. Learn JavaScript
-
----
-
-# 8. Links
-
-```md
-[Google](https://www.google.com)
-```
-
-Output:
-
-[Google](https://www.google.com)
-
----
-
-# 9. Images
-
-```md
-![Logo](images/logo.png)
-```
-
-Syntax:
-
-```md
-![Alt Text](image-path)
-```
-
----
-
-# 10. Code
-
-## Inline Code
-
-```md
-Use `git status` to check changes.
-```
-
-Output:
-
-Use `git status` to check changes.
-
----
-
-## Code Block
-
-````md
-```html
-<h1>Hello World</h1>
-```
-````
-
-Output:
-
-```html
-<h1>Hello World</h1>
-```
-
----
-
-# 11. Blockquotes
-
-```md
-> This is a quote.
-```
-
-Output:
-
-> This is a quote.
-
----
-
-# 12. Horizontal Rules
-
-Use three dashes, asterisks, or underscores.
-
-```md
----
-```
-
-Output:
-
----
-
-# 13. Tables
-
-```md
-| Name | Age |
-|------|----:|
-| Ali  | 22  |
-| Sara | 25  |
-```
-
-Output:
-
-| Name | Age |
-|------|----:|
-| Ali  | 22  |
-| Sara | 25  |
-
----
-
-# 14. Task Lists
-
-```md
-- [x] Learn HTML
-- [x] Learn CSS
-- [ ] Learn JavaScript
-```
-
-Output:
-
-- [x] Learn HTML
-- [x] Learn CSS
-- [ ] Learn JavaScript
-
----
-
-# 15. Escaping Characters
-
-To display Markdown characters as plain text, use a backslash (`\`).
-
-Example:
-
-```md
-\# This is not a heading
-```
-
-Output:
-
-\# This is not a heading
-
----
-
-# 16. Best Practices
-
-✅ Use meaningful headings.
-
-✅ Keep formatting simple.
-
-✅ Use lists for readability.
-
-✅ Add code blocks for code examples.
-
-✅ Write descriptive link text.
-
-✅ Use relative paths for local images.
-
-✅ Preview your Markdown before sharing.
-
----
-
-# Example README.md
-
-~~~~md
-# My Project
-
-A simple project built with HTML, CSS, and JavaScript.
-
-## Features
-
-- Responsive Design
-- Fast Performance
-- Easy to Customize
-
-## Installation
-
-```bash
-git clone https://github.com/username/project.git
-```
-
-## Author
-
-John Doe
-~~~~
-
----
-
-# Summary
-
-You now know the basic Markdown syntax:
-
-- Headings
-- Paragraphs
-- Bold & Italic
-- Lists
-- Links
-- Images
-- Code Blocks
-- Blockquotes
-- Horizontal Rules
-- Tables
-- Task Lists
-
-Markdown is simple, clean, and one of the most useful skills for writing documentation and README files.
+# Training Course Materials
+
+## Complete Training Modules
+
+### 1. Git Complete Training
+**File:** `Git-Complete-Training.md`
+- Comprehensive Git course from beginner to professional
+- Merged content from git.md and Session11.md
+- Covers: Git fundamentals, branching, merging, GitHub, team collaboration
+- Includes practical exercises and interview questions
+- **Duration:** Full course (3 hours structured session)
+
+### 2. Terminal & npm
+**File:** `Terminal-and-npm.md`
+- Command line fundamentals and npm package management
+- Covers: Terminal commands, npm, package.json, dependencies, npx
+- Includes practical exercises for terminal navigation and package management
+- **Duration:** 3 hours (1 hour theory, 1.5 hours practice, 0.5 hours review)
+
+### 3. DevTools and Debugging
+**File:** `DevTools-and-Debugging.md`
+- Browser Developer Tools comprehensive guide
+- Covers: Elements panel, Console, Network, Sources, Performance, Lighthouse
+- Includes debugging techniques and practical exercises
+- **Duration:** 3 hours (1 hour theory, 1.5 hours practice, 0.5 hours review)
+
+## Session Materials
+
+### 4. Git Fundamentals (Session 11)
+**File:** `Session11.md`
+- Structured Git training session
+- Focus on practical Git workflow and team collaboration
+- Includes homework assignments and review questions
+- **Duration:** 3 hours (1 hour theory, 1.5 hours practice, 0.5 hours review)
+
+## Reference Materials
+
+### 5. Git Reference
+**File:** `git.md`
+- Original Git complete course for beginners
+- Comprehensive reference guide
+- Covers Git from zero to professional version control
+- Includes command cheat sheet and best practices
+
+### 6. Markdown Reference
+**File:** `md-file.md`
+- Markdown syntax and formatting guide
+- Reference for creating documentation
+
+## Course Structure
+
+### Complete Course Overview
+This training program covers essential web development tools and version control:
+
+1. **Git & Version Control** (Sessions 11 + Git Complete Training)
+   - Git fundamentals and advanced features
+   - GitHub collaboration
+   - Team workflows
+
+2. **Terminal & Package Management** (Session 12)
+   - Command line proficiency
+   - npm and package.json
+   - Dependency management
+
+3. **Development Tools** (Session 13)
+   - Browser DevTools
+   - Debugging techniques
+   - Performance optimization
+
+### Recommended Learning Path
+1. Start with **Git Complete Training** for comprehensive version control knowledge
+2. Practice with **Session 11** exercises for hands-on Git experience
+3. Learn **Terminal & npm** for development environment setup
+4. Master **DevTools and Debugging** for efficient development workflow
+
+## Usage Instructions
+
+### For Self-Paced Learning
+1. Start with Git Complete Training
+2. Follow the practical exercises in each session
+3. Use reference materials as needed
+4. Complete homework assignments
+
+### For Instructor-Led Training
+1. Each session is designed for 3-hour blocks
+2. 1 hour: Theoretical explanation + live coding
+3. 1.5 hours: Practical application (student writes code)
+4. 0.5 hours: Review, questions, problem solving
+
+### Prerequisites
+- Basic computer literacy
+- Understanding of file systems
+- Text editor (VS Code recommended)
+- Modern web browser (Chrome/Edge/Firefox)
+
+## Course Completion
+
+Upon completing all training materials, you will have:
+- ✅ Professional Git skills for version control
+- ✅ Terminal proficiency for development tasks
+- ✅ npm package management expertise
+- ✅ DevTools mastery for debugging
+- ✅ Performance optimization knowledge
+- ✅ Team collaboration workflows
