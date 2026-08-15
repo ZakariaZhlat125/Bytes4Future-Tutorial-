@@ -1,7 +1,7 @@
 # CSS Complete Course - Table of Contents
 
 ## Overview
-This CSS course covers everything from fundamentals to advanced topics across 8 comprehensive sessions.
+This CSS course covers everything from fundamentals to advanced topics across 10 comprehensive sessions, including Tailwind CSS.
 
 ---
 
@@ -122,11 +122,39 @@ This CSS course covers everything from fundamentals to advanced topics across 8 
 
 ---
 
+## Session 9: Tailwind CSS Fundamentals
+📄 [Open Session 9](Session9.md)
+
+- [Section 1: What is Utility-First CSS?](Session9.md#section-1)
+- [Section 2: Why Tailwind CSS?](Session9.md#section-2)
+- [Section 3: Installation Methods](Session9.md#section-3)
+- [Section 4: Configuration File](Session9.md#section-4)
+- [Section 5: Spacing Utilities](Session9.md#section-5)
+- [Section 6: Sizing Utilities](Session9.md#section-6)
+- [Section 7: Color Utilities](Session9.md#section-7)
+- [Section 8: Typography Utilities](Session9.md#section-8)
+- [Section 9: Flexbox Utilities](Session9.md#section-9)
+- [Section 10: Grid Utilities](Session9.md#section-10)
+
+---
+
+## Session 10: Advanced Tailwind CSS
+📄 [Open Session 10](Session10.md)
+
+- [Section 1: Responsive Prefixes](Session10.md#section-1)
+- [Section 2: State Variants](Session10.md#section-2)
+- [Section 3: Dark Mode](Session10.md#section-3)
+- [Section 4: Customization (tailwind.config.js)](Session10.md#section-4)
+- [Section 5: @apply Directive](Session10.md#section-5)
+- [Section 6: Plugins Overview](Session10.md#section-6)
+
+---
+
 ## Course Statistics
-- **Total Sessions:** 8
-- **Total Sections:** 69
-- **Total Exercises:** 38
-- **Total Lines of Content:** ~9,000
+- **Total Sessions:** 10
+- **Total Sections:** 85
+- **Total Exercises:** 41
+- **Total Lines of Content:** ~13,000
 
 ---
 
@@ -142,16 +170,18 @@ Each session includes:
 - Basic HTML knowledge
 - Text editor (VS Code, Sublime Text, etc.)
 - Modern web browser (Chrome, Firefox, Edge)
+- Node.js (for Tailwind CSS npm installation)
 
 ---
 
 ## Learning Path
 1. Start with Session 1 for CSS fundamentals
-2. Progress through sessions in order
+2. Progress through sessions 1-8 in order
 3. Complete all exercises in each session
 4. Build the final project in Session 8
-5. Practice with real-world projects
+5. Learn Tailwind CSS in Sessions 9-10
+6. Practice with real-world projects
 
 ---
 
-Happy Learning! 🚀
+
