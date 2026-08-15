@@ -32,11 +32,13 @@
 25. [Media Queries](#25-media-queries)
 26. [Mobile-First Design](#26-mobile-first-design)
 27. [Inherit, Unset, Initial, Revert](#27-inherit-unset-initial-revert)
-28. [CSS Battle](#28-css-battle)
-29. [Practice Resources](#29-practice-resources)
-30. [Final Challenge](#30-final-challenge)
-31. [Lesson Checklist](#31-lesson-checklist)
-32. [Summary](#32-summary)
+28. [Debugging CSS with DevTools](#28-debugging-css-with-devtools)
+29. [Accessibility Basics](#29-accessibility-basics)
+30. [CSS Battle](#30-css-battle)
+31. [Practice Resources](#31-practice-resources)
+32. [Final Challenge](#32-final-challenge)
+33. [Lesson Checklist](#33-lesson-checklist)
+34. [Summary](#34-summary)
 
 ---
 
@@ -1601,7 +1603,371 @@ These values are different and should not be treated as interchangeable.
 
 ---
 
-# 48. CSS Battle
+# 28. Debugging CSS with DevTools
+
+Browser DevTools are essential for debugging CSS. All modern browsers have built-in developer tools.
+
+## Opening DevTools
+
+**Chrome/Edge:** Press `F12` or `Ctrl+Shift+I` (Windows) / `Cmd+Option+I` (Mac)
+
+**Firefox:** Press `F12` or `Ctrl+Shift+I` (Windows) / `Cmd+Option+I` (Mac)
+
+**Safari:** Enable in Preferences > Advanced > Show Develop menu, then `Cmd+Option+I`
+
+---
+
+## Elements Panel
+
+The Elements panel shows your HTML structure and applied CSS.
+
+### Inspecting Elements
+
+1. Right-click on any element
+2. Select "Inspect" or "Inspect Element"
+3. The Elements panel opens with the element highlighted
+
+---
+
+## Styles Panel
+
+The Styles panel shows all CSS rules applied to the selected element.
+
+### Viewing Applied Styles
+
+- **Computed styles:** Shows the final computed values
+- **Matched CSS rules:** Shows all rules affecting the element
+- **Inherited from:** Shows styles inherited from parent elements
+
+### Modifying Styles
+
+You can edit CSS directly in DevTools:
+
+1. Click on any property value
+2. Type a new value
+3. Press Enter to apply
+
+**Example:**
+```css
+/* Change this in DevTools */
+color: blue;
+/* To */
+color: red;
+```
+
+Changes are temporary and disappear when you refresh.
+
+---
+
+## Box Model Visualization
+
+DevTools shows a visual representation of the box model:
+
+```
+┌─────────────────────────────┐
+│        Margin (yellow)      │
+│  ┌───────────────────────┐  │
+│  │    Border (orange)    │  │
+│  │  ┌─────────────────┐  │  │
+│  │  │  Padding (green)│  │  │
+│  │  │  ┌───────────┐  │  │  │
+│  │  │  │ Content   │  │  │  │
+│  │  │  └───────────┘  │  │  │
+│  │  └─────────────────┘  │  │
+│  └───────────────────────┘  │
+└─────────────────────────────┘
+```
+
+Hover over the box model to see exact pixel values.
+
+---
+
+## Computed Styles
+
+The Computed panel shows the final calculated values for all properties.
+
+**Use cases:**
+- Find the actual font size after inheritance
+- Check the exact color value
+- See which rule is overriding another
+
+---
+
+## Common Debugging Techniques
+
+### 1. Disable Rules
+
+Click the checkbox next to a rule to disable it temporarily.
+
+### 2. Add New Rules
+
+Click the "+" button to add a new CSS rule to the element.
+
+### 3. Force Pseudo-States
+
+Toggle pseudo-states like `:hover`, `:active`, `:focus` to test them.
+
+### 4. Search for Styles
+
+Use `Ctrl+F` in the Styles panel to search for specific properties.
+
+### 5. Trace Specificity
+
+DevTools shows which rules are overridden and why.
+
+---
+
+## Debugging Tips
+
+✅ Use DevTools to understand why styles aren't applying
+
+✅ Check for specificity conflicts
+
+✅ Look for overridden styles (strikethrough text)
+
+✅ Verify the element selector is correct
+
+✅ Check for typos in property names
+
+✅ Ensure CSS file is linked correctly
+
+---
+
+## Common Issues and Solutions
+
+### Style Not Applying
+
+**Check:**
+- Is the selector correct?
+- Is specificity too low?
+- Is there a typo?
+- Is the CSS file loaded?
+
+### Unexpected Behavior
+
+**Check:**
+- Box model visualization
+- Computed styles
+- Inherited styles
+- Browser defaults
+
+---
+
+# 29. Accessibility Basics
+
+Accessibility (a11y) ensures your website is usable by everyone, including people with disabilities.
+
+## Why Accessibility Matters
+
+- **Legal requirements** in many countries
+- **Better user experience** for everyone
+- **Larger audience** reach
+- **SEO benefits**
+- **Ethical responsibility**
+
+---
+
+## Color Contrast
+
+Ensure text is readable against its background.
+
+**WCAG Standards:**
+- Normal text: 4.5:1 contrast ratio minimum
+- Large text (18px+): 3:1 contrast ratio minimum
+- UI components: 3:1 contrast ratio minimum
+
+**Example:**
+```css
+/* Good contrast */
+.good {
+  color: #000000;
+  background-color: #ffffff;
+}
+
+/* Poor contrast */
+.bad {
+  color: #cccccc;
+  background-color: #dddddd;
+}
+```
+
+**Tools:**
+- WebAIM Contrast Checker: https://webaim.org/resources/contrastchecker/
+- Chrome DevTools Lighthouse audit
+
+---
+
+## Focus Indicators
+
+Users navigating with keyboard need visible focus indicators.
+
+```css
+button:focus,
+a:focus,
+input:focus {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+}
+```
+
+**Never remove focus outlines without replacement:**
+```css
+/* ❌ Bad - Removes focus indicator */
+button:focus {
+  outline: none;
+}
+
+/* ✅ Good - Replaces with custom indicator */
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.5);
+}
+```
+
+---
+
+## Skip Links
+
+Allow keyboard users to skip navigation and go directly to content.
+
+```html
+<a href="#main-content" class="skip-link">Skip to main content</a>
+```
+
+```css
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #3498db;
+  color: white;
+  padding: 8px;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+```
+
+---
+
+## Alt Text for Images
+
+Provide descriptive alt text for images.
+
+```html
+<!-- Good -->
+<img src="photo.jpg" alt="A golden retriever playing in a park">
+
+<!-- Decorative image -->
+<img src="decoration.png" alt="">
+
+<!-- Informative image -->
+<img src="chart.png" alt="Bar chart showing sales increased by 25% in 2024">
+```
+
+---
+
+## Semantic HTML
+
+Use proper HTML elements for their intended purpose.
+
+```html
+<!-- ❌ Bad -->
+<div class="heading">Title</div>
+<div class="button">Click me</div>
+
+<!-- ✅ Good -->
+<h1>Title</h1>
+<button>Click me</button>
+```
+
+---
+
+## Font Sizes
+
+Use relative units for better accessibility.
+
+```css
+/* ❌ Bad - Fixed size */
+body {
+  font-size: 16px;
+}
+
+/* ✅ Good - Respects user preferences */
+body {
+  font-size: 100%;
+  font-size: 1rem;
+}
+```
+
+---
+
+## Labels for Form Inputs
+
+Associate labels with form inputs.
+
+```html
+<!-- ✅ Good - Explicit label -->
+<label for="email">Email</label>
+<input type="email" id="email">
+
+<!-- ✅ Good - Implicit label -->
+<label>
+  Email
+  <input type="email">
+</label>
+
+<!-- ❌ Bad - No label -->
+<input type="email" placeholder="Email">
+```
+
+---
+
+## ARIA Attributes
+
+Use ARIA when HTML can't convey meaning.
+
+```html
+<button aria-label="Close dialog">×</button>
+<div role="alert" aria-live="polite">Error message</div>
+```
+
+---
+
+## Testing Accessibility
+
+**Tools:**
+- **Lighthouse** (Chrome DevTools)
+- **axe DevTools** browser extension
+- **WAVE** browser extension
+- **Keyboard navigation** - Test without mouse
+
+**Manual Testing:**
+1. Navigate with Tab key
+2. Use screen reader (NVDA, JAWS, VoiceOver)
+3. Test with high contrast mode
+4. Test with different font sizes
+
+---
+
+## Accessibility Checklist
+
+- [ ] Color contrast meets WCAG AA standards
+- [ ] All images have alt text
+- [ ] Form inputs have labels
+- [ ] Focus indicators are visible
+- [ ] Skip link provided
+- [ ] Semantic HTML used
+- [ ] Keyboard navigation works
+- [ ] Text can be resized to 200%
+- [ ] No time limits without controls
+- [ ] Error messages are descriptive
+
+---
+
+# 31. CSS Battle
 
 CSS Battle is a challenge platform where you reproduce visual targets using CSS.
 
@@ -1622,7 +1988,7 @@ It is useful for practicing:
 
 ---
 
-# 49. Practice Resources
+# 32. Practice Resources
 
 ## Frontend Mentor
 
@@ -1658,7 +2024,7 @@ Useful for:
 
 ---
 
-# 50. Practice Challenge
+# 33. Practice Challenge
 
 Create a responsive landing page.
 
@@ -1754,7 +2120,7 @@ The cards should use fewer columns on small screens.
 
 ---
 
-# 51. Final Project
+# 34. Final Project
 
 ## Animated Responsive Product Page
 
@@ -1847,7 +2213,7 @@ Desktop
 
 ---
 
-# 52. Lesson Checklist
+# 35. Lesson Checklist
 
 ## Transform
 
@@ -1920,7 +2286,7 @@ Desktop
 
 ---
 
-# 53. Summary
+# 36. Summary
 
 In Lesson 4, you learned how to create more advanced CSS interfaces.
 

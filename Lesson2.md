@@ -38,6 +38,10 @@
 31. [CSS Transition](#31-css-transition)
 32. [!important](#32-important)
 33. [Margin Collapse](#33-margin-collapse)
+34. [CSS Specificity & Cascade](#34-css-specificity--cascade)
+35. [Link States Order (LVHA)](#35-link-states-order-lvha)
+36. [Float and Clear](#36-float-and-clear)
+37. [Forms (Basic Styling)](#37-forms-basic-styling)
 
 ---
 
@@ -2242,4 +2246,551 @@ Use:
 
 ```css
 box-sizing: border-box;
+```
+
+---
+
+# 34. CSS Specificity & Cascade
+
+CSS specificity determines which styles are applied when multiple rules target the same element.
+
+## The Cascade
+
+CSS stands for "Cascading Style Sheets". The cascade is the algorithm that determines which property values get applied to an element.
+
+**Cascade Order (highest to lowest priority):**
+1. `!important` (overrides everything)
+2. Inline styles (in HTML)
+3. ID selectors
+4. Class selectors, attribute selectors, pseudo-classes
+5. Element selectors, pseudo-elements
+6. Universal selector
+
+---
+
+## Specificity Calculation
+
+Each selector type has a specificity value:
+
+| Selector Type | Specificity Value |
+|---------------|-------------------|
+| Inline style | 1000 |
+| ID | 100 |
+| Class, pseudo-class, attribute | 10 |
+| Element, pseudo-element | 1 |
+| Universal selector (*) | 0 |
+
+**Example:**
+```css
+/* Specificity: 0,0,1 (1 element selector) */
+div {
+  color: red;
+}
+
+/* Specificity: 0,1,0 (1 class selector) */
+.box {
+  color: blue;
+}
+
+/* Specificity: 1,0,0 (1 ID selector) */
+#container {
+  color: green;
+}
+```
+
+In the example above, `#container` wins because ID has higher specificity than class.
+
+---
+
+## Specificity Examples
+
+```css
+/* Specificity: 0,0,2 (2 element selectors) */
+div p {
+  color: red;
+}
+
+/* Specificity: 0,1,1 (1 class + 1 element) */
+.box p {
+  color: blue;
+}
+
+/* Specificity: 0,2,0 (2 classes) */
+.box.text {
+  color: green;
+}
+
+/* Specificity: 1,0,1 (1 ID + 1 element) */
+#container p {
+  color: purple;
+}
+```
+
+The last rule wins because it has the highest specificity.
+
+---
+
+## Common Specificity Mistakes
+
+### ❌ Overusing IDs
+```css
+/* Bad - Too specific */
+#header #nav #menu .item {
+  color: red;
+}
+
+/* Good - Use classes */
+.nav-item {
+  color: red;
+}
+```
+
+### ❌ Over-qualifying selectors
+```css
+/* Bad - Unnecessary specificity */
+div.container p.text {
+  color: blue;
+}
+
+/* Good - Just the class */
+.text {
+  color: blue;
+}
+```
+
+### ❌ Using !important
+```css
+/* Bad - Avoid !important */
+.text {
+  color: red !important;
+}
+
+/* Good - Use more specific selector */
+.container .text {
+  color: red;
+}
+```
+
+---
+
+## Best Practices
+
+✅ Use classes for styling, IDs for JavaScript hooks
+
+✅ Keep specificity low and flat
+
+✅ Avoid `!important` unless absolutely necessary
+
+✅ Use meaningful class names
+
+✅ Group related styles together
+
+---
+
+## Practice
+
+Which rule wins?
+
+```css
+/* Rule A: 0,1,0 */
+.button {
+  color: blue;
+}
+
+/* Rule B: 0,0,1 */
+button {
+  color: red;
+}
+```
+
+**Answer:** Rule A (class selector has higher specificity than element selector)
+
+---
+
+# 35. Link States Order (LVHA)
+
+When styling links, the order of pseudo-classes matters. The correct order is **LVHA**:
+
+- **L** - `:link` (unvisited links)
+- **V** - `:visited` (visited links)
+- **H** - `:hover` (mouse over)
+- **A** - `:active` (being clicked)
+
+## Why Order Matters
+
+CSS applies styles in order. If you put `:hover` before `:link`, the link style will override the hover style.
+
+---
+
+## Correct Order (LVHA)
+
+```css
+/* 1. Link - Unvisited */
+a:link {
+  color: blue;
+}
+
+/* 2. Visited */
+a:visited {
+  color: purple;
+}
+
+/* 3. Hover - Mouse over */
+a:hover {
+  color: red;
+  text-decoration: underline;
+}
+
+/* 4. Active - Being clicked */
+a:active {
+  color: orange;
+}
+```
+
+---
+
+## Common Mistake
+
+```css
+/* ❌ Wrong order - hover won't work properly */
+a:hover {
+  color: red;
+}
+
+a:link {
+  color: blue;
+}
+```
+
+The `:link` rule comes after `:hover`, so it overrides the hover style.
+
+---
+
+## Shorthand for All Links
+
+```css
+/* Style all link states at once */
+a {
+  color: blue;
+  text-decoration: none;
+}
+
+/* Then override specific states */
+a:hover {
+  color: red;
+  text-decoration: underline;
+}
+```
+
+This is often simpler than using all four pseudo-classes.
+
+---
+
+## Focus State
+
+Don't forget the `:focus` state for accessibility:
+
+```css
+a:focus {
+  outline: 2px solid blue;
+  outline-offset: 2px;
+}
+```
+
+---
+
+# 36. Float and Clear
+
+Before Flexbox and Grid, `float` was used for layout. It's still useful for text wrapping around images.
+
+## Float Property
+
+The `float` property moves an element to the left or right, allowing text to wrap around it.
+
+```css
+.float-left {
+  float: left;
+}
+
+.float-right {
+  float: right;
+}
+
+.float-none {
+  float: none;
+}
+```
+
+---
+
+## Float Example
+
+```html
+<div class="container">
+  <img src="image.jpg" class="float-left" alt="Image">
+  <p>This text will wrap around the floated image. The image is floated to the left, so the text flows around it on the right side.</p>
+</div>
+```
+
+```css
+.float-left {
+  float: left;
+  margin-right: 20px;
+  margin-bottom: 10px;
+}
+```
+
+---
+
+## Clear Property
+
+The `clear` property prevents elements from wrapping around floated elements.
+
+```css
+.clear-left {
+  clear: left;
+}
+
+.clear-right {
+  clear: right;
+}
+
+.clear-both {
+  clear: both;
+}
+
+.clear-none {
+  clear: none;
+}
+```
+
+---
+
+## Clearfix
+
+When you float elements, the parent container collapses. Use clearfix to fix this:
+
+```css
+.clearfix::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+```
+
+**Usage:**
+```html
+<div class="container clearfix">
+  <div class="float-left">Left</div>
+  <div class="float-right">Right</div>
+</div>
+```
+
+---
+
+## Modern Alternative
+
+For layout, use Flexbox or Grid instead of float:
+
+```css
+/* Modern approach */
+.container {
+  display: flex;
+  justify-content: space-between;
+}
+```
+
+---
+
+## When to Use Float
+
+✅ Text wrapping around images
+
+✅ Magazine-style layouts
+
+❌ Page layout (use Flexbox/Grid instead)
+
+---
+
+# 37. Forms (Basic Styling)
+
+Forms are essential for user interaction. Here's how to style them.
+
+## Input Styling
+
+```css
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+```
+
+---
+
+## Focus State
+
+Style inputs when they're focused:
+
+```css
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+```
+
+---
+
+## Placeholder Styling
+
+Style the placeholder text:
+
+```css
+::placeholder {
+  color: #999;
+  font-style: italic;
+}
+```
+
+---
+
+## Button Styling
+
+```css
+button,
+input[type="submit"],
+input[type="button"] {
+  padding: 12px 24px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+button:hover,
+input[type="submit"]:hover {
+  background-color: #2980b9;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+```
+
+---
+
+## Disabled State
+
+Style disabled inputs:
+
+```css
+input:disabled,
+button:disabled {
+  background-color: #f0f0f0;
+  color: #999;
+  cursor: not-allowed;
+}
+```
+
+---
+
+## Form Layout Example
+
+```html
+<form class="contact-form">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" id="name" placeholder="Your name">
+  </div>
+  
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input type="email" id="email" placeholder="your@email.com">
+  </div>
+  
+  <div class="form-group">
+    <label for="message">Message</label>
+    <textarea id="message" rows="4" placeholder="Your message"></textarea>
+  </div>
+  
+  <button type="submit">Send Message</button>
+</form>
+```
+
+```css
+.contact-form {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+```
+
+---
+
+## Checkbox and Radio Styling
+
+```css
+input[type="checkbox"],
+input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+```
+
+---
+
+## Select Dropdown
+
+```css
+select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+  cursor: pointer;
+}
 ```

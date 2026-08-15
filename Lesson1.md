@@ -28,8 +28,12 @@
 21. [Text Spacing](#21-text-spacing)
 22. [Word Break](#22-word-break)
 23. [Text Overflow](#23-text-overflow)
-24. [Best Practices](#24-best-practices)
-25. [Practice Exercises](#25-practice-exercises)
+24. [Display Property](#24-display-property)
+25. [Backgrounds](#25-backgrounds)
+26. [Colors (Advanced)](#26-colors-advanced)
+27. [CSS Reset](#27-css-reset)
+28. [Best Practices](#28-best-practices)
+29. [Practice Exercises](#29-practice-exercises)
 
 ---
 
@@ -930,7 +934,453 @@ Use Cases
 
 ---
 
-# 24. Best Practices
+# 24. Display Property
+
+The `display` property controls how an element is displayed on the page. It's one of the most important CSS properties for layout.
+
+## Common Display Values
+
+### display: block
+
+Block elements:
+- Take up the full width available
+- Start on a new line
+- Can have width, height, margin, padding
+
+**Examples:**
+```css
+div {
+  display: block;
+}
+```
+
+**Default block elements:** `<div>`, `<p>`, `<h1>`-`<h6>`, `<ul>`, `<li>`, `<section>`, `<article>`
+
+---
+
+### display: inline
+
+Inline elements:
+- Only take up as much width as needed
+- Don't start on a new line
+- Cannot have width, height, top/bottom margin
+- Can have left/right margin and padding
+
+**Examples:**
+```css
+span {
+  display: inline;
+}
+```
+
+**Default inline elements:** `<span>`, `<a>`, `<strong>`, `<em>`, `<img>`, `<input>`
+
+---
+
+### display: inline-block
+
+Inline-block elements:
+- Behave like inline elements (flow with text)
+- Can have width, height, margin, padding like block elements
+
+**Examples:**
+```css
+.button {
+  display: inline-block;
+  width: 150px;
+  height: 40px;
+}
+```
+
+**Use cases:**
+- Buttons
+- Navigation items
+- Card layouts
+
+---
+
+### display: none
+
+Hides the element completely:
+- Element is removed from the document flow
+- Takes up no space
+- Not visible to screen readers
+
+**Examples:**
+```css
+.hidden {
+  display: none;
+}
+```
+
+**Note:** This is different from `visibility: hidden`, which hides the element but keeps its space.
+
+---
+
+## When to Use Each Display Type
+
+| Display Type | Use Case |
+|--------------|----------|
+| `block` | Main layout containers, paragraphs, headings |
+| `inline` | Text styling, links within text |
+| `inline-block` | Buttons, navigation items, small components |
+| `none` | Hidden elements, toggleable content |
+
+---
+
+## Example
+
+```html
+<div class="container">
+  <div class="box">Block Element</div>
+  <span class="inline">Inline Element</span>
+  <div class="inline-block">Inline-Block Element</div>
+  <div class="hidden">Hidden Element</div>
+</div>
+```
+
+```css
+.box {
+  display: block;
+  background: lightblue;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.inline {
+  display: inline;
+  background: lightgreen;
+  padding: 5px;
+}
+
+.inline-block {
+  display: inline-block;
+  background: lightcoral;
+  padding: 10px;
+  width: 150px;
+}
+
+.hidden {
+  display: none;
+}
+```
+
+---
+
+# 25. Backgrounds
+
+Background properties control the background of an element.
+
+## Background Color
+
+Sets the background color of an element.
+
+```css
+.box {
+  background-color: #3498db;
+  background-color: rgb(52, 152, 219);
+  background-color: hsl(204, 70%, 53%);
+  background-color: blue; /* Named color */
+}
+```
+
+---
+
+## Background Image
+
+Adds an image as the background.
+
+```css
+.hero {
+  background-image: url('image.jpg');
+}
+```
+
+---
+
+## Background Repeat
+
+Controls how the background image repeats.
+
+```css
+.box {
+  background-repeat: repeat;    /* Default - repeats both directions */
+  background-repeat: repeat-x;  /* Repeats horizontally only */
+  background-repeat: repeat-y;  /* Repeats vertically only */
+  background-repeat: no-repeat; /* No repetition */
+}
+```
+
+---
+
+## Background Position
+
+Sets the starting position of the background image.
+
+```css
+.box {
+  background-position: center;
+  background-position: top right;
+  background-position: bottom left;
+  background-position: 50% 50%;  /* Horizontal Vertical */
+  background-position: 100px 50px;
+}
+```
+
+---
+
+## Background Size
+
+Controls the size of the background image.
+
+```css
+.box {
+  background-size: cover;      /* Covers entire area */
+  background-size: contain;    /* Fits image within area */
+  background-size: 100% 100%;  /* Stretch to fit */
+  background-size: 50%;         /* Half size */
+}
+```
+
+---
+
+## Background Attachment
+
+Controls whether the background scrolls with the page.
+
+```css
+.box {
+  background-attachment: scroll; /* Default - scrolls with page */
+  background-attachment: fixed;  /* Fixed position */
+  background-attachment: local;  /* Scrolls with element content */
+}
+```
+
+---
+
+## Background Shorthand
+
+Combines all background properties in one declaration.
+
+```css
+.box {
+  background: url('image.jpg') no-repeat center center / cover fixed;
+}
+
+/* Order: image | repeat | position | / size | attachment */
+```
+
+---
+
+## Example
+
+```html
+<div class="hero">
+  <h1>Welcome</h1>
+</div>
+```
+
+```css
+.hero {
+  background: url('background.jpg') no-repeat center center / cover fixed;
+  background-color: #333; /* Fallback color */
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+```
+
+---
+
+# 26. Colors (Advanced)
+
+Beyond basic colors, CSS offers advanced color options.
+
+## RGBA Colors
+
+RGBA adds transparency to RGB colors.
+
+```css
+.box {
+  background-color: rgba(52, 152, 219, 0.5);
+  /* Red Green Blue Alpha (transparency) */
+  /* Alpha: 0 = transparent, 1 = opaque */
+}
+```
+
+**Example:**
+```css
+.overlay {
+  background-color: rgba(0, 0, 0, 0.7); /* 70% opaque black */
+}
+```
+
+---
+
+## HSLA Colors
+
+HSLA adds transparency to HSL colors.
+
+```css
+.box {
+  background-color: hsla(204, 70%, 53%, 0.5);
+  /* Hue Saturation Lightness Alpha */
+}
+```
+
+**HSL Benefits:**
+- Easier to adjust colors (just change hue)
+- More intuitive for designers
+
+---
+
+## Named Colors
+
+CSS has 140+ named colors.
+
+```css
+.box {
+  background-color: tomato;
+  background-color: cornflowerblue;
+  background-color: mediumseagreen;
+  background-color: slategray;
+}
+```
+
+**Common named colors:**
+- `red`, `green`, `blue`
+- `black`, `white`, `gray`
+- `orange`, `yellow`, `purple`
+- `pink`, `brown`, `cyan`
+
+---
+
+## currentColor
+
+The `currentColor` keyword uses the value of the `color` property.
+
+```css
+.box {
+  color: #3498db;
+  border: 2px solid currentColor; /* Uses the same blue */
+  background-color: currentColor; /* Uses the same blue */
+}
+```
+
+**Use cases:**
+- Consistent theming
+- Icons matching text color
+- Hover effects
+
+---
+
+## Color Contrast (Accessibility)
+
+Ensure text is readable against its background.
+
+**Good contrast ratios:**
+- Normal text: 4.5:1 minimum
+- Large text: 3:1 minimum
+- UI components: 3:1 minimum
+
+**Example:**
+```css
+/* Good contrast */
+.good {
+  color: #000000;
+  background-color: #ffffff;
+}
+
+/* Poor contrast */
+.bad {
+  color: #cccccc;
+  background-color: #dddddd;
+}
+```
+
+---
+
+# 27. CSS Reset
+
+Different browsers have different default styles. A CSS reset ensures consistency.
+
+## Why Use a Reset?
+
+- Browsers apply different default styles
+- Inconsistent margins, padding, fonts
+- Cross-browser compatibility issues
+
+---
+
+## Simple CSS Reset
+
+```css
+/* Simple Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+```
+
+---
+
+## Box Sizing Reset
+
+```css
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+```
+
+This ensures padding and border are included in the element's width/height.
+
+---
+
+## CSS Normalize
+
+Unlike a reset, normalize.css preserves useful defaults while fixing inconsistencies.
+
+**Benefits:**
+- Better than reset for most projects
+- Preserves useful browser defaults
+- Fixes cross-browser bugs
+
+**Include via CDN:**
+```html
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+```
+
+---
+
+## When to Use Reset vs Normalize
+
+| Approach | When to Use |
+|----------|-------------|
+| **CSS Reset** | Complete control, starting from scratch |
+| **Normalize** | Most projects, preserve useful defaults |
+| **Neither** | Small projects, quick prototypes |
+
+---
+
+# 28. Best Practices
 
 ✅ Use classes instead of IDs for styling.
 
@@ -950,7 +1400,7 @@ Use Cases
 
 ---
 
-# 25. Practice Exercises
+# 29. Practice Exercises
 
 ### Exercise 1
 
