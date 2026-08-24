@@ -1,9 +1,10 @@
 # Session 3: Inheritance, Typography, Positioning
 
-## Duration Breakdown
-- **1 Hour**: Theoretical Explanation + Live Coding
-- **1.5 Hours**: Practical Application (Student writes code)
-- **0.5 Hours**: Review, Questions, Problem Solving
+## Duration Breakdown (2.5 Hours Total)
+- **1 Hour**: Theoretical Explanation + Live Coding (Sections 1-6)
+- **1 Hour**: Interactive Learning (Sections 7-12 with Explain → Example → Try it yourself → Predict → Experiment → Challenge → Bug Hunting → Quiz)
+- **20 Minutes**: Comprehensive Project (Single component combining all concepts)
+- **10 Minutes**: Review & Assessment
 
 ---
 
@@ -460,7 +461,15 @@ html {
 
 ### Section 9: CSS Calculations {#section-9}
 
-## calc() Function
+## Explain
+The `calc()` function allows you to perform mathematical calculations in CSS values:
+
+- Can mix different units (px, %, em, rem, vw, etc.)
+- Useful for responsive design
+- Supports +, -, *, / operators
+- Must include spaces around operators
+
+## Example
 ```css
 .container {
     width: calc(100% - 20px);
@@ -475,22 +484,109 @@ html {
 }
 ```
 
-## Use Cases
-- Responsive sizing
-- Combining different units
-- Complex calculations
-- Dynamic layouts
+## Try it yourself
+Create a container that subtracts padding from width.
 
-## Best Practices
-- Always include spaces around operators
-- Can mix different units
-- Supported in all modern browsers
+```html
+<div class="responsive-box">Responsive Box</div>
+```
+
+```css
+.responsive-box {
+    width: calc(100% - 40px);
+    /* Add padding to complete the calculation */
+}
+```
+
+## Predict
+What will happen with this code?
+
+```css
+.mystery {
+    width: calc(100%+20px);
+}
+```
+
+## Experiment
+1. What happens if you forget spaces around operators?
+2. Can you use `calc()` with font-size?
+3. Try combining viewport units with pixels
+
+## Challenge
+**Task:** Create a responsive card where:
+- Width is 50% minus 20px
+- Padding is calculated using calc()
+- Font size scales with viewport
+- Time: 10 minutes
+- Hint: Use calc() for both width and padding
+
+<details>
+<summary>Solution</summary>
+
+```html
+<div class="calc-card">
+    <h3>Responsive Card</h3>
+    <p>This card uses calc() for responsive sizing</p>
+</div>
+```
+
+```css
+.calc-card {
+    width: calc(50% - 20px);
+    padding: calc(10px + 1vw);
+    font-size: calc(14px + 0.5vw);
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 10px;
+}
+```
+
+</details>
+
+## Bug Hunting
+Find the bug in this code:
+
+```css
+.buggy-calc {
+    width: calc(100%-20px);
+    /* Why might this cause issues? */
+}
+```
+
+<details>
+<summary>Solution</summary>
+
+Missing spaces around the minus operator. Should be `calc(100% - 20px)`.
+
+</details>
+
+## Quiz
+1. What operators does calc() support?
+2. Why are spaces required around operators?
+3. Can you mix different units in calc()?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. +, -, *, / (addition, subtraction, multiplication, division)
+2. Spaces are required for the CSS parser to correctly identify the operators
+3. Yes, you can mix units like px, %, em, rem, vw, vh in the same calculation
+
+</details>
 
 ---
 
 ### Section 10: Opacity {#section-10}
 
-## Opacity Values
+## Explain
+Opacity controls the transparency level of an entire element:
+
+- Values range from 0 (fully transparent) to 1 (fully opaque)
+- Affects the entire element including content
+- Different from RGBA which only affects color transparency
+
+## Example
 ```css
 .fully-opaque {
     opacity: 1; /* 100% opaque */
@@ -505,92 +601,301 @@ html {
 }
 ```
 
-## RGBA vs Opacity
+## Try it yourself
+Create elements with different opacity levels.
+
+```html
+<div class="opacity-1">Level 1</div>
+<div class="opacity-2">Level 2</div>
+<div class="opacity-3">Level 3</div>
+```
+
 ```css
-/* Opacity affects entire element */
-.box {
-    opacity: 0.5;
+.opacity-1 {
+    background: blue;
+    /* Set opacity to 0.3 */
 }
 
-/* RGBA affects only color */
-.box {
-    background-color: rgba(255, 0, 0, 0.5);
+.opacity-2 {
+    background: green;
+    /* Set opacity to 0.6 */
+}
+
+.opacity-3 {
+    background: red;
+    /* Set opacity to 0.9 */
 }
 ```
 
-**Use Cases:**
-- Hover effects
-- Disabled states
-- Layering
-- Visual feedback
+## Predict
+What will happen with this code?
+
+```css
+.box {
+    opacity: 0.5;
+    color: red;
+}
+```
+
+## Experiment
+1. What's the difference between `opacity: 0.5` and `rgba(255,0,0,0.5)`?
+2. Can text inside an element with opacity be fully opaque?
+3. Try opacity on a parent element with children
+
+## Challenge
+**Task:** Create a card with hover effect where:
+- Normal state has full opacity
+- Hover state reduces opacity to 0.8
+- Text remains readable
+- Time: 8 minutes
+- Hint: Consider using RGBA for background instead of opacity to keep text readable
+
+<details>
+<summary>Solution</summary>
+
+```html
+<div class="opacity-card">
+    <h3>Hover Card</h3>
+    <p>Hover over this card to see the opacity effect</p>
+</div>
+```
+
+```css
+.opacity-card {
+    background: rgba(37, 99, 235, 1);
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    transition: opacity 0.3s;
+}
+
+.opacity-card:hover {
+    opacity: 0.8;
+}
+
+/* Alternative using RGBA to keep text readable */
+.opacity-card-alt {
+    background: rgba(37, 99, 235, 1);
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    transition: background 0.3s;
+}
+
+.opacity-card-alt:hover {
+    background: rgba(37, 99, 235, 0.8);
+}
+```
+
+</details>
+
+## Bug Hunting
+Find the bug in this code:
+
+```css
+.buggy-opacity {
+    opacity: 1.5;
+    /* What's wrong with this value? */
+}
+```
+
+<details>
+<summary>Solution</summary>
+
+Opacity values should be between 0 and 1. Values above 1 are clamped to 1, but this shows a misunderstanding of the opacity property.
+
+</details>
+
+## Quiz
+1. What is the valid range for opacity values?
+2. How does opacity differ from RGBA transparency?
+3. Does opacity affect the element's layout space?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. Opacity values range from 0 (fully transparent) to 1 (fully opaque)
+2. Opacity affects the entire element including content, RGBA affects only the color
+3. No, opacity doesn't affect layout space - the element still takes up the same space
+
+</details>
 
 ---
 
 ### Section 11: Position {#section-11}
 
-## Position Values
+## Explain
+The `position` property controls how elements are positioned in the document:
 
-### Static (Default)
+- `static` - Default, follows normal flow
+- `relative` - Positioned relative to its normal position
+- `absolute` - Positioned relative to nearest positioned ancestor
+- `fixed` - Positioned relative to viewport, stays fixed during scroll
+- `sticky` - Acts like relative until scroll threshold, then like fixed
+
+## Example
 ```css
 .static {
-    position: static; /* Default positioning */
+    position: static;
 }
-```
-- Follows normal document flow
-- Not affected by top, right, bottom, left
 
-### Relative
-```css
 .relative {
     position: relative;
     top: 10px;
     left: 20px;
 }
-```
-- Positioned relative to its normal position
-- Affects child absolute positioning
-- Still takes up space in document flow
 
-### Absolute
-```css
 .absolute {
     position: absolute;
     top: 0;
     right: 0;
 }
-```
-- Positioned relative to nearest positioned ancestor
-- Removed from normal document flow
-- Doesn't affect other elements
 
-### Fixed
-```css
 .fixed {
     position: fixed;
     top: 0;
     left: 0;
 }
-```
-- Positioned relative to viewport
-- Stays in place during scrolling
-- Removed from document flow
 
-### Sticky
-```css
 .sticky {
     position: sticky;
     top: 10px;
 }
 ```
-- Acts like relative until scroll position
-- Then acts like fixed
-- Great for headers and sidebars
+
+## Try it yourself
+Create elements with different position values.
+
+```html
+<div class="parent">
+    <div class="relative-box">Relative</div>
+    <div class="absolute-box">Absolute</div>
+</div>
+```
+
+```css
+.parent {
+    position: relative;
+    height: 200px;
+    background: #f0f0f0;
+}
+
+.relative-box {
+    /* Make this relative and move it */
+}
+
+.absolute-box {
+    /* Make this absolute and position it */
+}
+```
+
+## Predict
+What will happen with this code?
+
+```css
+.child {
+    position: absolute;
+    top: 10px;
+}
+```
+
+## Experiment
+1. What happens when you use absolute without a positioned parent?
+2. Try fixed positioning - what happens when you scroll?
+3. What's the difference between relative and absolute?
+
+## Challenge
+**Task:** Create a card with:
+- Absolute positioned badge in top-right corner
+- Relative positioned container
+- Content that flows normally
+- Time: 12 minutes
+- Hint: Parent needs position: relative for child absolute positioning
+
+<details>
+<summary>Solution</summary>
+
+```html
+<div class="card-container">
+    <div class="badge">New</div>
+    <h3>Card Title</h3>
+    <p>Card content goes here</p>
+</div>
+```
+
+```css
+.card-container {
+    position: relative;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #e11d48;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+```
+
+</details>
+
+## Bug Hunting
+Find the bug in this code:
+
+```css
+.child {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.parent {
+    /* Missing position property */
+}
+```
+
+<details>
+<summary>Solution</summary>
+
+The parent element needs `position: relative` (or any non-static position) for the child's absolute positioning to work relative to the parent.
+
+</details>
+
+## Quiz
+1. What is the default position value?
+2. What's the difference between absolute and fixed?
+3. When does sticky positioning change behavior?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. The default position value is `static`
+2. Absolute is positioned relative to nearest positioned ancestor, fixed is always relative to viewport
+3. Sticky acts like relative until the element reaches the specified scroll threshold, then acts like fixed
+
+</details>
 
 ---
 
 ### Section 12: Z-Index {#section-12}
 
-## Layering Elements
+## Explain
+The `z-index` property controls the stacking order of positioned elements:
+
+- Only works on elements with position (not static)
+- Higher values appear on top of lower values
+- Can be negative for background layers
+- Default value is `auto`
+
+## Example
 ```css
 .bottom {
     position: relative;
@@ -608,950 +913,447 @@ html {
 }
 ```
 
-## Important Rules
-- Only works on positioned elements
-- Higher z-index appears on top
-- Can be negative
-- Default z-index is auto
+## Try it yourself
+Create overlapping elements with different z-index values.
 
-## Use Cases
-- Modals
-- Dropdowns
-- Tooltips
-- Overlapping elements
-
----
-
-## Part 2: Practical Application (1.5 Hours)
-
-### Exercise 1: CSS Inheritance Practice (15 minutes)
-
-**Task:**
-Create a page demonstrating inheritance properties.
-
-**HTML:**
 ```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSS Inheritance</title>
-    <link rel="stylesheet" href="inheritance.css">
-</head>
-<body>
-    <div class="parent">
-        <h2>Parent Element</h2>
-        <p>This paragraph inherits styles from parent.</p>
-        <div class="child">
-            <h3>Child Element</h3>
-            <p>This paragraph inherits from both parent and child.</p>
-            <span class="override">This span overrides inherited color.</span>
-        </div>
-    </div>
-</body>
-</html>
+<div class="container">
+    <div class="box layer-1">Layer 1</div>
+    <div class="box layer-2">Layer 2</div>
+    <div class="box layer-3">Layer 3</div>
+</div>
 ```
 
-**CSS:**
 ```css
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background-color: #f3f4f6;
-}
-
-.parent {
-    color: #2563eb;
-    font-size: 18px;
-    line-height: 1.6;
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
-.parent h2 {
-    color: #1f2937; /* Overrides inherited color */
-}
-
-.child {
-    color: #10b981; /* Child inherits from parent but overrides color */
-    padding: 15px;
-    background-color: #f3f4f6;
-    border-radius: 4px;
-    margin-top: 10px;
-}
-
-.child h3 {
-    color: #1f2937;
-}
-
-.override {
-    color: #e11d48; /* Explicit override */
-    font-weight: bold;
-}
-```
-
----
-
-### Exercise 2: Typography Complete (20 minutes)
-
-**Task:**
-Create a typography showcase with all font properties.
-
-**HTML:**
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Typography Practice</title>
-    <link rel="stylesheet" href="typography.css">
-</head>
-<body>
-    <div class="container">
-        <h1 class="main-title">Typography Showcase</h1>
-        
-        <h2>Font Families</h2>
-        <p class="serif">Serif font: Georgia, Times New Roman</p>
-        <p class="sans-serif">Sans-serif font: Arial, Helvetica</p>
-        <p class="monospace">Monospace font: Courier New</p>
-        
-        <h2>Font Sizes</h2>
-        <p class="small">Small text (12px)</p>
-        <p class="medium">Medium text (16px)</p>
-        <p class="large">Large text (24px)</p>
-        <p class="responsive">Responsive text (2rem)</p>
-        
-        <h2>Font Styles</h2>
-        <p class="normal">Normal style</p>
-        <p class="italic">Italic style</p>
-        <p class="oblique">Oblique style</p>
-        
-        <h2>Font Weights</h2>
-        <p class="light">Light weight (300)</p>
-        <p class="normal-weight">Normal weight (400)</p>
-        <p class="bold">Bold weight (700)</p>
-        
-        <h2>Font Variants</h2>
-        <p class="small-caps">Small Caps Text</p>
-        <p class="normal-variant">Normal Text</p>
-    </div>
-</body>
-</html>
-```
-
-**CSS:**
-```css
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f3f4f6;
-    padding: 40px 20px;
-}
-
 .container {
-    max-width: 800px;
-    margin: 0 auto;
-    background-color: white;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.main-title {
-    color: #2563eb;
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-h2 {
-    color: #1f2937;
-    margin-top: 30px;
-    margin-bottom: 15px;
-    border-bottom: 2px solid #e5e7eb;
-    padding-bottom: 10px;
-}
-
-/* Font Families */
-.serif {
-    font-family: Georgia, "Times New Roman", Times, serif;
-    margin-bottom: 10px;
-}
-
-.sans-serif {
-    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
-    margin-bottom: 10px;
-}
-
-.monospace {
-    font-family: "Courier New", Courier, monospace;
-    margin-bottom: 10px;
-}
-
-/* Font Sizes */
-.small {
-    font-size: 12px;
-    margin-bottom: 10px;
-}
-
-.medium {
-    font-size: 16px;
-    margin-bottom: 10px;
-}
-
-.large {
-    font-size: 24px;
-    margin-bottom: 10px;
-}
-
-.responsive {
-    font-size: 2rem;
-    margin-bottom: 10px;
-}
-
-/* Font Styles */
-.normal {
-    font-style: normal;
-    margin-bottom: 10px;
-}
-
-.italic {
-    font-style: italic;
-    margin-bottom: 10px;
-}
-
-.oblique {
-    font-style: oblique;
-    margin-bottom: 10px;
-}
-
-/* Font Weights */
-.light {
-    font-weight: 300;
-    margin-bottom: 10px;
-}
-
-.normal-weight {
-    font-weight: 400;
-    margin-bottom: 10px;
-}
-
-.bold {
-    font-weight: 700;
-    margin-bottom: 10px;
-}
-
-/* Font Variants */
-.small-caps {
-    font-variant: small-caps;
-    margin-bottom: 10px;
-}
-
-.normal-variant {
-    font-variant: normal;
-    margin-bottom: 10px;
-}
-```
-
----
-
-### Exercise 3: CSS Units Practice (15 minutes)
-
-**Task:**
-Create boxes demonstrating different CSS units.
-
-**HTML:**
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSS Units Practice</title>
-    <link rel="stylesheet" href="units.css">
-</head>
-<body>
-    <h1>CSS Units Examples</h1>
-    
-    <h2>Absolute Units</h2>
-    <div class="box px">100px width</div>
-    <div class="box pt">12pt font size</div>
-    
-    <h2>Relative Units</h2>
-    <div class="box em">2em width (parent-based)</div>
-    <div class="box rem">2rem width (root-based)</div>
-    <div class="box percent">50% width</div>
-    
-    <h2>Viewport Units</h2>
-    <div class="box vw">50vw width</div>
-    <div class="box vh">30vh height</div>
-    
-    <h2>Calculation</h2>
-    <div class="box calc">calc(100% - 40px)</div>
-</body>
-</html>
-```
-
-**CSS:**
-```css
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background-color: #f3f4f6;
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 30px;
-    color: #1f2937;
-}
-
-h2 {
-    color: #1f2937;
-    margin-top: 30px;
-    margin-bottom: 15px;
+    position: relative;
+    height: 200px;
 }
 
 .box {
-    background-color: white;
-    border: 2px solid #2563eb;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 10px 0;
-    color: #1f2937;
-    font-weight: bold;
-}
-
-/* Absolute Units */
-.px {
-    width: 100px;
-    height: 60px;
-}
-
-.pt {
-    width: 200px;
-    height: 60px;
-    font-size: 12pt;
-}
-
-/* Relative Units */
-.em {
-    width: 2em;
-    height: 60px;
-}
-
-.rem {
-    width: 2rem;
-    height: 60px;
-}
-
-.percent {
-    width: 50%;
-    height: 60px;
-}
-
-/* Viewport Units */
-.vw {
-    width: 50vw;
-    height: 60px;
-}
-
-.vh {
-    width: 200px;
-    height: 30vh;
-}
-
-/* Calculation */
-.calc {
-    width: calc(100% - 40px);
-    height: 60px;
+    position: absolute;
+    /* Add width, height, colors, and z-index */
 }
 ```
 
+## Predict
+What will happen with this code?
+
+```css
+.layer-1 {
+    position: relative;
+    z-index: 10;
+}
+
+.layer-2 {
+    z-index: 5; /* Missing position */
+}
+```
+
+## Experiment
+1. What happens if you use z-index without position?
+2. Try negative z-index values
+3. What happens with equal z-index values?
+
+## Challenge
+**Task:** Create a modal overlay with:
+- Semi-transparent background (z-index: 1000)
+- Modal content on top (z-index: 1001)
+- Page content behind (z-index: 1)
+- Time: 10 minutes
+- Hint: Use fixed positioning for the overlay
+
+<details>
+<summary>Solution</summary>
+
+```html
+<div class="page-content">
+    <h1>Page Content</h1>
+    <p>This is the main page content</p>
+</div>
+
+<div class="modal-overlay">
+    <div class="modal-content">
+        <h3>Modal Title</h3>
+        <p>Modal content goes here</p>
+        <button class="close-btn">Close</button>
+    </div>
+</div>
+```
+
+```css
+.page-content {
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    z-index: 1001;
+    max-width: 400px;
+}
+```
+
+</details>
+
+## Bug Hunting
+Find the bug in this code:
+
+```css
+.buggy-zindex {
+    z-index: 100;
+    /* Why won't this work? */
+}
+```
+
+<details>
+<summary>Solution</summary>
+
+z-index only works on positioned elements (not static). Add `position: relative`, `absolute`, `fixed`, or `sticky`.
+
+</details>
+
+## Quiz
+1. What is required for z-index to work?
+2. What does a higher z-index value do?
+3. Can z-index be negative?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. The element must have a position value other than static
+2. Higher z-index values appear on top of elements with lower values
+3. Yes, z-index can be negative, which places elements behind the normal flow
+
+</details>
+
 ---
 
-### Exercise 4: Position Practice (25 minutes)
+## Part 2: Comprehensive Project (20 minutes)
 
-**Task:**
-Create examples demonstrating all position types.
+### Project: Profile Card with Advanced Styling
 
-**HTML:**
+**Task:** Create a sophisticated profile card that demonstrates all positioning, typography, and calculation concepts:
+
+**Requirements:**
+1. **CSS Inheritance** - Use inherited properties for text styling
+2. **Typography** - Mix of font families, sizes, weights using rem units
+3. **CSS Units** - Use rem, em, %, and calc() for sizing
+4. **Position** - Absolute positioned badge, relative container
+5. **Z-Index** - Layering for overlap effects
+6. **Opacity** - Hover effects with transparency
+7. **calc()** - Responsive width calculations
+
+**Time:** 20 minutes
+**Hint:** Start with inheritance, then add positioning, then apply calculations
+
+<details>
+<summary>Solution</summary>
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Position Practice</title>
-    <link rel="stylesheet" href="position.css">
+    <title>Profile Card</title>
+    <link rel="stylesheet" href="profile-card.css">
 </head>
 <body>
-    <h1>Position Examples</h1>
-    
-    <h2>Static (Default)</h2>
-    <div class="static-demo">
-        <div class="static-box">Static Box 1</div>
-        <div class="static-box">Static Box 2</div>
-        <div class="static-box">Static Box 3</div>
-    </div>
-    
-    <h2>Relative</h2>
-    <div class="relative-demo">
-        <div class="relative-box">Relative Box (moved 10px down, 20px right)</div>
-        <div class="static-box">Normal Box</div>
-    </div>
-    
-    <h2>Absolute</h2>
-    <div class="absolute-demo">
-        <div class="absolute-box">Absolute Box (top-right of parent)</div>
-        <div class="static-box">Normal Box</div>
-    </div>
-    
-    <h2>Fixed</h2>
-    <div class="fixed-demo">
-        <div class="fixed-box">Fixed Box (always top-right of viewport)</div>
-        <p>Scroll down to see the fixed box stay in place...</p>
-        <div class="scroll-content">Scroll content...</div>
-    </div>
-    
-    <h2>Sticky</h2>
-    <div class="sticky-demo">
-        <div class="sticky-header">Sticky Header (sticks at top)</div>
-        <div class="scroll-content">
-            <p>Scroll down to see the header stick...</p>
-            <!-- Add more content to enable scrolling -->
+    <div class="card-container">
+        <div class="profile-card">
+            <div class="badge">Featured</div>
+            <div class="avatar-section">
+                <div class="avatar">JD</div>
+            </div>
+            <div class="profile-info">
+                <h2 class="name">John Doe</h2>
+                <p class="title">Senior Developer</p>
+                <p class="bio">Passionate about creating beautiful web experiences with modern CSS.</p>
+            </div>
+            <div class="card-actions">
+                <button class="btn-primary">Follow</button>
+                <button class="btn-secondary">Message</button>
+            </div>
         </div>
     </div>
 </body>
 </html>
 ```
 
-**CSS:**
 ```css
-* {
+/* CSS Reset */
+*, *::before, *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background-color: #f3f4f6;
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 30px;
-    color: #1f2937;
-}
-
-h2 {
-    color: #1f2937;
-    margin-top: 30px;
-    margin-bottom: 15px;
-}
-
-/* Static Demo */
-.static-demo {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
-.static-box {
-    background-color: #2563eb;
-    color: white;
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 4px;
-}
-
-/* Relative Demo */
-.relative-demo {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    position: relative;
-}
-
-.relative-box {
-    background-color: #10b981;
-    color: white;
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 4px;
-    position: relative;
-    top: 10px;
-    left: 20px;
-}
-
-/* Absolute Demo */
-.absolute-demo {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    position: relative;
-    height: 150px;
-}
-
-.absolute-box {
-    background-color: #f59e0b;
-    color: white;
-    padding: 15px;
-    border-radius: 4px;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-}
-
-/* Fixed Demo */
-.fixed-demo {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    height: 300px;
-    overflow-y: auto;
-}
-
-.fixed-box {
-    background-color: #e11d48;
-    color: white;
-    padding: 15px;
-    border-radius: 4px;
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    z-index: 1000;
-}
-
-.scroll-content {
-    height: 500px;
-    background-color: #f3f4f6;
-    padding: 20px;
-    border-radius: 4px;
-    margin-top: 20px;
-}
-
-/* Sticky Demo */
-.sticky-demo {
-    background-color: white;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    overflow-y: auto;
-    height: 300px;
-}
-
-.sticky-header {
-    background-color: #7c3aed;
-    color: white;
-    padding: 15px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-```
-
----
-
-### Exercise 5: Z-Index Practice (15 minutes)
-
-**Task:**
-Create overlapping elements with different z-index values.
-
-**HTML:**
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Z-Index Practice</title>
-    <link rel="stylesheet" href="zindex.css">
-</head>
-<body>
-    <h1>Z-Index Examples</h1>
-    
-    <h2>Layering Order</h2>
-    <div class="layer-container">
-        <div class="layer bottom">Bottom Layer (z-index: 1)</div>
-        <div class="layer middle">Middle Layer (z-index: 2)</div>
-        <div class="layer top">Top Layer (z-index: 3)</div>
-    </div>
-    
-    <h2>Negative Z-Index</h2>
-    <div class="negative-container">
-        <div class="background-layer">Background (z-index: -1)</div>
-        <div class="foreground-layer">Foreground (z-index: 1)</div>
-    </div>
-    
-    <h2>Positioning Required</h2>
-    <div class="position-container">
-        <div class="no-position">No Position (z-index won't work)</div>
-        <div class="with-position">With Position (z-index: 10)</div>
-    </div>
-</body>
-</html>
-```
-
-**CSS:**
-```css
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* Base styles with inheritance */
+html {
+    font-size: 16px;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background-color: #f3f4f6;
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 30px;
-    color: #1f2937;
-}
-
-h2 {
-    color: #1f2937;
-    margin-top: 30px;
-    margin-bottom: 15px;
-}
-
-/* Layer Container */
-.layer-container {
-    position: relative;
-    height: 200px;
-    background-color: white;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
-.layer {
-    position: absolute;
-    width: 200px;
-    height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: bold;
-    border-radius: 8px;
-}
-
-.bottom {
-    background-color: #2563eb;
-    top: 20px;
-    left: 20px;
-    z-index: 1;
-}
-
-.middle {
-    background-color: #10b981;
-    top: 50px;
-    left: 80px;
-    z-index: 2;
-}
-
-.top {
-    background-color: #f59e0b;
-    top: 80px;
-    left: 140px;
-    z-index: 3;
-}
-
-/* Negative Container */
-.negative-container {
-    position: relative;
-    height: 150px;
-    background-color: white;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
-.background-layer {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: #e5e7eb;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: -1;
-}
-
-.foreground-layer {
-    position: relative;
-    background-color: #2563eb;
-    color: white;
-    padding: 15px;
-    border-radius: 8px;
-    margin: 20px;
-    z-index: 1;
-}
-
-/* Position Container */
-.position-container {
-    position: relative;
-    height: 150px;
-    background-color: white;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
-.no-position {
-    background-color: #ef4444;
-    color: white;
-    padding: 15px;
-    border-radius: 8px;
-    margin: 20px;
-    z-index: 100; /* Won't work without position */
-}
-
-.with-position {
-    position: relative;
-    background-color: #10b981;
-    color: white;
-    padding: 15px;
-    border-radius: 8px;
-    margin: -50px 20px 20px 20px;
-    z-index: 10; /* Will work */
-}
-```
-
----
-
-### Exercise 6: Sticky Navigation (10 minutes)
-
-**Task:**
-Create a sticky navigation bar.
-
-**HTML:**
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sticky Navigation</title>
-    <link rel="stylesheet" href="sticky-nav.css">
-</head>
-<body>
-    <nav class="sticky-nav">
-        <div class="logo">My Website</div>
-        <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-    </nav>
-    
-    <div class="content">
-        <section id="home" class="section">
-            <h1>Home Section</h1>
-            <p>Scroll down to see the navigation stick to the top.</p>
-        </section>
-        
-        <section id="about" class="section">
-            <h1>About Section</h1>
-            <p>About content goes here...</p>
-        </section>
-        
-        <section id="services" class="section">
-            <h1>Services Section</h1>
-            <p>Services content goes here...</p>
-        </section>
-        
-        <section id="contact" class="section">
-            <h1>Contact Section</h1>
-            <p>Contact content goes here...</p>
-        </section>
-    </div>
-</body>
-</html>
-```
-
-**CSS:**
-```css
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f3f4f6;
-}
-
-/* Sticky Navigation */
-.sticky-nav {
-    position: sticky;
-    top: 0;
-    background-color: #2563eb;
-    color: white;
-    padding: 15px 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 1000;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.logo {
-    font-size: 24px;
-    font-weight: bold;
-}
-
-.nav-links {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-}
-
-.nav-links a {
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.nav-links a:hover {
-    text-decoration: underline;
-}
-
-/* Content */
-.content {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.section {
-    background-color: white;
-    padding: 40px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    min-height: 400px;
-}
-
-.section h1 {
-    color: #1f2937;
-    margin-bottom: 20px;
-}
-
-.section p {
-    color: #4b5563;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
+    color: #333;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Card Container */
+.card-container {
+    position: relative;
+    max-width: 400px;
+    width: 100%;
+}
+
+/* Profile Card */
+.profile-card {
+    position: relative;
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.profile-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Absolute Positioned Badge */
+.badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    padding: 0.5em 1em;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    z-index: 10;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Avatar Section */
+.avatar-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #667eea;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Profile Info - Inherits body font family */
+.profile-info {
+    padding: calc(1.5rem + 0.5em);
+    text-align: center;
+}
+
+.name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.25em;
+}
+
+.title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1em;
+}
+
+.bio {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #4b5563;
+    margin-bottom: 1.5em;
+}
+
+/* Card Actions */
+.card-actions {
+    display: flex;
+    gap: 1rem;
+    padding: 0 1.5rem 1.5rem;
+}
+
+.btn-primary, .btn-secondary {
+    flex: 1;
+    padding: 0.75em 1em;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.btn-secondary:hover {
+    background: #e5e7eb;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .card-container {
+        max-width: calc(100% - 40px);
+    }
+    
+    .profile-info {
+        padding: 1.25rem;
+    }
+    
+    .card-actions {
+        flex-direction: column;
+    }
 }
 ```
 
----
-
-## Part 3: Review, Questions, Problem Solving (0.5 Hours)
-
-### Difference Between Absolute and Fixed (10 minutes)
-
-**Absolute Positioning:**
-- Positioned relative to nearest positioned ancestor
-- If no positioned ancestor, relative to document body
-- Scrolls with the page
-- Removed from normal flow
-
-**Fixed Positioning:**
-- Always positioned relative to viewport
-- Doesn't scroll with the page
-- Great for headers, footers, modals
-- Removed from normal flow
-
-**Key Difference:**
-- Absolute = relative to parent/ancestor
-- Fixed = relative to browser window
+</details>
 
 ---
 
-### Review Questions (10 minutes)
+## Part 3: Review & Assessment (10 minutes)
+
+### Quick Review Quiz
 
 **Question 1:** What is CSS inheritance?
-**Answer:** Some CSS properties automatically pass from parent elements to their children.
+<details>
+<summary>Answer</summary>
 
-**Question 2:** Which properties are commonly inherited?
-**Answer:** color, font-family, font-size, line-height, text-align, visibility.
+Some CSS properties automatically pass from parent elements to their children, like color, font-family, and font-size.
 
-**Question 3:** What is the difference between `em` and `rem`?
-**Answer:** `em` is relative to parent font size, `rem` is relative to root font size.
+</details>
 
-**Question 4:** What does `position: sticky` do?
-**Answer:** Acts like relative until scroll position, then acts like fixed.
+**Question 2:** What's the difference between `em` and `rem`?
+<details>
+<summary>Answer</summary>
 
-**Question 5:** When does `z-index` not work?
-**Answer:** When the element doesn't have a position value (not static).
+`em` is relative to the parent element's font size, while `rem` is relative to the root (html) font size.
 
-**Question 6:** What is the difference between absolute and fixed positioning?
-**Answer:** Absolute is relative to positioned ancestor, fixed is relative to viewport.
+</details>
 
-**Question 7:** What does `calc()` allow you to do?
-**Answer:** Perform calculations with different CSS units.
+**Question 3:** What does `position: sticky` do?
+<details>
+<summary>Answer</summary>
 
-**Question 8:** What is the difference between `opacity` and `rgba`?
-**Answer:** Opacity affects entire element, rgba affects only color transparency.
+Acts like relative positioning until the element reaches a specified scroll threshold, then acts like fixed positioning.
+
+</details>
+
+**Question 4:** When does `z-index` not work?
+<details>
+<summary>Answer</summary>
+
+z-index only works on elements with a position value other than static (relative, absolute, fixed, or sticky).
+
+</details>
+
+**Question 5:** What's the difference between absolute and fixed positioning?
+<details>
+<summary>Answer</summary>
+
+Absolute positioning is relative to the nearest positioned ancestor, while fixed positioning is always relative to the viewport.
+
+</details>
+
+### Final Challenge
+
+**Task:** Create a tooltip component that uses ALL concepts from this session:
+- Inheritance for text styling
+- Typography with rem units
+- calc() for positioning
+- Absolute positioning for the tooltip
+- z-index for layering
+- Opacity for fade-in effect
+
+**Time:** 10 minutes
+**Goal:** Build a hover tooltip that appears when hovering over an element
+
+<details>
+<summary>Solution Hint</summary>
+
+Use a parent container with position: relative, child tooltip with position: absolute, and hover state for opacity transition
+
+</details>
 
 ---
 
-### Practice Challenges (5 minutes)
+## Homework Assignment
 
-**Challenge 1:** Create a tooltip that appears when hovering over an element using absolute positioning.
-
-**Challenge 2:** Create a modal overlay with fixed positioning and high z-index.
-
-**Challenge 3:** Use `calc()` to create a responsive width that subtracts padding.
-
----
-
-### Homework Assignment
-
-**Task:** Create a complete card component with positioning and typography.
+**Task:** Create a styled blog post card using all concepts from this session.
 
 **Requirements:**
-- Card with absolute positioned badge
-- Typography using rem units
-- Different font weights and styles
-- Opacity hover effect
-- calc() for responsive dimensions
-- Z-index layering for overlap effects
+- CSS inheritance for consistent text styling
+- Typography using rem units and different font weights
+- Absolute positioned category badge
+- calc() for responsive width calculations
+- Opacity hover effects
+- z-index for overlapping elements
+- Position types (relative for container, absolute for badge)
 
 **Due Date:** Next session
 
 ---
 
 ## End of Session 3
+
+**Summary:** In this session, you learned about CSS inheritance, typography (font families, sizes, weights, styles), CSS units (absolute, relative, viewport), CSS calculations with calc(), opacity, positioning (static, relative, absolute, fixed, sticky), and z-index layering. Each concept was practiced through interactive exercises (Explain → Example → Try it yourself → Predict → Experiment → Challenge → Bug Hunting → Quiz), followed by a comprehensive profile card project that integrated all concepts.
 
 **Next Session:** Pseudo-classes/Elements + Cascade (List/Table Styling, Pseudo-classes, Pseudo-elements, Border-radius, Box-shadow, Forms Styling, Specificity, !important, Margin Collapse)

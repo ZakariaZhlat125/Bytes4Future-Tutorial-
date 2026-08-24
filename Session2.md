@@ -1,9 +1,10 @@
 # Session 2: Dimensions and Visual Formatting
 
-## Duration Breakdown
-- **1 Hour**: Theoretical Explanation + Live Coding
-- **1.5 Hours**: Practical Application (Student writes code)
-- **0.5 Hours**: Review, Questions, Problem Solving
+## Duration Breakdown (2.5 Hours Total)
+- **1 Hour**: Theoretical Explanation + Live Coding (Sections 1-11)
+- **1 Hour**: Interactive Learning (Sections 12-16 with Explain → Example → Try it yourself → Predict → Experiment → Challenge → Bug Hunting → Quiz)
+- **20 Minutes**: Comprehensive Project (Single component combining all concepts)
+- **10 Minutes**: Review & Assessment
 
 ---
 
@@ -429,950 +430,680 @@ h1 {
 
 ### Section 12: Text Overflow {#section-12}
 
-## Ellipsis
+## Explain
+Text overflow happens when text is too long for its container. CSS gives us tools to handle this gracefully:
+
+- `text-overflow: ellipsis` - Shows "..." when text is cut off
+- `text-overflow: clip` - Simply cuts off the text without any indicator
+- Requires `white-space: nowrap` and `overflow: hidden` to work
+
+## Example
+```html
+<div class="truncate">This is a very long text that will be truncated with ellipsis</div>
+<div class="clip">This is a very long text that will be clipped without ellipsis</div>
+```
+
 ```css
 .truncate {
+    width: 200px;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; /* Shows "..." */
+    text-overflow: ellipsis;
 }
-```
 
-## Clip
-```css
 .clip {
+    width: 200px;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: clip; /* Simply cuts off */
+    text-overflow: clip;
 }
 ```
 
-**Use Cases:**
-- Product titles
-- File names
-- Limited space content
+## Try it yourself
+Create a box that shows "..." when text is too long.
+
+```html
+<div class="my-box">Try to make this text show ellipsis when it overflows</div>
+```
+
+```css
+.my-box {
+    width: 150px;
+    /* Add the CSS properties needed for ellipsis */
+}
+```
+
+## Predict
+What will happen with this code?
+
+```css
+.poor-ellipsis {
+    width: 100px;
+    text-overflow: ellipsis;
+}
+```
+
+## Experiment
+1. What happens if you remove `white-space: nowrap`?
+2. What happens if you remove `overflow: hidden`?
+3. Try using `text-overflow: clip` instead of `ellipsis`
+
+## Challenge
+**Task:** Create a product card component where:
+- The product title truncates with ellipsis if it's too long
+- The description shows at most 2 lines (hint: use `-webkit-line-clamp`)
+- Time: 10 minutes
+- Hint: You'll need `display: -webkit-box` and `-webkit-box-orient: vertical` for multi-line truncation
+
+<details>
+<summary>Solution</summary>
+
+```html
+<div class="product-card">
+    <h3 class="product-title">Super Long Product Name That Should Be Truncated</h3>
+    <p class="product-desc">This is a product description that should be limited to 2 lines maximum when displayed on the card.</p>
+</div>
+```
+
+```css
+.product-card {
+    width: 250px;
+    border: 1px solid #ddd;
+    padding: 15px;
+}
+
+.product-title {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 10px;
+}
+
+.product-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+}
+```
+
+</details>
+
+## Bug Hunting
+Find the bug in this code:
+
+```css
+.buggy-truncate {
+    width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* Why isn't this working? */
+}
+```
+
+<details>
+<summary>Solution</summary>
+
+Missing `white-space: nowrap` - the text will wrap to multiple lines instead of staying on one line.
+
+</details>
+
+## Quiz
+1. What two properties are required for `text-overflow: ellipsis` to work?
+2. What's the difference between `ellipsis` and `clip`?
+3. Can you use `text-overflow` without `overflow: hidden`?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. `white-space: nowrap` and `overflow: hidden`
+2. `ellipsis` shows "..." when cut off, `clip` just cuts off without indicator
+3. No, `overflow: hidden` is required for `text-overflow` to work
+
+</details>
 
 ---
 
 ### Section 13: Display Property {#section-13}
 
-## Common Display Values
+## Explain
+The `display` property controls how elements are laid out and how they interact with each other:
 
-### Display: Block
+- `block` - Takes full width, starts on new line
+- `inline` - Takes only necessary width, stays on same line
+- `inline-block` - Takes necessary width but can have dimensions
+- `none` - Completely hides element (takes no space)
+
+## Example
+```html
+<div class="block-demo">Block element</div>
+<div class="block-demo">Another block</div>
+
+<span class="inline-demo">Inline</span>
+<span class="inline-demo">Inline</span>
+
+<div class="inline-block-demo">Inline-block</div>
+<div class="inline-block-demo">Inline-block</div>
+
+<div class="hidden">This won't show</div>
+```
+
 ```css
-.block {
+.block-demo {
     display: block;
+    background: #e0e0e0;
+    margin: 5px;
 }
-```
-- Takes full width
-- Starts on new line
-- Examples: `div`, `p`, `h1-h6`
 
-### Display: Inline
-```css
-.inline {
+.inline-demo {
     display: inline;
+    background: #90EE90;
+    margin: 5px;
 }
-```
-- Takes only necessary width
-- Stays on same line
-- Examples: `span`, `a`, `strong`
 
-### Display: Inline-Block
-```css
-.inline-block {
+.inline-block-demo {
     display: inline-block;
+    width: 100px;
+    height: 50px;
+    background: #87CEEB;
+    margin: 5px;
 }
-```
-- Takes only necessary width
-- Can have width/height
-- Stays on same line
-- Best of both worlds
 
-### Display: None
-```css
 .hidden {
     display: none;
 }
 ```
-- Element is completely hidden
-- Takes no space in layout
-- Different from `visibility: hidden`
 
-## When to Use Each
+## Try it yourself
+Create three elements with different display values.
 
-| Display Type | Use When | Examples |
-|-------------|----------|----------|
-| block | Layout containers, sections | div, p, header |
-| inline | Text within content | span, a, strong |
-| inline-block | Buttons, small widgets | button, input |
-| none | Hidden elements, menus | hidden content |
+```html
+<div class="first">First</div>
+<div class="second">Second</div>
+<div class="third">Third</div>
+```
+
+```css
+.first {
+    /* Make this a block element */
+}
+
+.second {
+    /* Make this an inline element */
+}
+
+.third {
+    /* Make this an inline-block with dimensions */
+}
+```
+
+## Predict
+What will happen with this code?
+
+```css
+.mystery {
+    display: inline;
+    width: 200px;
+    height: 100px;
+}
+```
+
+## Experiment
+1. Try setting `width` on an inline element - what happens?
+2. What's the difference between `display: none` and `visibility: hidden`?
+3. Can you make a `div` behave like a `span`?
+
+## Challenge
+**Task:** Create a navigation bar where:
+- Logo is on the left (block or inline-block)
+- Navigation links are inline-block with equal spacing
+- Mobile menu button is hidden on desktop, shown on mobile
+- Time: 15 minutes
+- Hint: Use media queries for the mobile menu button
+
+<details>
+<summary>Solution</summary>
+
+```html
+<nav class="navbar">
+    <div class="logo">MyBrand</div>
+    <div class="nav-links">
+        <a href="#" class="nav-link">Home</a>
+        <a href="#" class="nav-link">About</a>
+        <a href="#" class="nav-link">Contact</a>
+    </div>
+    <button class="mobile-menu">☰</button>
+</nav>
+```
+
+```css
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: #333;
+}
+
+.logo {
+    display: inline-block;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: inline-block;
+}
+
+.nav-link {
+    display: inline-block;
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    margin: 0 5px;
+}
+
+.mobile-menu {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    .mobile-menu {
+        display: inline-block;
+    }
+}
+```
+
+</details>
+
+## Bug Hunting
+Find the bug in this code:
+
+```css
+.button-group button {
+    display: inline;
+    width: 100px;
+    height: 40px;
+    /* Why aren't the dimensions working? */
+}
+```
+
+<details>
+<summary>Solution</summary>
+
+Inline elements don't accept width/height. Change to `display: inline-block` or `display: block`.
+
+</details>
+
+## Quiz
+1. Which display value allows you to set width and height?
+2. What's the main difference between `display: none` and `visibility: hidden`?
+3. Can inline elements have margins?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. `inline-block` and `block` allow width/height
+2. `display: none` removes element from layout (takes no space), `visibility: hidden` hides but keeps space
+3. Yes, inline elements can have horizontal margins but not vertical margins
+
+</details>
 
 ---
 
 ### Section 14: Backgrounds {#section-14}
 
-## Background Color
+## Explain
+Background properties control what appears behind elements:
+
+- `background-color` - Solid color background
+- `background-image` - Image as background
+- `background-repeat` - How image repeats (no-repeat, repeat-x, repeat-y)
+- `background-position` - Where image is placed
+- `background-size` - How image scales (cover, contain, custom)
+- `background-attachment` - Whether image scrolls with content
+
+## Example
+```html
+<div class="color-box">Solid Color</div>
+<div class="image-box">Image Background</div>
+<div class="gradient-box">Gradient</div>
+```
+
 ```css
-.box {
-    background-color: #f0f0f0;
+.color-box {
+    background-color: #3498db;
+    color: white;
+    padding: 20px;
+}
+
+.image-box {
+    background-image: url('https://via.placeholder.com/400');
+    background-size: cover;
+    color: white;
+    padding: 20px;
+}
+
+.gradient-box {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
 }
 ```
 
-## Background Image
+## Try it yourself
+Create a box with a gradient background.
+
+```html
+<div class="my-gradient">Gradient Box</div>
+```
+
 ```css
-.box {
+.my-gradient {
+    padding: 30px;
+    /* Add a gradient background */
+}
+```
+
+## Predict
+What will happen with this code?
+
+```css
+.mystery-bg {
     background-image: url('image.jpg');
-}
-```
-
-## Background Repeat
-```css
-.no-repeat {
-    background-repeat: no-repeat;
-}
-
-.repeat-x {
-    background-repeat: repeat-x;
-}
-
-.repeat-y {
-    background-repeat: repeat-y;
-}
-```
-
-## Background Position
-```css
-.center {
+    background-size: cover;
     background-position: center;
 }
-
-.custom {
-    background-position: 20px 30px; /* x y */
-}
 ```
 
-## Background Size
-```css
-.cover {
-    background-size: cover; /* Cover entire area */
-}
+## Experiment
+1. What happens when you use `background-size: contain` vs `cover`?
+2. Try using `background-attachment: fixed` - what does it do?
+3. Create a gradient with 3 colors instead of 2
 
-.contain {
-    background-size: contain; /* Fit entire image */
-}
+## Challenge
+**Task:** Create a hero section with:
+- Full-screen background image with cover
+- Overlay gradient to make text readable
+- Centered text content
+- Background stays fixed when scrolling
+- Time: 15 minutes
+- Hint: Use multiple backgrounds or pseudo-elements for the overlay
 
-.custom {
-    background-size: 50% 50%;
-}
+<details>
+<summary>Solution</summary>
+
+```html
+<div class="hero">
+    <div class="hero-content">
+        <h1>Welcome to My Website</h1>
+        <p>Amazing content awaits you</p>
+    </div>
+</div>
 ```
 
-## Background Attachment
 ```css
-.fixed {
-    background-attachment: fixed; /* Doesn't scroll */
-}
-
-.scroll {
-    background-attachment: scroll; /* Scrolls with content */
-}
-```
-
-## Background Shorthand
-```css
-.box {
+.hero {
+    height: 100vh;
     background: 
-        url('image.jpg') 
-        no-repeat 
-        center 
-        / cover 
-        fixed;
+        linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+        url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-content {
+    text-align: center;
+    color: white;
+}
+
+.hero h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 24px;
 }
 ```
 
-**Order:** color image repeat position / size attachment
+</details>
+
+## Bug Hunting
+Find the bug in this code:
+
+```css
+.buggy-bg {
+    background: url('image.jpg');
+    background-size: cover;
+    width: 100%;
+    height: 0;
+    /* Why isn't the background showing? */
+}
+```
+
+<details>
+<summary>Solution</summary>
+
+`height: 0` means the element has no height, so the background won't be visible. Set a proper height or use `min-height`.
+
+</details>
+
+## Quiz
+1. What's the difference between `cover` and `contain` for background-size?
+2. What does `background-attachment: fixed` do?
+3. Can you use multiple background images?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. `cover` scales image to cover entire area (may crop), `contain` fits entire image (may leave space)
+2. `fixed` keeps background in place while content scrolls, creating a parallax effect
+3. Yes, you can use comma-separated values for multiple background images
+
+</details>
 
 ---
 
 ### Section 15: Advanced Colors {#section-15}
 
-## RGBA Colors
+## Explain
+CSS offers advanced color formats beyond basic hex codes:
+
+- `rgba()` - RGB with alpha transparency (0-1)
+- `hsla()` - Hue, Saturation, Lightness with alpha
+- Named colors - Predefined color names
+- `currentColor` - Inherits the element's text color
+- Color contrast is important for accessibility
+
+## Example
+```html
+<div class="rgba-box">RGBA Color</div>
+<div class="hsla-box">HSLA Color</div>
+<div class="named-box">Named Color</div>
+<div class="current-box">Current Color Border</div>
+```
+
 ```css
-.transparent {
+.rgba-box {
     color: rgba(255, 0, 0, 0.5); /* Red with 50% opacity */
+    background: #f0f0f0;
+    padding: 20px;
 }
-```
 
-**Syntax:** `rgba(red, green, blue, alpha)`
-
-## HSLA Colors
-```css
-.hsla-color {
-    color: hsla(120, 100%, 50%, 0.7);
+.hsla-box {
+    color: hsla(120, 100%, 50%, 0.7); /* Green with 70% opacity */
+    background: #f0f0f0;
+    padding: 20px;
 }
-```
 
-**Syntax:** `hsla(hue, saturation, lightness, alpha)`
-
-## Named Colors
-```css
-.named {
+.named-box {
     color: tomato;
-    background-color: lightblue;
+    background: lightblue;
+    padding: 20px;
+}
+
+.current-box {
+    color: blue;
+    border: 3px solid currentColor;
+    padding: 20px;
 }
 ```
 
-## CurrentColor
+## Try it yourself
+Create elements with different transparency levels.
+
+```html
+<div class="opacity-1">Level 1</div>
+<div class="opacity-2">Level 2</div>
+<div class="opacity-3">Level 3</div>
+```
+
+```css
+.opacity-1 {
+    background: rgba(255, 0, 0, 0.3);
+    /* Set opacity to 30% */
+}
+
+.opacity-2 {
+    background: rgba(0, 255, 0, 0.6);
+    /* Set opacity to 60% */
+}
+
+.opacity-3 {
+    background: rgba(0, 0, 255, 0.9);
+    /* Set opacity to 90% */
+}
+```
+
+## Predict
+What will happen with this code?
+
 ```css
 .parent {
-    color: blue;
+    color: purple;
 }
 
 .child {
-    border: 2px solid currentColor; /* Inherits parent's color */
+    border: 2px solid currentColor;
+    color: green;
 }
 ```
 
-## Color Contrast (Accessibility)
+## Experiment
+1. What happens when you use `rgba(255, 0, 0, 0)` vs `rgba(255, 0, 0, 1)`?
+2. Try creating a color using HSLA - what does each value control?
+3. Test different named colors - which ones work?
+
+## Challenge
+**Task:** Create a glassmorphism card with:
+- Semi-transparent background using RGBA
+- Blur effect (hint: backdrop-filter)
+- Border with subtle transparency
+- Text that remains readable
+- Time: 15 minutes
+- Hint: Use rgba for background and border
+
+<details>
+<summary>Solution</summary>
+
+```html
+<div class="glass-card">
+    <h3>Glass Card</h3>
+    <p>This card has a glassmorphism effect</p>
+</div>
+```
+
 ```css
-/* Good contrast */
-.good {
-    color: #000000;
-    background-color: #ffffff;
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* Poor contrast */
-.bad {
-    color: #cccccc;
-    background-color: #dddddd;
+.glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 30px;
+    max-width: 300px;
+    color: white;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.glass-card h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.glass-card p {
+    margin: 0;
+    opacity: 0.9;
 }
 ```
 
-**Guideline:** WCAG AA requires 4.5:1 contrast ratio for normal text.
+</details>
+
+## Bug Hunting
+Find the bug in this code:
+
+```css
+.buggy-color {
+    color: rgba(255, 0, 0, 1.5);
+    /* Why might this cause issues? */
+}
+```
+
+<details>
+<summary>Solution</summary>
+
+Alpha values should be between 0 and 1. Values above 1 are clamped to 1, but this shows a misunderstanding of the rgba format.
+
+</details>
+
+## Quiz
+1. What does the alpha value in rgba represent?
+2. What's the difference between hue and saturation in HSLA?
+3. Why is color contrast important?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. Alpha represents opacity/transparency (0 = transparent, 1 = opaque)
+2. Hue is the color type (0-360 degrees), saturation is color intensity (0-100%)
+3. Color contrast ensures text is readable for all users, especially those with visual impairments
+
+</details>
 
 ---
 
 ### Section 16: CSS Reset {#section-16}
 
-## Why Use a Reset?
-- Browsers have different default styles
-- Ensures consistency across browsers
-- Provides clean slate for styling
+## Explain
+Browsers have different default styles for elements. CSS Reset removes these defaults to ensure consistency:
 
-## Simple CSS Reset
-```css
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-```
+- `margin: 0; padding: 0;` - Removes default spacing
+- `box-sizing: border-box;` - Makes width/height include padding/border
+- Reset vs Normalize - Reset removes everything, Normalize keeps useful defaults
 
-## Box Sizing Reset
-```css
-*, *::before, *::after {
-    box-sizing: border-box;
-}
-```
-
-## CSS Normalize
-- More sophisticated than reset
-- Preserves useful defaults
-- Normalizes differences between browsers
-
-**When to Use Reset vs Normalize:**
-- Reset: When you want complete control
-- Normalize: When you want sensible defaults
-
----
-
-## Part 2: Practical Application (1.5 Hours)
-
-### Exercise 1: Width/Height Practice (20 minutes)
-
-**Task:**
-Create boxes demonstrating different dimension units.
-
-**HTML:**
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dimensions Practice</title>
-    <link rel="stylesheet" href="dimensions.css">
-</head>
-<body>
-    <h1>Width & Height Examples</h1>
-    
-    <div class="box fixed">Fixed: 300px × 200px</div>
-    <div class="box percentage">Percentage: 80% × 50%</div>
-    <div class="box viewport">Viewport: 50vw × 30vh</div>
-    <div class="box constrained">Min: 200px, Max: 400px</div>
-    <div class="box fit-content">Fit Content</div>
-</body>
-</html>
-```
-
-**CSS:**
-```css
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background-color: #f3f4f6;
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 30px;
-    color: #1f2937;
-}
-
-.box {
-    background-color: white;
-    border: 2px solid #2563eb;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 20px 0;
-    color: #1f2937;
-    font-weight: bold;
-}
-
-.fixed {
-    width: 300px;
-    height: 200px;
-}
-
-.percentage {
-    width: 80%;
-    height: 200px;
-}
-
-.viewport {
-    width: 50vw;
-    height: 30vh;
-}
-
-.constrained {
-    width: 100%;
-    min-width: 200px;
-    max-width: 400px;
-    height: 150px;
-}
-
-.fit-content {
-    width: fit-content;
-    height: fit-content;
-    padding: 20px;
-}
-```
-
----
-
-### Exercise 2: Overflow Practice (15 minutes)
-
-**Task:**
-Create containers demonstrating different overflow values.
-
-**HTML:**
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Overflow Practice</title>
-    <link rel="stylesheet" href="overflow.css">
-</head>
-<body>
-    <h1>Overflow Examples</h1>
-    
-    <div class="container">
-        <h2>Visible (Default)</h2>
-        <div class="box visible">
-            This content is very long and will overflow the container because overflow is set to visible.
-        </div>
-    </div>
-    
-    <div class="container">
-        <h2>Hidden</h2>
-        <div class="box hidden">
-            This content is very long and will be clipped because overflow is set to hidden.
-        </div>
-    </div>
-    
-    <div class="container">
-        <h2>Scroll</h2>
-        <div class="box scroll">
-            This content is very long and will show scrollbars because overflow is set to scroll. Scrollbars are always visible even if not needed.
-        </div>
-    </div>
-    
-    <div class="container">
-        <h2>Auto</h2>
-        <div class="box auto">
-            This content is very long and will show scrollbars only when needed because overflow is set to auto.
-        </div>
-    </div>
-</body>
-</html>
-```
-
-**CSS:**
-```css
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background-color: #f3f4f6;
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 30px;
-    color: #1f2937;
-}
-
-.container {
-    margin: 30px 0;
-}
-
-.container h2 {
-    margin-bottom: 10px;
-    color: #1f2937;
-}
-
-.box {
-    width: 300px;
-    height: 100px;
-    background-color: white;
-    border: 2px solid #2563eb;
-    border-radius: 8px;
-    padding: 15px;
-}
-
-.visible {
-    overflow: visible;
-}
-
-.hidden {
-    overflow: hidden;
-}
-
-.scroll {
-    overflow: scroll;
-}
-
-.auto {
-    overflow: auto;
-}
-```
-
----
-
-### Exercise 3: Text Styling Complete (25 minutes)
-
-**Task:**
-Create a text-styling showcase with all text properties.
-
-**HTML:**
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text Styling Practice</title>
-    <link rel="stylesheet" href="text-styling.css">
-</head>
-<body>
-    <div class="container">
-        <h1 class="main-title">Text Styling Showcase</h1>
-        
-        <h2 class="section-title">Color & Shadow</h2>
-        <p class="colored-text">This text has a custom color with shadow effect.</p>
-        
-        <h2 class="section-title">Alignment</h2>
-        <p class="left-align">Left aligned text</p>
-        <p class="center-align">Center aligned text</p>
-        <p class="right-align">Right aligned text</p>
-        
-        <h2 class="section-title">Decoration</h2>
-        <p class="underline">Underlined text</p>
-        <p class="line-through">Strikethrough text</p>
-        <p class="overline">Overlined text</p>
-        
-        <h2 class="section-title">Transform</h2>
-        <p class="uppercase">UPPERCASE TEXT</p>
-        <p class="lowercase">LOWERCASE TEXT</p>
-        <p class="capitalize">Capitalized Text</p>
-        
-        <h2 class="section-title">Spacing</h2>
-        <p class="letter-spacing">Wide letter spacing</p>
-        <p class="word-spacing">Wide word spacing</p>
-        <p class="line-height">Custom line height for better readability</p>
-        
-        <h2 class="section-title">Overflow</h2>
-        <p class="truncate">This is a very long text that will be truncated with ellipsis when it overflows the container.</p>
-    </div>
-</body>
-</html>
-```
-
-**CSS:**
-```css
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f3f4f6;
-    padding: 40px 20px;
-}
-
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    background-color: white;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.main-title {
-    color: #2563eb;
-    text-align: center;
-    margin-bottom: 40px;
-    text-shadow: 2px 2px 4px rgba(37, 99, 235, 0.3);
-}
-
-.section-title {
-    color: #1f2937;
-    margin-top: 30px;
-    margin-bottom: 15px;
-    border-bottom: 2px solid #e5e7eb;
-    padding-bottom: 10px;
-}
-
-/* Color & Shadow */
-.colored-text {
-    color: #7c3aed;
-    text-shadow: 1px 1px 2px rgba(124, 58, 237, 0.3);
-}
-
-/* Alignment */
-.left-align {
-    text-align: left;
-}
-
-.center-align {
-    text-align: center;
-}
-
-.right-align {
-    text-align: right;
-}
-
-/* Decoration */
-.underline {
-    text-decoration: underline;
-    color: #2563eb;
-}
-
-.line-through {
-    text-decoration: line-through;
-    color: #dc2626;
-}
-
-.overline {
-    text-decoration: overline;
-    color: #059669;
-}
-
-/* Transform */
-.uppercase {
-    text-transform: uppercase;
-    color: #1f2937;
-}
-
-.lowercase {
-    text-transform: lowercase;
-    color: #4b5563;
-}
-
-.capitalize {
-    text-transform: capitalize;
-    color: #7c3aed;
-}
-
-/* Spacing */
-.letter-spacing {
-    letter-spacing: 3px;
-    color: #1f2937;
-}
-
-.word-spacing {
-    word-spacing: 15px;
-    color: #1f2937;
-}
-
-.line-height {
-    line-height: 2;
-    color: #4b5563;
-}
-
-/* Overflow */
-.truncate {
-    width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    background-color: #f3f4f6;
-    padding: 10px;
-    border-radius: 4px;
-}
-```
-
----
-
-### Exercise 4: Display Property Practice (20 minutes)
-
-**Task:**
-Create examples demonstrating different display values.
-
-**HTML:**
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display Property Practice</title>
-    <link rel="stylesheet" href="display.css">
-</head>
-<body>
-    <h1>Display Property Examples</h1>
-    
-    <h2>Block Elements</h2>
-    <div class="block-example">
-        <div class="block-item">Block Item 1</div>
-        <div class="block-item">Block Item 2</div>
-        <div class="block-item">Block Item 3</div>
-    </div>
-    
-    <h2>Inline Elements</h2>
-    <div class="inline-example">
-        <span class="inline-item">Inline Item 1</span>
-        <span class="inline-item">Inline Item 2</span>
-        <span class="inline-item">Inline Item 3</span>
-    </div>
-    
-    <h2>Inline-Block Elements</h2>
-    <div class="inline-block-example">
-        <div class="inline-block-item">Inline-Block 1</div>
-        <div class="inline-block-item">Inline-Block 2</div>
-        <div class="inline-block-item">Inline-Block 3</div>
-    </div>
-    
-    <h2>None (Hidden)</h2>
-    <div class="none-example">
-        <div class="visible-item">Visible Item</div>
-        <div class="hidden-item">Hidden Item (display: none)</div>
-        <div class="visible-item">Another Visible Item</div>
-    </div>
-</body>
-</html>
-```
-
-**CSS:**
-```css
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background-color: #f3f4f6;
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 30px;
-    color: #1f2937;
-}
-
-h2 {
-    color: #1f2937;
-    margin-top: 30px;
-    margin-bottom: 15px;
-}
-
-/* Block Example */
-.block-example {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
-.block-item {
-    display: block;
-    background-color: #2563eb;
-    color: white;
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 4px;
-}
-
-/* Inline Example */
-.inline-example {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
-.inline-item {
-    display: inline;
-    background-color: #10b981;
-    color: white;
-    padding: 10px;
-    margin: 5px;
-    border-radius: 4px;
-}
-
-/* Inline-Block Example */
-.inline-block-example {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
-.inline-block-item {
-    display: inline-block;
-    background-color: #f59e0b;
-    color: white;
-    padding: 15px;
-    margin: 5px;
-    border-radius: 4px;
-    width: 100px;
-    text-align: center;
-}
-
-/* None Example */
-.none-example {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-}
-
-.visible-item {
-    display: block;
-    background-color: #2563eb;
-    color: white;
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 4px;
-}
-
-.hidden-item {
-    display: none;
-    background-color: #dc2626;
-    color: white;
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 4px;
-}
-```
-
----
-
-### Exercise 5: Backgrounds Complete (20 minutes)
-
-**Task:**
-Create a showcase of different background techniques.
-
-**HTML:**
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Backgrounds Practice</title>
-    <link rel="stylesheet" href="backgrounds.css">
-</head>
-<body>
-    <h1>Background Examples</h1>
-    
-    <h2>Solid Color</h2>
-    <div class="box solid-color">Solid Background Color</div>
-    
-    <h2>Gradient Background</h2>
-    <div class="box gradient">Linear Gradient</div>
-    
-    <h2>Background Image (Cover)</h2>
-    <div class="box image-cover">Background Image - Cover</div>
-    
-    <h2>Background Image (Contain)</h2>
-    <div class="box image-contain">Background Image - Contain</div>
-    
-    <h2>Fixed Background</h2>
-    <div class="box fixed-bg">Fixed Background Attachment</div>
-    
-    <h2>RGBA Background</h2>
-    <div class="box rgba-bg">RGBA Background with Transparency</div>
-</body>
-</html>
-```
-
-**CSS:**
-```css
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background-color: #f3f4f6;
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 30px;
-    color: #1f2937;
-}
-
-h2 {
-    color: #1f2937;
-    margin-top: 30px;
-    margin-bottom: 15px;
-}
-
-.box {
-    height: 200px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    margin-bottom: 20px;
-}
-
-/* Solid Color */
-.solid-color {
-    background-color: #2563eb;
-}
-
-/* Gradient */
-.gradient {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-/* Image Cover */
-.image-cover {
-    background: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800') no-repeat center;
-    background-size: cover;
-}
-
-/* Image Contain */
-.image-contain {
-    background: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800') no-repeat center;
-    background-size: contain;
-    background-color: #1f2937;
-}
-
-/* Fixed Background */
-.fixed-bg {
-    background: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800') no-repeat center;
-    background-size: cover;
-    background-attachment: fixed;
-}
-
-/* RGBA Background */
-.rgba-bg {
-    background-color: rgba(37, 99, 235, 0.7);
-    border: 2px solid #2563eb;
-}
-```
-
----
-
-### Exercise 6: CSS Reset Implementation (10 minutes)
-
-**Task:**
-Create a page with and without CSS reset to see the difference.
-
-**HTML (without reset):**
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Without Reset</title>
-</head>
-<body>
-    <h1>Without CSS Reset</h1>
-    <p>This page uses browser default styles.</p>
-    <ul>
-        <li>Item 1</li>
-        <li>Item 2</li>
-    </ul>
-</body>
-</html>
-```
-
-**HTML (with reset):**
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>With Reset</title>
-    <link rel="stylesheet" href="reset.css">
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <h1>With CSS Reset</h1>
-    <p>This page uses CSS reset for consistent styling.</p>
-    <ul>
-        <li>Item 1</li>
-        <li>Item 2</li>
-    </ul>
-</body>
-</html>
-```
-
-**CSS (reset.css):**
+## Example
 ```css
 /* Simple CSS Reset */
 * {
@@ -1381,112 +1112,344 @@ Create a page with and without CSS reset to see the difference.
     box-sizing: border-box;
 }
 
-html, body {
-    height: 100%;
-}
-
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
 }
 ```
 
-**CSS (styles.css):**
+## Try it yourself
+Create a simple reset for your page.
+
 ```css
-body {
-    padding: 20px;
-    background-color: #f3f4f6;
-}
+/* Add your reset here */
+```
 
-h1 {
-    color: #2563eb;
-    margin-bottom: 20px;
-}
+## Predict
+What will happen to a `<ul>` element after applying this reset?
 
-p {
-    color: #4b5563;
-    margin-bottom: 15px;
-}
-
-ul {
-    list-style: none;
-}
-
-li {
-    background-color: white;
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 4px;
+```css
+* {
+    margin: 0;
+    padding: 0;
 }
 ```
 
+## Experiment
+1. Create a page without reset - what default styles do you see?
+2. Apply the reset - what changes?
+3. Try removing the `box-sizing: border-box` - what happens to element dimensions?
+
+## Challenge
+**Task:** Create a comprehensive reset that:
+- Removes all default margins and padding
+- Sets consistent box-sizing
+- Removes default list styles
+- Sets default font family
+- Removes default borders from images
+- Time: 10 minutes
+- Hint: Target specific elements like `ul`, `ol`, `img`, `button`
+
+<details>
+<summary>Solution</summary>
+
+```css
+/* Comprehensive CSS Reset */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* Remove list styles */
+ul, ol {
+    list-style: none;
+}
+
+/* Remove image borders */
+img {
+    max-width: 100%;
+    height: auto;
+    border: none;
+}
+
+/* Remove button defaults */
+button {
+    font: inherit;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+/* Remove link underline by default */
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Remove heading default margins */
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    font-weight: normal;
+}
+```
+
+</details>
+
+## Bug Hunting
+Find the potential issue with this reset:
+
+```css
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* What might this break? */
+```
+
+<details>
+<summary>Solution</summary>
+
+Using the universal selector `*` can affect pseudo-elements and may cause issues with some form elements. A more targeted approach is often better.
+
+</details>
+
+## Quiz
+1. Why do we need CSS resets?
+2. What's the difference between reset and normalize?
+3. What does `box-sizing: border-box` do?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. Browsers have different default styles; resets ensure consistency across browsers
+2. Reset removes all defaults, Normalize preserves useful defaults while normalizing differences
+3. Makes width/height include padding and border in the total dimension calculation
+
+</details>
+
 ---
 
-## Part 3: Review, Questions, Problem Solving (0.5 Hours)
+## Part 2: Comprehensive Project (20 minutes)
 
-### When to Use Each Display Type (10 minutes)
+### Project: Modern Card Component
 
-**Display: Block**
-- Layout containers and sections
-- When you want elements on new lines
-- Examples: `div`, `p`, `header`, `section`
+**Task:** Create a single, polished card component that demonstrates all visual formatting concepts:
 
-**Display: Inline**
-- Text formatting within content
-- When you want elements on same line
-- Examples: `span`, `a`, `strong`, `em`
+**Requirements:**
+1. **CSS Reset** - Implement a clean reset at the top
+2. **Display Properties** - Use inline-block for layout elements
+3. **Text Overflow** - Truncate long card titles with ellipsis
+4. **Backgrounds** - Gradient background for the card header
+5. **Advanced Colors** - Use RGBA for overlay and HSLA for accents
+6. **Responsive** - Card adapts to different screen sizes
 
-**Display: Inline-Block**
-- Buttons and small widgets
-- When you need width/height but same-line placement
-- Examples: `button`, `input`, navigation items
+**Time:** 20 minutes
+**Hint:** Start with the structure, then add styling layer by layer
 
-**Display: None**
-- Hidden content (menus, modals)
-- When element should take no space
-- Different from `visibility: hidden`
+<details>
+<summary>Solution</summary>
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Card</title>
+    <link rel="stylesheet" href="card.css">
+</head>
+<body>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Very Long Card Title That Should Be Truncated When It's Too Long</h3>
+        </div>
+        <div class="card-body">
+            <p class="card-description">This is a card description that demonstrates proper text formatting and spacing.</p>
+            <div class="card-footer">
+                <span class="card-tag">Featured</span>
+                <button class="card-button">Learn More</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+```
+
+```css
+/* CSS Reset */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Card Component */
+.card {
+    width: 100%;
+    max-width: 350px;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Card Header with Gradient Background */
+.card-header {
+    background: linear-gradient(135deg, hsla(220, 80%, 60%, 1) 0%, hsla(260, 70%, 60%, 1) 100%);
+    padding: 20px;
+}
+
+/* Text Overflow for Title */
+.card-title {
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+}
+
+/* Card Body */
+.card-body {
+    padding: 20px;
+}
+
+.card-description {
+    color: #333;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* Card Footer */
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Tag with RGBA */
+.card-tag {
+    display: inline-block;
+    background: rgba(99, 102, 241, 0.1);
+    color: hsla(239, 80%, 60%, 1);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Button with Display Property */
+.card-button {
+    display: inline-block;
+    background: hsla(239, 80%, 60%, 1);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.card-button:hover {
+    background: hsla(239, 80%, 50%, 1);
+}
+```
+
+</details>
 
 ---
 
-### Review Questions (10 minutes)
+## Part 3: Review & Assessment (10 minutes)
 
-**Question 1:** What is the difference between `overflow: hidden` and `overflow: scroll`?
-**Answer:** `hidden` clips content without scrollbars, `scroll` always shows scrollbars.
+### Quick Review Quiz
 
-**Question 2:** What does `vw` and `vh` stand for?
-**Answer:** Viewport Width and Viewport Height - 1% of the browser window dimensions.
+**Question 1:** What two properties are required for `text-overflow: ellipsis` to work?
+<details>
+<summary>Answer</summary>
 
-**Question 3:** What is the correct order for background shorthand?
-**Answer:** color image repeat position / size attachment
+`white-space: nowrap` and `overflow: hidden`
 
-**Question 4:** What is the difference between `rgba` and `rgb`?
-**Answer:** `rgba` includes an alpha channel for transparency, `rgb` does not.
+</details>
 
-**Question 5:** When should you use `display: inline-block` instead of `inline`?
-**Answer:** When you need to set width/height on an element that should flow inline.
+**Question 2:** What's the difference between `display: none` and `visibility: hidden`?
+<details>
+<summary>Answer</summary>
 
-**Question 6:** What does `text-overflow: ellipsis` require to work?
-**Answer:** `white-space: nowrap` and `overflow: hidden`
+`display: none` removes element from layout (takes no space), `visibility: hidden` hides but keeps space
 
-**Question 7:** What is the purpose of CSS reset?
-**Answer:** To remove browser default styles and ensure consistency across browsers.
+</details>
 
-**Question 8:** What does `box-sizing: border-box` do?
-**Answer:** Includes padding and border in the element's total width and height.
+**Question 3:** What does `background-size: cover` do?
+<details>
+<summary>Answer</summary>
+
+Scales the background image to cover the entire container, potentially cropping parts of the image
+
+</details>
+
+**Question 4:** What does the alpha value in `rgba()` represent?
+<details>
+<summary>Answer</summary>
+
+Opacity/transparency (0 = transparent, 1 = opaque)
+
+</details>
+
+**Question 5:** Why do we need CSS resets?
+<details>
+<summary>Answer</summary>
+
+Browsers have different default styles; resets ensure consistency across browsers
+
+</details>
+
+### Final Challenge
+
+**Task:** Create a complete component that uses ALL concepts from this session:
+- Text overflow for long content
+- Multiple display properties
+- Background techniques (gradient + image)
+- Advanced colors (RGBA/HSLA)
+- CSS reset
+
+**Time:** 10 minutes
+**Goal:** Build a user profile card component
+
+<details>
+<summary>Solution Hint</summary>
+
+Think about what a profile card needs: avatar (background), name (might overflow), bio (text styling), buttons (display properties), background colors (advanced colors)
+
+</details>
 
 ---
 
-### Practice Challenges (5 minutes)
-
-**Challenge 1:** Create a box with a gradient background that covers the entire area.
-
-**Challenge 2:** Create text that truncates with ellipsis when it's too long.
-
-**Challenge 3:** Create a button using `display: inline-block` with custom dimensions.
-
----
-
-### Homework Assignment
+## Homework Assignment
 
 **Task:** Create a styled blog post card using all visual formatting concepts.
 
@@ -1494,18 +1457,20 @@ li {
 - External CSS with reset
 - Blog card with:
   - Featured image (background image with cover)
-  - Blog title (text styling with shadow)
+  - Blog title (text styling with shadow + overflow handling)
   - Excerpt (proper line-height and spacing)
   - Read more button (inline-block with hover effect)
 - Use advanced colors (RGBA/HSLA)
 - Implement text overflow for long titles
 - Use proper display values
-- Add background effects
+- Add background effects (gradient or pattern)
 
 **Due Date:** Next session
 
 ---
 
 ## End of Session 2
+
+**Summary:** In this session, you learned about visual formatting in CSS including text overflow, display properties, backgrounds, advanced colors, and CSS resets. Each concept was practiced through interactive exercises (Explain → Example → Try it yourself → Predict → Experiment → Challenge → Bug Hunting → Quiz), followed by a comprehensive project that integrated all concepts.
 
 **Next Session:** Inheritance, Typography, Positioning (CSS Inheritance, Font Properties, CSS Units, Position types, Z-Index)
