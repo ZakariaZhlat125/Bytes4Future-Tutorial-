@@ -1,723 +1,378 @@
 # Session 5: CSS Variables + Flexbox
 
-## Duration Breakdown
-- **1 Hour**: Theoretical Explanation + Live Coding
-- **1.5 Hours**: Practical Application (Student writes code)
-- **0.5 Hours**: Review, Questions, Problem Solving
+## Duration Breakdown (2.5 Hours Total)
+- **1.5 Hours**: Interactive Learning (All Sections 1-4 with Explain → Example → Try it yourself → Predict → Experiment → Challenge → Bug Hunting → Quiz)
+- **20 Minutes**: Comprehensive Project (Single component combining all concepts)
+- **10 Minutes**: Review & Assessment
 
 ---
 
-## Part 1: Theoretical Explanation + Live Coding (1 Hour)
+## Part 1: Interactive Learning (1.5 Hours)
 
 ### Section 1: CSS Variables
 
-## What are CSS Variables
-CSS Variables (also called Custom Properties) are reusable values that can be stored and used throughout your CSS.
+## Explain
+CSS Variables (Custom Properties) are reusable values that can be stored and used throughout your CSS:
 
-## Creating CSS Variables
+- Must start with `--` (double hyphen)
+- Case-sensitive naming
+- Created with `--name: value`
+- Used with `var(--name)`
+- Support fallback values
+
+## Example
 ```css
 :root {
     --primary-color: #2563eb;
     --secondary-color: #10b981;
     --text-color: #1f2937;
-    --background-color: #ffffff;
     --spacing: 20px;
-    --border-radius: 8px;
-    --font-size: 16px;
 }
-```
 
-**Naming Rules:**
-- Must start with `--`
-- Case-sensitive
-- Can contain letters, numbers, hyphens
-- Should be descriptive
-
----
-
-## Using CSS Variables
-```css
 .button {
     background-color: var(--primary-color);
     color: var(--text-color);
     padding: var(--spacing);
+}
+```
+
+## Try it yourself
+Create CSS variables and use them.
+
+```html
+<div class="my-card">
+    <h3>Card Title</h3>
+    <p>Card content</p>
+</div>
+```
+
+```css
+:root {
+    /* Define your variables */
+}
+
+.my-card {
+    /* Use your variables */
+}
+```
+
+## Predict
+What will happen with this code?
+
+```css
+:root {
+    --color: blue;
+}
+
+.element {
+    color: var(--color, red);
+}
+```
+
+## Experiment
+1. What happens if a variable doesn't exist?
+2. Can you use variables in media queries?
+3. Try overriding a variable locally
+
+## Challenge
+**Task:** Create a theme system with:
+- At least 5 CSS variables for colors
+- Variables for spacing and typography
+- Local variable override for a specific component
+- Fallback values for browser support
+- Time: 12 minutes
+- Hint: Use `:root` for global, local scope for component-specific
+
+<details>
+<summary>Solution</summary>
+
+```css
+:root {
+    --primary-color: #2563eb;
+    --secondary-color: #10b981;
+    --accent-color: #f59e0b;
+    --text-color: #1f2937;
+    --background-color: #ffffff;
+    --spacing-sm: 10px;
+    --spacing-md: 20px;
+    --spacing-lg: 30px;
+    --border-radius: 8px;
+}
+
+.card {
+    --card-primary: #7c3aed;
+    background: var(--background-color);
+    padding: var(--spacing-lg);
     border-radius: var(--border-radius);
 }
-```
 
-## Variable Fallback
-```css
-.button {
-    color: var(--text-color, #333); /* Fallback if variable doesn't exist */
+.card h3 {
+    color: var(--card-primary, #6366f1); /* Fallback */
 }
 ```
 
----
+</details>
 
-## Local Variables
-Variables don't have to be global. You can create them within specific selectors.
+## Bug Hunting
+Find the bug in this code:
 
 ```css
-.card {
-    --card-padding: 30px;
-    --card-background: #ffffff;
-    
-    padding: var(--card-padding);
-    background-color: var(--card-background);
-}
-```
-
-The variable is available inside the `.card` element and its descendants.
-
----
-
-## Why Use CSS Variables
-
-### Without Variables
-```css
-.button {
-    background: #2563eb;
-}
-
-.link {
-    color: #2563eb;
-}
-
-.heading {
-    color: #2563eb;
-}
-```
-
-If you want to change the primary color, you must change it in multiple places.
-
-### With Variables
-```css
-:root {
-    --primary-color: #2563eb;
-}
-
-.button {
-    background: var(--primary-color);
-}
-
-.link {
+.buggy {
     color: var(--primary-color);
-}
-
-.heading {
-    color: var(--primary-color);
+    /* Variable not defined anywhere */
 }
 ```
 
-Now you only need to change one value.
+<details>
+<summary>Solution</summary>
 
----
+The variable `--primary-color` is not defined in any scope. Need to define it in `:root` or locally.
 
-## Variable Scopes
+</details>
 
-### Global Scope (:root)
-```css
-:root {
-    --global-color: #2563eb;
-}
-```
-Available everywhere in the document.
+## Quiz
+1. What prefix is required for CSS variable names?
+2. How do you use a CSS variable?
+3. What's the purpose of fallback values?
 
-### Local Scope
-```css
-.component {
-    --local-color: #10b981;
-}
-```
-Available only within `.component` and its children.
+<details>
+<summary>Quiz Answers</summary>
 
----
+1. CSS variables must start with `--` (double hyphen)
+2. Use the `var()` function with the variable name: `var(--variable-name)`
+3. Fallback values provide a default if the variable doesn't exist or isn't supported
 
-## Overriding Variables
-```css
-:root {
-    --primary-color: #2563eb;
-}
-
-.dark-theme {
-    --primary-color: #3b82f6;
-}
-```
+</details>
 
 ---
 
 ### Section 2: Flexbox Introduction
 
-## What is Flexbox
-Flexbox is a CSS layout system designed to arrange elements in one dimension (either a row or a column).
+## Explain
+Flexbox is a CSS layout system for arranging elements in one dimension (row or column):
 
-## When to Use Flexbox
-- Navigation bars
-- Button groups
-- Card layouts
-- Centering elements
-- Equal height columns
-- Spacing between items
+- `display: flex` enables flexbox layout
+- Great for navigation, cards, centering
+- One-dimensional layout system
+- Powerful and flexible
 
-## Enable Flexbox
+## Example
+```css
+.container {
+    display: flex;
+    gap: 20px;
+}
+
+.item {
+    padding: 20px;
+    background: #2563eb;
+    color: white;
+}
+```
+
+## Try it yourself
+Create a simple flex container.
+
+```html
+<div class="flex-container">
+    <div class="item">Item 1</div>
+    <div class="item">Item 2</div>
+    <div class="item">Item 3</div>
+</div>
+```
+
+```css
+.flex-container {
+    /* Enable flexbox */
+}
+
+.item {
+    /* Add basic styling */
+}
+```
+
+## Predict
+What will happen with this code?
+
 ```css
 .container {
     display: flex;
 }
 ```
 
----
+## Experiment
+1. What happens when you enable flexbox on a container?
+2. Try adding items to a flex container
+3. How does flexbox change default block behavior?
+
+## Challenge
+**Task:** Create a navigation bar using flexbox with:
+- Logo on the left
+- Navigation links in the center
+- Action button on the right
+- Even spacing between links
+- Time: 12 minutes
+- Hint: Use `justify-content: space-between` for the main layout
+
+<details>
+<summary>Solution</summary>
 
-### Section 3: Flexbox Parent Properties
-
-## Flex Direction
-Controls the main axis direction.
-
-```css
-.row {
-    flex-direction: row; /* Default: → → → */
-}
-
-.row-reverse {
-    flex-direction: row-reverse; /* ← ← ← */
-}
-
-.column {
-    flex-direction: column; /* ↓ ↓ ↓ */
-}
-
-.column-reverse {
-    flex-direction: column-reverse; /* ↑ ↑ ↑ */
-}
-```
-
----
-
-## Flex Wrap
-Controls whether items wrap to multiple lines.
-
-```css
-.nowrap {
-    flex-wrap: nowrap; /* Default: items stay on one line */
-}
-
-.wrap {
-    flex-wrap: wrap; /* Items wrap to new lines */
-}
-
-.wrap-reverse {
-    flex-wrap: wrap-reverse; /* Items wrap in reverse order */
-}
-```
-
----
-
-## Flex Flow
-Shorthand for `flex-direction` and `flex-wrap`.
-
-```css
-.container {
-    flex-flow: row wrap; /* flex-direction: row; flex-wrap: wrap; */
-}
-```
-
----
-
-## Justify Content
-Controls how items are distributed along the main axis.
-
-```css
-.start {
-    justify-content: flex-start; /* Items start at the beginning */
-}
-
-.end {
-    justify-content: flex-end; /* Items move to the end */
-}
-
-.center {
-    justify-content: center; /* Items are centered */
-}
-
-.space-between {
-    justify-content: space-between; /* Equal space between items */
-}
-
-.space-around {
-    justify-content: space-around; /* Space around each item */
-}
-
-.space-evenly {
-    justify-content: space-evenly; /* Equal space everywhere */
-}
-```
-
----
-
-## Align Items
-Controls alignment along the cross axis.
-
-```css
-.start {
-    align-items: flex-start; /* Items align to start */
-}
-
-.end {
-    align-items: flex-end; /* Items align to end */
-}
-
-.center {
-    align-items: center; /* Items are centered */
-}
-
-.stretch {
-    align-items: stretch; /* Items stretch to fill container */
-}
-
-.baseline {
-    align-items: baseline; /* Items align along text baseline */
-}
-```
-
----
-
-## Align Content
-Controls distribution of multiple flex lines (only works with `flex-wrap: wrap`).
-
-```css
-.content-start {
-    align-content: flex-start;
-}
-
-.content-center {
-    align-content: center;
-}
-
-.content-space-between {
-    align-content: space-between;
-}
-```
-
----
-
-## Gap
-Creates consistent space between flex items.
-
-```css
-.container {
-    gap: 20px; /* Same gap in both directions */
-}
-
-.container {
-    row-gap: 20px; /* Gap between rows */
-    column-gap: 30px; /* Gap between columns */
-}
-```
-
----
-
-### Section 4: Flexbox Child Properties
-
-## Flex Grow
-Controls how much an item can grow when extra space is available.
-
-```css
-.item {
-    flex-grow: 1; /* Item will grow equally */
-}
-
-.item-large {
-    flex-grow: 2; /* Item will grow twice as much */
-}
-```
-
----
-
-## Flex Shrink
-Controls how an item shrinks when there's not enough space.
-
-```css
-.item {
-    flex-shrink: 1; /* Default: item can shrink */
-}
-
-.no-shrink {
-    flex-shrink: 0; /* Item won't shrink */
-}
-```
-
----
-
-## Flex Basis
-Defines the initial main-axis size of a flex item.
-
-```css
-.item {
-    flex-basis: 300px; /* Initial width */
-}
-```
-
----
-
-## Flex Shorthand
-Combines `flex-grow`, `flex-shrink`, and `flex-basis`.
-
-```css
-.item {
-    flex: 1; /* flex: 1 1 0% */
-}
-
-.item {
-    flex: 1 1 200px; /* grow: 1, shrink: 1, basis: 200px */
-}
-```
-
----
-
-## Order
-Controls the visual order of flex items.
-
-```css
-.item-1 {
-    order: 3; /* Will appear third */
-}
-
-.item-2 {
-    order: 1; /* Will appear first */
-}
-
-.item-3 {
-    order: 2; /* Will appear second */
-}
-```
-
----
-
-## Align Self
-Overrides the parent's `align-items` for one specific child.
-
-```css
-.container {
-    align-items: center;
-}
-
-.item {
-    align-self: flex-start; /* This item aligns to start */
-}
-```
-
----
-
-## Part 2: Practical Application (1.5 Hours)
-
-### Exercise 1: CSS Variables Practice (20 minutes)
-
-**Task:**
-Create a page using CSS variables for theming.
-
-**HTML:**
 ```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSS Variables Practice</title>
-    <link rel="stylesheet" href="variables.css">
-</head>
-<body>
-    <div class="container">
-        <h1>CSS Variables Theme</h1>
-        
-        <div class="card">
-            <h2>Primary Card</h2>
-            <p>This card uses the primary color theme.</p>
-            <button class="button">Primary Button</button>
-        </div>
-        
-        <div class="card secondary">
-            <h2>Secondary Card</h2>
-            <p>This card uses the secondary color theme.</p>
-            <button class="button secondary">Secondary Button</button>
-        </div>
-    </div>
-</body>
-</html>
+<nav class="navbar">
+    <div class="logo">MyBrand</div>
+    <ul class="nav-links">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+    </ul>
+    <button class="action-btn">Sign Up</button>
+</nav>
 ```
 
-**CSS:**
 ```css
-/* Global Variables */
-:root {
-    --primary-color: #2563eb;
-    --primary-hover: #1d4ed8;
-    --secondary-color: #10b981;
-    --secondary-hover: #059669;
-    --text-color: #1f2937;
-    --background-color: #f3f4f6;
-    --card-background: #ffffff;
-    --spacing-sm: 10px;
-    --spacing-md: 20px;
-    --spacing-lg: 30px;
-    --border-radius: 8px;
-    --font-size: 16px;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    font-size: var(--font-size);
-    padding: var(--spacing-lg);
-    margin: 0;
-}
-
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-h1 {
-    text-align: center;
-    color: var(--primary-color);
-    margin-bottom: var(--spacing-lg);
-}
-
-.card {
-    background-color: var(--card-background);
-    padding: var(--spacing-lg);
-    border-radius: var(--border-radius);
-    margin-bottom: var(--spacing-md);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.card h2 {
-    color: var(--primary-color);
-    margin-bottom: var(--spacing-sm);
-}
-
-.card.secondary h2 {
-    color: var(--secondary-color);
-}
-
-.card p {
-    color: var(--text-color);
-    line-height: 1.6;
-    margin-bottom: var(--spacing-md);
-}
-
-.button {
-    background-color: var(--primary-color);
-    color: white;
-    padding: var(--spacing-sm) var(--spacing-md);
-    border: none;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-size: var(--font-size);
-    transition: background-color 0.3s;
-}
-
-.button:hover {
-    background-color: var(--primary-hover);
-}
-
-.button.secondary {
-    background-color: var(--secondary-color);
-}
-
-.button.secondary:hover {
-    background-color: var(--secondary-hover);
-}
-```
-
----
-
-### Exercise 2: Flexbox Navbar (25 minutes)
-
-**Task:**
-Create a responsive navigation bar using Flexbox.
-
-**HTML:**
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flexbox Navbar</title>
-    <link rel="stylesheet" href="navbar.css">
-</head>
-<body>
-    <nav class="navbar">
-        <div class="logo">MyBrand</div>
-        <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-        <button class="login-btn">Login</button>
-    </nav>
-    
-    <div class="content">
-        <h1>Welcome to My Website</h1>
-        <p>This page demonstrates a Flexbox navigation bar.</p>
-    </div>
-</body>
-</html>
-```
-
-**CSS:**
-```css
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f3f4f6;
-}
-
-/* Navbar Styling */
 .navbar {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    background-color: #2563eb;
-    color: white;
+    align-items: center;
     padding: 15px 30px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.logo {
-    font-size: 24px;
-    font-weight: bold;
+    background: #2563eb;
+    color: white;
 }
 
 .nav-links {
     display: flex;
     list-style: none;
-    gap: 30px;
+    gap: 20px;
 }
 
 .nav-links a {
     color: white;
     text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s;
 }
 
-.nav-links a:hover {
-    color: #bfdbfe;
-}
-
-.login-btn {
-    background-color: white;
+.action-btn {
+    background: white;
     color: #2563eb;
     border: none;
     padding: 10px 20px;
     border-radius: 6px;
-    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s;
-}
-
-.login-btn:hover {
-    background-color: #bfdbfe;
-    transform: translateY(-2px);
-}
-
-/* Content Styling */
-.content {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 20px;
-    text-align: center;
-}
-
-.content h1 {
-    color: #1f2937;
-    margin-bottom: 20px;
-}
-
-.content p {
-    color: #4b5563;
-    line-height: 1.6;
 }
 ```
+
+</details>
+
+## Bug Hunting
+Find the bug in this code:
+
+```css
+.buggy {
+    display: flex;
+    /* Items not spacing correctly */
+}
+```
+
+<details>
+<summary>Solution</summary>
+
+Missing `gap` property for spacing between flex items. Add `gap: 20px;` to create consistent spacing.
+
+</details>
+
+## Quiz
+1. What property enables flexbox layout?
+2. Is flexbox one-dimensional or two-dimensional?
+3. What's a common use case for flexbox?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. `display: flex` enables flexbox layout
+2. Flexbox is one-dimensional (row or column)
+3. Common use cases include navigation bars, card layouts, and centering elements
+
+</details>
 
 ---
 
-### Exercise 3: Flex Cards (25 minutes)
+### Section 3: Flexbox Parent Properties
 
-**Task:**
-Create responsive card layout using Flexbox.
+## Explain
+Flexbox parent properties control how flex items are arranged:
 
-**HTML:**
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flex Cards</title>
-    <link rel="stylesheet" href="flex-cards.css">
-</head>
-<body>
-    <h1>Flex Card Layout</h1>
-    
-    <div class="card-container">
-        <div class="card">
-            <h3>Card 1</h3>
-            <p>This is the first card with some content.</p>
-            <button>Learn More</button>
-        </div>
-        
-        <div class="card">
-            <h3>Card 2</h3>
-            <p>This is the second card with different content.</p>
-            <button>Learn More</button>
-        </div>
-        
-        <div class="card">
-            <h3>Card 3</h3>
-            <p>This is the third card with more content.</p>
-            <button>Learn More</button>
-        </div>
-        
-        <div class="card">
-            <h3>Card 4</h3>
-            <p>This is the fourth card with unique content.</p>
-            <button>Learn More</button>
-        </div>
-    </div>
-</body>
-</html>
+- `flex-direction` - Row or column layout
+- `flex-wrap` - Allow wrapping to multiple lines
+- `justify-content` - Main axis alignment
+- `align-items` - Cross axis alignment
+- `gap` - Spacing between items
+
+## Example
+```css
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
 ```
 
-**CSS:**
+## Try it yourself
+Create a flex container with different parent properties.
+
+```html
+<div class="flex-parent">
+    <div class="item">Item 1</div>
+    <div class="item">Item 2</div>
+    <div class="item">Item 3</div>
+</div>
+```
+
 ```css
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+.flex-parent {
+    display: flex;
+    /* Add different parent properties */
 }
+```
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f3f4f6;
-    padding: 20px;
+## Predict
+What will happen with this code?
+
+```css
+.container {
+    justify-content: space-between;
 }
+```
 
-h1 {
-    text-align: center;
-    color: #1f2937;
-    margin-bottom: 30px;
-}
+## Experiment
+1. What's the difference between `row` and `column`?
+2. How does `flex-wrap: wrap` affect layout?
+3. What does `gap` replace in traditional layouts?
 
-.card-container {
+## Challenge
+**Task:** Create a card layout with:
+- 3 cards per row on desktop
+- 1 card per row on mobile
+- Equal spacing between cards
+- Centered content within cards
+- Time: 12 minutes
+- Hint: Use `flex-wrap: wrap` and responsive breakpoints
+
+<details>
+<summary>Solution</summary>
+
+```html
+<div class="card-layout">
+    <div class="card">Card 1</div>
+    <div class="card">Card 2</div>
+    <div class="card">Card 3</div>
+    <div class="card">Card 4</div>
+</div>
+```
+
+```css
+.card-layout {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
@@ -725,266 +380,711 @@ h1 {
 }
 
 .card {
-    background-color: white;
-    border-radius: 12px;
-    padding: 30px;
-    min-width: 250px;
-    flex: 1 1 300px; /* grow, shrink, basis */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
+    flex: 1 1 300px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
-}
-
-.card h3 {
-    color: #2563eb;
-    margin-bottom: 15px;
-}
-
-.card p {
-    color: #4b5563;
-    line-height: 1.6;
-    margin-bottom: 20px;
-}
-
-.card button {
-    background-color: #2563eb;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.3s;
-}
-
-.card button:hover {
-    background-color: #1d4ed8;
+@media (max-width: 768px) {
+    .card {
+        flex: 1 1 100%;
+    }
 }
 ```
 
+</details>
+
+## Bug Hunting
+Find the bug in this code:
+
+```css
+.buggy {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Items not centered vertically */
+}
+```
+
+<details>
+<summary>Solution</summary>
+
+The container might not have a defined height. Give it a height or `min-height` for vertical centering to work.
+
+</details>
+
+## Quiz
+1. What does `justify-content` control?
+2. What's the difference between `align-items` and `align-content`?
+3. Why is `gap` better than margins?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. `justify-content` controls alignment along the main axis (horizontal for row, vertical for column)
+2. `align-items` aligns items within their flex line, `align-content` aligns entire flex lines
+3. `gap` creates consistent spacing without margin collapse issues and is more flexible
+
+</details>
+
 ---
 
-### Exercise 4: Flexbox Child Properties (20 minutes)
+### Section 4: Flexbox Child Properties
 
-**Task:**
-Create examples demonstrating flex child properties.
+## Explain
+Flexbox child properties control individual flex item behavior:
 
-**HTML:**
+- `flex-grow` - How much an item can grow
+- `flex-shrink` - How much an item can shrink
+- `flex-basis` - Initial size before growing/shrinking
+- `flex` - Shorthand for all three
+- `order` - Visual order (doesn't affect DOM)
+- `align-self` - Override parent alignment
+
+## Example
+```css
+.item {
+    flex: 1; /* grow: 1, shrink: 1, basis: 0% */
+}
+
+.item-large {
+    flex: 2; /* grows twice as much */
+}
+
+.item-override {
+    align-self: flex-start;
+}
+```
+
+## Try it yourself
+Create flex items with different child properties.
+
+```html
+<div class="flex-container">
+    <div class="item item-1">Item 1</div>
+    <div class="item item-2">Item 2</div>
+    <div class="item item-3">Item 3</div>
+</div>
+```
+
+```css
+.item-1 {
+    /* Make this grow more */
+}
+
+.item-2 {
+    /* Make this shrink less */
+}
+
+.item-3 {
+    /* Override alignment */
+}
+```
+
+## Predict
+What will happen with this code?
+
+```css
+.item {
+    flex: 0 1 200px;
+}
+```
+
+## Experiment
+1. What happens with `flex-grow: 0`?
+2. How does `order` affect the DOM vs visual order?
+3. What's the default `flex` value?
+
+## Challenge
+**Task:** Create a responsive layout where:
+- First item takes 2x space (flex-grow)
+- Second item has fixed width (flex-basis)
+- Third item fills remaining space
+- Items reorder on mobile
+- Time: 12 minutes
+- Hint: Use `flex: grow shrink basis` shorthand
+
+<details>
+<summary>Solution</summary>
+
+```html
+<div class="responsive-layout">
+    <div class="item main">Main Content</div>
+    <div class="item sidebar">Sidebar</div>
+    <div class="item footer">Footer</div>
+</div>
+```
+
+```css
+.responsive-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.main {
+    flex: 2 1 0; /* grows twice as much */
+    background: #2563eb;
+    color: white;
+    padding: 20px;
+}
+
+.sidebar {
+    flex: 0 0 200px; /* fixed width */
+    background: #10b981;
+    color: white;
+    padding: 20px;
+}
+
+.footer {
+    flex: 1 1 0; /* fills remaining space */
+    background: #f59e0b;
+    color: white;
+    padding: 20px;
+}
+
+@media (max-width: 768px) {
+    .main {
+        order: 2;
+    }
+    
+    .sidebar {
+        order: 1;
+    }
+    
+    .footer {
+        order: 3;
+    }
+}
+```
+
+</details>
+
+## Bug Hunting
+Find the bug in this code:
+
+```css
+.buggy {
+    flex: 1;
+    /* Item not growing as expected */
+}
+```
+
+<details>
+<summary>Solution</summary>
+
+The parent container might not have extra space to grow into. Make sure the container has defined dimensions or is larger than its content.
+
+</details>
+
+## Quiz
+1. What does `flex: 1` represent?
+2. What's the difference between `flex-grow` and `flex-shrink`?
+3. Does `order` change the DOM order?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. `flex: 1` is shorthand for `flex: 1 1 0%` (grow: 1, shrink: 1, basis: 0%)
+2. `flex-grow` controls how much items grow with extra space, `flex-shrink` controls how much they shrink with limited space
+3. No, `order` only changes visual order, not the actual DOM order
+
+</details>
+
+---
+
+## Part 2: Comprehensive Project (20 minutes)
+
+### Project: Themed Component Library
+
+**Task:** Create a comprehensive component library that demonstrates CSS Variables and Flexbox integration:
+
+**Requirements:**
+1. **CSS Variables Theme System**
+   - Global variables for colors, spacing, typography
+   - Component-specific variable overrides
+   - Easy theme switching capability
+
+2. **Flexbox Layout Components**
+   - Navigation bar with flexbox
+   - Card grid layout
+   - Button group with flexbox
+   - Responsive adjustments
+
+3. **Advanced Flexbox Features**
+   - Parent properties (justify-content, align-items, gap)
+   - Child properties (flex-grow, flex-shrink, order)
+   - Responsive layouts with flex-wrap
+
+4. **Variable & Flexbox Integration**
+   - Use variables for flex properties
+   - Dynamic spacing with variables
+   - Theme-aware flexbox layouts
+
+**Time:** 20 minutes
+**Hint:** Create a reusable component system that can be easily themed
+
+<details>
+<summary>Solution</summary>
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flex Child Properties</title>
-    <link rel="stylesheet" href="child-properties.css">
+    <title>Themed Component Library</title>
+    <link rel="stylesheet" href="theme-library.css">
 </head>
 <body>
-    <h1>Flex Child Properties</h1>
-    
-    <h2>Flex Grow</h2>
-    <div class="container grow-container">
-        <div class="item grow-1">Grow 1</div>
-        <div class="item grow-2">Grow 2</div>
-        <div class="item grow-1">Grow 1</div>
-    </div>
-    
-    <h2>Flex Shrink</h2>
-    <div class="container shrink-container">
-        <div class="item shrink-0">No Shrink</div>
-        <div class="item shrink-1">Can Shrink</div>
-        <div class="item shrink-0">No Shrink</div>
-    </div>
-    
-    <h2>Order</h2>
-    <div class="container order-container">
-        <div class="item order-3">Order 3</div>
-        <div class="item order-1">Order 1</div>
-        <div class="item order-2">Order 2</div>
-    </div>
-    
-    <h2>Align Self</h2>
-    <div class="container align-self-container">
-        <div class="item align-start">Start</div>
-        <div class="item align-center">Center</div>
-        <div class="item align-end">End</div>
-    </div>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-brand">ThemeLib</div>
+        <ul class="navbar-menu">
+            <li><a href="#" class="nav-link">Home</a></li>
+            <li><a href="#" class="nav-link">Components</a></li>
+            <li><a href="#" class="nav-link">Docs</a></li>
+        </ul>
+        <button class="navbar-toggle">Theme</button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Themed Component Library</h1>
+            <p class="hero-text">CSS Variables + Flexbox integration</p>
+            <button class="hero-button">Get Started</button>
+        </div>
+    </section>
+
+    <!-- Component Showcase -->
+    <section class="showcase">
+        <h2 class="section-title">Button Components</h2>
+        <div class="button-group">
+            <button class="btn btn-primary">Primary</button>
+            <button class="btn btn-secondary">Secondary</button>
+            <button class="btn btn-outline">Outline</button>
+        </div>
+
+        <h2 class="section-title">Card Grid</h2>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon">🎨</div>
+                <h3 class="card-title">Theming</h3>
+                <p class="card-desc">Easy theme switching with CSS variables</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">📱</div>
+                <h3 class="card-title">Responsive</h3>
+                <p class="card-desc">Flexbox-powered responsive layouts</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">⚡</div>
+                <h3 class="card-title">Flexible</h3>
+                <p class="card-desc">Dynamic content with flex properties</p>
+            </div>
+        </div>
+
+        <h2 class="section-title">Stats Dashboard</h2>
+        <div class="stats-container">
+            <div class="stat-item stat-primary">
+                <div class="stat-number">128</div>
+                <div class="stat-label">Projects</div>
+            </div>
+            <div class="stat-item stat-secondary">
+                <div class="stat-number">45</div>
+                <div class="stat-label">Components</div>
+            </div>
+            <div class="stat-item stat-accent">
+                <div class="stat-number">92%</div>
+                <div class="stat-label">Usage</div>
+            </div>
+        </div>
+    </section>
 </body>
 </html>
 ```
 
-**CSS:**
 ```css
-* {
+/* CSS Variables Theme System */
+:root {
+    /* Colors */
+    --primary-color: #2563eb;
+    --primary-hover: #1d4ed8;
+    --secondary-color: #10b981;
+    --secondary-hover: #059669;
+    --accent-color: #f59e0b;
+    --accent-hover: #d97706;
+    
+    /* Text Colors */
+    --text-primary: #1f2937;
+    --text-secondary: #4b5563;
+    --text-inverse: #ffffff;
+    
+    /* Backgrounds */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f3f4f6;
+    --bg-dark: #1f2937;
+    
+    /* Spacing */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    --spacing-2xl: 48px;
+    
+    /* Typography */
+    --font-size-sm: 14px;
+    --font-size-base: 16px;
+    --font-size-lg: 18px;
+    --font-size-xl: 24px;
+    --font-size-2xl: 32px;
+    
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark Theme Override */
+.dark-theme {
+    --text-primary: #f9fafb;
+    --text-secondary: #d1d5db;
+    --bg-primary: #1f2937;
+    --bg-secondary: #374151;
+}
+
+/* Reset & Base */
+*, *::before, *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background-color: #f3f4f6;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    transition: background-color 0.3s, color 0.3s;
 }
 
-h1 {
-    text-align: center;
-    color: #1f2937;
-    margin-bottom: 30px;
-}
-
-h2 {
-    color: #1f2937;
-    margin-top: 30px;
-    margin-bottom: 15px;
-}
-
-.container {
+/* Navigation - Flexbox */
+.navbar {
     display: flex;
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    gap: 10px;
-}
-
-.item {
-    background-color: #2563eb;
-    color: white;
-    padding: 20px;
-    border-radius: 4px;
-    text-align: center;
-    font-weight: bold;
-}
-
-/* Flex Grow */
-.grow-container {
-    justify-content: space-between;
-}
-
-.grow-1 {
-    flex-grow: 1;
-}
-
-.grow-2 {
-    flex-grow: 2;
-}
-
-/* Flex Shrink */
-.shrink-container {
-    width: 500px;
-}
-
-.shrink-0 {
-    flex-shrink: 0;
-    width: 150px;
-}
-
-.shrink-1 {
-    flex-shrink: 1;
-    flex-grow: 1;
-}
-
-/* Order */
-.order-1 {
-    order: 1;
-}
-
-.order-2 {
-    order: 2;
-}
-
-.order-3 {
-    order: 3;
-}
-
-/* Align Self */
-.align-self-container {
     align-items: center;
-    height: 150px;
+    justify-content: space-between;
+    background: var(--bg-primary);
+    padding: var(--spacing-md) var(--spacing-xl);
+    box-shadow: var(--shadow-md);
 }
 
-.align-start {
-    align-self: flex-start;
+.navbar-brand {
+    font-size: var(--font-size-xl);
+    font-weight: bold;
+    color: var(--primary-color);
 }
 
-.align-center {
-    align-self: center;
+.navbar-menu {
+    display: flex;
+    list-style: none;
+    gap: var(--spacing-lg);
 }
 
-.align-end {
-    align-self: flex-end;
+.nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+}
+
+.navbar-toggle {
+    background: var(--primary-color);
+    color: var(--text-inverse);
+    border: none;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.navbar-toggle:hover {
+    background: var(--primary-hover);
+}
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: var(--text-inverse);
+    padding: var(--spacing-2xl) var(--spacing-xl);
+    text-align: center;
+}
+
+.hero-title {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--spacing-md);
+}
+
+.hero-text {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-xl);
+    opacity: 0.9;
+}
+
+.hero-button {
+    background: var(--bg-primary);
+    color: var(--primary-color);
+    border: none;
+    padding: var(--spacing-md) var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.hero-button:hover {
+    background: var(--bg-secondary);
+    transform: translateY(-2px);
+}
+
+/* Showcase Section */
+.showcase {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-2xl) var(--spacing-xl);
+}
+
+.section-title {
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-lg);
+    font-size: var(--font-size-xl);
+}
+
+/* Button Group - Flexbox */
+.button-group {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.btn {
+    padding: var(--spacing-md) var(--spacing-lg);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: var(--text-inverse);
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+}
+
+.btn-secondary {
+    background: var(--secondary-color);
+    color: var(--text-inverse);
+}
+
+.btn-secondary:hover {
+    background: var(--secondary-hover);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+
+.btn-outline:hover {
+    background: var(--primary-color);
+    color: var(--text-inverse);
+}
+
+/* Card Grid - Flexbox */
+.card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.card {
+    flex: 1 1 300px;
+    background: var(--bg-primary);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.card-icon {
+    font-size: 48px;
+    margin-bottom: var(--spacing-md);
+}
+
+.card-title {
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-size-lg);
+}
+
+.card-desc {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* Stats Container - Flexbox */
+.stats-container {
+    display: flex;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.stat-item {
+    flex: 1;
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    color: var(--text-inverse);
+}
+
+.stat-primary {
+    background: var(--primary-color);
+}
+
+.stat-secondary {
+    background: var(--secondary-color);
+}
+
+.stat-accent {
+    background: var(--accent-color);
+}
+
+.stat-number {
+    font-size: var(--font-size-2xl);
+    font-weight: bold;
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-label {
+    font-size: var(--font-size-sm);
+    opacity: 0.9;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .navbar-menu {
+        display: none;
+    }
+    
+    .card-grid {
+        flex-direction: column;
+    }
+    
+    .stats-container {
+        flex-direction: column;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
 }
 ```
 
----
-
-## Part 3: Review, Questions, Problem Solving (0.5 Hours)
-
-### Flexbox Froggy Practice (10 minutes)
-
-**Introduction to Flexbox Froggy:**
-Flexbox Froggy is an interactive game that helps you learn Flexbox through practice.
-
-**How to Access:**
-1. Go to https://flexboxfroggy.com/
-2. Complete the levels to practice Flexbox properties
-3. Each level teaches a different Flexbox concept
-
-**What You'll Practice:**
-- `justify-content`
-- `align-items`
-- `flex-direction`
-- `flex-wrap`
-- `align-content`
-- `order`
-- `align-self`
+</details>
 
 ---
 
-### Review Questions (10 minutes)
+## Part 3: Review & Assessment (10 minutes)
+
+### Quick Review Quiz
 
 **Question 1:** How do you create a CSS variable?
-**Answer:** Use the `--` prefix, like `--primary-color: #2563eb;`
+<details>
+<summary>Answer</summary>
 
-**Question 2:** What is the difference between global and local CSS variables?
-**Answer:** Global variables are defined in `:root` and available everywhere, local variables are defined within specific selectors.
+Use the `--` prefix, like `--primary-color: #2563eb;` in `:root` or local scope
 
-**Question 3:** What does `flex-direction: column` do?
-**Answer:** Arranges flex items vertically from top to bottom.
+</details>
 
-**Question 4:** What is the difference between `justify-content` and `align-items`?
-**Answer:** `justify-content` aligns items along the main axis, `align-items` aligns items along the cross axis.
+**Question 2:** What is the difference between `justify-content` and `align-items`?
+<details>
+<summary>Answer</summary>
 
-**Question 5:** What does `flex-grow: 1` do?
-**Answer:** Allows the item to grow equally with other items when there's extra space.
+`justify-content` aligns items along the main axis (horizontal for row), `align-items` aligns items along the cross axis (vertical for row)
 
-**Question 6:** How do you center items both horizontally and vertically in Flexbox?
-**Answer:** `justify-content: center; align-items: center;`
+</details>
 
-**Question 7:** What does `flex-wrap: wrap` do?
-**Answer:** Allows flex items to wrap to multiple lines when there's not enough space.
+**Question 3:** What does `flex-grow: 1` do?
+<details>
+<summary>Answer</summary>
 
-**Question 8:** What is the purpose of the `gap` property in Flexbox?
-**Answer:** Creates consistent space between flex items without using margins.
+Allows the item to grow equally with other items when there's extra space available
+
+</details>
+
+**Question 4:** How do you center items both horizontally and vertically in Flexbox?
+<details>
+<summary>Answer</summary>
+
+`justify-content: center; align-items: center;` on the flex container
+
+</details>
+
+**Question 5:** What does `flex-wrap: wrap` do?
+<details>
+<summary>Answer</summary>
+
+Allows flex items to wrap to multiple lines when there's not enough space on one line
+
+</details>
+
+### Final Challenge
+
+**Task:** Create a responsive pricing card component that uses ALL concepts:
+- CSS variables for theme colors and spacing
+- Flexbox for layout (parent and child properties)
+- Responsive design with flex-wrap
+- Variable overrides for different card tiers
+- Time: 10 minutes
+- Goal: Build a 3-tier pricing section with basic, pro, and enterprise cards
+
+<details>
+<summary>Solution Hint</summary>
+
+Use `flex: 1 1 300px` for cards, different variables for each tier's accent color, and `justify-content: center` for layout
+
+</details>
 
 ---
 
-### Practice Challenges (5 minutes)
-
-**Challenge 1:** Create a navigation bar with logo on left, links in center, and button on right using Flexbox.
-
-**Challenge 2:** Create a row of 3 cards where the middle card is twice as wide as the others using `flex-grow`.
-
-**Challenge 3:** Create a CSS variable theme with at least 5 variables and use them throughout a component.
-
----
-
-### Homework Assignment
+## Homework Assignment
 
 **Task:** Create a complete component using CSS Variables and Flexbox.
 
@@ -1002,5 +1102,7 @@ Flexbox Froggy is an interactive game that helps you learn Flexbox through pract
 ---
 
 ## End of Session 5
+
+**Summary:** In this session, you learned about CSS Variables (creation, usage, scopes, overriding) and Flexbox (introduction, parent properties like flex-direction, justify-content, align-items, gap, and child properties like flex-grow, flex-shrink, flex-basis, order, align-self). ALL concepts (Sections 1-4) were practiced through interactive exercises (Explain → Example → Try it yourself → Predict → Experiment → Challenge → Bug Hunting → Quiz), followed by a comprehensive themed component library project that integrated CSS variables and Flexbox for real-world application.
 
 **Next Session:** CSS Grid (Grid parent properties, Grid child properties, minmax/auto-fill/auto-fit, Product gallery and Dashboard implementation)

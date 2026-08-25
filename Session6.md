@@ -1,415 +1,720 @@
 # Session 6: CSS Grid
 
-## Duration Breakdown
-- **1 Hour**: Theoretical Explanation + Live Coding
-- **1.5 Hours**: Practical Application (Student writes code)
-- **0.5 Hours**: Review, Questions, Problem Solving
+## Duration Breakdown (2.5 Hours Total)
+- **1.5 Hours**: Interactive Learning (All Sections 1-4 with Explain → Example → Try it yourself → Predict → Experiment → Challenge → Bug Hunting → Quiz)
+- **20 Minutes**: Comprehensive Project (Single component combining all concepts)
+- **10 Minutes**: Review & Assessment
 
 ---
 
-## Part 1: Theoretical Explanation + Live Coding (1 Hour)
+## Part 1: Interactive Learning (1.5 Hours)
 
 ### Section 1: CSS Grid Introduction
 
-## What is CSS Grid
-CSS Grid is a two-dimensional layout system that works with both rows and columns simultaneously.
+## Explain
+CSS Grid is a two-dimensional layout system that works with both rows and columns simultaneously:
 
-## When to Use Grid
-- Complex page layouts
-- Dashboards
-- Image galleries
-- Product grids
-- Two-dimensional layouts
-- When you need control over both rows and columns
+- `display: grid` enables grid layout
+- Two-dimensional (rows AND columns)
+- Great for complex layouts, dashboards, galleries
+- More powerful than Flexbox for 2D layouts
+- Can work with Flexbox together
 
-## Enable Grid
+## Example
+```css
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+```
+
+## Try it yourself
+Create a simple grid container.
+
+```html
+<div class="grid-container">
+    <div class="item">Item 1</div>
+    <div class="item">Item 2</div>
+    <div class="item">Item 3</div>
+    <div class="item">Item 4</div>
+</div>
+```
+
+```css
+.grid-container {
+    /* Enable grid and add basic styling */
+}
+
+.item {
+    /* Add basic styling */
+}
+```
+
+## Predict
+What will happen with this code?
+
 ```css
 .container {
     display: grid;
 }
 ```
+
+## Experiment
+1. What happens when you enable grid on a container?
+2. How does grid differ from flexbox?
+3. Try adding different numbers of items
+
+## Challenge
+**Task:** Create a simple grid with:
+- 3 columns of equal width
+- 2 rows
+- 20px gap between items
+- Time: 10 minutes
+- Hint: Use `grid-template-columns: repeat(3, 1fr)`
+
+<details>
+<summary>Solution</summary>
+
+```html
+<div class="simple-grid">
+    <div class="item">1</div>
+    <div class="item">2</div>
+    <div class="item">3</div>
+    <div class="item">4</div>
+    <div class="item">5</div>
+    <div class="item">6</div>
+</div>
+```
+
+```css
+.simple-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 100px);
+    gap: 20px;
+}
+
+.item {
+    background: #2563eb;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+```
+
+</details>
+
+## Bug Hunting
+Find the bug in this code:
+
+```css
+.buggy {
+    display: grid;
+    /* Items not in grid layout */
+}
+```
+
+<details>
+<summary>Solution</summary>
+
+Missing `grid-template-columns` or `grid-template-rows`. Without defining columns/rows, items stack in a single column.
+
+</details>
+
+## Quiz
+1. What property enables CSS Grid?
+2. Is Grid one-dimensional or two-dimensional?
+3. What's a common use case for Grid?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. `display: grid` enables CSS Grid layout
+2. Grid is two-dimensional (works with both rows and columns)
+3. Common use cases include complex page layouts, dashboards, and image galleries
+
+</details>
 
 ---
 
 ### Section 2: Grid Parent Properties
 
-## Grid Template Columns
-Defines the columns in a grid layout.
+## Explain
+Grid parent properties control the overall grid structure:
 
+- `grid-template-columns` - Define column widths
+- `grid-template-rows` - Define row heights
+- `gap` - Space between items
+- `grid-template-areas` - Named layout areas
+- Alignment properties - Position items
+
+## Example
 ```css
 .container {
     display: grid;
-    grid-template-columns: 200px 200px 200px; /* Three 200px columns */
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
 }
 ```
 
-## Percentage Columns
-```css
-.container {
-    grid-template-columns: 30% 30% 40%;
-}
+## Try it yourself
+Create a grid with different parent properties.
+
+```html
+<div class="grid-parent">
+    <div class="item">Item 1</div>
+    <div class="item">Item 2</div>
+    <div class="item">Item 3</div>
+</div>
 ```
 
-## Fraction Unit (fr)
-`fr` means a fraction of the available space.
-
 ```css
-.container {
-    grid-template-columns: 1fr 1fr; /* Two equal columns */
-}
-
-.container {
-    grid-template-columns: 1fr 2fr; /* Second column is twice as wide */
-}
-```
-
-## repeat() Function
-Instead of repeating values, use `repeat()`.
-
-```css
-.container {
-    grid-template-columns: repeat(3, 1fr); /* Three equal columns */
-}
-
-.container {
-    grid-template-columns: repeat(4, 200px); /* Four 200px columns */
-}
-```
-
-Syntax: `repeat(number, value)`
-
----
-
-## Grid Template Rows
-Defines the rows in a grid layout.
-
-```css
-.container {
-    grid-template-rows: 100px 200px; /* First row 100px, second 200px */
-}
-
-.container {
-    grid-template-rows: auto 1fr auto; /* Auto, flexible, auto */
-}
-```
-
----
-
-## Grid Gap
-Adds space between grid items.
-
-```css
-.container {
-    gap: 20px; /* Same gap for rows and columns */
-}
-
-.container {
-    row-gap: 20px; /* Gap between rows */
-    column-gap: 30px; /* Gap between columns */
-}
-```
-
----
-
-## Grid Template Areas
-Allows you to create named layout areas.
-
-```css
-.container {
+.grid-parent {
     display: grid;
-    grid-template-columns: 200px 1fr;
+    /* Add different column patterns */
+}
+```
+
+## Predict
+What will happen with this code?
+
+```css
+.container {
+    grid-template-columns: 1fr 2fr 1fr;
+}
+```
+
+## Experiment
+1. What does `fr` unit represent?
+2. How does `repeat()` work?
+3. What's the difference between `gap` and margins?
+
+## Challenge
+**Task:** Create a layout with:
+- Header spanning full width
+- Sidebar and main content side by side
+- Footer spanning full width
+- Using grid-template-areas
+- Time: 12 minutes
+- Hint: Define the areas visually in grid-template-areas
+
+<details>
+<summary>Solution</summary>
+
+```html
+<div class="page-layout">
+    <header class="header">Header</header>
+    <aside class="sidebar">Sidebar</aside>
+    <main class="main">Main</main>
+    <footer class="footer">Footer</footer>
+</div>
+```
+
+```css
+.page-layout {
+    display: grid;
+    grid-template-columns: 250px 1fr;
     grid-template-rows: auto 1fr auto;
     grid-template-areas:
         "header header"
         "sidebar main"
         "footer footer";
+    gap: 20px;
+    min-height: 100vh;
 }
-```
 
-Then assign areas to children:
-```css
 .header {
     grid-area: header;
+    background: #2563eb;
+    color: white;
+    padding: 20px;
 }
 
 .sidebar {
     grid-area: sidebar;
+    background: white;
+    padding: 20px;
 }
 
 .main {
     grid-area: main;
+    background: white;
+    padding: 20px;
 }
 
 .footer {
     grid-area: footer;
+    background: #1f2937;
+    color: white;
+    padding: 20px;
 }
 ```
 
----
+</details>
 
-## Grid Alignment
-
-### Justify Content
-Controls the grid as a whole along the inline/horizontal axis.
+## Bug Hunting
+Find the bug in this code:
 
 ```css
-.container {
-    justify-content: start;
-    justify-content: end;
-    justify-content: center;
-    justify-content: space-between;
-    justify-content: space-around;
-    justify-content: space-evenly;
+.buggy {
+    display: grid;
+    grid-template-areas:
+        "header header"
+        "sidebar main";
+    /* Areas not working */
 }
 ```
 
-### Align Content
-Controls the grid as a whole along the block/vertical axis.
+<details>
+<summary>Solution</summary>
 
-```css
-.container {
-    align-content: start;
-    align-content: end;
-    align-content: center;
-    align-content: space-between;
-}
-```
+Missing `grid-template-columns` and `grid-template-rows`. Template areas need column and row definitions to work.
 
-### Justify Items
-Controls alignment of items along the inline axis within their grid cells.
+</details>
 
-```css
-.container {
-    justify-items: start;
-    justify-items: end;
-    justify-items: center;
-}
-```
+## Quiz
+1. What does `fr` unit mean in Grid?
+2. What does `repeat(3, 1fr)` create?
+3. What's the purpose of grid-template-areas?
 
-### Align Items
-Controls alignment of items along the block axis within their grid cells.
+<details>
+<summary>Quiz Answers</summary>
 
-```css
-.container {
-    align-items: start;
-    align-items: end;
-    align-items: center;
-    align-items: stretch;
-}
-```
+1. `fr` means "fraction" of available space
+2. Creates 3 equal columns that each take 1 fraction of space
+3. Grid-template-areas allows you to create named layout areas for more readable grid structures
+
+</details>
 
 ---
 
 ### Section 3: Grid Child Properties
 
-## Grid Column
-Controls which columns an item occupies.
+## Explain
+Grid child properties control individual grid item placement:
 
+- `grid-column` - Horizontal placement and spanning
+- `grid-row` - Vertical placement and spanning
+- `grid-area` - Named area or line-based placement
+- `justify-self` - Override horizontal alignment
+- `align-self` - Override vertical alignment
+
+## Example
 ```css
 .item {
-    grid-column: 1 / 3; /* From column line 1 to line 3 */
-}
-```
-
-## Span
-```css
-.item {
-    grid-column: span 2; /* Spans 2 columns */
-}
-```
-
-## Grid Row
-Controls which rows an item occupies.
-
-```css
-.item {
-    grid-row: 1 / 3; /* From row line 1 to line 3 */
-}
-
-.item {
-    grid-row: span 2; /* Spans 2 rows */
-}
-```
-
-## Grid Area
-Can use named areas or grid line numbers.
-
-```css
-.item {
-    grid-area: header; /* Named area */
-}
-
-.item {
-    grid-area: 1 / 1 / 3 / 3; /* row-start / col-start / row-end / col-end */
-}
-```
-
-## Justify Self
-Overrides the parent's `justify-items` for one specific child.
-
-```css
-.item {
-    justify-self: start;
+    grid-column: 1 / 3; /* Span 2 columns */
+    grid-row: span 2; /* Span 2 rows */
     justify-self: center;
-    justify-self: end;
 }
 ```
 
-## Align Self
-Overrides the parent's `align-items` for one specific child.
+## Try it yourself
+Create grid items with different child properties.
+
+```html
+<div class="grid-container">
+    <div class="item item-span">Spanning Item</div>
+    <div class="item">Normal Item</div>
+    <div class="item">Normal Item</div>
+</div>
+```
+
+```css
+.item-span {
+    /* Make this span multiple columns */
+}
+```
+
+## Predict
+What will happen with this code?
 
 ```css
 .item {
-    align-self: start;
-    align-self: center;
-    align-self: end;
+    grid-column: span 2;
 }
 ```
+
+## Experiment
+1. What does `grid-column: 1 / 3` mean?
+2. How does `span` work?
+3. Can you override parent alignment?
+
+## Challenge
+**Task:** Create a grid where:
+- First item spans 2 columns
+- Second item spans 2 rows
+- Third item spans both 2 columns and 2 rows
+- Time: 12 minutes
+- Hint: Use `grid-column: span X` and `grid-row: span Y`
+
+<details>
+<summary>Solution</summary>
+
+```html
+<div class="spanning-grid">
+    <div class="item span-col">Span 2 Columns</div>
+    <div class="item">Normal</div>
+    <div class="item span-row">Span 2 Rows</div>
+    <div class="item">Normal</div>
+    <div class="item span-both">Span Both</div>
+</div>
+```
+
+```css
+.spanning-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 100px);
+    gap: 10px;
+}
+
+.item {
+    background: #2563eb;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.span-col {
+    grid-column: span 2;
+    background: #10b981;
+}
+
+.span-row {
+    grid-row: span 2;
+    background: #f59e0b;
+}
+
+.span-both {
+    grid-column: span 2;
+    grid-row: span 2;
+    background: #7c3aed;
+}
+```
+
+</details>
+
+## Bug Hunting
+Find the bug in this code:
+
+```css
+.buggy {
+    grid-column: 5;
+    /* Item not spanning correctly */
+}
+```
+
+<details>
+<summary>Solution</summary>
+
+Need to use `span` keyword or line numbers: `grid-column: span 2` or `grid-column: 1 / 3`
+
+</details>
+
+## Quiz
+1. What does `grid-column: span 2` do?
+2. What's the difference between `grid-column` and `grid-row`?
+3. Can child properties override parent alignment?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. Makes the item span 2 columns horizontally
+2. `grid-column` controls horizontal placement, `grid-row` controls vertical placement
+3. Yes, `justify-self` and `align-self` can override parent `justify-items` and `align-items`
+
+</details>
 
 ---
 
 ### Section 4: Responsive Grid Tools
 
-## minmax()
-Defines a minimum and maximum size for grid tracks.
+## Explain
+Responsive grid tools make layouts adaptive without media queries:
 
+- `minmax(min, max)` - Set minimum and maximum sizes
+- `auto-fill` - Create as many columns as fit
+- `auto-fit` - Like auto-fill but collapses empty tracks
+- Best for responsive card galleries
+
+## Example
 ```css
 .container {
-    grid-template-columns: minmax(200px, 1fr);
-}
-```
-
-The column will be at least 200px and up to 1fr of available space.
-
-## auto-fill
-Creates as many columns as will fit.
-
-```css
-.container {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-}
-```
-
-## auto-fit
-Similar to auto-fill but can collapse empty tracks.
-
-```css
-.container {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-}
-```
-
----
-
-## Part 2: Practical Application (1.5 Hours)
-
-### Exercise 1: Basic Grid Layout (20 minutes)
-
-**Task:**
-Create a basic grid layout with defined columns and rows.
-
-**HTML:**
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basic Grid Layout</title>
-    <link rel="stylesheet" href="basic-grid.css">
-</head>
-<body>
-    <h1>Basic Grid Layout</h1>
-    
-    <div class="grid-container">
-        <div class="item">Item 1</div>
-        <div class="item">Item 2</div>
-        <div class="item">Item 3</div>
-        <div class="item">Item 4</div>
-        <div class="item">Item 5</div>
-        <div class="item">Item 6</div>
-    </div>
-</body>
-</html>
-```
-
-**CSS:**
-```css
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background-color: #f3f4f6;
-}
-
-h1 {
-    text-align: center;
-    color: #1f2937;
-    margin-bottom: 30px;
-}
-
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Three equal columns */
-    grid-template-rows: repeat(2, 150px); /* Two rows of 150px */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
-    max-width: 800px;
+}
+```
+
+## Try it yourself
+Create a responsive grid.
+
+```html
+<div class="responsive-grid">
+    <div class="card">Card 1</div>
+    <div class="card">Card 2</div>
+    <div class="card">Card 3</div>
+    <div class="card">Card 4</div>
+</div>
+```
+
+```css
+.responsive-grid {
+    display: grid;
+    /* Add responsive columns */
+}
+```
+
+## Predict
+What will happen with this code?
+
+```css
+.container {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+```
+
+## Experiment
+1. What's the difference between auto-fill and auto-fit?
+2. How does minmax work?
+3. Try different minmax values
+
+## Challenge
+**Task:** Create a responsive card gallery with:
+- Minimum card width of 200px
+- Maximum flexible width
+- Automatically adjusts columns based on screen
+- Time: 12 minutes
+- Hint: Use `repeat(auto-fit, minmax(200px, 1fr))`
+
+<details>
+<summary>Solution</summary>
+
+```html
+<div class="card-gallery">
+    <div class="card">Card 1</div>
+    <div class="card">Card 2</div>
+    <div class="card">Card 3</div>
+    <div class="card">Card 4</div>
+    <div class="card">Card 5</div>
+    <div class="card">Card 6</div>
+</div>
+```
+
+```css
+.card-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
-.item {
-    background-color: white;
-    border: 2px solid #2563eb;
+.card {
+    background: white;
+    padding: 20px;
     border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    min-height: 150px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
-    font-weight: bold;
-    color: #1f2937;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
 }
 ```
 
+</details>
+
+## Bug Hunting
+Find the bug in this code:
+
+```css
+.buggy {
+    grid-template-columns: repeat(auto-fill, 200px);
+    /* Not responsive as expected */
+}
+```
+
+<details>
+<summary>Solution</summary>
+
+Missing `minmax()`. Should be `repeat(auto-fill, minmax(200px, 1fr))` for proper responsive behavior.
+
+</details>
+
+## Quiz
+1. What does `minmax(200px, 1fr)` do?
+2. What's the difference between auto-fill and auto-fit?
+3. Why use responsive grid tools?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. Creates columns that are at least 200px and can grow up to 1fr of available space
+2. auto-fill creates as many columns as fit, auto-fit does the same but collapses empty tracks
+3. Responsive grid tools create adaptive layouts without needing media queries
+
+</details>
+
 ---
 
-### Exercise 2: Grid Template Areas (25 minutes)
+## Part 2: Comprehensive Project (20 minutes)
 
-**Task:**
-Create a page layout using grid template areas.
+### Project: Complete Grid Dashboard
 
-**HTML:**
+**Task:** Create a comprehensive dashboard that demonstrates all CSS Grid concepts:
+
+**Requirements:**
+1. **Grid Template Areas Layout**
+   - Header spanning full width
+   - Sidebar and main content side by side
+   - Footer spanning full width
+   - Named areas for readability
+
+2. **Responsive Grid Components**
+   - Stats grid using `auto-fit` and `minmax`
+   - Card gallery with responsive columns
+   - Feature grid with spanning items
+
+3. **Grid Child Properties**
+   - Items spanning multiple columns/rows
+   - Custom alignment with `justify-self` and `align-self`
+   - Named area assignments
+
+4. **Advanced Grid Features**
+   - Fraction units (`fr`) for flexible sizing
+   - `repeat()` function for pattern repetition
+   - Proper gap and alignment
+
+**Time:** 20 minutes
+**Hint:** Combine Grid for page layout with nested Grid for components
+
+<details>
+<summary>Solution</summary>
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grid Template Areas</title>
-    <link rel="stylesheet" href="grid-areas.css">
+    <title>Grid Dashboard</title>
+    <link rel="stylesheet" href="grid-dashboard.css">
 </head>
 <body>
-    <div class="layout">
-        <header class="header">Header</header>
-        <aside class="sidebar">Sidebar</aside>
-        <main class="main">Main Content</main>
-        <footer class="footer">Footer</footer>
+    <div class="dashboard">
+        <header class="dashboard-header">
+            <h1>Grid Dashboard</h1>
+            <div class="user-profile">User</div>
+        </header>
+        
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active">Dashboard</a>
+                <a href="#" class="nav-item">Analytics</a>
+                <a href="#" class="nav-item">Reports</a>
+                <a href="#" class="nav-item">Settings</a>
+            </nav>
+        </aside>
+        
+        <main class="main-content">
+            <section class="stats-section">
+                <h2 class="section-title">Statistics</h2>
+                <div class="stats-grid">
+                    <div class="stat-card stat-primary">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <div class="stat-number">1,234</div>
+                            <div class="stat-label">Users</div>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-secondary">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-info">
+                            <div class="stat-number">$45.6K</div>
+                            <div class="stat-label">Revenue</div>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-accent">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-info">
+                            <div class="stat-number">789</div>
+                            <div class="stat-label">Orders</div>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-success">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-info">
+                            <div class="stat-number">+23%</div>
+                            <div class="stat-label">Growth</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="features-section">
+                <h2 class="section-title">Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card feature-span">
+                        <h3>Analytics</h3>
+                        <p>Advanced analytics dashboard with real-time data visualization and insights.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Reports</h3>
+                        <p>Generate detailed reports with customizable filters and export options.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Users</h3>
+                        <p>Manage users with comprehensive permissions and role-based access.</p>
+                    </div>
+                    <div class="feature-card feature-span-both">
+                        <h3>Integration</h3>
+                        <p>Seamless integration with third-party services and APIs for extended functionality.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="cards-section">
+                <h2 class="section-title">Recent Items</h2>
+                <div class="cards-grid">
+                    <div class="item-card">
+                        <div class="card-header">Item 1</div>
+                        <div class="card-body">Description here</div>
+                    </div>
+                    <div class="item-card">
+                        <div class="card-header">Item 2</div>
+                        <div class="card-body">Description here</div>
+                    </div>
+                    <div class="item-card">
+                        <div class="card-header">Item 3</div>
+                        <div class="card-body">Description here</div>
+                    </div>
+                    <div class="item-card">
+                        <div class="card-header">Item 4</div>
+                        <div class="card-body">Description here</div>
+                    </div>
+                    <div class="item-card">
+                        <div class="card-header">Item 5</div>
+                        <div class="card-body">Description here</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="dashboard-footer">
+            <p>&copy; 2024 Grid Dashboard. All rights reserved.</p>
+        </footer>
     </div>
 </body>
 </html>
 ```
 
-**CSS:**
 ```css
 * {
     margin: 0;
@@ -418,12 +723,13 @@ Create a page layout using grid template areas.
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f3f4f6;
     min-height: 100vh;
 }
 
-.layout {
+/* Main Dashboard Layout - Grid Template Areas */
+.dashboard {
     display: grid;
     min-height: 100vh;
     grid-template-columns: 250px 1fr;
@@ -432,363 +738,81 @@ body {
         "header header"
         "sidebar main"
         "footer footer";
-    gap: 20px;
-    padding: 20px;
-}
-
-.header {
-    grid-area: header;
-    background-color: #2563eb;
-    color: white;
-    padding: 20px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    font-weight: bold;
-}
-
-.sidebar {
-    grid-area: sidebar;
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.main {
-    grid-area: main;
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.footer {
-    grid-area: footer;
-    background-color: #1f2937;
-    color: white;
-    padding: 20px;
-    border-radius: 8px;
-    text-align: center;
-}
-```
-
----
-
-### Exercise 3: Product Gallery (25 minutes)
-
-**Task:**
-Create a responsive product gallery using Grid.
-
-**HTML:**
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Gallery</title>
-    <link rel="stylesheet" href="product-gallery.css">
-</head>
-<body>
-    <h1>Product Gallery</h1>
-    
-    <div class="gallery">
-        <div class="product">
-            <div class="product-image">
-                <img src="https://via.placeholder.com/200" alt="Product 1">
-            </div>
-            <h3>Product 1</h3>
-            <p class="price">$29.99</p>
-            <button>Add to Cart</button>
-        </div>
-        
-        <div class="product">
-            <div class="product-image">
-                <img src="https://via.placeholder.com/200" alt="Product 2">
-            </div>
-            <h3>Product 2</h3>
-            <p class="price">$49.99</p>
-            <button>Add to Cart</button>
-        </div>
-        
-        <div class="product">
-            <div class="product-image">
-                <img src="https://via.placeholder.com/200" alt="Product 3">
-            </div>
-            <h3>Product 3</h3>
-            <p class="price">$19.99</p>
-            <button>Add to Cart</button>
-        </div>
-        
-        <div class="product">
-            <div class="product-image">
-                <img src="https://via.placeholder.com/200" alt="Product 4">
-            </div>
-            <h3>Product 4</h3>
-            <p class="price">$39.99</p>
-            <button>Add to Cart</button>
-        </div>
-        
-        <div class="product">
-            <div class="product-image">
-                <img src="https://via.placeholder.com/200" alt="Product 5">
-            </div>
-            <h3>Product 5</h3>
-            <p class="price">$59.99</p>
-            <button>Add to Cart</button>
-        </div>
-        
-        <div class="product">
-            <div class="product-image">
-                <img src="https://via.placeholder.com/200" alt="Product 6">
-            </div>
-            <h3>Product 6</h3>
-            <p class="price">$24.99</p>
-            <button>Add to Cart</button>
-        </div>
-    </div>
-</body>
-</html>
-```
-
-**CSS:**
-```css
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background-color: #f3f4f6;
-}
-
-h1 {
-    text-align: center;
-    color: #1f2937;
-    margin-bottom: 30px;
-}
-
-.gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.product {
-    background-color: white;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.product:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
-}
-
-.product-image {
-    text-align: center;
-    margin-bottom: 15px;
-}
-
-.product-image img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 8px;
-}
-
-.product h3 {
-    color: #1f2937;
-    margin-bottom: 10px;
-    font-size: 18px;
-}
-
-.price {
-    color: #2563eb;
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 15px;
-}
-
-.product button {
-    width: 100%;
-    padding: 12px;
-    background-color: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.product button:hover {
-    background-color: #1d4ed8;
-}
-```
-
----
-
-### Exercise 4: Dashboard Layout (20 minutes)
-
-**Task:**
-Create a dashboard layout using Grid.
-
-**HTML:**
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Layout</title>
-    <link rel="stylesheet" href="dashboard.css">
-</head>
-<body>
-    <div class="dashboard">
-        <header class="dashboard-header">
-            <h1>Dashboard</h1>
-            <div class="user-info">User Profile</div>
-        </header>
-        
-        <aside class="sidebar">
-            <nav>
-                <ul>
-                    <li><a href="#overview">Overview</a></li>
-                    <li><a href="#analytics">Analytics</a></li>
-                    <li><a href="#reports">Reports</a></li>
-                    <li><a href="#settings">Settings</a></li>
-                </ul>
-            </nav>
-        </aside>
-        
-        <main class="main-content">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3>Total Users</h3>
-                    <p class="stat-number">1,234</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Revenue</h3>
-                    <p class="stat-number">$45,678</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Orders</h3>
-                    <p class="stat-number">789</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Growth</h3>
-                    <p class="stat-number">+23%</p>
-                </div>
-            </div>
-            
-            <div class="content-area">
-                <h2>Recent Activity</h2>
-                <div class="activity-list">
-                    <div class="activity-item">User John registered</div>
-                    <div class="activity-item">Order #1234 completed</div>
-                    <div class="activity-item">New review received</div>
-                </div>
-            </div>
-        </main>
-    </div>
-</body>
-</html>
-```
-
-**CSS:**
-```css
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f3f4f6;
-}
-
-.dashboard {
-    display: grid;
-    min-height: 100vh;
-    grid-template-columns: 250px 1fr;
-    grid-template-rows: auto 1fr;
-    grid-template-areas:
-        "header header"
-        "sidebar main";
     gap: 20px;
     padding: 20px;
 }
 
 .dashboard-header {
     grid-area: header;
-    background-color: #2563eb;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 20px;
-    border-radius: 8px;
+    padding: 20px 30px;
+    border-radius: 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .dashboard-header h1 {
     font-size: 24px;
+    font-weight: bold;
 }
 
-.user-info {
-    background-color: rgba(255, 255, 255, 0.2);
+.user-profile {
+    background: rgba(255, 255, 255, 0.2);
     padding: 8px 16px;
-    border-radius: 4px;
+    border-radius: 6px;
+    font-weight: 500;
 }
 
 .sidebar {
     grid-area: sidebar;
-    background-color: white;
+    background: white;
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 12px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.sidebar nav ul {
-    list-style: none;
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.sidebar nav ul li {
-    margin-bottom: 10px;
-}
-
-.sidebar nav ul li a {
+.nav-item {
+    padding: 12px 16px;
     color: #1f2937;
     text-decoration: none;
-    padding: 10px;
-    display: block;
-    border-radius: 4px;
-    transition: background-color 0.3s;
+    border-radius: 8px;
+    transition: all 0.3s;
+    font-weight: 500;
 }
 
-.sidebar nav ul li a:hover {
-    background-color: #f3f4f6;
+.nav-item:hover {
+    background: #f3f4f6;
+    color: #667eea;
+}
+
+.nav-item.active {
+    background: #667eea;
+    color: white;
 }
 
 .main-content {
     grid-area: main;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 30px;
 }
 
+.section-title {
+    color: #1f2937;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+/* Stats Grid - Responsive with auto-fit */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -796,148 +820,243 @@ body {
 }
 
 .stat-card {
-    background-color: white;
+    background: white;
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 12px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.stat-card h3 {
-    color: #6b7280;
-    font-size: 14px;
-    margin-bottom: 10px;
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon {
+    font-size: 32px;
 }
 
 .stat-number {
-    color: #1f2937;
-    font-size: 28px;
+    font-size: 24px;
     font-weight: bold;
-}
-
-.content-area {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.content-area h2 {
     color: #1f2937;
-    margin-bottom: 20px;
 }
 
-.activity-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.stat-label {
+    color: #6b7280;
+    font-size: 14px;
 }
 
-.activity-item {
-    padding: 10px;
-    background-color: #f3f4f6;
-    border-radius: 4px;
+.stat-primary { border-left: 4px solid #667eea; }
+.stat-secondary { border-left: 4px solid #10b981; }
+.stat-accent { border-left: 4px solid #f59e0b; }
+.stat-success { border-left: 4px solid #dc2626; }
+
+/* Features Grid - With Spanning */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, auto);
+    gap: 20px;
+}
+
+.feature-card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.feature-card h3 {
+    color: #667eea;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.feature-card p {
     color: #4b5563;
+    line-height: 1.6;
+}
+
+.feature-span {
+    grid-column: span 2;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.feature-span h3,
+.feature-span p {
+    color: white;
+}
+
+.feature-span-both {
+    grid-column: span 3;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.feature-span-both h3,
+.feature-span-both p {
+    color: white;
+}
+
+/* Cards Grid - Responsive */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.item-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+}
+
+.item-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f3f4f6;
+}
+
+.card-body {
+    color: #4b5563;
+    line-height: 1.6;
+}
+
+.dashboard-footer {
+    grid-area: footer;
+    background: #1f2937;
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "header"
+            "main"
+            "sidebar"
+            "footer";
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .feature-span,
+    .feature-span-both {
+        grid-column: span 1;
+    }
 }
 ```
 
----
-
-## Part 3: Review, Questions, Problem Solving (0.5 Hours)
-
-### CSS Grid Garden Practice (10 minutes)
-
-**Introduction to CSS Grid Garden:**
-CSS Grid Garden is an interactive game that helps you learn CSS Grid through practice.
-
-**How to Access:**
-1. Go to https://cssgridgarden.com/
-2. Complete the levels to practice Grid properties
-3. Each level teaches a different Grid concept
-
-**What You'll Practice:**
-- `grid-template-columns`
-- `grid-template-rows`
-- `grid-column`
-- `grid-row`
-- `grid-area`
-- `grid-template-areas`
+</details>
 
 ---
 
-### When to Use Grid vs Flexbox (10 minutes)
+## Part 3: Review & Assessment (10 minutes)
 
-## Use Flexbox When:
-- One-dimensional layout (row OR column)
-- Navigation bars
-- Button groups
-- Small components
-- Centering elements
-- Space distribution in one direction
-
-## Use Grid When:
-- Two-dimensional layout (row AND column)
-- Complex page layouts
-- Dashboards
-- Image galleries
-- Product grids
-- When you need precise control over both axes
-
-## Can They Work Together?
-Yes! A common pattern:
-- Use Grid for the overall page layout
-- Use Flexbox for components within the Grid
-
-```css
-.page {
-    display: grid; /* Page layout */
-}
-
-.navbar {
-    display: flex; /* Component layout */
-}
-```
-
----
-
-### Review Questions (10 minutes)
+### Quick Review Quiz
 
 **Question 1:** What is the difference between `auto-fill` and `auto-fit`?
-**Answer:** `auto-fill` creates as many columns as fit, `auto-fit` does the same but can collapse empty tracks.
+<details>
+<summary>Answer</summary>
+
+`auto-fill` creates as many columns as will fit, `auto-fit` does the same but can collapse empty tracks to center content
+
+</details>
 
 **Question 2:** What does `minmax(200px, 1fr)` do?
-**Answer:** Creates columns that are at least 200px and up to 1fr of available space.
+<details>
+<summary>Answer</summary>
 
-**Question 3:** What is `grid-template-areas` used for?
-**Answer:** To create named layout areas that make the grid structure more readable.
+Creates columns that are at least 200px and can grow up to 1fr of available space
 
-**Question 4:** What is the difference between `grid-column` and `grid-row`?
-**Answer:** `grid-column` controls horizontal placement, `grid-row` controls vertical placement.
+</details>
 
-**Question 5:** What does `fr` unit represent in Grid?
-**Answer:** A fraction of the available space in the grid container.
+**Question 3:** When should you use Grid instead of Flexbox?
+<details>
+<summary>Answer</summary>
 
-**Question 6:** When should you use Grid instead of Flexbox?
-**Answer:** When you need two-dimensional layout control (both rows and columns).
+Use Grid when you need two-dimensional layout control (both rows and columns), Flexbox for one-dimensional (row OR column)
 
-**Question 7:** What does `gap` do in Grid?
-**Answer:** Creates space between grid items (both rows and columns).
+</details>
 
-**Question 8:** How do you make an item span multiple columns?
-**Answer:** Use `grid-column: span 2` or `grid-column: 1 / 3`.
+**Question 4:** What does `fr` unit represent in Grid?
+<details>
+<summary>Answer</summary>
+
+A fraction of the available space in the grid container
+
+</details>
+
+**Question 5:** How do you make an item span multiple columns?
+<details>
+<summary>Answer</summary>
+
+Use `grid-column: span 2` or `grid-column: 1 / 3` (line numbers)
+
+</details>
+
+### Grid vs Flexbox
+
+**Use Flexbox When:**
+- One-dimensional layout (row OR column)
+- Navigation bars, button groups
+- Small components
+- Centering elements
+
+**Use Grid When:**
+- Two-dimensional layout (row AND column)
+- Complex page layouts, dashboards
+- Image galleries, product grids
+- Precise control over both axes
+
+**They Can Work Together:**
+- Grid for overall page layout
+- Flexbox for components within Grid
+
+### Final Challenge
+
+**Task:** Create a responsive layout that uses ALL Grid concepts:
+- Grid template areas for page structure
+- Responsive columns with auto-fit and minmax
+- Items spanning multiple columns/rows
+- Named areas for readability
+- Time: 10 minutes
+- Goal: Build a complete responsive page layout
+
+<details>
+<summary>Solution Hint</summary>
+
+Use `grid-template-areas` for the main layout, `repeat(auto-fit, minmax(250px, 1fr))` for responsive components, and `grid-column: span X` for spanning items
+
+</details>
 
 ---
 
-### Practice Challenges (5 minutes)
-
-**Challenge 1:** Create a grid with 3 columns where the middle column is twice as wide as the outer columns.
-
-**Challenge 2:** Create a responsive card grid that automatically adjusts the number of columns based on screen size.
-
-**Challenge 3:** Create a layout with header, sidebar, main content, and footer using grid template areas.
-
----
-
-### Homework Assignment
+## Homework Assignment
 
 **Task:** Create a complete responsive dashboard using CSS Grid.
 
@@ -954,5 +1073,7 @@ Yes! A common pattern:
 ---
 
 ## End of Session 6
+
+**Summary:** In this session, you learned about CSS Grid (introduction, parent properties like grid-template-columns, grid-template-rows, grid-template-areas, gap, and alignment, child properties like grid-column, grid-row, grid-area, justify-self, align-self, and responsive tools like minmax, auto-fill, auto-fit). ALL concepts (Sections 1-4) were practiced through interactive exercises (Explain → Example → Try it yourself → Predict → Experiment → Challenge → Bug Hunting → Quiz), followed by a comprehensive grid dashboard project that integrated all Grid concepts for real-world application. The session also covered when to use Grid vs Flexbox and how they can work together.
 
 **Next Session:** Transitions, Transforms, Animations (CSS Transitions, 2D/3D Transforms, @keyframes, Animation properties, Filters, Gradients, practical animation examples)
