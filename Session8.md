@@ -1,153 +1,389 @@
 # Session 8: Advanced Selectors + Responsive + Final Project
 
-## Duration Breakdown
-- **1 Hour**: Theoretical Explanation + Live Coding
-- **1.5 Hours**: Practical Application (Student writes code)
-- **0.5 Hours**: Review, Questions, Problem Solving
+## Duration Breakdown (2.5 Hours Total)
+- **1.5 Hours**: Interactive Learning (All Sections 1-7 with Explain → Example → Try it yourself → Predict → Experiment → Challenge → Bug Hunting → Quiz)
+- **20 Minutes**: Comprehensive Final Project (Single component combining all concepts)
+- **10 Minutes**: Review & Assessment
 
 ---
 
-## Part 1: Theoretical Explanation + Live Coding (1 Hour)
+## Part 1: Interactive Learning (1.5 Hours)
 
 ### Section 1: Relationship Selectors
 
-## Descendant Selector (Space)
+## Explain
+Relationship selectors target elements based on their relationship in the DOM:
+
+- ` ` (space) - Descendant selector (all nested elements)
+- `>` - Child selector (direct children only)
+- `+` - Adjacent sibling (immediately following)
+- `~` - General sibling (all following siblings)
+
+## Example
 ```css
-div p {
-    color: blue; /* All <p> inside <div> */
-}
+/* Descendant */
+div p { color: blue; }
+
+/* Child */
+div > p { color: red; }
+
+/* Adjacent sibling */
+h2 + p { color: green; }
+
+/* General sibling */
+h2 ~ p { color: purple; }
 ```
 
-## Child Selector (>)
+## Try it yourself
+Use relationship selectors.
+
+```html
+<div class="parent">
+    <p>Direct child</p>
+    <div>
+        <p>Nested (not direct)</p>
+    </div>
+</div>
+```
+
+```css
+/* Add relationship selectors */
+```
+
+## Predict
+What will happen with this code?
+
 ```css
 div > p {
-    color: red; /* Only direct child <p> of <div> */
+    color: red;
 }
 ```
 
-## Adjacent Sibling Selector (+)
+## Experiment
+1. What's the difference between space and `>`?
+2. How does `+` differ from `~`?
+3. Can you chain relationship selectors?
+
+## Challenge
+**Task:** Create a navigation where:
+- Style only direct children of nav
+- Style link immediately after logo
+- Style all links after logo
+- Time: 10 minutes
+- Hint: Use child and sibling selectors
+
+<details>
+<summary>Solution</summary>
+
+```html
+<nav class="nav">
+    <div class="logo">Logo</div>
+    <a href="#" class="link">Link 1</a>
+    <a href="#" class="link">Link 2</a>
+    <a href="#" class="link">Link 3</a>
+</nav>
+```
+
 ```css
-h2 + p {
-    color: green; /* <p> immediately after <h2> */
+.nav > .logo {
+    font-weight: bold;
+    color: #2563eb;
+}
+
+.logo + .link {
+    color: #10b981;
+}
+
+.logo ~ .link {
+    margin-left: 20px;
 }
 ```
 
-## General Sibling Selector (~)
+</details>
+
+## Bug Hunting
+Find the bug in this code:
+
 ```css
-h2 ~ p {
-    color: purple; /* All <p> after <h2> */
+.parent p {
+    color: blue;
 }
+/* All paragraphs styled, including nested */
 ```
+
+<details>
+<summary>Solution</summary>
+
+If you only want direct children, use `parent > p` instead of `parent p`
+
+</details>
+
+## Quiz
+1. What does `>` select?
+2. What's the difference between `+` and `~`?
+3. Does space select direct children only?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. `>` selects only direct children of the parent
+2. `+` selects the immediately following sibling, `~` selects all following siblings
+3. No, space selects all descendants (nested at any level)
+
+</details>
 
 ---
 
 ### Section 2: Attribute Selectors
 
-## Has Attribute
+## Explain
+Attribute selectors target elements based on their HTML attributes:
+
+- `[attr]` - Has attribute
+- `[attr="value"]` - Exact match
+- `[attr^="value"]` - Starts with
+- `[attr$="value"]` - Ends with
+- `[attr*="value"]` - Contains
+
+## Example
 ```css
-[target] {
-    border: 2px solid blue;
-}
+[target] { border: 2px solid blue; }
+[type="text"] { background: yellow; }
+[href^="https"] { color: green; }
+[src$=".jpg"] { border: 2px solid red; }
+[class*="button"] { padding: 10px; }
 ```
 
-## Exact Match
-```css
-[type="text"] {
-    background-color: yellow;
-}
+## Try it yourself
+Use attribute selectors.
+
+```html
+<a href="https://example.com" target="_blank">External</a>
+<input type="text" placeholder="Text">
+<div class="btn-primary">Button</div>
 ```
 
-## Starts With
+```css
+/* Add attribute selectors */
+```
+
+## Predict
+What will happen with this code?
+
 ```css
 [href^="https"] {
     color: green;
 }
 ```
 
-## Ends With
+## Experiment
+1. What does `^=` select?
+2. How does `$=` work?
+3. Try combining attribute selectors
+
+## Challenge
+**Task:** Style elements where:
+- All links with target="_blank" get a special icon
+- All inputs with type="text" have blue border
+- All classes containing "btn" have button styling
+- Time: 10 minutes
+- Hint: Use `*=` for partial matches
+
+<details>
+<summary>Solution</summary>
+
 ```css
-[src$=".jpg"] {
-    border: 2px solid red;
+[target="_blank"]::after {
+    content: " ↗";
+}
+
+[type="text"] {
+    border: 2px solid #2563eb;
+    padding: 10px;
+}
+
+[class*="btn"] {
+    padding: 10px 20px;
+    border-radius: 6px;
+    background: #2563eb;
+    color: white;
 }
 ```
 
-## Contains
+</details>
+
+## Bug Hunting
+Find the bug in this code:
+
 ```css
-[class*="button"] {
-    padding: 10px;
+[href="https"] {
+    color: green;
 }
+/* Not matching https://example.com */
 ```
+
+<details>
+<summary>Solution</summary>
+
+Use `^=` for starts with: `[href^="https"]` instead of exact match
+
+</details>
+
+## Quiz
+1. What does `[attr]` select?
+2. What's the difference between `^=` and `$=`?
+3. How do you select based on partial match?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. Elements that have the specified attribute, regardless of value
+2. `^=` matches strings starting with value, `$=` matches strings ending with value
+3. Use `*=` for partial match anywhere in the attribute value
+
+</details>
 
 ---
 
 ### Section 3: Responsive Design
 
-## Viewport Meta Tag
-```html
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-```
+## Explain
+Responsive design adapts layouts to different screen sizes:
 
-This is essential for responsive design.
+- Viewport meta tag is essential
+- Media queries apply styles based on conditions
+- `min-width` for mobile-first approach
+- `max-width` for desktop-first approach
+- Breakpoints: 480px, 768px, 1024px, 1200px
 
-## Media Queries
+## Example
 ```css
-/* Mobile First Approach */
+/* Mobile First */
 .container {
     width: 100%;
     padding: 10px;
 }
 
-/* Tablet */
 @media (min-width: 768px) {
     .container {
         width: 750px;
         padding: 20px;
     }
 }
-
-/* Desktop */
-@media (min-width: 1024px) {
-    .container {
-        width: 1000px;
-        padding: 30px;
-    }
-}
 ```
 
-## Max Width Media Query
+## Try it yourself
+Create responsive styles.
+
+```html
+<div class="responsive-box">Responsive Box</div>
+```
+
+```css
+.responsive-box {
+    /* Add base styles */
+}
+
+/* Add media query for larger screens */
+```
+
+## Predict
+What will happen with this code?
+
 ```css
 @media (max-width: 600px) {
-    .navigation {
+    .nav {
         flex-direction: column;
     }
 }
 ```
 
-## Min Width Media Query
+## Experiment
+1. What happens at different breakpoints?
+2. Try min-width vs max-width
+3. How do media queries cascade?
+
+## Challenge
+**Task:** Create a responsive card grid with:
+- 1 column on mobile
+- 2 columns on tablet
+- 3 columns on desktop
+- Time: 10 minutes
+- Hint: Use min-width media queries with Grid
+
+<details>
+<summary>Solution</summary>
+
 ```css
+.card-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
 @media (min-width: 768px) {
-    .sidebar {
-        display: block;
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .card-grid {
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 ```
+
+</details>
+
+## Bug Hunting
+Find the bug in this code:
+
+```css
+@media (min-width: 768px) {
+    .container {
+        width: 100%;
+    }
+}
+/* Still full width on desktop */
+```
+
+<details>
+<summary>Solution</summary>
+
+Missing max-width constraint. Add `max-width: 1200px; margin: 0 auto;` in the media query
+
+</details>
+
+## Quiz
+1. What is the viewport meta tag?
+2. What does `min-width` target?
+3. What are common breakpoints?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. Meta tag that controls how the webpage is displayed on mobile devices
+2. Screens larger than or equal to the specified width (mobile-first)
+3. Common breakpoints: 480px (mobile), 768px (tablet), 1024px (desktop), 1200px (large desktop)
+
+</details>
 
 ---
 
 ### Section 4: Mobile-First Design
 
-## What is Mobile-First
-Start designing for mobile devices first, then progressively enhance for larger screens.
+## Explain
+Mobile-first design starts with mobile styles, then enhances for larger screens:
 
-## Benefits
-- Faster mobile performance
-- Better user experience
-- Cleaner code
-- Progressive enhancement
+- Base styles for mobile (default)
+- Progressive enhancement with `min-width`
+- Better performance on mobile
+- Cleaner, more maintainable code
 
 ## Example
 ```css
-/* Base styles (mobile) */
+/* Mobile (base) */
 .container {
     width: 100%;
     padding: 15px;
@@ -157,7 +393,6 @@ Start designing for mobile devices first, then progressively enhance for larger 
 @media (min-width: 768px) {
     .container {
         width: 750px;
-        padding: 20px;
     }
 }
 
@@ -165,82 +400,308 @@ Start designing for mobile devices first, then progressively enhance for larger 
 @media (min-width: 1024px) {
     .container {
         width: 1000px;
-        padding: 30px;
     }
 }
 ```
+
+## Try it yourself
+Create mobile-first styles.
+
+```html
+<div class="mobile-first-box">Mobile First</div>
+```
+
+```css
+/* Add mobile-first approach */
+```
+
+## Predict
+What will happen with this code?
+
+```css
+.element {
+    font-size: 16px;
+}
+
+@media (min-width: 768px) {
+    .element {
+        font-size: 20px;
+    }
+}
+```
+
+## Experiment
+1. Why start with mobile styles?
+2. How does this differ from desktop-first?
+3. What are the performance benefits?
+
+## Challenge
+**Task:** Create mobile-first navigation with:
+- Hamburger menu on mobile
+- Horizontal links on tablet
+- Full menu on desktop
+- Time: 10 minutes
+- Hint: Use min-width breakpoints for progressive enhancement
+
+<details>
+<summary>Solution</summary>
+
+```css
+.nav {
+    flex-direction: column;
+}
+
+@media (min-width: 768px) {
+    .nav {
+        flex-direction: row;
+    }
+}
+
+@media (min-width: 1024px) {
+    .nav {
+        justify-content: space-between;
+    }
+}
+```
+
+</details>
+
+## Bug Hunting
+Find the bug in this code:
+
+```css
+@media (max-width: 768px) {
+    .element {
+        /* This is desktop-first, not mobile-first */
+    }
+}
+```
+
+<details>
+<summary>Solution</summary>
+
+Mobile-first uses `min-width`, not `max-width`. Base styles should be for mobile.
+
+</details>
+
+## Quiz
+1. What is mobile-first design?
+2. Why use `min-width` for mobile-first?
+3. What's the main benefit?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. Designing for mobile first, then enhancing for larger screens
+2. `min-width` progressively adds styles as screen size increases
+3. Better mobile performance and cleaner code structure
+
+</details>
 
 ---
 
 ### Section 5: Inheritance Values
 
-## inherit
+## Explain
+CSS inheritance values control how properties inherit from parent elements:
+
+- `inherit` - Inherit from parent
+- `initial` - Use CSS default value
+- `unset` - Inherit if inherited, otherwise initial
+- `revert` - Revert to browser default
+
+## Example
 ```css
 .child {
-    color: inherit; /* Inherit from parent */
+    color: inherit;
+    font-size: initial;
 }
 ```
 
-## unset
+## Try it yourself
+Use inheritance values.
+
+```html
+<div class="parent">
+    <div class="child">Child element</div>
+</div>
+```
+
 ```css
+.parent {
+    color: blue;
+}
+
 .child {
-    color: unset; /* Acts as inherit if inherited, otherwise initial */
+    /* Add inheritance value */
 }
 ```
 
-## initial
+## Predict
+What will happen with this code?
+
 ```css
 .child {
-    color: initial; /* Use initial CSS value */
+    color: initial;
 }
 ```
 
-## revert
+## Experiment
+1. What does `inherit` do?
+2. How does `initial` differ from `inherit`?
+3. When would you use `revert`?
+
+## Challenge
+**Task:** Create a component where:
+- Child inherits parent's text color
+- Child uses initial font size
+- Border uses unset
+- Time: 8 minutes
+- Hint: Mix different inheritance values
+
+<details>
+<summary>Solution</summary>
+
 ```css
+.parent {
+    color: #2563eb;
+    font-size: 16px;
+    border: 2px solid #2563eb;
+}
+
 .child {
-    color: revert; /* Revert to browser default */
+    color: inherit;
+    font-size: initial;
+    border: unset;
 }
 ```
+
+</details>
+
+## Bug Hunting
+Find the bug in this code:
+
+```css
+.child {
+    color: inherit;
+    /* Color not inherited */
+}
+```
+
+<details>
+<summary>Solution</summary>
+
+Parent must have a color set for child to inherit it. Ensure parent has explicit color.
+
+</details>
+
+## Quiz
+1. What does `inherit` do?
+2. What's the difference between `initial` and `unset`?
+3. When use `revert`?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. Inherits the computed value from the parent element
+2. `initial` always uses CSS default, `unset` inherits if property is inherited
+3. Use `revert` to reset to browser default styles
+
+</details>
 
 ---
 
 ### Section 6: Debugging CSS with DevTools
 
-## Elements Panel
-- View HTML structure
-- Inspect elements
-- See applied styles
-- Modify DOM
+## Explain
+Browser DevTools help debug CSS issues efficiently:
 
-## Styles Panel
-- View all CSS rules
-- Edit CSS in real-time
-- Disable specific rules
-- See specificity calculation
+- **Elements Panel** - Inspect HTML structure
+- **Styles Panel** - View and edit CSS rules
+- **Computed Panel** - See final computed values
+- Check specificity, crossed-out rules, and inheritance
 
-## Computed Panel
-- See final computed values
-- Understand inherited values
-- Debug layout issues
+## Example
+1. Right-click element → Inspect
+2. View Styles panel for applied rules
+3. Check Computed panel for final values
+4. Edit CSS in real-time
 
-## Common Debugging Steps
-1. Inspect the element
-2. Check applied styles
-3. Look for crossed-out rules
-4. Check specificity
-5. Verify CSS file is loaded
-6. Check for syntax errors
+## Try it yourself
+Practice debugging steps.
+
+1. Open browser DevTools (F12)
+2. Inspect an element
+3. View its styles
+4. Try editing a property
+
+## Predict
+What does a crossed-out rule indicate?
+
+## Experiment
+1. How do you check specificity?
+2. What does the Computed panel show?
+3. How do you disable a rule temporarily?
+
+## Challenge
+**Task:** Debug a styling issue where:
+- Element not showing expected color
+- Margin not applying
+- Centering not working
+- Time: 10 minutes
+- Hint: Use DevTools to check specificity and computed values
+
+<details>
+<summary>Solution</summary>
+
+1. Inspect element
+2. Check Styles panel for crossed-out rules (specificity issue)
+3. Check Computed panel for final values
+4. Look for inherited vs explicit values
+5. Verify CSS file is loaded (Network panel)
+
+</details>
+
+## Bug Hunting
+Find the bug in this scenario:
+
+Styles not applying despite correct CSS.
+
+<details>
+<summary>Solution</summary>
+
+Check if CSS file is loaded in Network panel, verify no syntax errors, check specificity in Styles panel
+
+</details>
+
+## Quiz
+1. What does a crossed-out rule mean?
+2. Which panel shows final computed values?
+3. How do you edit CSS in DevTools?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. A more specific selector is overriding the rule
+2. Computed panel shows final computed values after all CSS rules
+3. In the Styles panel, click on property values to edit them
+
+</details>
 
 ---
 
 ### Section 7: Accessibility Basics
 
-## Color Contrast
-Ensure sufficient contrast between text and background.
-- WCAG AA: 4.5:1 for normal text
-- WCAG AAA: 7:1 for normal text
+## Explain
+Accessibility ensures your CSS is usable by everyone:
 
-## Focus States
+- Color contrast (WCAG AA: 4.5:1)
+- Focus states for keyboard navigation
+- Semantic HTML for screen readers
+- ARIA attributes when needed
+- Relative font sizes
+
+## Example
 ```css
 button:focus {
     outline: 2px solid #2563eb;
@@ -248,710 +709,371 @@ button:focus {
 }
 ```
 
-## Semantic HTML
-Use proper HTML elements for accessibility.
+## Try it yourself
+Add accessibility features.
 
-## ARIA Attributes
+```html
+<button class="accessible-button">Button</button>
+```
+
 ```css
-[aria-hidden="true"] {
-    display: none;
+.accessible-button {
+    /* Add focus state */
 }
 ```
 
-## Font Sizes
-Use relative units for text sizing.
+## Predict
+What will happen with this code?
 
-## Alt Text
-Always provide alt text for images.
+```css
+button:focus {
+    outline: none;
+}
+```
+
+## Experiment
+1. Why are focus states important?
+2. How do you check color contrast?
+3. What semantic HTML helps with?
+
+## Challenge
+**Task:** Create accessible components with:
+- Proper focus states on all interactive elements
+- Sufficient color contrast
+- Semantic HTML structure
+- Time: 10 minutes
+- Hint: Use contrast checker tools and proper outline styles
+
+<details>
+<summary>Solution</summary>
+
+```css
+button:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
+a:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
+input:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
+/* Ensure sufficient contrast */
+.text {
+    color: #1f2937; /* On white background */
+}
+```
+
+</details>
+
+## Bug Hunting
+Find the bug in this code:
+
+```css
+button {
+    outline: none;
+    /* Not keyboard accessible */
+}
+```
+
+<details>
+<summary>Solution</summary>
+
+Removing outline without replacement makes it inaccessible. Add custom focus state with other visual indicator.
+
+</details>
+
+## Quiz
+1. What is WCAG AA contrast ratio?
+2. Why are focus states important?
+3. What does semantic HTML help with?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. 4.5:1 contrast ratio for normal text
+2. Focus states allow keyboard navigation for users who can't use mouse
+3. Semantic HTML helps screen readers understand content structure
+
+</details>
 
 ---
 
-## Part 2: Practical Application (1.5 Hours)
+## Part 2: Comprehensive Final Project (20 minutes)
 
-### Exercise 1: Advanced Selectors Practice (20 minutes)
+### Project: Complete Responsive E-Commerce Website
 
-**Task:**
-Create examples using relationship and attribute selectors.
+**Task:** Create a comprehensive e-commerce website that demonstrates ALL CSS concepts learned throughout the course:
 
-**HTML:**
+**Requirements:**
+1. **Advanced Selectors**
+   - Relationship selectors for navigation
+   - Attribute selectors for form inputs
+   - Pseudo-classes for interactive states
+
+2. **CSS Variables & Theme**
+   - Global color, spacing, typography variables
+   - Component-specific variable overrides
+   - Easy theme switching capability
+
+3. **Layout Systems**
+   - Flexbox for navigation and components
+   - Grid for product gallery
+   - Responsive breakpoints (mobile-first)
+
+4. **Animations & Transitions**
+   - Smooth hover transitions
+   - Transform effects on cards
+   - Loading animations
+   - 3D flip cards for featured products
+
+5. **Responsive Design**
+   - Mobile-first approach
+   - Proper viewport meta tag
+   - Responsive breakpoints (480px, 768px, 1024px)
+
+6. **Accessibility**
+   - Proper focus states
+   - Sufficient color contrast
+   - Semantic HTML structure
+   - ARIA attributes where needed
+
+**Time:** 20 minutes
+**Hint:** This is the capstone project - integrate everything from Sessions 1-7
+
+<details>
+<summary>Solution (High-Level Structure)</summary>
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Selectors</title>
-    <link rel="stylesheet" href="advanced-selectors.css">
+    <title>Final E-Commerce Project</title>
+    <link rel="stylesheet" href="final.css">
 </head>
 <body>
-    <h1>Advanced Selectors</h1>
-    
-    <h2>Relationship Selectors</h2>
-    <div class="parent">
-        <p>Direct child paragraph</p>
-        <div>
-            <p>Nested paragraph (not direct child)</p>
-        </div>
-    </div>
-    
-    <h2>Attribute Selectors</h2>
-    <a href="https://example.com" target="_blank">External Link</a>
-    <a href="page.html">Internal Link</a>
-    <input type="text" placeholder="Text input">
-    <input type="email" placeholder="Email input">
-    <div class="button-primary">Primary Button</div>
-    <div class="button-secondary">Secondary Button</div>
-</body>
-</html>
-```
-
-**CSS:**
-```css
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background-color: #f3f4f6;
-}
-
-h1 {
-    text-align: center;
-    color: #1f2937;
-    margin-bottom: 30px;
-}
-
-h2 {
-    color: #1f2937;
-    margin-top: 30px;
-    margin-bottom: 15px;
-}
-
-/* Relationship Selectors */
-.parent {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
-.parent > p {
-    color: #2563eb;
-    font-weight: bold;
-}
-
-.parent div p {
-    color: #4b5563;
-}
-
-/* Attribute Selectors */
-[target="_blank"] {
-    color: #10b981;
-    font-weight: bold;
-}
-
-[type="text"] {
-    border: 2px solid #2563eb;
-    padding: 10px;
-    border-radius: 4px;
-    margin-right: 10px;
-}
-
-[type="email"] {
-    border: 2px solid #f59e0b;
-    padding: 10px;
-    border-radius: 4px;
-}
-
-[class*="button"] {
-    padding: 10px 20px;
-    border-radius: 4px;
-    display: inline-block;
-    margin: 5px;
-}
-
-.button-primary {
-    background-color: #2563eb;
-    color: white;
-}
-
-.button-secondary {
-    background-color: #10b981;
-    color: white;
-}
-```
-
----
-
-### Exercise 2: Responsive Navigation (25 minutes)
-
-**Task:**
-Create a responsive navigation using media queries.
-
-**HTML:**
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Navigation</title>
-    <link rel="stylesheet" href="responsive-nav.css">
-</head>
-<body>
+    <!-- Navigation with Flexbox -->
     <nav class="navbar">
-        <div class="logo">MyBrand</div>
+        <div class="logo">Shop</div>
         <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Products</a></li>
+            <li><a href="#">About</a></li>
         </ul>
-        <button class="menu-toggle">☰</button>
+        <button class="cart-btn">Cart (0)</button>
     </nav>
-    
-    <div class="content">
-        <h1>Responsive Navigation</h1>
-        <p>Resize the browser to see the navigation adapt.</p>
-    </div>
-</body>
-</html>
-```
 
-**CSS:**
-```css
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+    <!-- Hero with Gradient -->
+    <section class="hero">
+        <h1>Welcome to Our Store</h1>
+        <p>Amazing products at great prices</p>
+        <button class="cta-btn">Shop Now</button>
+    </section>
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f3f4f6;
-}
+    <!-- Product Grid with Grid -->
+    <section class="products">
+        <h2>Featured Products</h2>
+        <div class="product-grid">
+            <!-- Product cards with hover effects -->
+        </div>
+    </section>
 
-.navbar {
-    background-color: #2563eb;
-    color: white;
-    padding: 15px 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    font-size: 24px;
-    font-weight: bold;
-}
-
-.nav-links {
-    list-style: none;
-    display: flex;
-    gap: 30px;
-}
-
-.nav-links a {
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-}
-
-.content {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 20px;
-    text-align: center;
-}
-
-/* Tablet and below */
-@media (max-width: 768px) {
-    .nav-links {
-        display: none;
-        flex-direction: column;
-        position: absolute;
-        top: 60px;
-        left: 0;
-        right: 0;
-        background-color: #2563eb;
-        padding: 20px;
-        gap: 15px;
-    }
-    
-    .nav-links.active {
-        display: flex;
-    }
-    
-    .menu-toggle {
-        display: block;
-    }
-}
-
-/* Mobile */
-@media (max-width: 480px) {
-    .navbar {
-        padding: 10px 20px;
-    }
-    
-    .logo {
-        font-size: 20px;
-    }
-    
-    .content {
-        padding: 15px;
-    }
-}
-```
-
----
-
-### Exercise 3: Final Project - Responsive Product Store (45 minutes)
-
-**Task:**
-Create a complete responsive product store using all CSS concepts learned.
-
-**HTML:**
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Product Store</title>
-    <link rel="stylesheet" href="final-project.css">
-</head>
-<body>
-    <header class="header">
-        <div class="logo">TechStore</div>
-        <nav class="nav">
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#products">Products</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-        <button class="cart-button">Cart (0)</button>
-    </header>
-    
-    <main class="main-content">
-        <section class="hero">
-            <h1>Welcome to TechStore</h1>
-            <p>Discover the latest technology products</p>
-            <button class="cta-button">Shop Now</button>
-        </section>
-        
-        <section class="products-section">
-            <h2>Featured Products</h2>
-            <div class="products-grid">
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="https://via.placeholder.com/300" alt="Laptop">
-                    </div>
-                    <h3>Laptop Pro</h3>
-                    <p class="price">$999.99</p>
-                    <button class="add-to-cart">Add to Cart</button>
-                </div>
-                
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="https://via.placeholder.com/300" alt="Headphones">
-                    </div>
-                    <h3>Wireless Headphones</h3>
-                    <p class="price">$199.99</p>
-                    <button class="add-to-cart">Add to Cart</button>
-                </div>
-                
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="https://via.placeholder.com/300" alt="Smartphone">
-                    </div>
-                    <h3>Smartphone X</h3>
-                    <p class="price">$699.99</p>
-                    <button class="add-to-cart">Add to Cart</button>
-                </div>
-                
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="https://via.placeholder.com/300" alt="Tablet">
-                    </div>
-                    <h3>Tablet Pro</h3>
-                    <p class="price">$449.99</p>
-                    <button class="add-to-cart">Add to Cart</button>
-                </div>
-            </div>
-        </section>
-    </main>
-    
+    <!-- Footer -->
     <footer class="footer">
-        <p>&copy; 2024 TechStore. All rights reserved.</p>
+        <p>&copy; 2024 All rights reserved</p>
     </footer>
 </body>
 </html>
 ```
 
-**CSS:**
 ```css
 /* CSS Variables */
 :root {
-    --primary-color: #2563eb;
-    --secondary-color: #10b981;
-    --text-color: #1f2937;
-    --background-color: #f3f4f6;
+    --primary: #2563eb;
+    --secondary: #10b981;
+    --text: #1f2937;
+    --bg: #f3f4f6;
     --white: #ffffff;
     --spacing-sm: 10px;
     --spacing-md: 20px;
     --spacing-lg: 30px;
-    --border-radius: 8px;
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --radius: 8px;
 }
 
-/* Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* Reset & Base */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: sans-serif; background: var(--bg); color: var(--text); }
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    line-height: 1.6;
-}
-
-/* Header */
-.header {
-    background-color: var(--white);
-    padding: var(--spacing-md) var(--spacing-lg);
+/* Navigation - Flexbox */
+.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: var(--shadow);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-.logo {
-    font-size: 24px;
-    font-weight: bold;
-    color: var(--primary-color);
+    padding: var(--spacing-md);
+    background: var(--white);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .nav-links {
-    list-style: none;
     display: flex;
     gap: var(--spacing-md);
+    list-style: none;
 }
 
 .nav-links a {
-    color: var(--text-color);
+    color: var(--text);
     text-decoration: none;
-    font-weight: 500;
     transition: color 0.3s;
 }
 
 .nav-links a:hover {
-    color: var(--primary-color);
+    color: var(--primary);
 }
 
-.cart-button {
-    background-color: var(--primary-color);
-    color: var(--white);
-    border: none;
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.3s;
-}
-
-.cart-button:hover {
-    background-color: #1d4ed8;
-}
-
-/* Main Content */
-.main-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: var(--spacing-lg);
-}
-
-/* Hero Section */
+/* Hero - Gradient */
 .hero {
-    background: linear-gradient(135deg, var(--primary-color), #7c3aed);
+    background: linear-gradient(135deg, var(--primary), #7c3aed);
     color: var(--white);
     padding: 60px var(--spacing-lg);
-    border-radius: var(--border-radius);
     text-align: center;
-    margin-bottom: var(--spacing-lg);
 }
 
-.hero h1 {
-    font-size: 48px;
-    margin-bottom: var(--spacing-md);
-}
-
-.hero p {
-    font-size: 18px;
-    margin-bottom: var(--spacing-lg);
-    opacity: 0.9;
-}
-
-.cta-button {
-    background-color: var(--white);
-    color: var(--primary-color);
-    border: none;
-    padding: var(--spacing-md) var(--spacing-lg);
-    border-radius: var(--border-radius);
-    font-size: 18px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.cta-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-}
-
-/* Products Section */
-.products-section h2 {
-    color: var(--text-color);
-    margin-bottom: var(--spacing-lg);
-    font-size: 32px;
-}
-
-.products-grid {
+/* Product Grid - Grid */
+.product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: var(--spacing-md);
+    padding: var(--spacing-lg);
 }
 
 .product-card {
-    background-color: var(--white);
-    border-radius: var(--border-radius);
+    background: var(--white);
     padding: var(--spacing-md);
-    box-shadow: var(--shadow);
+    border-radius: var(--radius);
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .product-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
 }
 
-.product-image {
-    margin-bottom: var(--spacing-md);
+/* Focus States - Accessibility */
+button:focus, a:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
 }
 
-.product-image img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: var(--border-radius);
+/* Responsive - Mobile First */
+@media (min-width: 768px) {
+    .hero { padding: 80px var(--spacing-xl); }
 }
 
-.product-card h3 {
-    color: var(--text-color);
-    margin-bottom: var(--spacing-sm);
-    font-size: 18px;
-}
-
-.price {
-    color: var(--primary-color);
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: var(--spacing-md);
-}
-
-.add-to-cart {
-    width: 100%;
-    padding: var(--spacing-sm);
-    background-color: var(--primary-color);
-    color: var(--white);
-    border: none;
-    border-radius: var(--border-radius);
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.add-to-cart:hover {
-    background-color: #1d4ed8;
-}
-
-/* Footer */
-.footer {
-    background-color: var(--text-color);
-    color: var(--white);
-    text-align: center;
-    padding: var(--spacing-lg);
-    margin-top: var(--spacing-lg);
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .header {
-        flex-direction: column;
-        gap: var(--spacing-md);
-    }
-    
-    .nav-links {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    
-    .hero h1 {
-        font-size: 32px;
-    }
-    
-    .products-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    }
-}
-
-@media (max-width: 480px) {
-    .header {
-        padding: var(--spacing-md);
-    }
-    
-    .hero {
-        padding: 40px var(--spacing-md);
-    }
-    
-    .hero h1 {
-        font-size: 24px;
-    }
-    
-    .hero p {
-        font-size: 16px;
-    }
-    
-    .main-content {
-        padding: var(--spacing-md);
-    }
-    
-    .products-grid {
-        grid-template-columns: 1fr;
+@media (min-width: 1024px) {
+    .product-grid {
+        grid-template-columns: repeat(4, 1fr);
     }
 }
 ```
 
+</details>
+
 ---
 
-## Part 3: Review, Questions, Problem Solving (0.5 Hours)
+## Part 3: Review & Assessment (10 minutes)
 
-### Final Checklist (10 minutes)
+### Course Completion Checklist
 
-## CSS Fundamentals ✅
+**CSS Fundamentals ✅**
 - Box Model (padding, margin, border)
-- Display property
-- Position types
-- CSS selectors
-- CSS specificity
+- Display property and positioning
+- CSS selectors and specificity
+- Typography and colors
 
-## Typography & Colors ✅
-- Font properties
-- Text styling
-- Color formats (hex, rgb, rgba, hsl)
-- Text alignment and spacing
-
-## Layout Systems ✅
+**Layout Systems ✅**
 - Flexbox (parent and child properties)
 - CSS Grid (parent and child properties)
 - Responsive design principles
 
-## Advanced Features ✅
+**Advanced Features ✅**
 - CSS Variables
 - Transitions and animations
 - Transforms (2D and 3D)
 - Filters and gradients
 - Pseudo-classes and pseudo-elements
 
-## Best Practices ✅
-- CSS organization
-- Accessibility considerations
-- Performance optimization
-- Cross-browser compatibility
+**Modern Practices ✅**
+- Advanced selectors (relationship, attribute)
+- Mobile-first responsive design
+- Accessibility basics
+- Debugging with DevTools
 
----
-
-### Review Questions (10 minutes)
+### Quick Review Quiz
 
 **Question 1:** What is the difference between `>` and space in selectors?
-**Answer:** `>` selects direct children only, space selects all descendants.
+<details>
+<summary>Answer</summary>
 
-**Question 2:** What does `min-width` in media queries target?
-**Answer:** Screens larger than or equal to the specified width (mobile-first approach).
+`>` selects direct children only, space selects all descendants at any nesting level
 
-**Question 3:** What is the purpose of the viewport meta tag?
-**Answer:** It controls how the webpage is displayed on mobile devices, essential for responsive design.
+</details>
 
-**Question 4:** What does `inherit` do in CSS?
-**Answer:** Inherits the computed value of the property from the parent element.
+**Question 2:** What does mobile-first design mean?
+<details>
+<summary>Answer</summary>
 
-**Question 5:** How do you debug CSS using DevTools?
-**Answer:** Use the Elements panel to inspect, Styles panel to view and edit CSS, and Computed panel to see final values.
+Designing for mobile devices first with base styles, then progressively enhancing for larger screens using min-width media queries
 
-**Question 6:** What is WCAG contrast requirement for normal text?
-**Answer:** 4.5:1 contrast ratio for AA compliance.
+</details>
 
-**Question 7:** What is mobile-first design?
-**Answer:** Designing for mobile devices first, then progressively enhancing for larger screens.
+**Question 3:** What is WCAG AA contrast requirement?
+<details>
+<summary>Answer</summary>
 
-**Question 8:** What is the difference between `initial` and `unset`?
-**Answer:** `initial` uses the CSS default value, `unset` acts as inherit if the property is inherited, otherwise initial.
+4.5:1 contrast ratio for normal text to ensure accessibility
 
----
+</details>
 
-### Final Project Review (5 minutes)
+**Question 4:** How do you debug CSS using DevTools?
+<details>
+<summary>Answer</summary>
 
-**Congratulations!** You have completed the CSS Complete Course.
+Use Elements panel to inspect, Styles panel to view/edit CSS, and Computed panel to see final values and specificity
 
-**Key Achievements:**
-- Mastered CSS fundamentals
-- Learned modern layout systems (Flexbox & Grid)
-- Implemented responsive design
-- Created animations and transitions
-- Applied accessibility best practices
-- Built a complete responsive project
+</details>
+
+**Question 5:** What does `inherit` do in CSS?
+<details>
+<summary>Answer</summary>
+
+Inherits the computed value of the property from the parent element
+
+</details>
+
+### Congratulations! 🎉
+
+**You have successfully completed the CSS Complete Course!**
+
+**What you've mastered:**
+- All CSS fundamentals and best practices
+- Modern layout systems (Flexbox & Grid)
+- Advanced animations and visual effects
+- Responsive design and accessibility
+- Complete e-commerce website project
 
 **Next Steps:**
 - Practice building real projects
 - Learn JavaScript for interactivity
 - Explore CSS frameworks (optional)
-- Stay updated with CSS features
 - Build a portfolio of your work
-
----
-
-## End of Session 8
-
-## 🎉 Course Completion!
-
-**You have successfully completed the CSS Complete Course!**
-
-**What you've learned:**
-- CSS Fundamentals (Sessions 1-2)
-- Advanced Layout Systems (Sessions 3-6)
-- Animations and Visual Effects (Session 7)
-- Responsive Design and Accessibility (Session 8)
+- Stay updated with new CSS features
 
 **Keep practicing and building amazing websites!**
 
