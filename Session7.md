@@ -1,7 +1,7 @@
 # Session 7: Transitions, Transforms, Animations, Filters, Gradients
 
 ## Duration Breakdown (2.5 Hours Total)
-- **1.5 Hours**: Interactive Learning (All Sections 1-6 with Explain → Example → Try it yourself → Predict → Experiment → Challenge → Bug Hunting → Quiz)
+- **1.5 Hours**: Interactive Learning (All Sections 1-7 with Explain → Example → Try it yourself → Predict → Experiment → Challenge → Bug Hunting → Quiz)
 - **20 Minutes**: Comprehensive Project (Single component combining all concepts)
 - **10 Minutes**: Review & Assessment
 
@@ -821,6 +821,146 @@ Missing direction. Should be `linear-gradient(to right, blue, purple)` or simila
 
 ---
 
+### Section 7: CSS Animations (@keyframes)
+
+## Explain
+CSS animations allow you to create complex, multi-step animations using @keyframes:
+
+- `@keyframes` - Define animation sequences
+- `animation-name` - Name of the animation
+- `animation-duration` - How long the animation takes
+- `animation-timing-function` - Speed curve of animation
+- `animation-delay` - Delay before animation starts
+- `animation-iteration-count` - Number of times to repeat
+- `animation-direction` - Direction of animation
+- `animation-fill-mode` - State before/after animation
+- `animation-play-state` - Play/pause animation
+
+## Example
+```css
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+.animated {
+    animation: slideIn 1s ease-in-out;
+}
+```
+
+## Try it yourself
+Create elements with CSS animations.
+
+```html
+<div class="animated-box fade-in">Fade In</div>
+<div class="animated-box slide-up">Slide Up</div>
+<div class="animated-box bounce">Bounce</div>
+```
+
+```css
+/* Add keyframe animations */
+```
+
+## Predict
+What will happen with this code?
+
+```css
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.element {
+    animation: rotate 2s linear infinite;
+}
+```
+
+## Experiment
+1. What happens with different iteration counts?
+2. Try alternating animation direction
+3. How does animation-fill-mode work?
+4. What happens with multiple animations?
+
+## Challenge
+**Task:** Create a loading spinner with:
+- Continuous rotation animation
+- Pulse effect
+- Smooth easing
+- Infinite loop
+- Time: 10 minutes
+- Hint: Combine rotate and scale in keyframes
+
+<details>
+<summary>Solution</summary>
+
+```html
+<div class="loading-spinner"></div>
+```
+
+```css
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.1); }
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #e0e0e0;
+    border-top: 4px solid #2563eb;
+    border-radius: 50%;
+    animation: 
+        spin 1s linear infinite,
+        pulse 1.5s ease-in-out infinite;
+}
+```
+
+</details>
+
+## Bug Hunting
+Find the bug in this code:
+
+```css
+.buggy {
+    animation: slideIn;
+    /* Animation not working */
+}
+```
+
+<details>
+<summary>Solution</summary>
+
+Missing animation duration. Should be `animation: slideIn 1s;`
+
+</details>
+
+## Quiz
+1. What is the purpose of @keyframes?
+2. What does `animation-iteration-count: infinite` do?
+3. What is the difference between animation and transition?
+4. What does `animation-fill-mode: forwards` do?
+
+<details>
+<summary>Quiz Answers</summary>
+
+1. @keyframes defines the sequence of styles for an animation
+2. Makes the animation repeat infinitely without stopping
+3. Transitions are for simple state changes, animations use @keyframes for complex sequences
+4. Keeps the element in the final animation state after the animation completes
+
+</details>
+
+---
+
 ## Part 2: Comprehensive Project (20 minutes)
 
 ### Project: Interactive Animation Showcase
@@ -1042,6 +1182,6 @@ Combine transitions, transforms, animations, filters, and gradients into a singl
 
 ## End of Session 7
 
-**Summary:** In this session, you learned about CSS transitions (timing functions, delays, multiple properties), 2D transforms (scale, rotate, translate, skew), 3D transforms (rotateX/Y/Z, perspective, backface-visibility), 3D flip cards, CSS filters (grayscale, blur, brightness, etc.), and gradients (linear, radial, conic). ALL concepts (Sections 1-6) were practiced through interactive exercises (Explain → Example → Try it yourself → Predict → Experiment → Challenge → Bug Hunting → Quiz), followed by a comprehensive animation showcase project that integrated all visual effects for real-world application.
+**Summary:** In this session, you learned about CSS transitions (timing functions, delays, multiple properties), 2D transforms (scale, rotate, translate, skew), 3D transforms (rotateX/Y/Z, perspective, backface-visibility), 3D flip cards, CSS filters (grayscale, blur, brightness, etc.), gradients (linear, radial, conic), and CSS animations with @keyframes (animation sequences, timing functions, iteration counts, fill modes). ALL concepts (Sections 1-7) were practiced through interactive exercises (Explain → Example → Try it yourself → Predict → Experiment → Challenge → Bug Hunting → Quiz), followed by a comprehensive animation showcase project that integrated all visual effects for real-world application.
 
 **Next Session:** Advanced Selectors + Responsive + Final Project (Relationship selectors, attribute selectors, media queries, mobile-first design, debugging, accessibility, final project implementation)
