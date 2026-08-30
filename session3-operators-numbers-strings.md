@@ -1,133 +1,422 @@
-# Session 3: Operators, Numbers & Strings
+# Session 3: Operators, Numbers & Strings — Active Learning Redesign
 
-## 📚 Theory (1h)
+## Session Plan for the Instructor
 
-### Arithmetic Operators
+- **Total time:** approximately 90 to 120 minutes
+- **Pacing rule:** never explain theory continuously for more than 15–20 minutes. After every concept, students must write or predict code.
+- **Pedagogical pattern for every topic:**
+  1. **Problem** — a real mini-situation
+  2. **Guess** — ask: "What do you expect to happen?"
+  3. **Explain** — the shortest rule that fixes the problem
+  4. **Code** — live code written in front of the students, step by step
+  5. **Challenge** — students solve a small task on their own or in groups
+  6. **Review** — discuss the answer and the most common mistake
 
-Arithmetic operators perform mathematical operations on numbers.
+### Competition and Points
 
-#### Basic Arithmetic Operators
+- Award 1 point per correct prediction in the "Guess" phase.
+- Award 1–3 points per completed challenge, depending on difficulty.
+- Students can earn a "Bug Hunter" badge for each found intentional error.
+- Keep a simple tally on a shared board or in the chat.
 
-| Operator | Name | Description | Example |
-|----------|------|-------------|---------|
-| `+` | Addition | Adds two numbers | `5 + 3` = `8` |
-| `-` | Subtraction | Subtracts one number from another | `5 - 3` = `2` |
-| `*` | Multiplication | Multiplies two numbers | `5 * 3` = `15` |
-| `/` | Division | Divides one number by another | `6 / 3` = `2` |
-| `%` | Modulus | Returns remainder of division | `5 % 3` = `2` |
-| `**` | Exponentiation | Raises to the power of | `2 ** 3` = `8` |
+### Instructor Questions to Ask During the Session
 
-**Examples:**
+- "What do you expect to see in the console?"
+- "Why did JavaScript choose this result?"
+- "Which value is a string and which is a number?"
+- "What would you change to make this work correctly?"
+- "Can you say the rule in your own words?"
+- "What is the smallest code that proves your answer?"
+
+---
+
+## Part 0: Warm-Up — The Broken Pizza Receipt (5 minutes)
+
+### Problem
+
+A restaurant website calculates a receipt but the output is wrong.
+
+```javascript
+let price = 19.99;
+let quantity = 3;
+let tax = 8.5;
+let discount = 10;
+
+let total = price * quantity + tax - discount;
+console.log(total);
+```
+
+### Guess
+
+Ask the students: "What do you think the total will be? Is it correct for a real receipt?"
+
+### Explain
+
+The code adds the tax percent (`8.5`) and subtracts the discount percent (`10`) as numbers, not as percentages of the subtotal. We need arithmetic operators **and** the right formula.
+
+### Live Code
+
+```javascript
+let price = 19.99;
+let quantity = 3;
+let taxPercent = 8.5;
+let discountPercent = 10;
+
+let subtotal = price * quantity;
+let taxAmount = subtotal * taxPercent / 100;
+let discountAmount = subtotal * discountPercent / 100;
+let total = subtotal + taxAmount - discountAmount;
+
+console.log("Subtotal:", subtotal.toFixed(2));
+console.log("Tax:", taxAmount.toFixed(2));
+console.log("Discount:", discountAmount.toFixed(2));
+console.log("Total:", total.toFixed(2));
+```
+
+### Review
+
+- `*` multiplies first because of operator precedence.
+- `toFixed(2)` is a preview of what we will see in the Number section.
+- The warm-up introduces the core Mini Project at the end: a correct receipt generator.
+
+---
+
+## Part 1: Arithmetic Operators
+
+### 1.1 The Six Basic Operators
+
+#### Problem
+
+You are building a calculator. A student wrote this, but the results are confusing:
+
+```javascript
+console.log(10 + 2);
+console.log(10 - 2);
+console.log(10 * 2);
+console.log(10 / 2);
+console.log(10 % 2);
+console.log(10 ** 2);
+```
+
+#### Guess
+
+Ask: "Predict the output of each line. Which one gives the remainder? Which one is the power?"
+
+#### Explain
+
+JavaScript has six arithmetic operators:
+
+| Operator | Name | Example | Result |
+| --- | --- | --- | --- |
+| `+` | addition | `5 + 3` | `8` |
+| `-` | subtraction | `5 - 3` | `2` |
+| `*` | multiplication | `5 * 3` | `15` |
+| `/` | division | `6 / 3` | `2` |
+| `%` | modulus (remainder) | `5 % 3` | `2` |
+| `**` | exponentiation | `2 ** 3` | `8` |
+
+#### Live Code
+
 ```javascript
 // Basic operations
 console.log(5 + 3);    // 8
 console.log(10 - 4);   // 6
 console.log(6 * 7);    // 42
 console.log(15 / 3);   // 5
-console.log(17 % 5);   // 2 (remainder)
+console.log(17 % 5);   // 2
 console.log(2 ** 3);   // 8
 
 // Order of operations (PEMDAS)
-console.log(2 + 3 * 4);     // 14 (multiplication first)
-console.log((2 + 3) * 4);   // 20 (parentheses first)
-console.log(10 / 2 + 3 * 2); // 10 (division and multiplication first)
+console.log(2 + 3 * 4);      // 14, multiplication before addition
+console.log((2 + 3) * 4);    // 20, parentheses first
+console.log(10 / 2 + 3 * 2); // 10, division and multiplication before addition
 ```
 
-#### Special Cases with Arithmetic
+#### Challenge 1.1 — Basic Arithmetic (individual, 3 minutes)
 
-**Division by Zero:**
-```javascript
-console.log(10 / 0);      // Infinity
-console.log(-10 / 0);     // -Infinity
-console.log(0 / 0);       // NaN (Not a Number)
+- **Requirement:** Declare `let a = 15` and `let b = 4`. Print all six operations between them.
+- **Time limit:** 3 minutes
+- **Hints (optional):**
+  - Use `console.log(a + b);`
+  - For power, the operator is `**`.
+  - `a / b` will give `3.75` in JavaScript.
+
+#### Review
+
+Expected output:
+
+```
+19
+11
+60
+3.75
+3
+50625
 ```
 
-**Working with Decimals:**
+Common mistake: forgetting that `**` is power, not `*` twice. Award 1 point for correct full output.
+
+### 1.2 Division by Zero and Floating-Point Surprises
+
+#### Problem
+
+A beginner writes a discount calculator:
+
 ```javascript
-console.log(0.1 + 0.2);   // 0.30000000000000004 (floating point precision issue)
-console.log((0.1 + 0.2).toFixed(2)); // "0.30" (fixed precision)
+console.log(10 / 0);
+console.log(0 / 0);
+console.log(0.1 + 0.2);
 ```
 
-### Unary Plus & Negation
+#### Guess
 
-Unary operators work on a single operand.
+Ask: "Will `10 / 0` crash? Will `0.1 + 0.2` be exactly `0.3`?"
 
-#### Unary Plus (`+`)
+#### Explain
 
-Converts a value to a number (similar to `Number()`).
+- Division by zero does **not** crash in JavaScript; it returns `Infinity`, `-Infinity`, or `NaN`.
+- Decimal numbers are stored as binary floating-point values, so some calculations are not perfectly exact.
+- `toFixed(n)` turns a number into a string with `n` decimal places to hide the imprecision.
+
+#### Live Code
 
 ```javascript
-// Converting strings to numbers
+// Division by zero
+console.log(10 / 0);       // Infinity
+console.log(-10 / 0);      // -Infinity
+console.log(0 / 0);        // NaN (Not a Number)
+
+// Floating-point precision
+console.log(0.1 + 0.2);                 // 0.30000000000000004
+console.log((0.1 + 0.2).toFixed(2));    // "0.30"
+```
+
+#### Challenge 1.2 — Price Precision (individual, 3 minutes)
+
+- **Requirement:** Show `0.1 + 0.2 + 0.3` and then show the same result rounded to 2 decimal places.
+- **Time limit:** 3 minutes
+- **Hints (optional):**
+  - You can group the sum in parentheses.
+  - Use `.toFixed(2)` on the final result.
+
+#### Review
+
+Expected output looks like `0.6000000000000001` and then `"0.60"`. Emphasize that `toFixed` returns a **string**, not a number.
+
+### 1.3 Order of Operations
+
+#### Problem
+
+A quiz app must score a formula:
+
+```javascript
+let result = 10 + 6 / 2 * 3 - 1;
+```
+
+#### Guess
+
+Ask: "What is the result? Try to compute it by hand before I run it."
+
+#### Explain
+
+JavaScript follows the standard math order: parentheses, exponents, multiplication and division (left to right), addition and subtraction (left to right).
+
+#### Live Code
+
+```javascript
+console.log(10 + 6 / 2 * 3 - 1);     // 18
+console.log((10 + 6) / 2 * (3 - 1)); // 16
+console.log(((10 + 5) * 2 - 8) / 4); // 5.5
+```
+
+#### Challenge 1.3 — Add Parentheses (individual, 4 minutes)
+
+- **Requirement:** Write an expression using the numbers `10`, `5`, `2`, and `4` and the operators `+`, `*`, `-`, and `/` that gives the result `5`.
+- **Time limit:** 4 minutes
+- **Hints (optional):**
+  - One possible answer is `((10 + 5) * 2 - 8) / 4`.
+  - Use parentheses to control the order.
+
+#### Review
+
+Accept any correct expression. Discuss the importance of parentheses for clarity and correctness.
+
+---
+
+## Part 2: Unary Plus and Negation
+
+### 2.1 Converting a String to a Number
+
+#### Problem
+
+A user types a price as a string, and the code does not subtract correctly:
+
+```javascript
+let price = "100";
+let discount = 20;
+console.log(price - discount);
+console.log(price + discount);
+```
+
+#### Guess
+
+Ask: "Both lines use `price` and `discount`. Will both give the same result?"
+
+#### Explain
+
+- Unary plus `+value` converts a value to a number.
+- Unary minus `-value` converts a value to a number and then negates it.
+- Minus, times, divide, and modulus automatically try to convert strings to numbers.
+- Plus does **not** convert: if one side is a string, it concatenates.
+
+#### Live Code
+
+```javascript
+// Unary plus
 console.log(+"42");        // 42
 console.log(+"3.14");      // 3.14
 console.log(+"Hello");     // NaN
-
-// Converting booleans
 console.log(+true);        // 1
 console.log(+false);       // 0
-
-// Converting null and undefined
 console.log(+null);        // 0
 console.log(+undefined);   // NaN
 
-// Converting dates
-console.log(+new Date());  // timestamp (number)
-```
-
-#### Unary Negation (`-`)
-
-Converts a value to a number and negates it.
-
-```javascript
-// Negating numbers
-console.log(-42);          // -42
-console.log(-(-42));       // 42
-
-// Converting and negating
+// Unary negation
 console.log(-"42");        // -42
 console.log(-"3.14");      // -3.14
 console.log(-"Hello");     // NaN
-
-// With unary plus
-console.log(-+"42");       // -42 (first +, then -)
+console.log(-(-42));       // 42
 ```
 
-**Practical Uses:**
+#### Challenge 2.1 — Quick Converter (individual, 3 minutes)
+
+- **Requirement:** Declare `let input = "25"` and use the unary plus to convert it, then multiply by `4` and log the result.
+- **Time limit:** 3 minutes
+- **Hints (optional):**
+  - `let num = +input;`
+  - Then `console.log(num * 4);`
+
+#### Review
+
+Expected output: `100`. The key concept is that `+"25"` is a quick conversion.
+
+### 2.2 Practical Use: Temperature Converter
+
+#### Problem
+
+A weather app receives temperature as a string and must convert Celsius to Fahrenheit.
+
+#### Live Code
+
 ```javascript
-// Quick string to number conversion
-let strNumber = "100";
-let num = +strNumber;      // 100
+let celsiusString = "25";
+let celsius = +celsiusString;
+let fahrenheit = (celsius * 9 / 5) + 32;
+console.log(celsius + "C = " + fahrenheit + "F");
+// 25C = 77F
 
-// Calculating difference
-let x = 10;
-let y = 5;
-let difference = x - y;    // 5
-let negatedDiff = -(x - y); // -5
+let kelvin = celsius + 273.15;
+console.log(celsius + "C = " + kelvin + "K");
+// 25C = 298.15K
 ```
 
-### Type Coercion in Operations
+#### Challenge 2.2 — Celsius to Fahrenheit (individual, 4 minutes)
 
-JavaScript automatically converts types during operations.
+- **Requirement:** Write code that takes any Celsius string (for example `"0"`) and prints both the Fahrenheit and Kelvin values.
+- **Time limit:** 4 minutes
+- **Hints (optional):**
+  - Use `+` to convert the string.
+  - Formula: `F = C * 9 / 5 + 32`.
+  - Formula: `K = C + 273.15`.
 
-#### String Coercion with `+`
+#### Review
 
-When one operand is a string, `+` performs concatenation.
+For `"0"`, expected: `0C = 32F` and `0C = 273.15K`. Award 1 point for correct output.
+
+---
+
+## Part 3: Type Coercion — The Detective Section
+
+### 3.1 Plus with a String
+
+#### Problem
+
+A form sends the age as a string. The developer tries to add `5`:
+
+```javascript
+let age = "20";
+console.log(age + 5);
+```
+
+#### Guess
+
+Ask: "Will the result be `25`, `"25"`, `205`, or an error?"
+
+#### Explain
+
+If one operand of `+` is a string, JavaScript converts the other side to a string and concatenates.
+
+#### Live Code
 
 ```javascript
 // Number + String = String
-console.log(5 + "3");      // "53"
-console.log("10" + 20);    // "1020"
-console.log(1 + 2 + "3");  // "33" (1+2=3, then "3"+"3")
-console.log("1" + 2 + 3);  // "123" (string concatenation)
+console.log(5 + "3");        // "53"
+console.log("10" + 20);      // "1020"
+console.log(1 + 2 + "3");    // "33" (1+2 first, then concatenation)
+console.log("1" + 2 + 3);    // "123" (first "1"+2 becomes "12", then +3)
 
 // Boolean + String = String
 console.log(true + "Hello"); // "trueHello"
 console.log(false + "Bye");  // "falseBye"
 ```
 
-#### Numeric Coercion with `-`, `*`, `/`, `%`
+#### Challenge 3.1 — Predict the String (individual, 3 minutes)
 
-These operators convert strings to numbers.
+- **Requirement:** Without running, write the expected output for each line. Then run and check.
+
+```javascript
+console.log(10 + "10");
+console.log("10" + 10);
+console.log(5 + 5 + "5");
+console.log("5" + 5 + 5);
+```
+
+- **Time limit:** 3 minutes
+- **Hints (optional):**
+  - Work left to right.
+  - As soon as a string appears with `+`, the rest becomes string concatenation.
+
+#### Review
+
+Expected:
+
+```
+"1010"
+"1010"
+"105"
+"555"
+```
+
+### 3.2 Minus, Times, Divide, and Modulus with Strings
+
+#### Problem
+
+The same developer now uses `-`:
+
+```javascript
+console.log("10" - 5);
+console.log("10" * "5");
+```
+
+#### Guess
+
+Ask: "Now what happens? Does the minus also concatenate?"
+
+#### Explain
+
+For `-`, `*`, `/`, and `%`, JavaScript tries to convert both sides to numbers. This is why `"10" - "5"` becomes `5`.
+
+#### Live Code
 
 ```javascript
 // String - Number = Number
@@ -147,1136 +436,1295 @@ console.log("10" % 3);     // 1
 console.log("10" % "3");   // 1
 ```
 
-#### Coercion Edge Cases
+#### Challenge 3.2 — Coercion Pairs (individual, 4 minutes)
+
+- **Requirement:** For each expression, predict the result and then check it.
 
 ```javascript
-// NaN propagation
-console.log(NaN + 5);      // NaN
-console.log(NaN * 5);      // NaN
-
-// Null coercion
-console.log(null + 5);     // 5 (null becomes 0)
-console.log(null - 5);     // -5
-console.log(null * 5);     // 0
-
-// Undefined coercion
-console.log(undefined + 5); // NaN
-console.log(undefined - 5); // NaN
-
-// Boolean coercion
-console.log(true + 5);     // 6 (true becomes 1)
-console.log(false + 5);    // 5 (false becomes 0)
-console.log(true * 5);     // 5
-console.log(false * 5);    // 0
+console.log("8" / "2");
+console.log("8" - 2);
+console.log("8" + 2);
+console.log("8" * "2");
 ```
 
-### Assignment Operators
+- **Time limit:** 4 minutes
+- **Hints (optional):**
+  - Only `+` with a string causes concatenation.
+  - All other operators convert to numbers.
 
-Assignment operators assign values to variables.
+#### Review
 
-#### Basic Assignment
+Expected: `4`, `6`, `"82"`, `16`.
+
+### 3.3 Coercion Edge Cases
+
+#### Problem
+
+Some values are not what they seem. What is the result of `null + 5` or `undefined + 5`?
+
+#### Guess
+
+Ask students to vote or raise hands for each value: `null`, `undefined`, `true`, `false`, `NaN`.
+
+#### Explain
+
+| Value | Coerced to number | Example |
+| --- | --- | --- |
+| `null` | `0` | `null + 5` = `5` |
+| `undefined` | `NaN` | `undefined + 5` = `NaN` |
+| `true` | `1` | `true + 5` = `6` |
+| `false` | `0` | `false + 5` = `5` |
+| `NaN` | stays `NaN` | `NaN + 5` = `NaN` |
+
+#### Live Code
 
 ```javascript
-let x = 10;  // Simple assignment
+console.log(NaN + 5);         // NaN
+console.log(NaN * 5);         // NaN
+
+console.log(null + 5);        // 5
+console.log(null - 5);        // -5
+console.log(null * 5);        // 0
+
+console.log(undefined + 5);   // NaN
+console.log(undefined - 5);   // NaN
+
+console.log(true + 5);        // 6
+console.log(false + 5);       // 5
+console.log(true * 5);        // 5
+console.log(false * 5);       // 0
 ```
 
-#### Compound Assignment Operators
+#### Challenge 3.3 — Coercion Table (group, 6 minutes)
 
-| Operator | Name | Equivalent | Example |
-|----------|------|------------|---------|
-| `+=` | Add and assign | `x = x + y` | `x += 5` |
-| `-=` | Subtract and assign | `x = x - y` | `x -= 3` |
-| `*=` | Multiply and assign | `x = x * y` | `x *= 2` |
-| `/=` | Divide and assign | `x = x / y` | `x /= 4` |
-| `%=` | Modulus and assign | `x = x % y` | `x %= 3` |
-| `**=` | Exponent and assign | `x = x ** y` | `x **= 2` |
+- **Requirement:** In groups of 2 or 3, complete a table with the results of `value + 5` and `value * 5` for `null`, `undefined`, `true`, `false`, `NaN`, `"10"`, `"hello"`, `""`.
+- **Time limit:** 6 minutes
+- **Points:** 2 points for the group with the most correct entries.
+- **Hints (optional):**
+  - Use `console.log(value + 5, value * 5);` in the browser console.
+  - Remember that `undefined` becomes `NaN`.
 
-**Examples:**
-```javascript
-let x = 10;
+#### Review
 
-x += 5;   // x = 10 + 5 = 15
-console.log(x); // 15
-
-x -= 3;   // x = 15 - 3 = 12
-console.log(x); // 12
-
-x *= 2;   // x = 12 * 2 = 24
-console.log(x); // 24
-
-x /= 4;   // x = 24 / 4 = 6
-console.log(x); // 6
-
-x %= 4;   // x = 6 % 4 = 2
-console.log(x); // 2
-
-x **= 3;  // x = 2 ** 3 = 8
-console.log(x); // 8
-```
-
-#### String Concatenation Assignment
-
-```javascript
-let message = "Hello";
-message += " ";        // "Hello "
-message += "World";    // "Hello World"
-console.log(message);  // "Hello World"
-```
-
-#### Assignment with Type Coercion
-
-```javascript
-let x = "10";
-x += 5;   // "105" (string concatenation)
-console.log(x);
-
-let y = "10";
-y -= 5;   // 5 (numeric conversion)
-console.log(y);
-```
+Show the full table on the board. The group with the most correct entries wins 2 points.
 
 ---
 
-## 💻 Practical (1.5h)
+## Part 4: Assignment Operators
 
-### Exercise 1: Arithmetic Operators
+### 4.1 Simple and Compound Assignment
 
-```javascript
-// Exercise 1.1: Basic arithmetic operations
-console.log("=== Basic Arithmetic Operations ===");
+#### Problem
 
-let a = 15;
-let b = 4;
+A game score starts at `10`. You must add `5`, multiply by `2`, then subtract `10`. Writing `x = x + 5` every time is long.
 
-console.log("a =", a, "b =", b);
-console.log("a + b =", a + b);    // 19
-console.log("a - b =", a - b);    // 11
-console.log("a * b =", a * b);    // 60
-console.log("a / b =", a / b);    // 3.75
-console.log("a % b =", a % b);    // 3
-console.log("a ** b =", a ** b);  // 50625
-
-// Exercise 1.2: Order of operations
-console.log("\n=== Order of Operations ===");
-
-console.log("2 + 3 * 4 =", 2 + 3 * 4);       // 14
-console.log("(2 + 3) * 4 =", (2 + 3) * 4);   // 20
-console.log("10 + 6 / 2 =", 10 + 6 / 2);     // 13
-console.log("(10 + 6) / 2 =", (10 + 6) / 2); // 8
-
-// Exercise 1.3: Complex expression
-console.log("\n=== Complex Expression ===");
-
-let result = ((10 + 5) * 2 - 8) / 4;
-console.log("((10 + 5) * 2 - 8) / 4 =", result); // 5.5
-
-// Exercise 1.4: Practical calculator
-console.log("\n=== Practical Calculator ===");
-
-function calculate(price, quantity, taxRate, discount) {
-    let subtotal = price * quantity;
-    let taxAmount = subtotal * (taxRate / 100);
-    let discountAmount = subtotal * (discount / 100);
-    let total = subtotal + taxAmount - discountAmount;
-    
-    return {
-        subtotal: subtotal.toFixed(2),
-        taxAmount: taxAmount.toFixed(2),
-        discountAmount: discountAmount.toFixed(2),
-        total: total.toFixed(2)
-    };
-}
-
-let purchase = calculate(19.99, 3, 8.5, 10);
-console.log("Purchase calculation:", purchase);
-```
-
-### Exercise 2: Unary Plus & Negation
+#### Live Code
 
 ```javascript
-// Exercise 2.1: Unary plus conversion
-console.log("=== Unary Plus Conversion ===");
-
-console.log(+"42");           // 42
-console.log(+"3.14");         // 3.14
-console.log(+"Hello");        // NaN
-console.log(+true);          // 1
-console.log(+false);         // 0
-console.log(+null);          // 0
-console.log(+undefined);     // NaN
-
-// Exercise 2.2: Unary negation
-console.log("\n=== Unary Negation ===");
-
-console.log(-42);            // -42
-console.log(-3.14);          // -3.14
-console.log(-(-42));         // 42
-console.log(-"100");         // -100
-console.log(-"Hello");       // NaN
-
-// Exercise 2.3: Practical usage
-console.log("\n=== Practical Usage ===");
-
-// String to number conversion
-let strPrice = "19.99";
-let price = +strPrice;
-console.log("String price:", strPrice, "Number price:", price);
-
-// Calculating differences
-let initialScore = 100;
-let finalScore = 85;
-let scoreChange = finalScore - initialScore;
-console.log("Score change:", scoreChange);
-console.log("Absolute change:", Math.abs(scoreChange));
-
-// Temperature conversion
-let celsius = 25;
-let fahrenheit = (celsius * 9/5) + 32;
-console.log(`${celsius}°C = ${fahrenheit}°F`);
-
-let kelvin = celsius + 273.15;
-console.log(`${celsius}°C = ${kelvin}K`);
-```
-
-### Exercise 3: Type Coercion
-
-```javascript
-// Exercise 3.1: String coercion with +
-console.log("=== String Coercion with + ===");
-
-console.log(5 + "3");         // "53"
-console.log("10" + 20);       // "1020"
-console.log(1 + 2 + "3");     // "33"
-console.log("1" + 2 + 3);     // "123"
-console.log(true + "Hello");  // "trueHello"
-
-// Exercise 3.2: Numeric coercion with other operators
-console.log("\n=== Numeric Coercion ===");
-
-console.log("10" - 5);        // 5
-console.log("10" - "5");      // 5
-console.log("3" * 4);         // 12
-console.log("20" / 4);        // 5
-console.log("10" % 3);        // 1
-
-// Exercise 3.3: Edge cases
-console.log("\n=== Coercion Edge Cases ===");
-
-console.log(NaN + 5);         // NaN
-console.log(null + 5);        // 5
-console.log(undefined + 5);   // NaN
-console.log(true + 5);        // 6
-console.log(false + 5);       // 5
-
-// Exercise 3.4: Coercion challenges
-console.log("\n=== Coercion Challenges ===");
-
-// Challenge 1: What's the result?
-console.log("1" + 1);         // "11"
-console.log("1" - 1);         // 0
-console.log("1" * 1);         // 1
-console.log("1" / 1);         // 1
-
-// Challenge 2: Complex coercion
-console.log("10" + 5 + 2);    // "1052"
-console.log(10 + 5 + "2");    // "152"
-console.log("10" - 5 + 2);    // 7
-console.log(10 - "5" + 2);    // 7
-
-// Challenge 3: Boolean coercion
-console.log(true + true);     // 2
-console.log(false + false);   // 0
-console.log(true + false);    // 1
-console.log(true * true);     // 1
-console.log(true * false);    // 0
-```
-
-### Exercise 4: Assignment Operators
-
-```javascript
-// Exercise 4.1: Compound assignment
-console.log("=== Compound Assignment Operators ===");
-
 let x = 10;
-console.log("Initial x:", x);
 
-x += 5;
-console.log("After x += 5:", x);  // 15
+x += 5;   // same as x = x + 5
+console.log(x); // 15
 
-x -= 3;
-console.log("After x -= 3:", x);  // 12
+x *= 2;   // same as x = x * 2
+console.log(x); // 30
 
-x *= 2;
-console.log("After x *= 2:", x);  // 24
+x -= 10;  // same as x = x - 10
+console.log(x); // 20
+```
 
-x /= 4;
-console.log("After x /= 4:", x);  // 6
+#### Explain
 
-x %= 4;
-console.log("After x %= 4:", x);  // 2
+| Operator | Meaning | Example |
+| --- | --- | --- |
+| `+=` | add then assign | `x += 5` |
+| `-=` | subtract then assign | `x -= 3` |
+| `*=` | multiply then assign | `x *= 2` |
+| `/=` | divide then assign | `x /= 4` |
+| `%=` | modulus then assign | `x %= 3` |
+| `**=` | power then assign | `x **= 2` |
 
-x **= 3;
-console.log("After x **= 3:", x);  // 8
+#### Live Code — Full Example
 
-// Exercise 4.2: String concatenation assignment
-console.log("\n=== String Concatenation Assignment ===");
+```javascript
+let y = 10;
 
+y += 5;   // 15
+y -= 3;   // 12
+y *= 2;   // 24
+y /= 4;   // 6
+y %= 4;   // 2
+y **= 3;  // 8
+
+console.log(y); // 8
+```
+
+#### Challenge 4.1 — Assignment Trail (individual, 4 minutes)
+
+- **Requirement:** Start with `let score = 0`. Use only compound assignment operators to reach `score = 100`. You may use `+=`, `-=`, `*=`, `/=`, `%=`, `**=`.
+- **Time limit:** 4 minutes
+- **Example solution (do not show students):**
+
+```javascript
+let score = 0;
+score += 100;
+```
+
+- **Optional harder path:** use more than one operator.
+
+#### Review
+
+Accept any valid sequence. The simplest is `score += 100;`. Discuss how shorter code is easier to read.
+
+### 4.2 String Concatenation Assignment
+
+#### Problem
+
+Build a message one piece at a time.
+
+#### Live Code
+
+```javascript
 let message = "Hello";
 message += " ";
 message += "World";
 message += "!";
-console.log("Message:", message);  // "Hello World!"
-
-// Exercise 4.3: Counter pattern
-console.log("\n=== Counter Pattern ===");
-
-let counter = 0;
-console.log("Initial counter:", counter);
-
-counter += 1;  // Increment
-console.log("After increment:", counter);
-
-counter += 5;  // Add multiple
-console.log("After adding 5:", counter);
-
-counter -= 2;  // Decrement
-console.log("After subtracting 2:", counter);
-
-counter *= 3;  // Multiply
-console.log("After multiplying by 3:", counter);
-
-// Exercise 4.4: Practical example - shopping cart
-console.log("\n=== Shopping Cart Example ===");
-
-let cartTotal = 0;
-console.log("Initial cart total:", cartTotal);
-
-cartTotal += 19.99;  // Add item
-console.log("After adding $19.99:", cartTotal.toFixed(2));
-
-cartTotal += 5.50;   // Add another item
-console.log("After adding $5.50:", cartTotal.toFixed(2));
-
-cartTotal *= 0.9;    // Apply 10% discount
-console.log("After 10% discount:", cartTotal.toFixed(2));
-
-cartTotal += 2.00;   // Add shipping
-console.log("After adding $2.00 shipping:", cartTotal.toFixed(2));
+console.log(message); // "Hello World!"
 ```
 
-### Exercise 5: Number & Number Methods
+#### Challenge 4.2 — Build a Sentence (individual, 3 minutes)
+
+- **Requirement:** Start with an empty string and use `+=` to build the sentence `"I love JavaScript."`
+- **Time limit:** 3 minutes
+- **Hints (optional):**
+  - `let sentence = "";`
+  - Add words with `+= "word "`.
+
+#### Review
+
+Expected code:
 
 ```javascript
-// Exercise 5.1: Number properties
-console.log("=== Number Properties ===");
+let sentence = "";
+sentence += "I ";
+sentence += "love ";
+sentence += "JavaScript.";
+console.log(sentence);
+```
 
-console.log("Maximum safe integer:", Number.MAX_SAFE_INTEGER);
-console.log("Minimum safe integer:", Number.MIN_SAFE_INTEGER);
-console.log("Maximum value:", Number.MAX_VALUE);
-console.log("Minimum value:", Number.MIN_VALUE);
-console.log("Positive infinity:", Number.POSITIVE_INFINITY);
-console.log("Negative infinity:", Number.NEGATIVE_INFINITY);
-console.log("Not a Number:", Number.NaN);
+### 4.3 Assignment with Type Coercion
 
-// Exercise 5.2: Number conversion methods
-console.log("\n=== Number Conversion Methods ===");
+#### Problem
 
-console.log("Number('42'):", Number("42"));           // 42
-console.log("Number('3.14'):", Number("3.14"));       // 3.14
-console.log("Number('Hello'):", Number("Hello"));     // NaN
-console.log("Number(true):", Number(true));           // 1
-console.log("Number(false):", Number(false));         // 0
-console.log("Number(null):", Number(null));           // 0
-console.log("Number(undefined):", Number(undefined)); // NaN
+What happens when the starting value is a string?
 
-// Exercise 5.3: Number parsing methods
-console.log("\n=== Number Parsing Methods ===");
+```javascript
+let x = "10";
+x += 5;
+console.log(x);
 
-console.log("parseInt('42'):", parseInt("42"));           // 42
-console.log("parseInt('42px'):", parseInt("42px"));       // 42
-console.log("parseInt('3.14'):", parseInt("3.14"));       // 3
-console.log("parseInt('Hello'):", parseInt("Hello"));     // NaN
+let y = "10";
+y -= 5;
+console.log(y);
+```
 
-console.log("parseFloat('3.14'):", parseFloat("3.14"));   // 3.14
-console.log("parseFloat('3.14px'):", parseFloat("3.14px")); // 3.14
-console.log("parseFloat('Hello'):", parseFloat("Hello"));   // NaN
+#### Guess
 
-// Exercise 5.4: Number validation methods
-console.log("\n=== Number Validation Methods ===");
+Ask: "Will `x` and `y` both be numbers?"
 
-console.log("Number.isInteger(42):", Number.isInteger(42));       // true
-console.log("Number.isInteger(3.14):", Number.isInteger(3.14));   // false
-console.log("Number.isInteger('42'):", Number.isInteger("42"));   // false
+#### Explain
 
-console.log("Number.isFinite(42):", Number.isFinite(42));         // true
-console.log("Number.isFinite(Infinity):", Number.isFinite(Infinity)); // false
-console.log("Number.isFinite(NaN):", Number.isFinite(NaN));       // false
+- `+=` with a string uses concatenation.
+- `-=` converts the string to a number first.
 
-console.log("Number.isNaN(NaN):", Number.isNaN(NaN));             // true
-console.log("Number.isNaN(42):", Number.isNaN(42));               // false
-console.log("Number.isNaN('Hello'):", Number.isNaN("Hello"));     // false
+#### Live Code
 
-// Exercise 5.5: Number formatting
-console.log("\n=== Number Formatting ===");
+```javascript
+let a = "10";
+a += 5;
+console.log(a); // "105"
 
+let b = "10";
+b -= 5;
+console.log(b); // 5
+```
+
+#### Challenge 4.3 — String or Number (individual, 3 minutes)
+
+- **Requirement:** Predict and then run the following. Explain why each result is different.
+
+```javascript
+let a = "5";
+a *= 2;
+console.log(a);
+
+let b = "5";
+b += 2;
+console.log(b);
+```
+
+- **Time limit:** 3 minutes
+
+#### Review
+
+`a` becomes `10` (number), because `*=` converts to number. `b` becomes `"52"` (string), because `+=` with a string concatenates.
+
+---
+
+## Bug Hunt 1
+
+### Problem
+
+The following code has three deliberate JavaScript bugs or surprising results. Ask students to find them.
+
+```javascript
+let price = "19.99";
+let quantity = 3;
+let tax = 8.5;
+
+let subtotal = price * quantity;
+let taxAmount = subtotal + tax / 100;
+let total = subtotal - taxAmount;
+
+console.log("Subtotal: " + subtotal);
+console.log("Tax: " + taxAmount);
+console.log("Total: " + total.toFixed(2));
+
+let message = "Total: $" + total;
+message += 10;
+console.log(message);
+```
+
+### What to Ask
+
+- "Why is `taxAmount` wrong?"
+- "What should `+= 10` do?"
+- "Is `message` a number or a string?"
+
+### Expected Issues
+
+1. `taxAmount` uses `+ tax / 100` instead of `* tax / 100`.
+2. `total` uses `-` instead of `+ taxAmount`.
+3. `message += 10` concatenates `10` as a string, not adds it.
+
+### Fixed Version (for the instructor)
+
+```javascript
+let price = 19.99;
+let quantity = 3;
+let taxPercent = 8.5;
+
+let subtotal = price * quantity;
+let taxAmount = subtotal * taxPercent / 100;
+let total = subtotal + taxAmount;
+
+console.log("Subtotal: " + subtotal);
+console.log("Tax: " + taxAmount);
+console.log("Total: " + total.toFixed(2));
+
+let message = "Total: $" + total.toFixed(2);
+console.log(message);
+```
+
+### Points
+
+1 point for each found bug. Award a "Bug Hunter" badge to the first student who finds all three.
+
+---
+
+## Part 5: Number and Number Methods
+
+### 5.1 Number Properties
+
+#### Problem
+
+A quiz app must handle very large numbers. What are the limits JavaScript can safely use?
+
+#### Explain
+
+JavaScript numbers are stored as 64-bit floating-point values. There are constants for limits.
+
+#### Live Code
+
+```javascript
+console.log(Number.MAX_SAFE_INTEGER);
+console.log(Number.MIN_SAFE_INTEGER);
+console.log(Number.MAX_VALUE);
+console.log(Number.MIN_VALUE);
+console.log(Number.POSITIVE_INFINITY);
+console.log(Number.NEGATIVE_INFINITY);
+console.log(Number.NaN);
+```
+
+### 5.2 Number Conversion
+
+#### Problem
+
+User input is always a string. How do we turn it into a number safely?
+
+#### Explain
+
+- `Number(value)` converts the whole value.
+- `parseInt(string)` reads the integer from the start of the string.
+- `parseFloat(string)` reads the decimal number from the start.
+- `parseInt` and `parseFloat` are more forgiving than `Number`.
+
+#### Live Code
+
+```javascript
+// Number conversion
+console.log(Number("42"));       // 42
+console.log(Number("3.14"));     // 3.14
+console.log(Number("Hello"));    // NaN
+console.log(Number(true));       // 1
+console.log(Number(false));      // 0
+console.log(Number(null));       // 0
+console.log(Number(undefined));  // NaN
+
+// Parsing
+console.log(parseInt("42"));      // 42
+console.log(parseInt("42px"));    // 42
+console.log(parseInt("3.14"));    // 3
+console.log(parseInt("Hello"));   // NaN
+
+console.log(parseFloat("3.14"));     // 3.14
+console.log(parseFloat("3.14px"));   // 3.14
+console.log(parseFloat("Hello"));    // NaN
+```
+
+#### Challenge 5.1 — Parse the Data (individual, 4 minutes)
+
+- **Requirement:** Convert these strings to numbers and print them.
+
+```javascript
+let width = "150px";
+let height = "200.5px";
+let opacity = "0.75";
+let count = "42";
+```
+
+- **Expected outputs:**
+  - `width` as integer `150`
+  - `height` as float `200.5`
+  - `opacity` as float `0.75`
+  - `count` as integer `42`
+
+- **Time limit:** 4 minutes
+- **Hints (optional):**
+  - `parseInt` for `width` and `count`.
+  - `parseFloat` for `height` and `opacity`.
+
+#### Review
+
+```javascript
+console.log(parseInt(width));
+console.log(parseFloat(height));
+console.log(parseFloat(opacity));
+console.log(parseInt(count));
+```
+
+### 5.3 Number Validation
+
+#### Problem
+
+A validator must check if a value is a real integer, a finite number, or NaN.
+
+#### Live Code
+
+```javascript
+console.log(Number.isInteger(42));      // true
+console.log(Number.isInteger(3.14));    // false
+console.log(Number.isInteger("42"));    // false
+
+console.log(Number.isFinite(42));       // true
+console.log(Number.isFinite(Infinity)); // false
+console.log(Number.isFinite(NaN));      // false
+
+console.log(Number.isNaN(NaN));         // true
+console.log(Number.isNaN(42));          // false
+console.log(Number.isNaN("Hello"));     // false
+```
+
+#### Challenge 5.2 — Is It a Number? (individual, 4 minutes)
+
+- **Requirement:** Test the following values with `Number.isInteger`, `Number.isFinite`, and `Number.isNaN`.
+
+```javascript
+let a = 100;
+let b = 3.5;
+let c = Infinity;
+let d = NaN;
+let e = "100";
+```
+
+- **Time limit:** 4 minutes
+- **Hints (optional):**
+  - `Number.isNaN` only returns `true` for `NaN`.
+  - A string is not an integer even if it looks like one.
+
+#### Review
+
+Discuss that `Number.isInteger` does not coerce strings. `Number.isNaN` is stricter than the global `isNaN`.
+
+### 5.4 Number Formatting
+
+#### Problem
+
+A shop must show prices with exactly two decimals and round grades to a fixed number of digits.
+
+#### Live Code
+
+```javascript
 let num = 1234.56789;
 
-console.log("toFixed(2):", num.toFixed(2));           // "1234.57"
-console.log("toFixed(0):", num.toFixed(0));           // "1235"
-console.log("toPrecision(4):", num.toPrecision(4));   // "1235"
-console.log("toExponential(2):", num.toExponential(2)); // "1.23e+3"
-
-console.log("toString():", num.toString());           // "1234.56789"
-console.log("toString(2):", num.toString(2));        // Binary
-console.log("toString(8):", num.toString(8));        // Octal
-console.log("toString(16):", num.toString(16));       // Hexadecimal
+console.log(num.toFixed(2));          // "1234.57"
+console.log(num.toFixed(0));          // "1235"
+console.log(num.toPrecision(4));      // "1235"
+console.log(num.toExponential(2));    // "1.23e+3"
+console.log(num.toString());          // "1234.56789"
+console.log(num.toString(2));         // binary
+console.log(num.toString(8));         // octal
+console.log(num.toString(16));        // hexadecimal
 ```
 
-### Exercise 6: Math Object
+#### Challenge 5.3 — Format a Price (individual, 4 minutes)
+
+- **Requirement:** Format `let price = 9.9876` as:
+  1. A dollar amount with 2 decimals.
+  2. A number with 3 significant digits.
+  3. A string.
+
+- **Time limit:** 4 minutes
+- **Hints (optional):**
+  - `toFixed(2)` for dollars.
+  - `toPrecision(3)` for significant digits.
+  - `toString()` for a plain string.
+
+#### Review
 
 ```javascript
-// Exercise 6.1: Basic Math methods
-console.log("=== Basic Math Methods ===");
+let price = 9.9876;
+console.log(price.toFixed(2));       // "9.99"
+console.log(price.toPrecision(3));   // "9.99"
+console.log(price.toString());       // "9.9876"
+```
 
-console.log("Math.abs(-5):", Math.abs(-5));           // 5
-console.log("Math.round(4.7):", Math.round(4.7));     // 5
-console.log("Math.floor(4.9):", Math.floor(4.9));     // 4
-console.log("Math.ceil(4.1):", Math.ceil(4.1));       // 5
-console.log("Math.trunc(4.9):", Math.trunc(4.9));     // 4
+---
 
-// Exercise 6.2: Power and root methods
-console.log("\n=== Power and Root Methods ===");
+## Part 6: The Math Object
 
-console.log("Math.pow(2, 3):", Math.pow(2, 3));       // 8
-console.log("Math.sqrt(16):", Math.sqrt(16));         // 4
-console.log("Math.cbrt(27):", Math.cbrt(27));         // 3
+### 6.1 Rounding and Absolute Value
 
-// Exercise 6.3: Trigonometric methods
-console.log("\n=== Trigonometric Methods ===");
+#### Problem
 
-console.log("Math.sin(Math.PI/2):", Math.sin(Math.PI/2));  // 1
-console.log("Math.cos(0):", Math.cos(0));                  // 1
-console.log("Math.tan(Math.PI/4):", Math.tan(Math.PI/4));  // 1
+A student needs to round grades and distances correctly.
 
-// Exercise 6.4: Random numbers
-console.log("\n=== Random Numbers ===");
+#### Live Code
 
-console.log("Math.random():", Math.random());             // 0 to 1
-console.log("Math.random() * 10:", Math.random() * 10);   // 0 to 10
-console.log("Math.floor(Math.random() * 10):", Math.floor(Math.random() * 10)); // 0 to 9
+```javascript
+console.log(Math.abs(-5));       // 5
+console.log(Math.round(4.7));    // 5
+console.log(Math.round(4.2));    // 4
+console.log(Math.floor(4.9));    // 4
+console.log(Math.ceil(4.1));     // 5
+console.log(Math.trunc(4.9));    // 4
+console.log(Math.trunc(-4.9));   // -4
+```
 
-// Random integer in range
+#### Challenge 6.1 — Round This (individual, 4 minutes)
+
+- **Requirement:** For `let score = 78.4`, print the value rounded to the nearest integer, rounded down, and rounded up.
+- **Time limit:** 4 minutes
+
+### 6.2 Powers, Roots, and Trigonometry
+
+#### Live Code
+
+```javascript
+console.log(Math.pow(2, 3));     // 8
+console.log(Math.sqrt(16));      // 4
+console.log(Math.cbrt(27));      // 3
+
+console.log(Math.sin(Math.PI / 2)); // 1
+console.log(Math.cos(0));           // 1
+console.log(Math.tan(Math.PI / 4)); // close to 1
+```
+
+### 6.3 Random Numbers
+
+#### Problem
+
+Build a dice roller and a random number picker.
+
+#### Explain
+
+- `Math.random()` returns a decimal from `0` (inclusive) to `1` (exclusive).
+- To get a random integer in a range, use `Math.floor`.
+
+#### Live Code
+
+```javascript
+console.log(Math.random());                         // 0 to <1
+console.log(Math.random() * 10);                    // 0 to <10
+console.log(Math.floor(Math.random() * 10));        // 0 to 9
+
 function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-console.log("Random 1-10:", getRandomInt(1, 10));
-console.log("Random 1-100:", getRandomInt(1, 100));
-
-// Exercise 6.5: Math constants
-console.log("\n=== Math Constants ===");
-
-console.log("Math.PI:", Math.PI);
-console.log("Math.E:", Math.E);
-console.log("Math.LN2:", Math.LN2);
-console.log("Math.LN10:", Math.LN10);
-console.log("Math.LOG2E:", Math.LOG2E);
-console.log("Math.LOG10E:", Math.LOG10E);
-console.log("Math.SQRT2:", Math.SQRT2);
-console.log("Math.SQRT1_2:", Math.SQRT1_2);
-
-// Exercise 6.6: Max and Min
-console.log("\n=== Max and Min ===");
-
-console.log("Math.max(1, 5, 3):", Math.max(1, 5, 3));     // 5
-console.log("Math.min(1, 5, 3):", Math.min(1, 5, 3));     // 1
-console.log("Math.max(...[1, 5, 3]):", Math.max(...[1, 5, 3])); // 5
-
-// Exercise 6.7: Practical examples
-console.log("\n=== Practical Examples ===");
-
-// Calculate circle area
-function calculateCircleArea(radius) {
-    return Math.PI * Math.pow(radius, 2);
-}
-
-console.log("Circle area (r=5):", calculateCircleArea(5).toFixed(2));
-
-// Calculate hypotenuse
-function calculateHypotenuse(a, b) {
-    return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
-}
-
-console.log("Hypotenuse (3, 4):", calculateHypotenuse(3, 4));
-
-// Round to nearest 0.5
-function roundToHalf(num) {
-    return Math.round(num * 2) / 2;
-}
-
-console.log("Round to 0.5 (2.3):", roundToHalf(2.3));  // 2.5
-console.log("Round to 0.5 (2.7):", roundToHalf(2.7));  // 3.0
+console.log(getRandomInt(1, 6));   // dice roll 1-6
+console.log(getRandomInt(1, 100)); // 1-100
 ```
 
-### Exercise 7: String Methods (Part 1-3)
+#### Challenge 6.2 — Random Integer Function (individual, 5 minutes)
 
-#### Part 1: Basic String Methods
+- **Requirement:** Write a function `dice()` that returns a random integer from `1` to `6`.
+- **Time limit:** 5 minutes
+- **Hints (optional):**
+  - `Math.random()` gives `0` to less than `1`.
+  - Multiply by `6`, add `1`, then use `Math.floor`.
+
+#### Review
 
 ```javascript
-// Exercise 7.1: String length and access
-console.log("=== String Length and Access ===");
+function dice() {
+  return Math.floor(Math.random() * 6) + 1;
+}
+console.log(dice());
+```
 
+### 6.4 Constants, Max, and Min
+
+#### Live Code
+
+```javascript
+console.log(Math.PI);
+console.log(Math.E);
+console.log(Math.SQRT2);
+
+console.log(Math.max(1, 5, 3));    // 5
+console.log(Math.min(1, 5, 3));    // 1
+console.log(Math.max(...[1, 5, 3])); // 5
+```
+
+#### Challenge 6.3 — Circle Area (individual, 4 minutes)
+
+- **Requirement:** Write a function `circleArea(radius)` that returns the area of a circle rounded to 2 decimals.
+- **Time limit:** 4 minutes
+- **Hints (optional):**
+  - Formula: `Math.PI * radius * radius`.
+  - Use `.toFixed(2)` and remember it returns a string.
+
+#### Review
+
+```javascript
+function circleArea(radius) {
+  return (Math.PI * radius * radius).toFixed(2);
+}
+console.log(circleArea(5)); // "78.54"
+```
+
+---
+
+## Part 7: String Methods
+
+### 7.1 Length, Access, and Basic Search
+
+#### Problem
+
+A user types `"Hello, World!"`. The app needs to know how long it is, what the first and last characters are, and whether it contains `"World"`.
+
+#### Live Code
+
+```javascript
 let text = "Hello, World!";
 
-console.log("Text:", text);
-console.log("Length:", text.length);
-console.log("First character:", text[0]);
-console.log("Last character:", text[text.length - 1]);
-console.log("Character at index 7:", text.charAt(7));
+console.log(text.length);              // 13
+console.log(text[0]);                  // "H"
+console.log(text[text.length - 1]);    // "!"
+console.log(text.charAt(7));           // "W"
 
-// Exercise 7.2: Case conversion
-console.log("\n=== Case Conversion ===");
+console.log(text.toUpperCase());       // "HELLO, WORLD!"
+console.log(text.toLowerCase());       // "hello, world!"
 
-console.log("Uppercase:", text.toUpperCase());
-console.log("Lowercase:", text.toLowerCase());
-
-// Exercise 7.3: Searching within strings
-console.log("\n=== Searching Within Strings ===");
-
-console.log("indexOf('World'):", text.indexOf("World"));      // 7
-console.log("indexOf('world'):", text.indexOf("world"));      // -1 (case sensitive)
-console.log("lastIndexOf('o'):", text.lastIndexOf("o"));      // 8
-console.log("includes('World'):", text.includes("World"));   // true
-console.log("includes('world'):", text.includes("world"));   // false
-console.log("startsWith('Hello'):", text.startsWith("Hello")); // true
-console.log("endsWith('!'):", text.endsWith("!"));           // true
-
-// Exercise 7.4: Extracting parts of strings
-console.log("\n=== Extracting Parts ===");
-
-console.log("slice(0, 5):", text.slice(0, 5));           // "Hello"
-console.log("slice(7):", text.slice(7));                 // "World!"
-console.log("slice(-6):", text.slice(-6));               // "World!"
-console.log("slice(0, -1):", text.slice(0, -1));         // "Hello, World"
-
-console.log("substring(0, 5):", text.substring(0, 5));   // "Hello"
-console.log("substring(7):", text.substring(7));         // "World!"
-
-console.log("substr(0, 5):", text.substr(0, 5));         // "Hello"
-console.log("substr(7, 5):", text.substr(7, 5));         // "World"
+console.log(text.indexOf("World"));    // 7
+console.log(text.indexOf("world"));    // -1
+console.log(text.lastIndexOf("o"));    // 8
+console.log(text.includes("World"));   // true
+console.log(text.startsWith("Hello")); // true
+console.log(text.endsWith("!"));       // true
 ```
 
-#### Part 2: String Modification Methods
+#### Challenge 7.1 — Inspect a String (individual, 4 minutes)
+
+- **Requirement:** Declare `let name = "Ada Lovelace"` and print:
+  1. The length.
+  2. The first and last characters.
+  3. The index of the first space.
+  4. Whether the name includes `"Love"`.
+
+- **Time limit:** 4 minutes
+- **Hints (optional):**
+  - `name.indexOf(" ")` finds the space.
+  - `name.includes("Love")` is a yes/no check.
+
+#### Review
 
 ```javascript
-// Exercise 7.5: Replacing content
-console.log("\n=== Replacing Content ===");
+let name = "Ada Lovelace";
+console.log(name.length);
+console.log(name[0], name[name.length - 1]);
+console.log(name.indexOf(" "));
+console.log(name.includes("Love"));
+```
 
+### 7.2 Extracting Parts
+
+#### Problem
+
+You need to cut the first name and last name from a full name string.
+
+#### Live Code
+
+```javascript
+let text = "Hello, World!";
+
+console.log(text.slice(0, 5));      // "Hello"
+console.log(text.slice(7));         // "World!"
+console.log(text.slice(-6));        // "World!"
+console.log(text.slice(0, -1));     // "Hello, World"
+
+console.log(text.substring(0, 5));  // "Hello"
+console.log(text.substring(7));     // "World!"
+
+console.log(text.substr(0, 5));     // "Hello"
+console.log(text.substr(7, 5));     // "World"
+```
+
+#### Challenge 7.2 — First and Last Name (individual, 4 minutes)
+
+- **Requirement:** From `let full = "Grace Hopper"`, extract the first name (`"Grace"`) and the last name (`"Hopper"`) and print them.
+- **Time limit:** 4 minutes
+- **Hints (optional):**
+  - Find the space index.
+  - Use `slice` from `0` to the space for the first name.
+  - Use `slice(space + 1)` for the last name.
+
+#### Review
+
+```javascript
+let full = "Grace Hopper";
+let space = full.indexOf(" ");
+let first = full.slice(0, space);
+let last = full.slice(space + 1);
+console.log(first, last);
+```
+
+### 7.3 Replacing, Splitting, and Trimming
+
+#### Live Code
+
+```javascript
+let text = "Hello, World!";
 let newText = text.replace("World", "JavaScript");
-console.log("Replace 'World' with 'JavaScript':", newText);
+console.log(newText); // "Hello, JavaScript!"
 
-// Replace all occurrences
 let repeatText = "Hello World, Hello World";
 let allReplaced = repeatText.replace(/Hello/g, "Hi");
-console.log("Replace all 'Hello' with 'Hi':", allReplaced);
+console.log(allReplaced);
 
-// Case-insensitive replace
 let caseText = "Hello WORLD, hello world";
 let caseReplaced = caseText.replace(/hello/gi, "Hi");
-console.log("Case-insensitive replace:", caseReplaced);
-
-// Exercise 7.6: Splitting strings
-console.log("\n=== Splitting Strings ===");
+console.log(caseReplaced);
 
 let csv = "apple,banana,orange,grape";
-let fruits = csv.split(",");
-console.log("Split CSV:", fruits);
+console.log(csv.split(",")); // ["apple", "banana", "orange", "grape"]
 
 let sentence = "This is a sentence";
-let words = sentence.split(" ");
-console.log("Split sentence:", words);
+console.log(sentence.split(" ")); // ["This", "is", "a", "sentence"]
 
-let chars = text.split("");
-console.log("Split into characters:", chars);
-
-// Exercise 7.7: Trimming strings
-console.log("\n=== Trimming Strings ===");
-
-let paddedText = "   Hello, World!   ";
-console.log("Original:", `"${paddedText}"`);
-console.log("Trim:", `"${paddedText.trim()}"`);
-console.log("TrimStart:", `"${paddedText.trimStart()}"`);
-console.log("TrimEnd:", `"${paddedText.trimEnd()}"`);
-
-// Exercise 7.8: Padding strings
-console.log("\n=== Padding Strings ===");
-
-let num = "42";
-console.log("PadStart(5, '0'):", num.padStart(5, "0"));    // "00042"
-console.log("PadEnd(5, '*'):", num.padEnd(5, "*"));        // "42***"
-
-let name = "John";
-console.log("PadStart(10, '-'):", name.padStart(10, "-")); // "------John"
+let padded = "   Hello, World!   ";
+console.log("[" + padded.trim() + "]");
+console.log("[" + padded.trimStart() + "]");
+console.log("[" + padded.trimEnd() + "]");
 ```
 
-#### Part 3: Advanced String Methods
+#### Challenge 7.3 — Clean and Split (individual, 5 minutes)
+
+- **Requirement:** Take `let data = "  apple,banana,orange  "` and produce a clean array `["apple", "banana", "orange"]`.
+- **Time limit:** 5 minutes
+- **Hints (optional):**
+  - Trim first, then split.
+  - `data.trim().split(",");`
+
+### 7.4 Padding and Repeating
+
+#### Live Code
 
 ```javascript
-// Exercise 7.9: Repeating strings
-console.log("\n=== Repeating Strings ===");
+let num = "42";
+console.log(num.padStart(5, "0")); // "00042"
+console.log(num.padEnd(5, "*"));   // "42***"
 
-console.log("'Ha'.repeat(3):", "Ha".repeat(3));           // "HaHaHa"
-console.log("'abc'.repeat(2):", "abc".repeat(2));         // "abcabc"
+let name = "John";
+console.log(name.padStart(10, "-")); // "------John"
 
-// Exercise 7.10: String comparison
-console.log("\n=== String Comparison ===");
+console.log("Ha".repeat(3)); // "HaHaHa"
+```
 
-let str1 = "apple";
-let str2 = "banana";
-let str3 = "Apple";
+#### Challenge 7.4 — Receipt ID (individual, 4 minutes)
 
-console.log("'apple' < 'banana':", str1 < str2);          // true
-console.log("'apple' > 'Apple':", str1 > str3);          // true (uppercase comes first)
-console.log("'apple'.localeCompare('banana'):", str1.localeCompare(str2)); // -1
+- **Requirement:** Given `let id = 42`, create an order number string with exactly 6 digits, padded with zeros on the left.
+- **Time limit:** 4 minutes
+- **Hints (optional):**
+  - Use `id.toString().padStart(6, "0");`.
 
-// Exercise 7.11: Checking string types
-console.log("\n=== Checking String Types ===");
+#### Review
 
-console.log("''.length === 0:", "".length === 0);          // true (empty string)
-console.log("'   '.trim().length === 0:", "   ".trim().length === 0); // true (whitespace only)
+```javascript
+let id = 42;
+let order = id.toString().padStart(6, "0");
+console.log(order); // "000042"
+```
 
-// Exercise 7.12: Practical string manipulation
-console.log("\n=== Practical String Manipulation ===");
+### 7.5 Practical String Manipulation
 
-// Format a name
-function formatName(firstName, lastName) {
-    return (firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase()) + " " + 
-           (lastName.charAt(0).toUpperCase() + lastName.slice(1).toLowerCase());
+#### Live Code
+
+```javascript
+// Title case a name
+function toTitleCase(str) {
+  return str.toLowerCase().split(" ").map(word =>
+    word.charAt(0).toUpperCase() + word.slice(1)
+  ).join(" ");
 }
+console.log(toTitleCase("john doe")); // "John Doe"
 
-console.log("Format 'john DOE':", formatName("john", "DOE")); // "John Doe"
-
-// Create initials
-function getInitials(firstName, lastName) {
-    return (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+// Initials
+function getInitials(first, last) {
+  return (first.charAt(0) + last.charAt(0)).toUpperCase();
 }
-
-console.log("Initials of 'John Doe':", getInitials("John", "Doe")); // "JD"
+console.log(getInitials("John", "Doe")); // "JD"
 
 // Truncate text
 function truncateText(text, maxLength) {
-    if (text.length <= maxLength) return text;
-    return text.slice(0, maxLength - 3) + "...";
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength - 3) + "...";
 }
-
-console.log("Truncate 'Hello World' to 8:", truncateText("Hello World", 8)); // "Hello..."
-
-// Convert to title case
-function toTitleCase(str) {
-    return str.toLowerCase().split(' ').map(word => 
-        word.charAt(0).toUpperCase() + word.slice(1)
-    ).join(' ');
-}
-
-console.log("Title case 'hello world':", toTitleCase("hello world")); // "Hello World"
+console.log(truncateText("Hello World", 8)); // "Hello..."
 ```
 
-### Exercise 8: Complete Working Example
+#### Challenge 7.5 — Name Badge (individual, 5 minutes)
 
-**Complete script.js:**
+- **Requirement:** Write a function `badge(name)` that takes a messy name like `"  aDA lovelace  "` and returns a clean badge string like `"Ada Lovelace"`.
+- **Time limit:** 5 minutes
+- **Hints (optional):**
+  - `trim()` to remove spaces.
+  - `toLowerCase()` and then `split(" ")`.
+  - Uppercase the first letter of each word.
+
+#### Review
+
 ```javascript
-// Session 3: Operators, Numbers & Strings
-// This script demonstrates operators, number operations, and string methods
-
-console.log("=== Session 3: Operators, Numbers & Strings ===");
-
-// 1. Arithmetic operators
-console.log("\n--- Arithmetic Operators ---");
-let a = 15, b = 4;
-console.log(`${a} + ${b} = ${a + b}`);
-console.log(`${a} - ${b} = ${a - b}`);
-console.log(`${a} * ${b} = ${a * b}`);
-console.log(`${a} / ${b} = ${a / b}`);
-console.log(`${a} % ${b} = ${a % b}`);
-console.log(`${a} ** ${b} = ${a ** b}`);
-
-// 2. Unary operators
-console.log("\n--- Unary Operators ---");
-console.log("+'42':", +"42");
-console.log(-"100":, -"100");
-console.log("+'Hello':", +"Hello");
-
-// 3. Type coercion
-console.log("\n--- Type Coercion ---");
-console.log("'10' + 5:", "10" + 5);
-console.log("'10' - 5:", "10" - 5);
-console.log("true + 5:", true + 5);
-console.log("null + 5:", null + 5);
-
-// 4. Assignment operators
-console.log("\n--- Assignment Operators ---");
-let x = 10;
-console.log("Initial x:", x);
-x += 5;
-console.log("After x += 5:", x);
-x *= 2;
-console.log("After x *= 2:", x);
-
-// 5. Number methods
-console.log("\n--- Number Methods ---");
-let num = 1234.56789;
-console.log("toFixed(2):", num.toFixed(2));
-console.log("toPrecision(4):", num.toPrecision(4));
-console.log("parseInt('42px'):", parseInt("42px"));
-console.log("parseFloat('3.14px'):", parseFloat("3.14px"));
-
-// 6. Math object
-console.log("\n--- Math Object ---");
-console.log("Math.round(4.7):", Math.round(4.7));
-console.log("Math.floor(4.9):", Math.floor(4.9));
-console.log("Math.ceil(4.1):", Math.ceil(4.1));
-console.log("Math.random():", Math.random());
-console.log("Math.max(1, 5, 3):", Math.max(1, 5, 3));
-
-// 7. String methods
-console.log("\n--- String Methods ---");
-let text = "Hello, World!";
-console.log("toUpperCase():", text.toUpperCase());
-console.log("indexOf('World'):", text.indexOf("World"));
-console.log("slice(0, 5):", text.slice(0, 5));
-console.log("replace('World', 'JavaScript'):", text.replace("World", "JavaScript"));
-console.log("split(','):", "apple,banana,orange".split(","));
-
-// 8. Practical example: Shopping calculator
-console.log("\n--- Shopping Calculator ---");
-
-function calculateTotal(price, quantity, taxRate, discount) {
-    const subtotal = price * quantity;
-    const taxAmount = subtotal * (taxRate / 100);
-    const discountAmount = subtotal * (discount / 100);
-    const total = subtotal + taxAmount - discountAmount;
-    
-    return {
-        subtotal: subtotal.toFixed(2),
-        taxAmount: taxAmount.toFixed(2),
-        discountAmount: discountAmount.toFixed(2),
-        total: total.toFixed(2)
-    };
+function badge(name) {
+  return name.trim().toLowerCase().split(" ").map(word =>
+    word.charAt(0).toUpperCase() + word.slice(1)
+  ).join(" ");
 }
-
-const cart = calculateTotal(19.99, 3, 8.5, 10);
-console.log("Cart calculation:", cart);
-
-console.log("\n=== Session 3 Complete ===");
+console.log(badge("  aDA lovelace  ")); // "Ada Lovelace"
 ```
 
-**Complete index.html:**
+---
+
+## Bug Hunt 2
+
+### Problem
+
+The following code has four deliberate mistakes or surprises. Ask students to find them.
+
+```javascript
+let userName = "  john doe  ";
+let cleaned = userName.trimStart();
+let parts = cleaned.split(" ");
+let firstName = parts[0].toUpperCase();
+let lastName = parts[1].toLowerCase();
+let full = firstName + " " + lastName;
+
+console.log(full);
+
+let price = "19.99$";
+let amount = parseFloat(price);
+let total = amount + 5;
+console.log(total.toFixed(2) + 0);
+```
+
+### Issues
+
+1. `trimStart()` only removes leading spaces, so the trailing space remains and `lastName` becomes `"doe "`.
+2. `firstName.toUpperCase()` and `lastName.toLowerCase()` are probably not the desired formatting.
+3. `parseFloat("19.99$")` returns `19.99`, so this one is fine, but `total.toFixed(2)` returns a string.
+4. `"19.99" + 0` concatenates to `"19.990"`.
+
+### Fixed Version (for the instructor)
+
+```javascript
+let userName = "  john doe  ";
+let cleaned = userName.trim();
+let parts = cleaned.split(" ");
+let firstName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1).toLowerCase();
+let lastName = parts[1].charAt(0).toUpperCase() + parts[1].slice(1).toLowerCase();
+let full = firstName + " " + lastName;
+console.log(full);
+
+let price = "19.99";
+let amount = parseFloat(price);
+let total = amount + 5;
+console.log(Number(total.toFixed(2)));
+```
+
+### Points
+
+1 point per found issue.
+
+---
+
+## Group Challenge: Coercion Detective
+
+- **Time:** 8 minutes
+- **Teams:** 2 or 3 students per team
+- **Task:** Each team receives a list of 10 expressions. They must write the predicted result and then check it in the console.
+- **Scoring:** 1 point per correct prediction. The team with the most points wins.
+
+### Expressions for the Teams
+
+```javascript
+console.log("5" + 3);
+console.log("5" - 3);
+console.log("5" * "2");
+console.log(5 + "5" + 5);
+console.log("10" / "2" + 1);
+console.log(null + 5);
+console.log(undefined - 5);
+console.log(true + true);
+console.log(false * 10);
+console.log("hello" * 2);
+```
+
+### Instructor Answer Key
+
+```
+"53"
+2
+10
+"555"
+6
+5
+NaN
+2
+0
+NaN
+```
+
+### Hints (optional)
+
+- Only `+` with a string concatenates.
+- `null` is `0`, `undefined` is `NaN`, `true` is `1`, `false` is `0`.
+
+---
+
+## Individual Challenges — Progressive Difficulty
+
+### Level 1: Arithmetic (3 minutes)
+
+- **Requirement:** Print the result of `((10 + 5) * 2 - 8) / 4` and predict it first.
+- **Expected:** `5.5`
+
+### Level 2: Coercion (4 minutes)
+
+- **Requirement:** Explain and print the result of `console.log("10" + 5 - 2);`.
+- **Expected:** `103` (`"10" + 5` becomes `"105"`, then `"105" - 2` becomes `103` as a number).
+- **Hint:** Work left to right and watch when a string appears.
+
+### Level 3: Parsing and Formatting (5 minutes)
+
+- **Requirement:** A user enters `"$29.99"`. Extract the number, add a 10% tax, and print the final price with exactly 2 decimals.
+- **Expected:** `"32.99"` (approximately; `29.99 * 1.10 = 32.989`, rounded to `32.99`).
+- **Hint:** Use `parseFloat` and `toFixed(2)`.
+
+### Level 4: String Detective (5 minutes)
+
+- **Requirement:** Given `let code = "ORD-2024-00042"`, extract the year (`"2024"`) and the order number (`"00042"`) using `split` and `slice`.
+- **Hint:** Use `code.split("-")`.
+
+### Level 5: Random Score (5 minutes)
+
+- **Requirement:** Generate a random exam score between `50` and `100` and print it.
+- **Hint:** `Math.floor(Math.random() * (max - min + 1)) + min`.
+
+---
+
+## Mini Project: Receipt and Badge Generator
+
+### Time
+
+20 minutes
+
+### Goal
+
+Combine arithmetic operators, number parsing and formatting, string methods, and user interaction in one small HTML page.
+
+### Requirements for the Students
+
+1. Create a small HTML page with inputs for:
+   - Item price
+   - Quantity
+   - Tax percent
+   - Discount percent
+   - Customer full name (possibly messy, e.g., "  john DOE  ")
+
+2. When the user clicks a button:
+   - Calculate the correct subtotal, tax amount, discount amount, and total.
+   - Format all prices to 2 decimals.
+   - Clean the customer name to title case.
+   - Generate a 6-digit order number padded with zeros.
+   - Show a receipt in the page.
+
+3. The receipt must look like this:
+
+```
+Order: 000012
+Customer: John Doe
+Subtotal: $59.97
+Tax: $5.10
+Discount: -$6.00
+Total: $59.07
+```
+
+### Time Limit
+
+20 minutes
+
+### Hints (optional)
+
+- Use `parseFloat` for all number inputs.
+- `subtotal = price * quantity`
+- `taxAmount = subtotal * taxPercent / 100`
+- `discountAmount = subtotal * discountPercent / 100`
+- `total = subtotal + taxAmount - discountAmount`
+- Use `toFixed(2)` for money.
+- Use `trim`, `toLowerCase`, `split`, `charAt`, `toUpperCase`, `slice`, and `join` for the name.
+- Generate the order number with `Math.floor(Math.random() * 900000) + 100000` or a simple counter.
+
+### Live-Coding Starting Point
+
+Type the HTML and JS in front of the students, stopping after each step so they can copy and understand.
+
+### Starter `index.html`
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Session 3 - Operators, Numbers & Strings</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        .section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .section h2 {
-            color: #1890ff;
-            margin-top: 0;
-        }
-        .calculator {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 10px;
-        }
-        .output {
-            background: #f0f0f0;
-            padding: 15px;
-            border-radius: 4px;
-            font-family: monospace;
-            white-space: pre-wrap;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Receipt and Badge Generator</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 500px; margin: 20px auto; }
+    label { display: block; margin-top: 10px; }
+    input { width: 100%; padding: 5px; }
+    button { margin-top: 15px; padding: 10px 20px; }
+    #receipt { background: #f5f5f5; padding: 15px; margin-top: 20px; border-radius: 4px; }
+  </style>
 </head>
 <body>
-    <h1>Session 3: Operators, Numbers & Strings</h1>
-    
-    <div class="section">
-        <h2>Topics Covered</h2>
-        <ul>
-            <li>Arithmetic operators (+, -, *, /, %, **)</li>
-            <li>Unary plus and negation</li>
-            <li>Type coercion in operations</li>
-            <li>Assignment operators (+=, -=, *=, etc.)</li>
-            <li>Number methods and parsing</li>
-            <li>Math object functions</li>
-            <li>String methods (basic, modification, advanced)</li>
-        </ul>
-    </div>
+  <h1>Receipt and Badge Generator</h1>
+  <label>Price: <input type="number" id="price" value="19.99" step="0.01"></label>
+  <label>Quantity: <input type="number" id="quantity" value="3"></label>
+  <label>Tax %: <input type="number" id="tax" value="8.5" step="0.1"></label>
+  <label>Discount %: <input type="number" id="discount" value="10" step="0.1"></label>
+  <label>Customer name: <input type="text" id="name" value="  john DOE  "></label>
+  <button id="calc">Generate Receipt</button>
+  <div id="receipt"></div>
 
-    <div class="section">
-        <h2>Interactive Calculator</h2>
-        <div class="calculator">
-            <label for="price">Price: $</label>
-            <input type="number" id="price" value="19.99" step="0.01">
-            
-            <label for="quantity">Quantity:</label>
-            <input type="number" id="quantity" value="3" min="1">
-            
-            <label for="tax">Tax Rate (%):</label>
-            <input type="number" id="tax" value="8.5" step="0.1">
-            
-            <label for="discount">Discount (%):</label>
-            <input type="number" id="discount" value="10" step="0.1">
-            
-            <button onclick="calculateCart()">Calculate</button>
-            
-            <div id="result" class="output" style="margin-top: 10px;">
-                Click Calculate to see results...
-            </div>
-        </div>
-    </div>
+  <script>
+    document.getElementById("calc").addEventListener("click", function () {
+      let price = parseFloat(document.getElementById("price").value);
+      let quantity = parseFloat(document.getElementById("quantity").value);
+      let taxPercent = parseFloat(document.getElementById("tax").value);
+      let discountPercent = parseFloat(document.getElementById("discount").value);
+      let rawName = document.getElementById("name").value;
 
-    <div class="section">
-        <h2>Console Output</h2>
-        <p>Open the browser console (F12) to see all JavaScript examples.</p>
-    </div>
+      let subtotal = price * quantity;
+      let taxAmount = subtotal * taxPercent / 100;
+      let discountAmount = subtotal * discountPercent / 100;
+      let total = subtotal + taxAmount - discountAmount;
 
-    <script src="script.js" defer></script>
-    <script>
-        function calculateCart() {
-            const price = parseFloat(document.getElementById('price').value);
-            const quantity = parseInt(document.getElementById('quantity').value);
-            const taxRate = parseFloat(document.getElementById('tax').value);
-            const discount = parseFloat(document.getElementById('discount').value);
-            
-            const subtotal = price * quantity;
-            const taxAmount = subtotal * (taxRate / 100);
-            const discountAmount = subtotal * (discount / 100);
-            const total = subtotal + taxAmount - discountAmount;
-            
-            const result = `
-                Subtotal: $${subtotal.toFixed(2)}
-                Tax: $${taxAmount.toFixed(2)}
-                Discount: -$${discountAmount.toFixed(2)}
-                Total: $${total.toFixed(2)}
-            `;
-            
-            document.getElementById('result').textContent = result;
-        }
-    </script>
+      let orderId = Math.floor(Math.random() * 900000) + 100000;
+      let orderIdString = orderId.toString().padStart(6, "0");
+
+      let cleanName = rawName.trim().toLowerCase().split(" ").map(word =>
+        word.charAt(0).toUpperCase() + word.slice(1)
+      ).join(" ");
+
+      let receipt = `
+        <p><strong>Order:</strong> ${orderIdString}</p>
+        <p><strong>Customer:</strong> ${cleanName}</p>
+        <p><strong>Subtotal:</strong> $${subtotal.toFixed(2)}</p>
+        <p><strong>Tax:</strong> $${taxAmount.toFixed(2)}</p>
+        <p><strong>Discount:</strong> -$${discountAmount.toFixed(2)}</p>
+        <p><strong>Total:</strong> $${total.toFixed(2)}</p>
+      `;
+
+      document.getElementById("receipt").innerHTML = receipt;
+    });
+  </script>
 </body>
 </html>
 ```
 
+### Review Questions for the Mini Project
+
+- "What happens if the customer types a name with three words?"
+- "Why did we use `parseFloat` for `quantity` instead of `parseInt`?"
+- "What does `toFixed(2)` return: a number or a string?"
+
 ---
 
-## 📝 Review (0.5h)
+## Trainer Solutions — Do Not Show Until Students Try
 
-### Operators Challenge
+These are the reference answers for all challenges in this session.
+
+### Challenge 1.1
 
 ```javascript
-// Challenge 1: What's the output?
-console.log("10" + 5);        // ?
-console.log("10" - 5);        // ?
-console.log("10" * 5);        // ?
-console.log("10" / 5);        // ?
-console.log("10" % 3);        // ?
-
-// Challenge 2: Complex expressions
-console.log(2 + 3 * 4);      // ?
-console.log((2 + 3) * 4);    // ?
-console.log(10 / 2 + 3 * 2); // ?
-console.log(20 % 6 + 4 ** 2); // ?
-
-// Challenge 3: Assignment operators
-let x = 10;
-x += 5;
-x *= 2;
-x -= 10;
-console.log(x);              // ?
-
-// Challenge 4: Type coercion
-console.log(true + 1);       // ?
-console.log(false + 1);      // ?
-console.log(null + 5);       // ?
-console.log(undefined + 5);  // ?
-console.log(NaN + 5);        // ?
+let a = 15;
+let b = 4;
+console.log(a + b);   // 19
+console.log(a - b);   // 11
+console.log(a * b);   // 60
+console.log(a / b);   // 3.75
+console.log(a % b);   // 3
+console.log(a ** b);  // 50625
 ```
 
-### Number Challenge
+### Challenge 1.2
 
 ```javascript
-// Challenge 1: Number conversion
-console.log(Number("42"));          // ?
-console.log(Number("Hello"));       // ?
-console.log(Number(true));          // ?
-console.log(Number(null));          // ?
-console.log(Number(undefined));     // ?
-
-// Challenge 2: Parsing
-console.log(parseInt("42px"));      // ?
-console.log(parseInt("Hello"));     // ?
-console.log(parseFloat("3.14px"));  // ?
-console.log(parseFloat("Hello"));   // ?
-
-// Challenge 3: Number methods
-let num = 1234.56789;
-console.log(num.toFixed(2));        // ?
-console.log(num.toPrecision(4));    // ?
-console.log(num.toExponential(2)); // ?
-
-// Challenge 4: Math functions
-console.log(Math.round(4.7));      // ?
-console.log(Math.floor(4.9));      // ?
-console.log(Math.ceil(4.1));      // ?
-console.log(Math.abs(-5));         // ?
-console.log(Math.pow(2, 3));       // ?
-console.log(Math.sqrt(16));        // ?
-
-// Challenge 5: Random number
-// Generate a random number between 1 and 10
-// Your code here
+let result = 0.1 + 0.2 + 0.3;
+console.log(result);
+console.log(result.toFixed(2));
 ```
 
-### String Challenge
+### Challenge 1.3
+
+Any valid expression giving `5`, for example:
 
 ```javascript
-// Challenge 1: String methods
-let text = "Hello, World!";
-console.log(text.length);          // ?
-console.log(text.toUpperCase());   // ?
-console.log(text.indexOf("World")); // ?
-console.log(text.slice(0, 5));     // ?
-console.log(text.replace("World", "JavaScript")); // ?
-
-// Challenge 2: String manipulation
-let name = "john doe";
-// Convert to title case (John Doe)
-// Your code here
-
-// Challenge 3: String operations
-let str1 = "Hello";
-let str2 = "World";
-// Concatenate with a space: "Hello World"
-// Your code here
-
-// Challenge 4: String parsing
-let csv = "apple,banana,orange";
-// Split into array: ["apple", "banana", "orange"]
-// Your code here
-
-// Challenge 5: String validation
-let email = "user@example.com";
-// Check if it contains "@"
-// Your code here
+console.log(((10 + 5) * 2 - 8) / 4); // 5.5? No, this is 5.5. Use ((10 + 5) * 2 - 20) / 4)
 ```
 
-### Challenge Solutions
+A valid one is:
 
-**Operators Challenge Solutions:**
 ```javascript
-// Challenge 1
-console.log("10" + 5);        // "105"
-console.log("10" - 5);        // 5
-console.log("10" * 5);        // 50
-console.log("10" / 5);        // 2
-console.log("10" % 3);        // 1
-
-// Challenge 2
-console.log(2 + 3 * 4);      // 14
-console.log((2 + 3) * 4);    // 20
-console.log(10 / 2 + 3 * 2); // 10
-console.log(20 % 6 + 4 ** 2); // 18
-
-// Challenge 3
-let x = 10;
-x += 5;  // 15
-x *= 2;  // 30
-x -= 10; // 20
-console.log(x);              // 20
-
-// Challenge 4
-console.log(true + 1);       // 2
-console.log(false + 1);      // 1
-console.log(null + 5);       // 5
-console.log(undefined + 5);  // NaN
-console.log(NaN + 5);        // NaN
+console.log((10 + 5) / 3); // 5
 ```
 
-**Number Challenge Solutions:**
+### Challenge 2.1
+
 ```javascript
-// Challenge 1
-console.log(Number("42"));          // 42
-console.log(Number("Hello"));       // NaN
-console.log(Number(true));          // 1
-console.log(Number(null));          // 0
-console.log(Number(undefined));     // NaN
-
-// Challenge 2
-console.log(parseInt("42px"));      // 42
-console.log(parseInt("Hello"));     // NaN
-console.log(parseFloat("3.14px"));  // 3.14
-console.log(parseFloat("Hello"));   // NaN
-
-// Challenge 3
-let num = 1234.56789;
-console.log(num.toFixed(2));        // "1234.57"
-console.log(num.toPrecision(4));    // "1235"
-console.log(num.toExponential(2)); // "1.23e+3"
-
-// Challenge 4
-console.log(Math.round(4.7));      // 5
-console.log(Math.floor(4.9));      // 4
-console.log(Math.ceil(4.1));      // 5
-console.log(Math.abs(-5));         // 5
-console.log(Math.pow(2, 3));       // 8
-console.log(Math.sqrt(16));        // 4
-
-// Challenge 5
-console.log(Math.floor(Math.random() * 10) + 1); // 1-10
+let input = "25";
+let num = +input;
+console.log(num * 4); // 100
 ```
 
-**String Challenge Solutions:**
-```javascript
-// Challenge 1
-let text = "Hello, World!";
-console.log(text.length);          // 13
-console.log(text.toUpperCase());   // "HELLO, WORLD!"
-console.log(text.indexOf("World")); // 7
-console.log(text.slice(0, 5));     // "Hello"
-console.log(text.replace("World", "JavaScript")); // "Hello, JavaScript!"
+### Challenge 2.2
 
-// Challenge 2
-let name = "john doe";
-let titleCase = name.toLowerCase().split(' ').map(word => 
+```javascript
+let celsiusString = "0";
+let celsius = +celsiusString;
+let fahrenheit = celsius * 9 / 5 + 32;
+let kelvin = celsius + 273.15;
+console.log(celsius + "C = " + fahrenheit + "F");
+console.log(celsius + "C = " + kelvin + "K");
+```
+
+### Challenge 3.1
+
+```
+"1010"
+"1010"
+"105"
+"555"
+```
+
+### Challenge 3.2
+
+```
+4
+6
+"82"
+16
+```
+
+### Challenge 4.1
+
+```javascript
+let score = 0;
+score += 100;
+console.log(score); // 100
+```
+
+### Challenge 4.2
+
+```javascript
+let sentence = "";
+sentence += "I ";
+sentence += "love ";
+sentence += "JavaScript.";
+console.log(sentence);
+```
+
+### Challenge 4.3
+
+```javascript
+let a = "5";
+a *= 2;
+console.log(a); // 10
+
+let b = "5";
+b += 2;
+console.log(b); // "52"
+```
+
+### Challenge 5.1
+
+```javascript
+let width = "150px";
+let height = "200.5px";
+let opacity = "0.75";
+let count = "42";
+console.log(parseInt(width));
+console.log(parseFloat(height));
+console.log(parseFloat(opacity));
+console.log(parseInt(count));
+```
+
+### Challenge 6.2
+
+```javascript
+function dice() {
+  return Math.floor(Math.random() * 6) + 1;
+}
+console.log(dice());
+```
+
+### Challenge 6.3
+
+```javascript
+function circleArea(radius) {
+  return (Math.PI * radius * radius).toFixed(2);
+}
+console.log(circleArea(5)); // "78.54"
+```
+
+### Challenge 7.1
+
+```javascript
+let name = "Ada Lovelace";
+console.log(name.length);
+console.log(name[0], name[name.length - 1]);
+console.log(name.indexOf(" "));
+console.log(name.includes("Love"));
+```
+
+### Challenge 7.2
+
+```javascript
+let full = "Grace Hopper";
+let space = full.indexOf(" ");
+let first = full.slice(0, space);
+let last = full.slice(space + 1);
+console.log(first, last);
+```
+
+### Challenge 7.5
+
+```javascript
+function badge(name) {
+  return name.trim().toLowerCase().split(" ").map(word =>
     word.charAt(0).toUpperCase() + word.slice(1)
-).join(' ');
-console.log(titleCase); // "John Doe"
-
-// Challenge 3
-let str1 = "Hello";
-let str2 = "World";
-console.log(str1 + " " + str2); // "Hello World"
-// Or: console.log(`${str1} ${str2}`);
-
-// Challenge 4
-let csv = "apple,banana,orange";
-console.log(csv.split(",")); // ["apple", "banana", "orange"]
-
-// Challenge 5
-let email = "user@example.com";
-console.log(email.includes("@")); // true
+  ).join(" ");
+}
+console.log(badge("  aDA lovelace  "));
 ```
 
-### Review Questions
+---
 
-1. **What is the result of `"10" + 5`?**
+## Review Questions
+
+1. What is the result of `"10" + 5`?
    - [ ] 15
-   - [ ] "105"
+   - [x] "105"
    - [ ] NaN
    - [ ] Error
 
-2. **Which operator converts a string to a number?**
+2. Which operator converts a string to a number?
    - [ ] `-`
-   - [ ] `+`
+   - [x] `+`
    - [ ] `*`
    - [ ] `/`
 
-3. **What does `Math.floor(4.9)` return?**
-   - [ ] 4
+3. What does `Math.floor(4.9)` return?
+   - [x] 4
    - [ ] 5
    - [ ] 4.9
    - [ ] 4.5
 
-4. **What is the result of `parseInt("42px")`?**
-   - [ ] 42
+4. What is the result of `parseInt("42px")`?
+   - [x] 42
    - [ ] NaN
    - [ ] "42px"
    - [ ] Error
 
-5. **Which method rounds a number to a specified decimal places?**
-   - [ ] `Math.round()`
-   - [ ] `toFixed()`
-   - [ ] `Math.floor()`
-   - [ ] `toPrecision()`
+5. Which method rounds a number to a specified number of decimal places?
+   - [ ] Math.round()
+   - [x] toFixed()
+   - [ ] Math.floor()
+   - [ ] toPrecision()
 
-6. **What does `"Hello".slice(0, 3)` return?**
-   - [ ] "Hel"
+6. What does `"Hello".slice(0, 3)` return?
+   - [x] "Hel"
    - [ ] "ello"
    - [ ] "llo"
    - [ ] "Hello"
 
-7. **What is the result of `true + 5`?**
-   - [ ] 6
+7. What is the result of `true + 5`?
+   - [x] 6
    - [ ] "true5"
    - [ ] NaN
    - [ ] 5
 
-8. **Which method removes whitespace from both ends of a string?**
-   - [ ] `trimStart()`
-   - [ ] `trimEnd()`
-   - [ ] `trim()`
-   - [ ] `strip()`
+8. Which method removes whitespace from both ends of a string?
+   - [ ] trimStart()
+   - [ ] trimEnd()
+   - [x] trim()
+   - [ ] strip()
 
-9. **What does `Math.random()` return?**
+9. What does `Math.random()` return?
    - [ ] A random integer
-   - [ ] A number between 0 and 1
+   - [x] A number between 0 and 1
    - [ ] A number between 1 and 10
    - [ ] A random string
 
-10. **What is the result of `"10" - 5`?**
+10. What is the result of `"10" - 5`?
     - [ ] "105"
-    - [ ] 5
+    - [x] 5
     - [ ] NaN
     - [ ] Error
 
-### Correct Answers
-
-1. ✅ "105"
-2. ✅ `+`
-3. ✅ 4
-4. ✅ 42
-5. ✅ `toFixed()`
-6. ✅ "Hel"
-7. ✅ 6
-8. ✅ `trim()`
-9. ✅ A number between 0 and 1
-10. ✅ 5
-
 ---
 
-## 🎯 Next Steps
-
-1. ✅ Practice all arithmetic operators
-2. ✅ Master type coercion rules
-3. ✅ Learn all Number methods
-4. ✅ Explore Math object functions
-5. ✅ Practice string manipulation
-6. ✅ Complete all challenge exercises
-7. ✅ Build practical calculators and formatters
-
----
-
-## 📚 Additional Resources
+## Additional Resources
 
 - [MDN: Arithmetic Operators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Arithmetic_Operators)
 - [MDN: Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)
@@ -1285,5 +1733,3 @@ console.log(email.includes("@")); // true
 - [JavaScript.info: Operators](https://javascript.info/operators)
 - [JavaScript.info: Numbers](https://javascript.info/number)
 - [JavaScript.info: Strings](https://javascript.info/string)
-
-**Remember:** Understanding operators and type coercion is crucial for writing bug-free JavaScript code. Practice these concepts regularly! 💪

@@ -1,238 +1,523 @@
-# Session 4: Conditionals
+# Session 4: Conditionals — Active Learning Redesign
 
-## 📚 Theory (1h)
+## Session Plan for the Instructor
 
-### Comparison Operators
+- **Total time:** approximately 90 to 120 minutes
+- **Pacing rule:** never explain theory continuously for more than 15–20 minutes. After every concept, students must predict, write, or fix code.
+- **Pedagogical pattern for every topic:**
+  1. **Problem** — a realistic mini-situation
+  2. **Guess** — ask: "What do you expect to happen?"
+  3. **Explain** — the shortest rule that fixes the problem
+  4. **Code** — live code written in front of the students, step by step
+  5. **Challenge** — students solve a small task on their own or in groups
+  6. **Review** — discuss the answer and the most common mistake
 
-Comparison operators compare two values and return a boolean result (`true` or `false`).
+### Competition and Points
 
-#### Equality Operators
+- 1 point per correct prediction in the "Guess" phase.
+- 1–3 points per completed challenge, depending on difficulty.
+- A "Bug Hunter" badge for each student who finds and fixes an intentional error.
+- Keep a simple tally on a shared board or in the chat.
 
-| Operator | Name | Description | Example |
-|----------|------|-------------|---------|
-| `==` | Loose equality | Compares values after type coercion | `5 == "5"` → `true` |
-| `===` | Strict equality | Compares values and types | `5 === "5"` → `false` |
-| `!=` | Loose inequality | Returns true if values are not equal (with coercion) | `5 != "5"` → `false` |
-| `!==` | Strict inequality | Returns true if values or types are not equal | `5 !== "5"` → `true` |
+### Instructor Questions to Ask During the Session
 
-**Examples:**
+- "What do you expect to see in the console?"
+- "What rule made this happen?"
+- "Is the value truthy or falsy?"
+- "Which branch will run?"
+- "How would you write this with fewer lines?"
+- "What would break this code?"
+
+---
+
+## Part 0: Warm-Up — The Login That Always Fails (5 minutes)
+
+### Problem
+
+A login page accepts a username and password. The developer wrote this:
+
 ```javascript
-// Loose equality (with type coercion)
-console.log(5 == "5");        // true
-console.log(5 == 5);          // true
-console.log(null == undefined); // true
-console.log(0 == false);      // true
-console.log("" == false);     // true
+let username = "admin";
+let password = "admin123";
 
-// Strict equality (no type coercion)
-console.log(5 === "5");       // false
-console.log(5 === 5);         // true
-console.log(null === undefined); // false
-console.log(0 === false);     // false
-console.log("" === false);    // false
-
-// Inequality operators
-console.log(5 != "5");        // false
-console.log(5 !== "5");       // true
+if (username = "admin") {
+  console.log("Login allowed");
+} else {
+  console.log("Login denied");
+}
 ```
 
-**Best Practice:** Always use `===` and `!==` unless you specifically need type coercion.
+### Guess
 
-#### Relational Operators
+Ask: "Will this allow the user in? What is the difference between `=` and `===`?"
 
-| Operator | Name | Description | Example |
-|----------|------|-------------|---------|
-| `>` | Greater than | Returns true if left operand is greater | `5 > 3` → `true` |
-| `<` | Less than | Returns true if left operand is smaller | `5 < 3` → `false` |
-| `>=` | Greater than or equal | Returns true if left operand is greater or equal | `5 >= 5` → `true` |
-| `<=` | Less than or equal | Returns true if left operand is smaller or equal | `5 <= 5` → `true` |
+### Explain
 
-**Examples:**
+- `=` is assignment, not comparison.
+- `==` compares values with type coercion.
+- `===` compares values and types without coercion.
+- Best practice: always use `===` and `!==` for comparisons.
+
+### Live Code
+
 ```javascript
-console.log(5 > 3);           // true
-console.log(5 < 3);           // false
-console.log(5 >= 5);          // true
-console.log(5 <= 5);          // true
-console.log("10" > 5);        // true (string converted to number)
-console.log("a" > "b");       // false (alphabetical comparison)
-console.log("apple" > "banana"); // false
+let username = "admin";
+let password = "admin123";
+
+console.log(username === "admin");       // true
+console.log(username === "Admin");       // false
+console.log(password === "admin123");    // true
+console.log(5 == "5");                   // true
+console.log(5 === "5");                  // false
 ```
 
-#### String Comparison
+### Review
 
-Strings are compared character by character using Unicode values.
+Ask: "Why is `5 == "5"` true but `5 === "5"` false?" Emphasize that the bug in the warm-up is one of the most common JavaScript mistakes.
+
+---
+
+## Part 1: Comparison Operators
+
+### 1.1 Equality: `==` vs `===`
+
+#### Problem
+
+A form sends the age as a string. The code accepts `18` or `"18"`. Is that safe?
 
 ```javascript
-console.log("a" < "b");       // true
-console.log("A" < "a");       // true (uppercase comes before lowercase)
+let age = "18";
+
+if (age == 18) {
+  console.log("Allowed");
+}
+```
+
+#### Guess
+
+Ask: "Will this print `Allowed`? What if the user typed `"18abc"`?"
+
+#### Explain
+
+- `==` compares values after type coercion.
+- `===` compares values and types.
+- Use `===` unless you have a strong reason to allow coercion.
+
+#### Live Code
+
+```javascript
+// Loose equality
+console.log(5 == "5");              // true
+console.log(5 == 5);                // true
+console.log(null == undefined);     // true
+console.log(0 == false);            // true
+console.log("" == false);           // true
+
+// Strict equality
+console.log(5 === "5");             // false
+console.log(5 === 5);               // true
+console.log(null === undefined);    // false
+console.log(0 === false);           // false
+console.log("" === false);          // false
+
+// Inequality
+console.log(5 != "5");              // false
+console.log(5 !== "5");             // true
+```
+
+#### Challenge 1.1 — Strict or Loose? (individual, 3 minutes)
+
+- **Requirement:** Predict and then run the following. Explain which results changed because of strict equality.
+
+```javascript
+console.log(10 == "10");
+console.log(10 === "10");
+console.log(null == undefined);
+console.log(null === undefined);
+console.log(0 == "");
+console.log(0 === "");
+```
+
+- **Time limit:** 3 minutes
+
+#### Review
+
+Expected:
+
+```
+true
+false
+true
+false
+true
+false
+```
+
+### 1.2 Relational and String Comparison
+
+#### Problem
+
+A sorting app must decide if `"10"` is greater than `2` or `"2"`.
+
+#### Guess
+
+Ask: "Is `"10" > 2` true? Is `"10" > "2"` true?"
+
+#### Explain
+
+- When both operands are strings, `>` and `<` compare Unicode character by character.
+- When one side is a number, JavaScript converts the string to a number.
+
+#### Live Code
+
+```javascript
+console.log(5 > 3);              // true
+console.log(5 < 3);              // false
+console.log(5 >= 5);             // true
+console.log(5 <= 5);             // true
+
+console.log("10" > 5);           // true (number comparison)
+console.log("10" > "5");         // false (string comparison)
+console.log("10" < "2");         // true (string comparison)
+console.log("a" < "b");          // true
+console.log("A" < "a");          // true (uppercase comes first)
 console.log("apple" < "banana"); // true
-console.log("10" < "2");      // true (string comparison, not numeric)
-console.log("10" > 2);        // true (string "10" converted to number 10)
 ```
 
-### Logical Operators
+#### Challenge 1.2 — Sorting Strings (individual, 4 minutes)
 
-Logical operators are used to combine multiple conditions.
+- **Requirement:** Without running, sort these strings from smallest to largest: `"Zebra"`, `"apple"`, `"Banana"`, `"2"`, `"10"`.
+- **Time limit:** 4 minutes
+- **Hint:** Compare first characters using Unicode order (digits, then uppercase, then lowercase).
 
-| Operator | Name | Description | Example |
-|----------|------|-------------|---------|
-| `&&` | Logical AND | Returns true if both operands are true | `true && true` → `true` |
-| `\|\|` | Logical OR | Returns true if at least one operand is true | `true \|\| false` → `true` |
-| `!` | Logical NOT | Returns the opposite boolean value | `!true` → `false` |
+#### Review
 
-#### Logical AND (`&&`)
+Expected order: `"10"`, `"2"`, `"Banana"`, `"Zebra"`, `"apple"`. Discuss why numbers as strings sort oddly.
 
-Returns the first falsy value or the last truthy value.
+---
+
+## Part 2: Logical Operators
+
+### 2.1 Logical AND (`&&`)
+
+#### Problem
+
+A student can only graduate if they passed both math and science.
 
 ```javascript
-// Boolean logic
-console.log(true && true);    // true
-console.log(true && false);   // false
-console.log(false && true);   // false
-console.log(false && false);  // false
+let mathPassed = true;
+let sciencePassed = false;
 
-// Short-circuit evaluation
-console.log(true && "Hello"); // "Hello"
-console.log(false && "Hello"); // false (second operand not evaluated)
-console.log(5 && 10);         // 10
-console.log(0 && 10);         // 0
+if (mathPassed && sciencePassed) {
+  console.log("Graduate");
+} else {
+  console.log("Not yet");
+}
+```
 
-// Practical use
+#### Guess
+
+Ask: "What will this print?"
+
+#### Explain
+
+- `&&` returns the first falsy value, or the last truthy value if all are truthy.
+- `false && anything` does not evaluate the second part (short-circuit).
+
+#### Live Code
+
+```javascript
+console.log(true && true);      // true
+console.log(true && false);     // false
+console.log(false && true);     // false
+console.log(false && false);    // false
+
+console.log(true && "Hello");   // "Hello"
+console.log(false && "Hello");  // false
+console.log(5 && 10);           // 10
+console.log(0 && 10);           // 0
+
 let user = { name: "John", age: 30 };
 if (user && user.name) {
-    console.log("User name:", user.name);
+  console.log("User name:", user.name);
 }
 ```
 
-#### Logical OR (`||`)
+#### Challenge 2.1 — AND Gate (individual, 3 minutes)
 
-Returns the first truthy value or the last falsy value.
+- **Requirement:** Declare `let hasTicket = true;` and `let hasID = false;`. Write an `if` that only lets the user in when both are true.
+- **Time limit:** 3 minutes
 
-```javascript
-// Boolean logic
-console.log(true || true);    // true
-console.log(true || false);   // true
-console.log(false || true);   // true
-console.log(false || false);  // false
-
-// Short-circuit evaluation
-console.log(true || "Hello"); // true (second operand not evaluated)
-console.log(false || "Hello"); // "Hello"
-console.log(5 || 10);         // 5
-console.log(0 || 10);         // 10
-
-// Practical use - default values
-let name = userName || "Anonymous";
-let count = itemCount || 0;
-```
-
-#### Logical NOT (`!`)
-
-Returns the opposite boolean value.
+#### Review
 
 ```javascript
-console.log(!true);           // false
-console.log(!false);          // true
-console.log(!0);              // true
-console.log(!"");             // true
-console.log(!null);           // true
-console.log(!undefined);      // true
-console.log(!"Hello");        // false
-console.log(!10);             // false
-
-// Double negation (converts to boolean)
-console.log(!!"Hello");       // true
-console.log(!!0);             // false
-console.log(!!null);          // false
-```
-
-#### Operator Precedence
-
-Logical operators have specific precedence: `!` > `&&` > `||`
-
-```javascript
-console.log(true || false && false);  // true (&& evaluated first)
-console.log((true || false) && false); // false (parentheses change order)
-console.log(!true && false);           // false (! evaluated first)
-```
-
-### if/else Statements
-
-Conditional statements execute different code based on different conditions.
-
-#### Basic if Statement
-
-```javascript
-if (condition) {
-    // code to execute if condition is true
-}
-
-let age = 18;
-if (age >= 18) {
-    console.log("You are an adult");
-}
-```
-
-#### if/else Statement
-
-```javascript
-if (condition) {
-    // code to execute if condition is true
+let hasTicket = true;
+let hasID = false;
+if (hasTicket && hasID) {
+  console.log("Enter");
 } else {
-    // code to execute if condition is false
+  console.log("Cannot enter");
+}
+```
+
+### 2.2 Logical OR (`||`)
+
+#### Problem
+
+A page shows a name, but if the name is missing, it shows `"Anonymous"`.
+
+```javascript
+let name = "";
+let displayName = name || "Anonymous";
+console.log(displayName);
+```
+
+#### Guess
+
+Ask: "What will this print? What if `name` is `0`?"
+
+#### Explain
+
+- `||` returns the first truthy value, or the last falsy value.
+- `0`, `""`, `null`, `undefined`, `false`, and `NaN` are falsy.
+- Use `||` for default values, but be careful with falsy values like `0`.
+
+#### Live Code
+
+```javascript
+console.log(true || true);      // true
+console.log(true || false);     // true
+console.log(false || true);     // true
+console.log(false || false);    // false
+
+console.log(true || "Hello");   // true
+console.log(false || "Hello");  // "Hello"
+console.log(5 || 10);           // 5
+console.log(0 || 10);           // 10
+
+let userName = null;
+let displayName = userName || "Anonymous";
+console.log(displayName);       // "Anonymous"
+```
+
+#### Challenge 2.2 — Default Value (individual, 3 minutes)
+
+- **Requirement:** Write one line that gives `count` a default value of `1` only if it is falsy.
+- **Time limit:** 3 minutes
+- **Hint:** `let value = count || 1;`
+
+### 2.3 Logical NOT (`!`) and Double Negation
+
+#### Problem
+
+A form should say "yes" only when the checkbox is not checked.
+
+#### Explain
+
+- `!` converts a value to a boolean and inverts it.
+- `!!` converts a value to a boolean.
+
+#### Live Code
+
+```javascript
+console.log(!true);        // false
+console.log(!false);       // true
+console.log(!0);           // true
+console.log(!"");          // true
+console.log(!null);        // true
+console.log(!undefined);   // true
+console.log(!"Hello");     // false
+console.log(!10);          // false
+
+console.log(!!"Hello");    // true
+console.log(!!0);          // false
+console.log(!!null);       // false
+```
+
+#### Challenge 2.3 — Toggle (individual, 3 minutes)
+
+- **Requirement:** Declare `let isOnline = true;`. Use `!` to print the opposite value.
+- **Time limit:** 3 minutes
+
+### 2.4 Operator Precedence
+
+#### Problem
+
+A quiz checks if a user passed the exam OR had good attendance AND completed the project. Which condition runs first?
+
+#### Explain
+
+Logical operator precedence: `!` > `&&` > `||`. Use parentheses to make the intention clear.
+
+#### Live Code
+
+```javascript
+console.log(true || false && false);   // true (&& first)
+console.log((true || false) && false); // false (parentheses first)
+console.log(!true && false);           // false (! first)
+console.log(!(true && false));         // true
+```
+
+#### Challenge 2.4 — Add Parentheses (individual, 4 minutes)
+
+- **Requirement:** Rewrite `age > 18 && hasLicense || hasPermit` with parentheses that make the meaning clear.
+- **Time limit:** 4 minutes
+- **Hint:** The likely meaning is `(age > 18 && hasLicense) || hasPermit`.
+
+---
+
+## Bug Hunt 1
+
+### Problem
+
+The following login function has three deliberate bugs. Ask students to find them.
+
+```javascript
+function login(username, password) {
+  let users = {
+    admin: { password: "admin123", role: "admin" },
+    user: { password: "user123", role: "user" },
+  };
+
+  let user = users[username];
+
+  if (user = undefined) {
+    return "User not found";
+  }
+
+  if (user.password = password) {
+    if (user.role = "admin") {
+      return "Welcome, admin";
+    } else {
+      return "Welcome, user";
+    }
+  } else {
+    return "Wrong password";
+  }
 }
 
+console.log(login("admin", "admin123"));
+```
+
+### Issues
+
+1. `if (user = undefined)` uses `=` instead of `===` or `!user`.
+2. `if (user.password = password)` uses `=` instead of `===`.
+3. `if (user.role = "admin")` uses `=` instead of `===`.
+
+### Fixed Version (for the instructor)
+
+```javascript
+function login(username, password) {
+  let users = {
+    admin: { password: "admin123", role: "admin" },
+    user: { password: "user123", role: "user" },
+  };
+
+  let user = users[username];
+
+  if (user === undefined) {
+    return "User not found";
+  }
+
+  if (user.password === password) {
+    if (user.role === "admin") {
+      return "Welcome, admin";
+    } else {
+      return "Welcome, user";
+    }
+  } else {
+    return "Wrong password";
+  }
+}
+
+console.log(login("admin", "admin123"));
+```
+
+### Points
+
+1 point for each found bug.
+
+---
+
+## Part 3: if/else Statements
+
+### 3.1 Basic if/else
+
+#### Problem
+
+A cinema checks age before selling a ticket.
+
+#### Live Code
+
+```javascript
 let age = 15;
+
 if (age >= 18) {
-    console.log("You are an adult");
+  console.log("You can watch this movie");
 } else {
-    console.log("You are a minor");
+  console.log("You are too young");
 }
 ```
 
-#### if/else if/else Statement
+#### Challenge 3.1 — Positive, Negative, or Zero (individual, 4 minutes)
+
+- **Requirement:** Declare `let num = -5;`. Print `"Positive"`, `"Negative"`, or `"Zero"`.
+- **Time limit:** 4 minutes
+- **Hint:** Use `if`, `else if`, and `else`.
+
+### 3.2 if/else if/else
+
+#### Problem
+
+A school prints a letter grade from a score.
+
+#### Live Code
 
 ```javascript
-if (condition1) {
-    // code if condition1 is true
-} else if (condition2) {
-    // code if condition2 is true
-} else {
-    // code if all conditions are false
-}
-
 let score = 85;
+
 if (score >= 90) {
-    console.log("Grade: A");
+  console.log("Grade: A");
 } else if (score >= 80) {
-    console.log("Grade: B");
+  console.log("Grade: B");
 } else if (score >= 70) {
-    console.log("Grade: C");
+  console.log("Grade: C");
 } else if (score >= 60) {
-    console.log("Grade: D");
+  console.log("Grade: D");
 } else {
-    console.log("Grade: F");
+  console.log("Grade: F");
 }
 ```
 
-#### Multiple Conditions
+#### Challenge 3.2 — Grade Checker (individual, 4 minutes)
+
+- **Requirement:** Write a function `calculateGrade(score)` that returns `"A"`, `"B"`, `"C"`, `"D"`, `"F"`, or `"Invalid"` if the score is outside `0`–`100`.
+- **Time limit:** 4 minutes
+- **Hint:** Check for invalid input first.
+
+#### Review
 
 ```javascript
-let age = 25;
-let hasLicense = true;
-
-if (age >= 18 && hasLicense) {
-    console.log("You can drive");
-} else if (age >= 18 && !hasLicense) {
-    console.log("You need a license to drive");
-} else {
-    console.log("You are too young to drive");
+function calculateGrade(score) {
+  if (score < 0 || score > 100) {
+    return "Invalid";
+  }
+  if (score >= 90) return "A";
+  if (score >= 80) return "B";
+  if (score >= 70) return "C";
+  if (score >= 60) return "D";
+  return "F";
 }
 ```
 
-### Nested if Statements
+### 3.3 Nested if Statements and Early Returns
 
-You can nest if statements inside other if statements for more complex logic.
+#### Problem
+
+A driving eligibility check has too many nested `if`s. How can we flatten it?
+
+#### Live Code — Nested
 
 ```javascript
 let age = 25;
@@ -240,1575 +525,1039 @@ let hasLicense = true;
 let hasCar = false;
 
 if (age >= 18) {
-    if (hasLicense) {
-        if (hasCar) {
-            console.log("You can drive your car");
-        } else {
-            console.log("You have a license but no car");
-        }
+  if (hasLicense) {
+    if (hasCar) {
+      console.log("You can drive your car");
     } else {
-        console.log("You need to get a license");
+      console.log("You have a license but no car");
     }
+  } else {
+    console.log("You need to get a license");
+  }
 } else {
-    console.log("You are too young to drive");
+  console.log("You are too young to drive");
 }
 ```
 
-**Best Practice:** Avoid deep nesting. Use early returns or logical operators to simplify.
+#### Live Code — Flattened with Early Returns
 
 ```javascript
-// Better approach using early returns
-function checkDrivingEligibility(age, hasLicense, hasCar) {
-    if (age < 18) {
-        return "You are too young to drive";
-    }
-    
-    if (!hasLicense) {
-        return "You need to get a license";
-    }
-    
-    if (!hasCar) {
-        return "You have a license but no car";
-    }
-    
-    return "You can drive your car";
-}
-```
-
-### Ternary Operator
-
-The ternary operator is a concise way to write simple if/else statements.
-
-#### Syntax
-
-```javascript
-condition ? expressionIfTrue : expressionIfFalse
-```
-
-#### Basic Usage
-
-```javascript
-let age = 18;
-let message = age >= 18 ? "You are an adult" : "You are a minor";
-console.log(message);
-```
-
-#### Multiple Ternary Operators (Nested)
-
-```javascript
-let score = 85;
-let grade = score >= 90 ? "A" : 
-           score >= 80 ? "B" : 
-           score >= 70 ? "C" : 
-           score >= 60 ? "D" : "F";
-console.log("Grade:", grade);
-```
-
-#### Ternary with Function Calls
-
-```javascript
-function greet(name) {
-    return name ? `Hello, ${name}!` : "Hello, Guest!";
+function checkDriving(age, hasLicense, hasCar) {
+  if (age < 18) return "You are too young to drive";
+  if (!hasLicense) return "You need to get a license";
+  if (!hasCar) return "You have a license but no car";
+  return "You can drive your car";
 }
 
-console.log(greet("John"));  // "Hello, John!"
-console.log(greet(null));    // "Hello, Guest!"
+console.log(checkDriving(25, true, false));
 ```
 
-#### Best Practices
+#### Challenge 3.3 — Flatten It (individual, 5 minutes)
+
+- **Requirement:** Convert this nested code into a function with early returns.
 
 ```javascript
-// Good - simple and readable
-let max = a > b ? a : b;
+let temp = 30;
+let isRaining = false;
 
-// Avoid - too complex
-let result = condition1 ? (condition2 ? value1 : value2) : (condition3 ? value3 : value4);
-
-// Better to use if/else for complex logic
-if (condition1) {
-    if (condition2) {
-        result = value1;
-    } else {
-        result = value2;
-    }
+if (temp > 30) {
+  if (isRaining) {
+    console.log("Hot and rainy");
+  } else {
+    console.log("Hot and sunny");
+  }
 } else {
-    if (condition3) {
-        result = value3;
-    } else {
-        result = value4;
-    }
+  if (isRaining) {
+    console.log("Cool and rainy");
+  } else {
+    console.log("Cool and dry");
+  }
 }
 ```
 
-### Nullish Coalescing Operator
-
-The nullish coalescing operator (`??`) returns the right-hand operand when the left-hand operand is `null` or `undefined`.
-
-#### Syntax
-
-```javascript
-leftOperand ?? rightOperand
-```
-
-#### Basic Usage
-
-```javascript
-let name = null;
-let displayName = name ?? "Anonymous";
-console.log(displayName); // "Anonymous"
-
-let age = 0;
-let displayAge = age ?? 18;
-console.log(displayAge); // 0 (not 18, because 0 is not null/undefined)
-```
-
-#### Comparison with Logical OR (`||`)
-
-```javascript
-// Logical OR - returns first truthy value
-let count1 = 0;
-let result1 = count1 || 10;  // 10 (0 is falsy)
-
-// Nullish coalescing - returns right side only for null/undefined
-let count2 = 0;
-let result2 = count2 ?? 10;  // 0 (0 is not null/undefined)
-
-// More examples
-let value1 = null;
-console.log(value1 || "default");  // "default"
-console.log(value1 ?? "default");  // "default"
-
-let value2 = "";
-console.log(value2 || "default");  // "default" (empty string is falsy)
-console.log(value2 ?? "default");  // "" (empty string is not null/undefined)
-
-let value3 = false;
-console.log(value3 || "default");  // "default" (false is falsy)
-console.log(value3 ?? "default");  // false (false is not null/undefined)
-```
-
-#### Practical Use Cases
-
-```javascript
-// Function parameters with default values
-function createUser(name, age) {
-    return {
-        name: name ?? "Anonymous",
-        age: age ?? 0
-    };
-}
-
-console.log(createUser("John", 30));  // {name: "John", age: 30}
-console.log(createUser(null, null)); // {name: "Anonymous", age: 0}
-
-// API response handling
-let userData = {
-    name: "John",
-    email: null,
-    age: 0
-};
-
-let userEmail = userData.email ?? "No email provided";
-let userAge = userData.age ?? "Age not provided";
-
-console.log("Email:", userEmail); // "No email provided"
-console.log("Age:", userAge);     // 0
-```
-
-#### Optional Chaining with Nullish Coalescing
-
-```javascript
-let user = {
-    profile: {
-        name: "John"
-    }
-};
-
-let userName = user?.profile?.name ?? "Anonymous";
-let userEmail = user?.profile?.email ?? "No email";
-
-console.log(userName); // "John"
-console.log(userEmail); // "No email"
-```
+- **Time limit:** 5 minutes
+- **Hint:** Check the first condition first, then return a string.
 
 ---
 
-## 💻 Practical (1.5h)
+## Part 4: Ternary Operator
 
-### Exercise 1: Comparison Operators
+### 4.1 Basic Ternary
 
-```javascript
-// Exercise 1.1: Equality operators
-console.log("=== Equality Operators ===");
+#### Problem
 
-console.log("5 == '5':", 5 == "5");         // true
-console.log("5 === '5':", 5 === "5");       // false
-console.log("5 != '5':", 5 != "5");         // false
-console.log("5 !== '5':", 5 !== "5");       // true
+A label shows `"Adult"` or `"Minor"` in one line.
 
-console.log("null == undefined:", null == undefined); // true
-console.log("null === undefined:", null === undefined); // false
-
-console.log("0 == false:", 0 == false);     // true
-console.log("0 === false:", 0 === false);   // false
-
-// Exercise 1.2: Relational operators
-console.log("\n=== Relational Operators ===");
-
-console.log("5 > 3:", 5 > 3);               // true
-console.log("5 < 3:", 5 < 3);               // false
-console.log("5 >= 5:", 5 >= 5);             // true
-console.log("5 <= 5:", 5 <= 5);             // true
-
-console.log("'10' > 5:", "10" > 5);         // true
-console.log("'a' > 'b':", "a" > "b");       // false
-console.log("'apple' > 'banana':", "apple" > "banana"); // false
-
-// Exercise 1.3: String comparison
-console.log("\n=== String Comparison ===");
-
-let word1 = "apple";
-let word2 = "banana";
-let word3 = "Apple";
-
-console.log(`"${word1}" < "${word2}":`, word1 < word2); // true
-console.log(`"${word1}" > "${word3}":`, word1 > word3); // true
-console.log(`"${word3}" < "${word1}":`, word3 < word1); // true
-```
-
-### Exercise 2: Logical Operators
+#### Live Code
 
 ```javascript
-// Exercise 2.1: Logical AND
-console.log("=== Logical AND ===");
-
-console.log("true && true:", true && true);     // true
-console.log("true && false:", true && false);   // false
-console.log("false && true:", false && true);   // false
-console.log("false && false:", false && false); // false
-
-console.log("true && 'Hello':", true && "Hello"); // "Hello"
-console.log("false && 'Hello':", false && "Hello"); // false
-console.log("5 && 10:", 5 && 10);               // 10
-console.log("0 && 10:", 0 && 10);               // 0
-
-// Exercise 2.2: Logical OR
-console.log("\n=== Logical OR ===");
-
-console.log("true || true:", true || true);     // true
-console.log("true || false:", true || false);   // true
-console.log("false || true:", false || true);   // true
-console.log("false || false:", false || false); // false
-
-console.log("true || 'Hello':", true || "Hello"); // true
-console.log("false || 'Hello':", false || "Hello"); // "Hello"
-console.log("5 || 10:", 5 || 10);               // 5
-console.log("0 || 10:", 0 || 10);               // 10
-
-// Exercise 2.3: Logical NOT
-console.log("\n=== Logical NOT ===");
-
-console.log("!true:", !true);                   // false
-console.log("!false:", !false);                 // true
-console.log("!0:", !0);                         // true
-console.log("!10:", !10);                       // false
-console.log("!!'Hello':", !!"Hello");           // true
-console.log("!!0:", !!0);                       // false
-
-// Exercise 2.4: Practical examples
-console.log("\n=== Practical Examples ===");
-
-let user = { name: "John", age: 30, isAdmin: false };
-
-if (user && user.name) {
-    console.log("User name:", user.name);
-}
-
-let displayName = user.name || "Anonymous";
-console.log("Display name:", displayName);
-
-let canAccess = user.isAdmin || user.age >= 18;
-console.log("Can access:", canAccess);
-```
-
-### Exercise 3: if/else Statements
-
-```javascript
-// Exercise 3.1: Basic if/else
-console.log("=== Basic if/else ===");
-
-let age = 20;
-if (age >= 18) {
-    console.log("You are an adult");
-} else {
-    console.log("You are a minor");
-}
-
-// Exercise 3.2: if/else if/else
-console.log("\n=== if/else if/else ===");
-
-let score = 75;
-if (score >= 90) {
-    console.log("Grade: A");
-} else if (score >= 80) {
-    console.log("Grade: B");
-} else if (score >= 70) {
-    console.log("Grade: C");
-} else if (score >= 60) {
-    console.log("Grade: D");
-} else {
-    console.log("Grade: F");
-}
-
-// Exercise 3.3: Multiple conditions
-console.log("\n=== Multiple Conditions ===");
-
-let temperature = 25;
-let isRaining = false;
-
-if (temperature > 30 && !isRaining) {
-    console.log("It's hot and sunny - perfect for the beach!");
-} else if (temperature > 30 && isRaining) {
-    console.log("It's hot but raining - stay indoors!");
-} else if (temperature <= 30 && !isRaining) {
-    console.log("It's pleasant weather - great for a walk!");
-} else {
-    console.log("It's cool and raining - bring an umbrella!");
-}
-
-// Exercise 3.4: Nested if
-console.log("\n=== Nested if ===");
-
-let hasTicket = true;
-let hasID = false;
-let isVIP = true;
-
-if (hasTicket) {
-    if (hasID) {
-        console.log("Welcome to the event!");
-    } else if (isVIP) {
-        console.log("VIP entry without ID - welcome!");
-    } else {
-        console.log("You need ID to enter");
-    }
-} else {
-    console.log("You need a ticket to enter");
-}
-```
-
-### Exercise 4: Ternary Operator
-
-```javascript
-// Exercise 4.1: Basic ternary
-console.log("=== Basic Ternary ===");
-
-let age = 20;
+let age = 18;
 let message = age >= 18 ? "Adult" : "Minor";
-console.log("Age:", age, "- Status:", message);
-
-// Exercise 4.2: Nested ternary
-console.log("\n=== Nested Ternary ===");
-
-let score = 85;
-let grade = score >= 90 ? "A" : 
-           score >= 80 ? "B" : 
-           score >= 70 ? "C" : 
-           score >= 60 ? "D" : "F";
-console.log("Score:", score, "- Grade:", grade);
-
-// Exercise 4.3: Ternary with functions
-console.log("\n=== Ternary with Functions ===");
-
-function getGreeting(timeOfDay) {
-    return timeOfDay === "morning" ? "Good morning!" :
-           timeOfDay === "afternoon" ? "Good afternoon!" :
-           timeOfDay === "evening" ? "Good evening!" :
-           "Hello!";
-}
-
-console.log(getGreeting("morning"));
-console.log(getGreeting("afternoon"));
-console.log(getGreeting("evening"));
-console.log(getGreeting("night"));
-
-// Exercise 4.4: Practical examples
-console.log("\n=== Practical Examples ===");
-
-let num = 15;
-let parity = num % 2 === 0 ? "even" : "odd";
-console.log(`${num} is ${parity}`);
-
-let price = 100;
-let discount = price > 50 ? price * 0.1 : 0;
-console.log(`Price: $${price}, Discount: $${discount}`);
-
-let isLoggedIn = true;
-let buttonLabel = isLoggedIn ? "Logout" : "Login";
-console.log("Button label:", buttonLabel);
+console.log(message);
 ```
 
-### Exercise 5: Nullish Coalescing
+#### Challenge 4.1 — Odd or Even (individual, 3 minutes)
+
+- **Requirement:** Use a ternary to print `"even"` or `"odd"` for `let num = 15;`.
+- **Time limit:** 3 minutes
+- **Hint:** `num % 2 === 0 ? "even" : "odd"`.
+
+### 4.2 Nested Ternary
+
+#### Problem
+
+A grade must be shown as a letter in one expression.
+
+#### Live Code
 
 ```javascript
-// Exercise 5.1: Basic nullish coalescing
-console.log("=== Basic Nullish Coalescing ===");
+let score = 85;
+let grade = score >= 90 ? "A" :
+            score >= 80 ? "B" :
+            score >= 70 ? "C" :
+            score >= 60 ? "D" : "F";
+console.log("Grade:", grade);
+```
 
-let name1 = null;
-let displayName1 = name1 ?? "Anonymous";
-console.log("null ?? 'Anonymous':", displayName1);
+#### Challenge 4.2 — Greeting by Time (individual, 4 minutes)
 
-let name2 = undefined;
-let displayName2 = name2 ?? "Anonymous";
-console.log("undefined ?? 'Anonymous':", displayName2);
+- **Requirement:** Write a function `greet(timeOfDay)` that returns `"Good morning!"`, `"Good afternoon!"`, `"Good evening!"`, or `"Hello!"` using a nested ternary.
+- **Time limit:** 4 minutes
+- **Hint:** Compare `timeOfDay` to `"morning"`, `"afternoon"`, and `"evening"`.
 
-let name3 = "John";
-let displayName3 = name3 ?? "Anonymous";
-console.log("'John' ?? 'Anonymous':", displayName3);
+#### Review
 
-// Exercise 5.2: Comparison with logical OR
-console.log("\n=== Comparison with Logical OR ===");
-
-let value1 = 0;
-console.log("0 || 10:", value1 || 10);    // 10
-console.log("0 ?? 10:", value1 ?? 10);    // 0
-
-let value2 = "";
-console.log("'' || 'default':", value2 || "default");  // "default"
-console.log("'' ?? 'default':", value2 ?? "default");  // ""
-
-let value3 = false;
-console.log("false || 'default':", value3 || "default");  // "default"
-console.log("false ?? 'default':", value3 ?? "default");  // false
-
-// Exercise 5.3: Practical use cases
-console.log("\n=== Practical Use Cases ===");
-
-function processUserData(user) {
-    return {
-        name: user.name ?? "Anonymous",
-        email: user.email ?? "No email",
-        age: user.age ?? 0,
-        isActive: user.isActive ?? false
-    };
+```javascript
+function greet(timeOfDay) {
+  return timeOfDay === "morning" ? "Good morning!" :
+         timeOfDay === "afternoon" ? "Good afternoon!" :
+         timeOfDay === "evening" ? "Good evening!" :
+         "Hello!";
 }
+```
 
-let user1 = { name: "John", email: "john@example.com", age: 30, isActive: true };
-let user2 = { name: null, email: null, age: null, isActive: null };
+### 4.3 Best Practice
 
-console.log("User 1:", processUserData(user1));
-console.log("User 2:", processUserData(user2));
+- Use ternary for simple `if/else` assignments.
+- Avoid deeply nested ternaries; use `if/else` or `switch` for complex logic.
 
-// Exercise 5.4: Optional chaining with nullish coalescing
-console.log("\n=== Optional Chaining ===");
+---
 
-let data = {
-    user: {
-        profile: {
-            name: "John",
-            email: null
-        }
-    }
+## Part 5: Nullish Coalescing Operator (`??`)
+
+### 5.1 The Difference Between `||` and `??`
+
+#### Problem
+
+A user sets their age to `0`. The app should keep `0`, not replace it with a default.
+
+```javascript
+let age = 0;
+let displayAge = age || 18;
+console.log(displayAge); // 18, but should be 0
+```
+
+#### Guess
+
+Ask: "Is `0` a real age, or should it be replaced?"
+
+#### Explain
+
+- `||` returns the first truthy value.
+- `??` returns the right side only if the left side is `null` or `undefined`.
+- `0`, `""`, `false`, and `NaN` are kept by `??`.
+
+#### Live Code
+
+```javascript
+let count1 = 0;
+console.log(count1 || 10);     // 10
+console.log(count1 ?? 10);     // 0
+
+let value1 = "";
+console.log(value1 || "default");  // "default"
+console.log(value1 ?? "default");  // ""
+
+let value2 = false;
+console.log(value2 || "default");  // "default"
+console.log(value2 ?? "default");  // false
+
+let value3 = null;
+console.log(value3 ?? "default");  // "default"
+```
+
+#### Challenge 5.1 — Default Name (individual, 4 minutes)
+
+- **Requirement:** A user might not have a name (`null` or `undefined`). Use `??` to set a default `"Anonymous"`, but keep `""` if they explicitly set it.
+- **Time limit:** 4 minutes
+- **Hint:** `let displayName = name ?? "Anonymous";`
+
+### 5.2 Optional Chaining with Nullish Coalescing
+
+#### Problem
+
+A user object might not have a `profile` property. How do we safely get a name?
+
+#### Live Code
+
+```javascript
+let user1 = {
+  profile: {
+    name: "John",
+    email: null
+  }
 };
 
-let userName = data?.user?.profile?.name ?? "No name";
-let userEmail = data?.user?.profile?.email ?? "No email";
-let userPhone = data?.user?.profile?.phone ?? "No phone";
+let userName = user1?.profile?.name ?? "Anonymous";
+let userEmail = user1?.profile?.email ?? "No email";
+let userPhone = user1?.profile?.phone ?? "No phone";
 
-console.log("Name:", userName);
-console.log("Email:", userEmail);
-console.log("Phone:", userPhone);
+console.log(userName);   // "John"
+console.log(userEmail);  // "No email"
+console.log(userPhone);  // "No phone"
 ```
 
-### Exercise 6: Switch Statement
+#### Challenge 5.2 — Safe Deep Access (individual, 4 minutes)
+
+- **Requirement:** Given an object that may or may not have `settings.theme.color`, write one line that prints the color or `"blue"` as a default.
+- **Time limit:** 4 minutes
+- **Hint:** `console.log(obj?.settings?.theme?.color ?? "blue");`
+
+---
+
+## Part 6: Switch Statements
+
+### 6.1 Basic Switch
+
+#### Problem
+
+A calendar app tells the user whether a day is a weekday or weekend.
+
+#### Live Code
 
 ```javascript
-// Exercise 6.1: Basic switch
-console.log("=== Basic Switch ===");
-
 let day = "Monday";
 let dayType;
 
 switch (day) {
-    case "Monday":
-    case "Tuesday":
-    case "Wednesday":
-    case "Thursday":
-    case "Friday":
-        dayType = "Weekday";
-        break;
-    case "Saturday":
-    case "Sunday":
-        dayType = "Weekend";
-        break;
-    default:
-        dayType = "Invalid day";
+  case "Monday":
+  case "Tuesday":
+  case "Wednesday":
+  case "Thursday":
+  case "Friday":
+    dayType = "Weekday";
+    break;
+  case "Saturday":
+  case "Sunday":
+    dayType = "Weekend";
+    break;
+  default:
+    dayType = "Invalid day";
 }
 
 console.log(`${day} is a ${dayType}`);
+```
 
-// Exercise 6.2: Switch with default
-console.log("\n=== Switch with Default ===");
+#### Challenge 6.1 — Season by Month (individual, 5 minutes)
 
-let grade = "B";
-let message;
+- **Requirement:** Use a `switch` with fallthrough to print the season for a given month number (`1` to `12`).
+- **Time limit:** 5 minutes
+- **Hint:** Group `case 12`, `case 1`, `case 2` for Winter.
 
-switch (grade) {
-    case "A":
-        message = "Excellent!";
-        break;
-    case "B":
-        message = "Good job!";
-        break;
-    case "C":
-        message = " satisfactory";
-        break;
-    case "D":
-        message = "Needs improvement";
-        break;
-    case "F":
-        message = "Fail";
-        break;
-    default:
-        message = "Invalid grade";
-}
+#### Review
 
-console.log(`Grade ${grade}: ${message}`);
-
-// Exercise 6.3: Switch without break (fallthrough)
-console.log("\n=== Switch Fallthrough ===");
-
+```javascript
 let month = 2;
 let season;
 
 switch (month) {
-    case 12:
-    case 1:
-    case 2:
-        season = "Winter";
-        break;
-    case 3:
-    case 4:
-    case 5:
-        season = "Spring";
-        break;
-    case 6:
-    case 7:
-    case 8:
-        season = "Summer";
-        break;
-    case 9:
-    case 10:
-    case 11:
-        season = "Fall";
-        break;
-    default:
-        season = "Invalid month";
+  case 12:
+  case 1:
+  case 2:
+    season = "Winter";
+    break;
+  case 3:
+  case 4:
+  case 5:
+    season = "Spring";
+    break;
+  case 6:
+  case 7:
+  case 8:
+    season = "Summer";
+    break;
+  case 9:
+  case 10:
+  case 11:
+    season = "Fall";
+    break;
+  default:
+    season = "Invalid month";
 }
-
-console.log(`Month ${month} is in ${season}`);
+console.log(season);
 ```
 
-### Exercise 7: Decision-Based Mini Programs
+### 6.2 Switch with Functions
 
-#### Grade Calculator
+#### Problem
+
+A grade calculator returns a message based on a letter grade.
+
+#### Live Code
 
 ```javascript
-// Exercise 7.1: Grade Calculator
-console.log("=== Grade Calculator ===");
-
-function calculateGrade(score) {
-    if (score < 0 || score > 100) {
-        return "Invalid score (must be 0-100)";
-    }
-    
-    if (score >= 90) return "A";
-    if (score >= 80) return "B";
-    if (score >= 70) return "C";
-    if (score >= 60) return "D";
-    return "F";
-}
-
-function getGradeDetails(score) {
-    let grade = calculateGrade(score);
-    let message;
-    
-    switch (grade) {
-        case "A":
-            message = "Outstanding performance!";
-            break;
-        case "B":
-            message = "Very good performance!";
-            break;
-        case "C":
-            message = "Satisfactory performance.";
-            break;
-        case "D":
-            message = "Needs improvement.";
-            break;
-        case "F":
-            message = "Fail - needs significant improvement.";
-            break;
-        default:
-            message = "Invalid score.";
-    }
-    
-    return { grade, message };
-}
-
-// Test the grade calculator
-let testScores = [95, 85, 75, 65, 55, 105, -5];
-testScores.forEach(score => {
-    let result = getGradeDetails(score);
-    console.log(`Score ${score}: ${result.grade} - ${result.message}`);
-});
-```
-
-#### Temperature Converter
-
-```javascript
-// Exercise 7.2: Temperature Converter
-console.log("\n=== Temperature Converter ===");
-
-function convertTemperature(value, fromUnit, toUnit) {
-    if (fromUnit === toUnit) {
-        return value;
-    }
-    
-    let celsius;
-    
-    // Convert to Celsius first
-    switch (fromUnit) {
-        case "C":
-            celsius = value;
-            break;
-        case "F":
-            celsius = (value - 32) * 5/9;
-            break;
-        case "K":
-            celsius = value - 273.15;
-            break;
-        default:
-            return "Invalid fromUnit";
-    }
-    
-    // Convert from Celsius to target unit
-    switch (toUnit) {
-        case "C":
-            return celsius.toFixed(2);
-        case "F":
-            return (celsius * 9/5 + 32).toFixed(2);
-        case "K":
-            return (celsius + 273.15).toFixed(2);
-        default:
-            return "Invalid toUnit";
-    }
-}
-
-// Test the converter
-console.log("0°C to F:", convertTemperature(0, "C", "F"));
-console.log("32°F to C:", convertTemperature(32, "F", "C"));
-console.log("273.15K to C:", convertTemperature(273.15, "K", "C"));
-console.log("100°C to K:", convertTemperature(100, "C", "K"));
-```
-
-#### Shopping Discount Calculator
-
-```javascript
-// Exercise 7.3: Shopping Discount Calculator
-console.log("\n=== Shopping Discount Calculator ===");
-
-function calculateDiscount(totalAmount, customerType) {
-    let discountRate;
-    
-    switch (customerType) {
-        case "VIP":
-            discountRate = 0.20; // 20% discount
-            break;
-        case "Premium":
-            discountRate = 0.15; // 15% discount
-            break;
-        case "Regular":
-            discountRate = 0.10; // 10% discount
-            break;
-        case "Guest":
-            discountRate = 0.05; // 5% discount
-            break;
-        default:
-            discountRate = 0;
-    }
-    
-    // Additional discount for large purchases
-    if (totalAmount > 1000) {
-        discountRate += 0.05; // Additional 5%
-    }
-    
-    // Cap discount at 25%
-    discountRate = Math.min(discountRate, 0.25);
-    
-    let discountAmount = totalAmount * discountRate;
-    let finalAmount = totalAmount - discountAmount;
-    
-    return {
-        originalAmount: totalAmount,
-        discountRate: (discountRate * 100).toFixed(1) + "%",
-        discountAmount: discountAmount.toFixed(2),
-        finalAmount: finalAmount.toFixed(2)
-    };
-}
-
-// Test the discount calculator
-let purchases = [
-    { amount: 500, type: "Regular" },
-    { amount: 1500, type: "VIP" },
-    { amount: 800, type: "Premium" },
-    { amount: 200, type: "Guest" }
-];
-
-purchases.forEach(purchase => {
-    let result = calculateDiscount(purchase.amount, purchase.type);
-    console.log(`${purchase.type} ($${purchase.amount}):`);
-    console.log(`  Discount: ${result.discountRate}`);
-    console.log(`  Final: $${result.finalAmount}`);
-});
-```
-
-#### Traffic Light Simulator
-
-```javascript
-// Exercise 7.4: Traffic Light Simulator
-console.log("\n=== Traffic Light Simulator ===");
-
-function trafficLightAction(light) {
-    let action;
-    
-    switch (light.toLowerCase()) {
-        case "red":
-            action = "STOP";
-            break;
-        case "yellow":
-            action = "SLOW DOWN";
-            break;
-        case "green":
-            action = "GO";
-            break;
-        case "flashing red":
-            action = "STOP (then proceed when safe)";
-            break;
-        case "flashing yellow":
-            action = "PROCEED WITH CAUTION";
-            break;
-        default:
-            action = "INVALID LIGHT";
-    }
-    
-    return action;
-}
-
-function getTrafficLightAdvice(light) {
-    let action = trafficLightAction(light);
-    let advice;
-    
-    if (action === "STOP") {
-        advice = "Come to a complete stop before the intersection.";
-    } else if (action === "SLOW DOWN") {
-        advice = "Prepare to stop. Do not enter the intersection if you can stop safely.";
-    } else if (action === "GO") {
-        advice = "Proceed through the intersection if it's safe.";
-    } else if (action === "STOP (then proceed when safe)") {
-        advice = "Treat as a stop sign. Stop, then proceed when safe.";
-    } else if (action === "PROCEED WITH CAUTION") {
-        advice = "Slow down and be prepared to stop for pedestrians.";
-    } else {
-        advice = "Invalid traffic light signal.";
-    }
-    
-    return { action, advice };
-}
-
-// Test the traffic light simulator
-let lights = ["Red", "Yellow", "Green", "Flashing Red", "Flashing Yellow", "Blue"];
-lights.forEach(light => {
-    let result = getTrafficLightAdvice(light);
-    console.log(`${light}: ${result.action}`);
-    console.log(`  Advice: ${result.advice}`);
-});
-```
-
-#### Login System
-
-```javascript
-// Exercise 7.5: Login System
-console.log("\n=== Login System ===");
-
-function authenticateUser(username, password, role) {
-    // Simulated user database
-    const users = {
-        "admin": { password: "admin123", role: "admin" },
-        "user": { password: "user123", role: "user" },
-        "guest": { password: "guest123", role: "guest" }
-    };
-    
-    let user = users[username];
-    
-    if (!user) {
-        return { success: false, message: "User not found" };
-    }
-    
-    if (user.password !== password) {
-        return { success: false, message: "Incorrect password" };
-    }
-    
-    if (user.role !== role) {
-        return { success: false, message: "Role mismatch" };
-    }
-    
-    return { success: true, message: "Login successful", role: user.role };
-}
-
-function getAccessLevel(role) {
-    switch (role) {
-        case "admin":
-            return "Full access to all features";
-        case "user":
-            return "Access to user features";
-        case "guest":
-            return "Limited access to guest features";
-        default:
-            return "No access";
-    }
-}
-
-// Test the login system
-let loginAttempts = [
-    { username: "admin", password: "admin123", role: "admin" },
-    { username: "user", password: "wrongpass", role: "user" },
-    { username: "guest", password: "guest123", role: "guest" },
-    { username: "unknown", password: "test", role: "user" }
-];
-
-loginAttempts.forEach(attempt => {
-    let result = authenticateUser(attempt.username, attempt.password, attempt.role);
-    console.log(`Login attempt for ${attempt.username}:`);
-    console.log(`  ${result.message}`);
-    
-    if (result.success) {
-        console.log(`  Access: ${getAccessLevel(result.role)}`);
-    }
-});
-```
-
-### Exercise 8: Complete Working Example
-
-**Complete script.js:**
-```javascript
-// Session 4: Conditionals
-// This script demonstrates conditional statements and operators
-
-console.log("=== Session 4: Conditionals ===");
-
-// 1. Comparison operators
-console.log("\n--- Comparison Operators ---");
-console.log("5 == '5':", 5 == "5");
-console.log("5 === '5':", 5 === "5");
-console.log("5 > 3:", 5 > 3);
-console.log("'a' < 'b':", "a" < "b");
-
-// 2. Logical operators
-console.log("\n--- Logical Operators ---");
-console.log("true && false:", true && false);
-console.log("true || false:", true || false);
-console.log("!true:", !true);
-
-// 3. if/else statements
-console.log("\n--- if/else Statements ---");
-let age = 20;
-if (age >= 18) {
-    console.log("You are an adult");
-} else {
-    console.log("You are a minor");
-}
-
-// 4. Ternary operator
-console.log("\n--- Ternary Operator ---");
-let score = 85;
-let grade = score >= 90 ? "A" : score >= 80 ? "B" : score >= 70 ? "C" : "D";
-console.log("Score:", score, "Grade:", grade);
-
-// 5. Nullish coalescing
-console.log("\n--- Nullish Coalescing ---");
-let name = null;
-let displayName = name ?? "Anonymous";
-console.log("Display name:", displayName);
-
-// 6. Switch statement
-console.log("\n--- Switch Statement ---");
-let day = "Monday";
-let dayType;
-switch (day) {
-    case "Monday":
-    case "Tuesday":
-    case "Wednesday":
-    case "Thursday":
-    case "Friday":
-        dayType = "Weekday";
-        break;
-    case "Saturday":
-    case "Sunday":
-        dayType = "Weekend";
-        break;
-    default:
-        dayType = "Invalid";
-}
-console.log(`${day} is a ${dayType}`);
-
-// 7. Grade calculator
-console.log("\n--- Grade Calculator ---");
-function calculateGrade(score) {
-    if (score < 0 || score > 100) return "Invalid";
-    if (score >= 90) return "A";
-    if (score >= 80) return "B";
-    if (score >= 70) return "C";
-    if (score >= 60) return "D";
-    return "F";
-}
-
-console.log("Score 95:", calculateGrade(95));
-console.log("Score 75:", calculateGrade(75));
-console.log("Score 55:", calculateGrade(55));
-
-console.log("\n=== Session 4 Complete ===");
-```
-
-**Complete index.html:**
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Session 4 - Conditionals</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        .section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .section h2 {
-            color: #1890ff;
-            margin-top: 0;
-        }
-        .calculator {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 10px;
-        }
-        .calculator label {
-            display: inline-block;
-            width: 120px;
-            margin-right: 10px;
-        }
-        .calculator input, .calculator select {
-            padding: 8px;
-            margin: 5px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .calculator button {
-            padding: 10px 20px;
-            background-color: #1890ff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .calculator button:hover {
-            background-color: #0c7cd5;
-        }
-        .result {
-            background: #e6f7ff;
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 15px;
-            border-left: 4px solid #1890ff;
-        }
-        .result.error {
-            background: #fff1f0;
-            border-left-color: #ff4d4f;
-        }
-        .result.success {
-            background: #f6ffed;
-            border-left-color: #52c41a;
-        }
-    </style>
-</head>
-<body>
-    <h1>Session 4: Conditionals</h1>
-    
-    <div class="section">
-        <h2>Topics Covered</h2>
-        <ul>
-            <li>Comparison operators (==, ===, >, <, >=, <=)</li>
-            <li>Logical operators (&&, ||, !)</li>
-            <li>if/else statements</li>
-            <li>Nested if statements</li>
-            <li>Ternary operator</li>
-            <li>Nullish coalescing operator (??)</li>
-            <li>Switch statements</li>
-        </ul>
-    </div>
-
-    <div class="section">
-        <h2>Grade Calculator</h2>
-        <div class="calculator">
-            <label for="score">Score (0-100):</label>
-            <input type="number" id="score" min="0" max="100" value="85">
-            <button onclick="calculateGrade()">Calculate Grade</button>
-            
-            <div id="gradeResult" class="result" style="display: none;">
-                Grade result will appear here...
-            </div>
-        </div>
-    </div>
-
-    <div class="section">
-        <h2>Temperature Converter</h2>
-        <div class="calculator">
-            <label for="tempValue">Temperature:</label>
-            <input type="number" id="tempValue" value="0">
-            
-            <label for="fromUnit">From:</label>
-            <select id="fromUnit">
-                <option value="C">Celsius</option>
-                <option value="F">Fahrenheit</option>
-                <option value="K">Kelvin</option>
-            </select>
-            
-            <label for="toUnit">To:</label>
-            <select id="toUnit">
-                <option value="F">Fahrenheit</option>
-                <option value="C">Celsius</option>
-                <option value="K">Kelvin</option>
-            </select>
-            
-            <button onclick="convertTemperature()">Convert</button>
-            
-            <div id="tempResult" class="result" style="display: none;">
-                Conversion result will appear here...
-            </div>
-        </div>
-    </div>
-
-    <div class="section">
-        <h2>Shopping Discount Calculator</h2>
-        <div class="calculator">
-            <label for="amount">Total Amount ($):</label>
-            <input type="number" id="amount" min="0" value="500">
-            
-            <label for="customerType">Customer Type:</label>
-            <select id="customerType">
-                <option value="Regular">Regular</option>
-                <option value="Premium">Premium</option>
-                <option value="VIP">VIP</option>
-                <option value="Guest">Guest</option>
-            </select>
-            
-            <button onclick="calculateDiscount()">Calculate Discount</button>
-            
-            <div id="discountResult" class="result" style="display: none;">
-                Discount calculation will appear here...
-            </div>
-        </div>
-    </div>
-
-    <div class="section">
-        <h2>Console Output</h2>
-        <p>Open the browser console (F12) to see all JavaScript examples.</p>
-    </div>
-
-    <script src="script.js" defer></script>
-    <script>
-        function calculateGrade() {
-            const score = parseInt(document.getElementById('score').value);
-            const resultDiv = document.getElementById('gradeResult');
-            
-            let grade, message, className;
-            
-            if (score < 0 || score > 100) {
-                grade = "Invalid";
-                message = "Please enter a score between 0 and 100";
-                className = "error";
-            } else if (score >= 90) {
-                grade = "A";
-                message = "Outstanding performance!";
-                className = "success";
-            } else if (score >= 80) {
-                grade = "B";
-                message = "Very good performance!";
-                className = "success";
-            } else if (score >= 70) {
-                grade = "C";
-                message = "Satisfactory performance.";
-                className = "success";
-            } else if (score >= 60) {
-                grade = "D";
-                message = "Needs improvement.";
-                className = "error";
-            } else {
-                grade = "F";
-                message = "Fail - needs significant improvement.";
-                className = "error";
-            }
-            
-            resultDiv.innerHTML = `<strong>Grade: ${grade}</strong><br>${message}`;
-            resultDiv.className = `result ${className}`;
-            resultDiv.style.display = 'block';
-        }
-
-        function convertTemperature() {
-            const value = parseFloat(document.getElementById('tempValue').value);
-            const fromUnit = document.getElementById('fromUnit').value;
-            const toUnit = document.getElementById('toUnit').value;
-            const resultDiv = document.getElementById('tempResult');
-            
-            let celsius;
-            
-            // Convert to Celsius first
-            switch (fromUnit) {
-                case "C":
-                    celsius = value;
-                    break;
-                case "F":
-                    celsius = (value - 32) * 5/9;
-                    break;
-                case "K":
-                    celsius = value - 273.15;
-                    break;
-            }
-            
-            // Convert from Celsius to target unit
-            let result;
-            switch (toUnit) {
-                case "C":
-                    result = celsius.toFixed(2);
-                    break;
-                case "F":
-                    result = (celsius * 9/5 + 32).toFixed(2);
-                    break;
-                case "K":
-                    result = (celsius + 273.15).toFixed(2);
-                    break;
-            }
-            
-            resultDiv.innerHTML = `${value}°${fromUnit} = ${result}°${toUnit}`;
-            resultDiv.className = 'result success';
-            resultDiv.style.display = 'block';
-        }
-
-        function calculateDiscount() {
-            const amount = parseFloat(document.getElementById('amount').value);
-            const customerType = document.getElementById('customerType').value;
-            const resultDiv = document.getElementById('discountResult');
-            
-            let discountRate;
-            
-            switch (customerType) {
-                case "VIP":
-                    discountRate = 0.20;
-                    break;
-                case "Premium":
-                    discountRate = 0.15;
-                    break;
-                case "Regular":
-                    discountRate = 0.10;
-                    break;
-                case "Guest":
-                    discountRate = 0.05;
-                    break;
-            }
-            
-            // Additional discount for large purchases
-            if (amount > 1000) {
-                discountRate += 0.05;
-            }
-            
-            // Cap discount at 25%
-            discountRate = Math.min(discountRate, 0.25);
-            
-            const discountAmount = amount * discountRate;
-            const finalAmount = amount - discountAmount;
-            
-            resultDiv.innerHTML = `
-                <strong>Original:</strong> $${amount.toFixed(2)}<br>
-                <strong>Discount:</strong> ${(discountRate * 100).toFixed(1)}% (-$${discountAmount.toFixed(2)})<br>
-                <strong>Final:</strong> $${finalAmount.toFixed(2)}
-            `;
-            resultDiv.className = 'result success';
-            resultDiv.style.display = 'block';
-        }
-    </script>
-</body>
-</html>
-```
-
----
-
-## 📝 Review (0.5h)
-
-### If Condition Challenge
-
-```javascript
-// Challenge 1: Write an if statement to check if a number is positive, negative, or zero
-let num = -5;
-// Your code here
-
-// Challenge 2: Check if a person can vote (age >= 18) and has ID
-let age = 20;
-let hasID = true;
-// Your code here
-
-// Challenge 3: Determine the largest of three numbers
-let a = 10, b = 20, c = 15;
-// Your code here
-
-// Challenge 4: Check if a year is a leap year
-// Leap year rules:
-// - Divisible by 4
-// - Not divisible by 100, unless also divisible by 400
-let year = 2024;
-// Your code here
-
-// Challenge 5: Validate user input
-// Check if username is not empty, password is at least 8 characters, and email contains "@"
-let username = "john";
-let password = "password123";
-let email = "john@example.com";
-// Your code here
-```
-
-### Switch/If Challenge
-
-```javascript
-// Challenge 1: Convert the following if/else to switch
-let day = "Monday";
-let dayType;
-
-if (day === "Monday" || day === "Tuesday" || day === "Wednesday" || 
-    day === "Thursday" || day === "Friday") {
-    dayType = "Weekday";
-} else if (day === "Saturday" || day === "Sunday") {
-    dayType = "Weekend";
-} else {
-    dayType = "Invalid";
-}
-// Convert to switch statement
-
-// Challenge 2: Convert the following switch to if/else
 let grade = "B";
 let message;
 
 switch (grade) {
-    case "A":
-        message = "Excellent";
-        break;
-    case "B":
-        message = "Good";
-        break;
-    case "C":
-        message = "Satisfactory";
-        break;
-    case "D":
-        message = "Needs improvement";
-        break;
-    case "F":
-        message = "Fail";
-        break;
-    default:
-        message = "Invalid grade";
-}
-// Convert to if/else statement
-
-// Challenge 3: Use ternary operator instead of if/else
-let age = 20;
-let status;
-if (age >= 18) {
-    status = "Adult";
-} else {
-    status = "Minor";
-}
-// Convert to ternary
-
-// Challenge 4: Use nullish coalescing instead of logical OR
-let name = "";
-let displayName = name || "Anonymous";
-// Convert to nullish coalescing
-
-// Challenge 5: Create a function that returns the day type using both switch and if/else
-function getDayTypeSwitch(day) {
-    // Using switch
-}
-
-function getDayTypeIf(day) {
-    // Using if/else
-}
-// Test both functions
-```
-
-### Challenge Solutions
-
-**If Condition Challenge Solutions:**
-```javascript
-// Challenge 1
-let num = -5;
-if (num > 0) {
-    console.log("Positive");
-} else if (num < 0) {
-    console.log("Negative");
-} else {
-    console.log("Zero");
-}
-
-// Challenge 2
-let age = 20;
-let hasID = true;
-if (age >= 18 && hasID) {
-    console.log("Can vote");
-} else {
-    console.log("Cannot vote");
-}
-
-// Challenge 3
-let a = 10, b = 20, c = 15;
-let largest;
-if (a >= b && a >= c) {
-    largest = a;
-} else if (b >= a && b >= c) {
-    largest = b;
-} else {
-    largest = c;
-}
-console.log("Largest:", largest);
-
-// Challenge 4
-let year = 2024;
-let isLeapYear;
-if (year % 4 === 0) {
-    if (year % 100 === 0) {
-        if (year % 400 === 0) {
-            isLeapYear = true;
-        } else {
-            isLeapYear = false;
-        }
-    } else {
-        isLeapYear = true;
-    }
-} else {
-    isLeapYear = false;
-}
-console.log(`${year} is ${isLeapYear ? "a leap year" : "not a leap year"}`);
-
-// Simplified version
-isLeapYear = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
-
-// Challenge 5
-let username = "john";
-let password = "password123";
-let email = "john@example.com";
-
-let isValid = username !== "" && password.length >= 8 && email.includes("@");
-console.log("Valid input:", isValid);
-```
-
-**Switch/If Challenge Solutions:**
-```javascript
-// Challenge 1: if/else to switch
-let day = "Monday";
-let dayType;
-
-switch (day) {
-    case "Monday":
-    case "Tuesday":
-    case "Wednesday":
-    case "Thursday":
-    case "Friday":
-        dayType = "Weekday";
-        break;
-    case "Saturday":
-    case "Sunday":
-        dayType = "Weekend";
-        break;
-    default:
-        dayType = "Invalid";
-}
-
-// Challenge 2: switch to if/else
-let grade = "B";
-let message;
-
-if (grade === "A") {
-    message = "Excellent";
-} else if (grade === "B") {
-    message = "Good";
-} else if (grade === "C") {
+  case "A":
+    message = "Excellent!";
+    break;
+  case "B":
+    message = "Good job!";
+    break;
+  case "C":
     message = "Satisfactory";
-} else if (grade === "D") {
+    break;
+  case "D":
     message = "Needs improvement";
-} else if (grade === "F") {
+    break;
+  case "F":
     message = "Fail";
-} else {
+    break;
+  default:
     message = "Invalid grade";
 }
 
-// Challenge 3: if/else to ternary
-let age = 20;
-let status = age >= 18 ? "Adult" : "Minor";
-
-// Challenge 4: logical OR to nullish coalescing
-let name = "";
-let displayName = name ?? "Anonymous";
-
-// Challenge 5: Both implementations
-function getDayTypeSwitch(day) {
-    switch (day.toLowerCase()) {
-        case "monday":
-        case "tuesday":
-        case "wednesday":
-        case "thursday":
-        case "friday":
-            return "Weekday";
-        case "saturday":
-        case "sunday":
-            return "Weekend";
-        default:
-            return "Invalid";
-    }
-}
-
-function getDayTypeIf(day) {
-    const weekdays = ["monday", "tuesday", "wednesday", "thursday", "friday"];
-    const weekends = ["saturday", "sunday"];
-    const lowerDay = day.toLowerCase();
-    
-    if (weekdays.includes(lowerDay)) {
-        return "Weekday";
-    } else if (weekends.includes(lowerDay)) {
-        return "Weekend";
-    } else {
-        return "Invalid";
-    }
-}
-
-// Test
-console.log(getDayTypeSwitch("Monday")); // "Weekday"
-console.log(getDayTypeIf("Monday"));     // "Weekday"
-console.log(getDayTypeSwitch("Saturday")); // "Weekend"
-console.log(getDayTypeIf("Saturday"));     // "Weekend"
+console.log(message);
 ```
 
-### Review Questions
+#### Challenge 6.2 — Traffic Light (individual, 5 minutes)
 
-1. **What is the difference between `==` and `===`?**
+- **Requirement:** Write a function `trafficLightAction(color)` that returns `"STOP"`, `"SLOW DOWN"`, `"GO"`, or `"INVALID"` using a switch. Make the input case-insensitive.
+- **Time limit:** 5 minutes
+- **Hint:** Convert `color` to lowercase before the switch.
+
+#### Review
+
+```javascript
+function trafficLightAction(color) {
+  switch (color.toLowerCase()) {
+    case "red":
+      return "STOP";
+    case "yellow":
+      return "SLOW DOWN";
+    case "green":
+      return "GO";
+    default:
+      return "INVALID";
+  }
+}
+```
+
+---
+
+## Part 7: Practical Decision Programs
+
+### 7.1 Grade Calculator
+
+#### Live Code
+
+```javascript
+function getGradeDetails(score) {
+  let grade = calculateGrade(score);
+  let message;
+
+  switch (grade) {
+    case "A":
+      message = "Outstanding performance!";
+      break;
+    case "B":
+      message = "Very good performance!";
+      break;
+    case "C":
+      message = "Satisfactory performance.";
+      break;
+    case "D":
+      message = "Needs improvement.";
+      break;
+    case "F":
+      message = "Fail - needs significant improvement.";
+      break;
+    default:
+      message = "Invalid score.";
+  }
+
+  return { grade, message };
+}
+
+let testScores = [95, 85, 75, 65, 55, 105, -5];
+testScores.forEach(score => {
+  let result = getGradeDetails(score);
+  console.log(`Score ${score}: ${result.grade} - ${result.message}`);
+});
+```
+
+### 7.2 Temperature Converter
+
+#### Live Code
+
+```javascript
+function convertTemperature(value, fromUnit, toUnit) {
+  if (fromUnit === toUnit) {
+    return value.toFixed(2);
+  }
+
+  let celsius;
+
+  switch (fromUnit) {
+    case "C":
+      celsius = value;
+      break;
+    case "F":
+      celsius = (value - 32) * 5 / 9;
+      break;
+    case "K":
+      celsius = value - 273.15;
+      break;
+    default:
+      return "Invalid fromUnit";
+  }
+
+  switch (toUnit) {
+    case "C":
+      return celsius.toFixed(2);
+    case "F":
+      return (celsius * 9 / 5 + 32).toFixed(2);
+    case "K":
+      return (celsius + 273.15).toFixed(2);
+    default:
+      return "Invalid toUnit";
+  }
+}
+
+console.log("0C to F:", convertTemperature(0, "C", "F"));
+console.log("32F to C:", convertTemperature(32, "F", "C"));
+console.log("273.15K to C:", convertTemperature(273.15, "K", "C"));
+console.log("100C to K:", convertTemperature(100, "C", "K"));
+```
+
+### 7.3 Shopping Discount Calculator
+
+#### Live Code
+
+```javascript
+function calculateDiscount(totalAmount, customerType) {
+  let discountRate;
+
+  switch (customerType) {
+    case "VIP":
+      discountRate = 0.20;
+      break;
+    case "Premium":
+      discountRate = 0.15;
+      break;
+    case "Regular":
+      discountRate = 0.10;
+      break;
+    case "Guest":
+      discountRate = 0.05;
+      break;
+    default:
+      discountRate = 0;
+  }
+
+  if (totalAmount > 1000) {
+    discountRate += 0.05;
+  }
+
+  discountRate = Math.min(discountRate, 0.25);
+
+  let discountAmount = totalAmount * discountRate;
+  let finalAmount = totalAmount - discountAmount;
+
+  return {
+    originalAmount: totalAmount,
+    discountRate: (discountRate * 100).toFixed(1) + "%",
+    discountAmount: discountAmount.toFixed(2),
+    finalAmount: finalAmount.toFixed(2)
+  };
+}
+
+let purchases = [
+  { amount: 500, type: "Regular" },
+  { amount: 1500, type: "VIP" },
+  { amount: 800, type: "Premium" },
+  { amount: 200, type: "Guest" }
+];
+
+purchases.forEach(purchase => {
+  let result = calculateDiscount(purchase.amount, purchase.type);
+  console.log(`${purchase.type} ($${purchase.amount}):`);
+  console.log(`  Discount: ${result.discountRate}`);
+  console.log(`  Final: $${result.finalAmount}`);
+});
+```
+
+### 7.4 Login System
+
+#### Live Code
+
+```javascript
+function authenticateUser(username, password, role) {
+  const users = {
+    admin: { password: "admin123", role: "admin" },
+    user: { password: "user123", role: "user" },
+    guest: { password: "guest123", role: "guest" }
+  };
+
+  let user = users[username];
+
+  if (!user) {
+    return { success: false, message: "User not found" };
+  }
+
+  if (user.password !== password) {
+    return { success: false, message: "Incorrect password" };
+  }
+
+  if (user.role !== role) {
+    return { success: false, message: "Role mismatch" };
+  }
+
+  return { success: true, message: "Login successful", role: user.role };
+}
+
+function getAccessLevel(role) {
+  switch (role) {
+    case "admin":
+      return "Full access to all features";
+    case "user":
+      return "Access to user features";
+    case "guest":
+      return "Limited access to guest features";
+    default:
+      return "No access";
+  }
+}
+
+let loginAttempts = [
+  { username: "admin", password: "admin123", role: "admin" },
+  { username: "user", password: "wrongpass", role: "user" },
+  { username: "guest", password: "guest123", role: "guest" },
+  { username: "unknown", password: "test", role: "user" }
+];
+
+loginAttempts.forEach(attempt => {
+  let result = authenticateUser(attempt.username, attempt.password, attempt.role);
+  console.log(`Login attempt for ${attempt.username}:`);
+  console.log(`  ${result.message}`);
+  if (result.success) {
+    console.log(`  Access: ${getAccessLevel(result.role)}`);
+  }
+});
+```
+
+---
+
+## Bug Hunt 2
+
+### Problem
+
+The discount calculator has bugs. Ask students to find them.
+
+```javascript
+function discount(total, customerType) {
+  let rate = 0;
+
+  if (customerType = "VIP") {
+    rate = 0.2;
+  } else if (customerType = "Premium") {
+    rate = 0.15;
+  } else customerType = "Guest" {
+    rate = 0.05;
+  }
+
+  if (total > 1000) {
+    rate = rate + 0.05;
+  }
+
+  let final = total - (total * rate);
+  return final.toFixed(2);
+}
+
+console.log(discount(500, "Premium"));
+```
+
+### Issues
+
+1. `if (customerType = "VIP")` and `if (customerType = "Premium")` use `=` instead of `===`.
+2. `else customerType = "Guest"` is missing `if` and uses `=`.
+3. The code does not validate `total`.
+4. Missing braces make `else` attach to the wrong `if`.
+
+### Fixed Version (for the instructor)
+
+```javascript
+function discount(total, customerType) {
+  if (total < 0) return "Invalid total";
+
+  let rate = 0;
+
+  if (customerType === "VIP") {
+    rate = 0.2;
+  } else if (customerType === "Premium") {
+    rate = 0.15;
+  } else if (customerType === "Guest") {
+    rate = 0.05;
+  }
+
+  if (total > 1000) {
+    rate += 0.05;
+  }
+
+  let final = total - (total * rate);
+  return final.toFixed(2);
+}
+
+console.log(discount(500, "Premium"));
+```
+
+### Points
+
+1 point for each found bug.
+
+---
+
+## Group Challenge: Condition Builders
+
+- **Time:** 8 minutes
+- **Teams:** 2 or 3 students per team
+- **Task:** Each team must write the smallest correct condition for each situation.
+- **Scoring:** 1 point per correct condition. The team with the most points wins.
+
+### Situations
+
+1. A number `x` is between `10` and `20` (inclusive).
+2. A user can vote if age is at least `18` and they have an ID.
+3. A password is valid if it is not empty and has at least `8` characters.
+4. A year is a leap year.
+5. A light is safe to pass: it is `"green"` or `"flashing yellow"`.
+
+### Instructor Answer Key
+
+```javascript
+1. x >= 10 && x <= 20
+2. age >= 18 && hasID
+3. password !== "" && password.length >= 8
+4. (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)
+5. light === "green" || light === "flashing yellow"
+```
+
+---
+
+## Individual Challenges — Progressive Difficulty
+
+### Level 1: Number Sign (3 minutes)
+
+- **Requirement:** Print `"Positive"`, `"Negative"`, or `"Zero"` for a number.
+- **Time limit:** 3 minutes
+
+### Level 2: Leap Year (5 minutes)
+
+- **Requirement:** Write a function `isLeapYear(year)` that returns `true` for leap years.
+- **Rules:** divisible by 4, not by 100 unless also by 400.
+- **Time limit:** 5 minutes
+
+### Level 3: Access Control (5 minutes)
+
+- **Requirement:** Write a function `canAccess(role, isPaid)` that returns `true` for `"admin"`, or for `"user"` when `isPaid` is true, otherwise `false`.
+- **Time limit:** 5 minutes
+
+### Level 4: Grade to Message (4 minutes)
+
+- **Requirement:** Use a `switch` to convert a grade letter to a message.
+- **Time limit:** 4 minutes
+
+### Level 5: Nullish Default (4 minutes)
+
+- **Requirement:** Write one line that uses `??` to give `0` for `count` if it is `null` or `undefined`, but keeps `0` as a valid value.
+- **Time limit:** 4 minutes
+
+---
+
+## Mini Project: Smart Access Dashboard
+
+### Time
+
+20 minutes
+
+### Goal
+
+Combine comparisons, logical operators, `if/else`, `switch`, ternary, and `??` into one small HTML page.
+
+### Requirements for the Students
+
+1. Create a small HTML page with inputs for:
+   - Username
+   - Password
+   - Role (`admin`, `user`, `guest`)
+   - Account status (`active`, `suspended`)
+
+2. When the user clicks a button:
+   - Validate the username is not empty.
+   - Validate the password is at least 6 characters.
+   - Check if the account is active.
+   - Use a `switch` to determine the access level based on role.
+   - Show a result message.
+
+3. Example messages:
+   - `"Access denied: account suspended"`
+   - `"Welcome admin. Full access"`
+   - `"Welcome user. Limited access"`
+   - `"Welcome guest. Read-only access"`
+
+### Time Limit
+
+20 minutes
+
+### Hints (optional)
+
+- Use `if` to validate input and status.
+- Use `||` or `??` for default messages.
+- Use `switch` for role-based access.
+
+### Starter `index.html`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Access Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 500px; margin: 20px auto; }
+    label { display: block; margin-top: 10px; }
+    input, select { width: 100%; padding: 5px; }
+    button { margin-top: 15px; padding: 10px 20px; }
+    #result { background: #f5f5f5; padding: 15px; margin-top: 20px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Smart Access Dashboard</h1>
+  <label>Username: <input type="text" id="username" value="john"></label>
+  <label>Password: <input type="password" id="password" value="pass123"></label>
+  <label>Role:
+    <select id="role">
+      <option value="admin">admin</option>
+      <option value="user">user</option>
+      <option value="guest">guest</option>
+    </select>
+  </label>
+  <label>Status:
+    <select id="status">
+      <option value="active">active</option>
+      <option value="suspended">suspended</option>
+    </select>
+  </label>
+  <button id="check">Check Access</button>
+  <div id="result"></div>
+
+  <script>
+    document.getElementById("check").addEventListener("click", function () {
+      let username = document.getElementById("username").value.trim();
+      let password = document.getElementById("password").value;
+      let role = document.getElementById("role").value;
+      let status = document.getElementById("status").value;
+      let result = document.getElementById("result");
+
+      if (username === "") {
+        result.textContent = "Username is required";
+        return;
+      }
+
+      if (password.length < 6) {
+        result.textContent = "Password must be at least 6 characters";
+        return;
+      }
+
+      if (status === "suspended") {
+        result.textContent = "Access denied: account suspended";
+        return;
+      }
+
+      let access;
+      switch (role) {
+        case "admin":
+          access = "Full access to all features";
+          break;
+        case "user":
+          access = "Limited access to user features";
+          break;
+        case "guest":
+          access = "Read-only access";
+          break;
+        default:
+          access = "No access";
+      }
+
+      result.textContent = `Welcome ${username}. ${access}`;
+    });
+  </script>
+</body>
+</html>
+```
+
+### Review Questions for the Mini Project
+
+- "What happens if the role is not one of the three cases?"
+- "Why did we use `return` inside the event listener?"
+- "What is the difference between `===` and `==` in this project?"
+
+---
+
+## Trainer Solutions — Do Not Show Until Students Try
+
+### Challenge 1.1
+
+```javascript
+console.log(10 == "10");            // true
+console.log(10 === "10");           // false
+console.log(null == undefined);     // true
+console.log(null === undefined);    // false
+console.log(0 == "");               // true
+console.log(0 === "");              // false
+```
+
+### Challenge 1.2
+
+Order: `"10"`, `"2"`, `"Banana"`, `"Zebra"`, `"apple"`.
+
+### Challenge 2.1
+
+```javascript
+let hasTicket = true;
+let hasID = false;
+if (hasTicket && hasID) {
+  console.log("Enter");
+} else {
+  console.log("Cannot enter");
+}
+```
+
+### Challenge 2.2
+
+```javascript
+let count = 0;
+let value = count || 1;
+```
+
+### Challenge 2.3
+
+```javascript
+let isOnline = true;
+console.log(!isOnline);
+```
+
+### Challenge 2.4
+
+```javascript
+(age > 18 && hasLicense) || hasPermit
+```
+
+### Challenge 3.1
+
+```javascript
+let num = -5;
+if (num > 0) {
+  console.log("Positive");
+} else if (num < 0) {
+  console.log("Negative");
+} else {
+  console.log("Zero");
+}
+```
+
+### Challenge 3.2
+
+```javascript
+function calculateGrade(score) {
+  if (score < 0 || score > 100) return "Invalid";
+  if (score >= 90) return "A";
+  if (score >= 80) return "B";
+  if (score >= 70) return "C";
+  if (score >= 60) return "D";
+  return "F";
+}
+```
+
+### Challenge 3.3
+
+```javascript
+function weather(temp, isRaining) {
+  if (temp > 30 && isRaining) return "Hot and rainy";
+  if (temp > 30) return "Hot and sunny";
+  if (isRaining) return "Cool and rainy";
+  return "Cool and dry";
+}
+```
+
+### Challenge 4.1
+
+```javascript
+let num = 15;
+console.log(num % 2 === 0 ? "even" : "odd");
+```
+
+### Challenge 4.2
+
+```javascript
+function greet(timeOfDay) {
+  return timeOfDay === "morning" ? "Good morning!" :
+         timeOfDay === "afternoon" ? "Good afternoon!" :
+         timeOfDay === "evening" ? "Good evening!" :
+         "Hello!";
+}
+```
+
+### Challenge 5.1
+
+```javascript
+let displayName = name ?? "Anonymous";
+```
+
+### Challenge 5.2
+
+```javascript
+console.log(obj?.settings?.theme?.color ?? "blue");
+```
+
+### Challenge 6.1
+
+See the season switch in Part 6.1.
+
+### Challenge 6.2
+
+```javascript
+function trafficLightAction(color) {
+  switch (color.toLowerCase()) {
+    case "red":
+      return "STOP";
+    case "yellow":
+      return "SLOW DOWN";
+    case "green":
+      return "GO";
+    default:
+      return "INVALID";
+  }
+}
+```
+
+### Individual Challenges Solutions
+
+```javascript
+// Level 1
+let num = 5;
+if (num > 0) console.log("Positive");
+else if (num < 0) console.log("Negative");
+else console.log("Zero");
+
+// Level 2
+function isLeapYear(year) {
+  return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+}
+
+// Level 3
+function canAccess(role, isPaid) {
+  if (role === "admin") return true;
+  return role === "user" && isPaid;
+}
+
+// Level 4
+function gradeMessage(grade) {
+  switch (grade) {
+    case "A": return "Excellent";
+    case "B": return "Good";
+    case "C": return "Satisfactory";
+    case "D": return "Needs improvement";
+    case "F": return "Fail";
+    default: return "Invalid";
+  }
+}
+
+// Level 5
+let count = undefined;
+let value = count ?? 0;
+```
+
+---
+
+## Review Questions
+
+1. What is the difference between `==` and `===`?
    - [ ] No difference
-   - [ ] `==` compares values only, `===` compares values and types
+   - [x] `==` compares values only, `===` compares values and types
    - [ ] `===` compares values only, `==` compares values and types
    - [ ] Both compare values and types
 
-2. **What does `true && false` evaluate to?**
+2. What does `true && false` evaluate to?
    - [ ] true
-   - [ ] false
+   - [x] false
    - [ ] undefined
    - [ ] null
 
-3. **What is the result of `5 > 3 && 2 < 1`?**
+3. What is the result of `5 > 3 && 2 < 1`?
    - [ ] true
-   - [ ] false
+   - [x] false
    - [ ] undefined
    - [ ] null
 
-4. **What does the ternary operator `condition ? expr1 : expr2` do?**
+4. What does the ternary operator `condition ? expr1 : expr2` do?
    - [ ] Always returns expr1
    - [ ] Always returns expr2
-   - [ ] Returns expr1 if condition is true, otherwise expr2
+   - [x] Returns expr1 if condition is true, otherwise expr2
    - [ ] Returns expr1 if condition is false, otherwise expr2
 
-5. **What is the difference between `||` and `??`?**
+5. What is the difference between `||` and `??`?
    - [ ] No difference
-   - [ ] `||` returns first truthy value, `??` returns right side only for null/undefined
+   - [x] `||` returns first truthy value, `??` returns right side only for null/undefined
    - [ ] `??` returns first truthy value, `||` returns right side only for null/undefined
    - [ ] Both work the same way
 
-6. **What does `null ?? "default"` return?**
+6. What does `null ?? "default"` return?
    - [ ] null
-   - [ ] "default"
+   - [x] "default"
    - [ ] undefined
    - [ ] Error
 
-7. **What does `0 ?? "default"` return?**
-   - [ ] 0
+7. What does `0 ?? "default"` return?
+   - [x] 0
    - [ ] "default"
    - [ ] undefined
    - [ ] null
 
-8. **What keyword is used to exit a switch statement?**
+8. What keyword is used to exit a switch statement?
    - [ ] return
-   - [ ] break
+   - [x] break
    - [ ] continue
    - [ ] exit
 
-9. **What happens if you forget the `break` in a switch case?**
+9. What happens if you forget the `break` in a switch case?
    - [ ] Error
-   - [ ] Code continues to the next case (fallthrough)
+   - [x] Code continues to the next case (fallthrough)
    - [ ] Switch exits automatically
    - [ ] Only the first case executes
 
-10. **What does `!true` evaluate to?**
+10. What does `!true` evaluate to?
     - [ ] true
-    - [ ] false
+    - [x] false
     - [ ] undefined
     - [ ] null
 
-### Correct Answers
-
-1. ✅ `==` compares values only, `===` compares values and types
-2. ✅ false
-3. ✅ false
-4. ✅ Returns expr1 if condition is true, otherwise expr2
-5. ✅ `||` returns first truthy value, `??` returns right side only for null/undefined
-6. ✅ "default"
-7. ✅ 0
-8. ✅ break
-9. ✅ Code continues to the next case (fallthrough)
-10. ✅ false
-
 ---
 
-## 🎯 Next Steps
-
-1. ✅ Practice all comparison operators
-2. ✅ Master logical operators and short-circuit evaluation
-3. ✅ Use ternary operator for simple conditions
-4. ✅ Understand when to use `??` vs `||`
-5. ✅ Practice switch statements with fallthrough
-6. ✅ Build decision-based programs
-7. ✅ Complete all challenge exercises
-
----
-
-## 📚 Additional Resources
+## Additional Resources
 
 - [MDN: Comparison Operators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_Operators#comparison_operators)
 - [MDN: Logical Operators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_Operators#logical_operators)
@@ -1818,5 +1567,3 @@ console.log(getDayTypeIf("Saturday"));     // "Weekend"
 - [MDN: switch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/switch)
 - [JavaScript.info: Ifelse](https://javascript.info/ifelse)
 - [JavaScript.info: Logical Operators](https://javascript.info/logical-operators)
-
-**Remember:** Conditionals are the backbone of program logic. Master them to create dynamic and responsive applications! 💪

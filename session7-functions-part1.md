@@ -1,1672 +1,1284 @@
-# Session 7: Functions (Part 1)
+# Session 7: Functions (Part 1) — Active Learning Redesign
 
-## 📚 Theory (1h)
+## Session Plan for the Instructor
 
-### Function Introduction & Basic Usage
+- **Total time:** approximately 90 to 120 minutes
+- **Pacing rule:** never explain theory continuously for more than 15–20 minutes. After every concept, students must predict, write, or fix code.
+- **Pedagogical pattern for every topic:**
+  1. **Problem** — a realistic mini-situation
+  2. **Guess** — ask: "What do you expect to happen?"
+  3. **Explain** — the shortest rule that fixes the problem
+  4. **Code** — live code written in front of the students, step by step
+  5. **Challenge** — students solve a small task on their own or in groups
+  6. **Review** — discuss the answer and the most common mistake
 
-Functions are reusable blocks of code that perform specific tasks. They help organize code, avoid repetition, and make programs more maintainable.
+### Competition and Points
 
-#### What is a Function?
+- 1 point per correct prediction in the "Guess" phase.
+- 1–3 points per completed challenge, depending on difficulty.
+- A "Bug Hunter" badge for each student who finds and fixes an intentional error.
+- Keep a simple tally on a shared board or in the chat.
 
-A function is a block of code designed to perform a particular task. You can call (invoke) a function to execute its code.
+### Instructor Questions to Ask During the Session
 
-#### Function Declaration
+- "What does this function return?"
+- "What happens if we call the function without an argument?"
+- "Should this task be a new function?"
+- "Where should we use `return`?"
+- "What is the difference between `return` and `console.log`?"
+
+---
+
+## Part 0: Warm-Up — The Repeated Code (5 minutes)
+
+### Problem
+
+A program needs to greet three different people. The student copies the same code:
 
 ```javascript
-function functionName(parameters) {
-    // code to execute
-    return result;
-}
+console.log("Hello, John!");
+console.log("Hello, Jane!");
+console.log("Hello, Bob!");
 ```
 
-#### Basic Function Example
+### Guess
+
+Ask: "What if we need to greet 100 people? How can we write this once and use it many times?"
+
+### Explain
+
+A function is a reusable block of code. We define it once and call it whenever we need it.
+
+### Live Code
 
 ```javascript
-// Function declaration
 function greet(name) {
-    console.log("Hello, " + name + "!");
+  console.log("Hello, " + name + "!");
 }
 
-// Function call
-greet("John");  // "Hello, John!"
-greet("Jane");  // "Hello, Jane!"
+greet("John");
+greet("Jane");
+greet("Bob");
 ```
 
-#### Function Components
+### Review
 
-1. **Function Name**: Identifies the function
-2. **Parameters**: Input values (optional)
-3. **Function Body**: Code to execute
-4. **Return Statement**: Output value (optional)
+Functions save time and reduce mistakes. The input `name` is called a parameter. The call `greet("John")` passes an argument.
 
-#### Function with Parameters
+---
+
+## Part 1: Function Declarations and Calls
+
+### 1.1 Basic Function
+
+#### Problem
+
+Add two numbers. We want to reuse the addition.
+
+#### Live Code
 
 ```javascript
 function add(a, b) {
-    return a + b;
-}
-
-console.log(add(5, 3));  // 8
-console.log(add(10, 20)); // 30
-```
-
-#### Function without Parameters
-
-```javascript
-function sayHello() {
-    console.log("Hello, World!");
-}
-
-sayHello();  // "Hello, World!"
-```
-
-#### Function without Return Value
-
-```javascript
-function logMessage(message) {
-    console.log(message);
-    // No return statement (returns undefined)
-}
-
-let result = logMessage("Hello");
-console.log(result);  // undefined
-```
-
-### Advanced Function Examples
-
-#### Function with Multiple Parameters
-
-```javascript
-function createFullName(firstName, lastName, middleName) {
-    if (middleName) {
-        return `${firstName} ${middleName} ${lastName}`;
-    }
-    return `${firstName} ${lastName}`;
-}
-
-console.log(createFullName("John", "Doe"));                    // "John Doe"
-console.log(createFullName("John", "Doe", "William"));          // "John William Doe"
-```
-
-#### Function with Conditional Logic
-
-```javascript
-function getGrade(score) {
-    if (score >= 90) return "A";
-    if (score >= 80) return "B";
-    if (score >= 70) return "C";
-    if (score >= 60) return "D";
-    return "F";
-}
-
-console.log(getGrade(95));  // "A"
-console.log(getGrade(75));  // "C"
-```
-
-#### Function with Array Processing
-
-```javascript
-function calculateAverage(numbers) {
-    if (numbers.length === 0) return 0;
-    
-    let sum = 0;
-    for (let num of numbers) {
-        sum += num;
-    }
-    return sum / numbers.length;
-}
-
-console.log(calculateAverage([10, 20, 30, 40, 50]));  // 30
-console.log(calculateAverage([]));                     // 0
-```
-
-#### Function with Object Parameters
-
-```javascript
-function createUser(user) {
-    return {
-        id: Date.now(),
-        name: user.name,
-        email: user.email,
-        createdAt: new Date()
-    };
-}
-
-const user = createUser({
-    name: "John Doe",
-    email: "john@example.com"
-});
-
-console.log(user);
-// { id: 1234567890, name: "John Doe", email: "john@example.com", createdAt: Date }
-```
-
-#### Function Validation
-
-```javascript
-function calculateDiscount(price, discountPercentage) {
-    // Validate inputs
-    if (typeof price !== 'number' || price < 0) {
-        return "Invalid price";
-    }
-    if (typeof discountPercentage !== 'number' || discountPercentage < 0 || discountPercentage > 100) {
-        return "Invalid discount percentage";
-    }
-    
-    return price * (1 - discountPercentage / 100);
-}
-
-console.log(calculateDiscount(100, 20));    // 80
-console.log(calculateDiscount(-100, 20));   // "Invalid price"
-console.log(calculateDiscount(100, 150));   // "Invalid discount percentage"
-```
-
-### Return Statement
-
-The `return` statement ends function execution and returns a value to the caller.
-
-#### Basic Return
-
-```javascript
-function add(a, b) {
-    return a + b;
+  return a + b;
 }
 
 let result = add(5, 3);
-console.log(result);  // 8
+console.log(result);        // 8
+console.log(add(10, 20));   // 30
 ```
 
-#### Multiple Return Statements
+#### Challenge 1.1 — Multiply (individual, 3 minutes)
+
+- **Requirement:** Write a function `multiply(a, b)` that returns the product.
+- **Time limit:** 3 minutes
+
+### 1.2 Function Without Return
+
+#### Problem
+
+A function that only prints a message.
+
+#### Live Code
+
+```javascript
+function logMessage(message) {
+  console.log(message);
+}
+
+let output = logMessage("Hello");
+console.log(output); // undefined
+```
+
+#### Challenge 1.2 — Return vs Log (individual, 3 minutes)
+
+- **Requirement:** Predict what `output` will be, then run the code. Explain why.
+- **Time limit:** 3 minutes
+
+### 1.3 Multiple Parameters
+
+#### Live Code
+
+```javascript
+function createFullName(firstName, lastName, middleName) {
+  if (middleName) {
+    return `${firstName} ${middleName} ${lastName}`;
+  }
+  return `${firstName} ${lastName}`;
+}
+
+console.log(createFullName("John", "Doe"));                 // "John Doe"
+console.log(createFullName("John", "Doe", "William"));      // "John William Doe"
+```
+
+#### Challenge 1.3 — Full Name (individual, 4 minutes)
+
+- **Requirement:** Write a function `getInitials(firstName, lastName)` that returns `"J. Doe"`.
+- **Time limit:** 4 minutes
+
+---
+
+## Part 2: Return Statement
+
+### 2.1 Single Return
+
+#### Problem
+
+A function should give back a result that we can use later.
+
+#### Live Code
+
+```javascript
+function square(num) {
+  return num * num;
+}
+
+let area = square(4);
+console.log(area); // 16
+```
+
+#### Challenge 2.1 — Rectangle Area (individual, 3 minutes)
+
+- **Requirement:** Write a function `rectangleArea(width, height)` that returns the area.
+- **Time limit:** 3 minutes
+
+### 2.2 Multiple Returns
+
+#### Problem
+
+Categorize a number as positive, negative, or zero.
+
+#### Live Code
 
 ```javascript
 function getNumberStatus(num) {
-    if (num > 0) {
-        return "positive";
-    } else if (num < 0) {
-        return "negative";
-    } else {
-        return "zero";
-    }
+  if (num > 0) return "positive";
+  if (num < 0) return "negative";
+  return "zero";
 }
 
-console.log(getNumberStatus(5));    // "positive"
-console.log(getNumberStatus(-5));   // "negative"
-console.log(getNumberStatus(0));    // "zero"
+console.log(getNumberStatus(5));  // "positive"
+console.log(getNumberStatus(-5)); // "negative"
+console.log(getNumberStatus(0));  // "zero"
 ```
 
-#### Early Return Pattern
+#### Challenge 2.2 — Grade (individual, 4 minutes)
 
-```javascript
-function validateUser(user) {
-    // Early return for invalid data
-    if (!user) {
-        return "User is required";
-    }
-    if (!user.name) {
-        return "Name is required";
-    }
-    if (!user.email) {
-        return "Email is required";
-    }
-    
-    // If we get here, user is valid
-    return "User is valid";
-}
+- **Requirement:** Write a function `getGrade(score)` with early returns for invalid scores and grades A, B, C, D, F.
+- **Time limit:** 4 minutes
 
-console.log(validateUser(null));                           // "User is required"
-console.log(validateUser({name: "John"}));                 // "Email is required"
-console.log(validateUser({name: "John", email: "john@ex"})); // "User is valid"
-```
+### 2.3 Returning Different Types
 
-#### Returning Different Types
+#### Live Code
 
 ```javascript
 function getValue(type) {
-    switch (type) {
-        case "number":
-            return 42;
-        case "string":
-            return "Hello";
-        case "boolean":
-            return true;
-        case "array":
-            return [1, 2, 3];
-        case "object":
-            return { key: "value" };
-        default:
-            return null;
-    }
+  switch (type) {
+    case "number": return 42;
+    case "string": return "Hello";
+    case "boolean": return true;
+    case "array": return [1, 2, 3];
+    case "object": return { key: "value" };
+    default: return null;
+  }
 }
-
-console.log(getValue("number"));  // 42
-console.log(getValue("string"));  // "Hello"
-console.log(getValue("array"));   // [1, 2, 3]
 ```
 
-#### No Return Statement
+#### Challenge 2.3 — Describe Value (individual, 4 minutes)
+
+- **Requirement:** Write `describe(value)` that returns `"number"`, `"string"`, `"boolean"`, or `"other"` using `typeof`.
+- **Time limit:** 4 minutes
+
+---
+
+## Part 3: Default Parameters
+
+### 3.1 Basic Defaults
+
+#### Problem
+
+A greeting function should work even if the caller does not pass a name.
+
+#### Live Code
 
 ```javascript
-function noReturn() {
-    console.log("This function doesn't return anything");
+function greet(name = "Guest") {
+  console.log(`Hello, ${name}!`);
 }
 
-let result = noReturn();
-console.log(result);  // undefined
+greet("John"); // "Hello, John!"
+greet();       // "Hello, Guest!"
 ```
 
-#### Returning Functions
+#### Challenge 3.1 — Default Country (individual, 3 minutes)
+
+- **Requirement:** Write `createUser(name, country = "Unknown")` that returns an object.
+- **Time limit:** 3 minutes
+
+### 3.2 Multiple Defaults
+
+#### Live Code
+
+```javascript
+function createUser(name = "Anonymous", age = 0, country = "Unknown") {
+  return { name, age, country };
+}
+
+console.log(createUser("John", 30, "USA"));
+console.log(createUser("John", 30));
+console.log(createUser("John"));
+console.log(createUser());
+```
+
+#### Challenge 3.2 — Default Price (individual, 4 minutes)
+
+- **Requirement:** Write `calculateTotal(price, quantity = 1, tax = 0.1)` that returns the total.
+- **Time limit:** 4 minutes
+- **Hint:** `price * quantity * (1 + tax)`.
+
+### 3.3 Defaults with undefined and Other Falsy Values
+
+#### Live Code
+
+```javascript
+function setVolume(value = 50) {
+  console.log(value);
+}
+
+setVolume();          // 50
+setVolume(undefined); // 50
+setVolume(null);      // null
+setVolume(0);         // 0
+setVolume("");        // ""
+```
+
+#### Explain
+
+Only `undefined` triggers the default. `null`, `0`, and `""` are real values.
+
+---
+
+## Part 4: Rest Parameters
+
+### 4.1 Basic Rest
+
+#### Problem
+
+Add any number of values without knowing how many in advance.
+
+#### Live Code
+
+```javascript
+function sumAll(...numbers) {
+  let sum = 0;
+  for (let num of numbers) {
+    sum += num;
+  }
+  return sum;
+}
+
+console.log(sumAll(1, 2, 3));      // 6
+console.log(sumAll(1, 2, 3, 4, 5)); // 15
+console.log(sumAll());              // 0
+```
+
+#### Challenge 4.1 — Average (individual, 4 minutes)
+
+- **Requirement:** Write `average(...numbers)` that returns the average.
+- **Time limit:** 4 minutes
+
+### 4.2 Rest with Regular Parameters
+
+#### Live Code
+
+```javascript
+function greetAll(greeting, ...names) {
+  names.forEach(name => {
+    console.log(`${greeting}, ${name}!`);
+  });
+}
+
+greetAll("Hello", "John", "Jane", "Bob");
+```
+
+#### Challenge 4.2 — Build HTML (individual, 4 minutes)
+
+- **Requirement:** Write `buildHTML(tag, ...content)` that returns `<tag>content joined</tag>`.
+- **Time limit:** 4 minutes
+- **Hint:** `content.join("")`.
+
+### 4.3 Rest vs arguments
+
+#### Live Code
+
+```javascript
+// Old way
+function oldSum() {
+  let sum = 0;
+  for (let i = 0; i < arguments.length; i++) {
+    sum += arguments[i];
+  }
+  return sum;
+}
+
+// New way
+function newSum(...numbers) {
+  return numbers.reduce((sum, num) => sum + num, 0);
+}
+
+console.log(oldSum(1, 2, 3, 4, 5)); // 15
+console.log(newSum(1, 2, 3, 4, 5)); // 15
+```
+
+---
+
+## Bug Hunt 1
+
+### Problem
+
+Find the bugs in this function.
+
+```javascript
+function calculateDiscount(price, discount = 10) {
+  if (price < 0) {
+    return "Invalid";
+  }
+  let final = price - (price * discount / 100);
+  console.log(final);
+}
+
+let result = calculateDiscount(100);
+console.log("Result:", result);
+```
+
+### Issues
+
+1. The function uses `console.log` instead of `return`, so `result` is `undefined`.
+2. The discount should not be returned as a negative if `discount` is `0` or `100`. The validation is fine but the design may not match expectations.
+
+### Fixed Version
+
+```javascript
+function calculateDiscount(price, discount = 10) {
+  if (price < 0) {
+    return "Invalid price";
+  }
+  let final = price - (price * discount / 100);
+  return final;
+}
+
+console.log(calculateDiscount(100));        // 90
+console.log(calculateDiscount(100, 20));    // 80
+console.log(calculateDiscount(-50));        // "Invalid price"
+```
+
+### Points
+
+1 point for each found issue.
+
+---
+
+## Part 5: Anonymous Functions and Function Expressions
+
+### 5.1 Function Expression
+
+#### Problem
+
+Assign a function to a variable.
+
+#### Live Code
+
+```javascript
+const multiply = function(a, b) {
+  return a * b;
+};
+
+console.log(multiply(5, 3)); // 15
+```
+
+#### Challenge 5.1 — Anonymous Greeting (individual, 3 minutes)
+
+- **Requirement:** Create an anonymous function assigned to `greet` and call it.
+- **Time limit:** 3 minutes
+
+### 5.2 IIFE
+
+#### Problem
+
+Run a function immediately to avoid global variables.
+
+#### Live Code
+
+```javascript
+(function() {
+  console.log("This function runs immediately!");
+})();
+
+(function(name) {
+  console.log(`Hello, ${name}!`);
+})("John");
+
+const result = (function(a, b) {
+  return a + b;
+})(5, 3);
+console.log(result); // 8
+```
+
+#### Challenge 5.2 — IIFE Sum (individual, 4 minutes)
+
+- **Requirement:** Write an IIFE that prints the product of `7` and `8`.
+- **Time limit:** 4 minutes
+
+### 5.3 Functions in Objects
+
+#### Live Code
+
+```javascript
+const calculator = {
+  add: function(a, b) { return a + b; },
+  subtract: function(a, b) { return a - b; },
+  multiply: function(a, b) { return a * b; },
+  divide: function(a, b) {
+    if (b === 0) return "Cannot divide by zero";
+    return a / b;
+  }
+};
+
+console.log(calculator.add(5, 3));
+console.log(calculator.divide(10, 0));
+```
+
+#### Challenge 5.3 — Object of Operations (individual, 5 minutes)
+
+- **Requirement:** Create an object `math` with `power` and `root` functions.
+- **Time limit:** 5 minutes
+
+---
+
+## Part 6: Nested Functions and Closures
+
+### 6.1 Returning a Function
+
+#### Problem
+
+Create a function that makes other greeting functions.
+
+#### Live Code
 
 ```javascript
 function createGreeter(greeting) {
-    return function(name) {
-        return `${greeting}, ${name}!`;
-    };
+  return function(name) {
+    return `${greeting}, ${name}!`;
+  };
 }
 
 const sayHello = createGreeter("Hello");
 const sayGoodbye = createGreeter("Goodbye");
 
-console.log(sayHello("John"));   // "Hello, John!"
-console.log(sayGoodbye("John")); // "Goodbye, John!"
+console.log(sayHello("John"));    // "Hello, John!"
+console.log(sayGoodbye("John"));  // "Goodbye, John!"
 ```
 
-### Default Parameters
+#### Challenge 6.1 — Function Factory (individual, 4 minutes)
 
-Default parameters allow you to initialize function parameters with default values if no argument is provided.
+- **Requirement:** Write `createMultiplier(factor)` that returns a function.
+- **Time limit:** 4 minutes
 
-#### Basic Default Parameters
+### 6.2 Counter with Closure
+
+#### Live Code
 
 ```javascript
-function greet(name = "Guest") {
-    console.log(`Hello, ${name}!`);
+function createCounter() {
+  let count = 0;
+
+  return {
+    increment: function() { return ++count; },
+    decrement: function() { return --count; },
+    getCount: function() { return count; }
+  };
 }
 
-greet("John");   // "Hello, John!"
-greet();         // "Hello, Guest!"
+const counter1 = createCounter();
+const counter2 = createCounter();
+
+console.log(counter1.increment()); // 1
+console.log(counter1.increment()); // 2
+console.log(counter2.increment()); // 1
+console.log(counter1.getCount());  // 2
 ```
 
-#### Multiple Default Parameters
+#### Challenge 6.2 — Bank Account (individual, 6 minutes)
+
+- **Requirement:** Write `createBankAccount(balance)` that returns `deposit(amount)`, `withdraw(amount)`, and `getBalance()`.
+- **Time limit:** 6 minutes
+- **Hint:** Use closure to keep `balance` private.
+
+### 6.3 Private Data
+
+#### Live Code
 
 ```javascript
-function createUser(name = "Anonymous", age = 0, country = "Unknown") {
-    return { name, age, country };
-}
+function createBankAccount(initialBalance) {
+  let balance = initialBalance;
 
-console.log(createUser("John", 30, "USA"));  // {name: "John", age: 30, country: "USA"}
-console.log(createUser("John", 30));         // {name: "John", age: 30, country: "Unknown"}
-console.log(createUser("John"));            // {name: "John", age: 0, country: "Unknown"}
-console.log(createUser());                   // {name: "Anonymous", age: 0, country: "Unknown"}
-```
-
-#### Default Parameters with Expressions
-
-```javascript
-function calculatePrice(price, tax = 0.1, discount = 0) {
-    return price * (1 + tax) * (1 - discount);
-}
-
-console.log(calculatePrice(100));              // 110 (default tax 10%)
-console.log(calculatePrice(100, 0.2));         // 120 (20% tax)
-console.log(calculatePrice(100, 0.1, 0.1));    // 99 (10% tax, 10% discount)
-```
-
-#### Default Parameters with Previous Parameters
-
-```javascript
-function createUser(name, age = name === "Admin" ? 30 : 18) {
-    return { name, age };
-}
-
-console.log(createUser("Admin"));   // {name: "Admin", age: 30}
-console.log(createUser("John"));    // {name: "John", age: 18}
-```
-
-#### Default Parameters and undefined
-
-```javascript
-function test(value = "default") {
-    console.log(value);
-}
-
-test();           // "default"
-test(undefined);  // "default"
-test(null);       // null (null is a value, not undefined)
-test("");         // "" (empty string is a value)
-```
-
-### Rest Parameters
-
-Rest parameters allow you to represent an indefinite number of arguments as an array.
-
-#### Basic Rest Parameters
-
-```javascript
-function sumAll(...numbers) {
-    let sum = 0;
-    for (let num of numbers) {
-        sum += num;
+  return {
+    deposit(amount) {
+      if (amount > 0) {
+        balance += amount;
+        return `Deposited $${amount}. New balance: $${balance}`;
+      }
+      return "Invalid deposit";
+    },
+    withdraw(amount) {
+      if (amount > 0 && amount <= balance) {
+        balance -= amount;
+        return `Withdrew $${amount}. New balance: $${balance}`;
+      }
+      return "Invalid withdrawal";
+    },
+    getBalance() {
+      return balance;
     }
-    return sum;
+  };
 }
 
-console.log(sumAll(1, 2, 3));           // 6
-console.log(sumAll(1, 2, 3, 4, 5));      // 15
-console.log(sumAll());                   // 0
-```
-
-#### Rest Parameters with Regular Parameters
-
-```javascript
-function greetAll(greeting, ...names) {
-    names.forEach(name => {
-        console.log(`${greeting}, ${name}!`);
-    });
-}
-
-greetAll("Hello", "John", "Jane", "Bob");
-// "Hello, John!"
-// "Hello, Jane!"
-// "Hello, Bob!"
-```
-
-#### Rest Parameters and Destructuring
-
-```javascript
-function processUser({ name, ...details }) {
-    console.log("Name:", name);
-    console.log("Details:", details);
-}
-
-processUser({
-    name: "John",
-    age: 30,
-    email: "john@example.com",
-    city: "New York"
-});
-// Name: John
-// Details: {age: 30, email: "john@example.com", city: "New York"}
-```
-
-#### Rest Parameters in Array Methods
-
-```javascript
-function mergeArrays(...arrays) {
-    return arrays.flat();
-}
-
-console.log(mergeArrays([1, 2], [3, 4], [5, 6]));  // [1, 2, 3, 4, 5, 6]
-```
-
-#### Rest Parameters vs Arguments Object
-
-```javascript
-// Old way (arguments object)
-function oldSum() {
-    let sum = 0;
-    for (let i = 0; i < arguments.length; i++) {
-        sum += arguments[i];
-    }
-    return sum;
-}
-
-// New way (rest parameters)
-function newSum(...numbers) {
-    return numbers.reduce((sum, num) => sum + num, 0);
-}
-
-console.log(oldSum(1, 2, 3, 4, 5));  // 15
-console.log(newSum(1, 2, 3, 4, 5));  // 15
+const account = createBankAccount(100);
+console.log(account.deposit(50));   // 150
+console.log(account.withdraw(30));  // 120
+console.log(account.getBalance());  // 120
 ```
 
 ---
 
-## 💻 Practical (1.5h)
+## Part 7: Arrow Functions
 
-### Exercise 1: Basic Functions
+### 7.1 Basic Arrow
+
+#### Problem
+
+Write shorter functions.
+
+#### Live Code
 
 ```javascript
-// Exercise 1.1: Simple function
-console.log("=== Simple Function ===");
-
-function sayHello(name) {
-    return `Hello, ${name}!`;
-}
-
-console.log(sayHello("John"));
-console.log(sayHello("Jane"));
-
-// Exercise 1.2: Function with multiple parameters
-console.log("\n=== Multiple Parameters ===");
-
+// Traditional
 function add(a, b) {
-    return a + b;
+  return a + b;
 }
 
-function subtract(a, b) {
-    return a - b;
-}
+// Arrow
+const addArrow = (a, b) => {
+  return a + b;
+};
 
-function multiply(a, b) {
-    return a * b;
-}
+// Concise
+const addConcise = (a, b) => a + b;
 
-function divide(a, b) {
-    if (b === 0) return "Cannot divide by zero";
-    return a / b;
-}
-
-console.log("5 + 3 =", add(5, 3));
-console.log("10 - 4 =", subtract(10, 4));
-console.log("6 * 7 =", multiply(6, 7));
-console.log("15 / 3 =", divide(15, 3));
-console.log("10 / 0 =", divide(10, 0));
-
-// Exercise 1.3: Function without return
-console.log("\n=== Function Without Return ===");
-
-function logInfo(name, age) {
-    console.log(`Name: ${name}, Age: ${age}`);
-}
-
-logInfo("John", 30);
-logInfo("Jane", 25);
+console.log(addConcise(5, 3));
 ```
 
-### Exercise 2: Advanced Function Examples
+#### Challenge 7.1 — Arrow Square (individual, 3 minutes)
+
+- **Requirement:** Write `const square = ...` as a concise arrow function.
+- **Time limit:** 3 minutes
+
+### 7.2 Single Parameter and No Parameters
+
+#### Live Code
 
 ```javascript
-// Exercise 2.1: Grade calculator
-console.log("=== Grade Calculator ===");
+const square = num => num * num;
+const sayHello = () => console.log("Hello!");
 
-function calculateGrade(score) {
-    if (score < 0 || score > 100) {
-        return "Invalid score";
-    }
-    
-    if (score >= 90) return "A";
-    if (score >= 80) return "B";
-    if (score >= 70) return "C";
-    if (score >= 60) return "D";
-    return "F";
-}
-
-console.log("Score 95:", calculateGrade(95));
-console.log("Score 85:", calculateGrade(85));
-console.log("Score 75:", calculateGrade(75));
-console.log("Score 55:", calculateGrade(55));
-console.log("Score 105:", calculateGrade(105));
-
-// Exercise 2.2: Array statistics
-console.log("\n=== Array Statistics ===");
-
-function getArrayStats(numbers) {
-    if (numbers.length === 0) {
-        return { count: 0, sum: 0, average: 0, min: null, max: null };
-    }
-    
-    let sum = 0;
-    let min = numbers[0];
-    let max = numbers[0];
-    
-    for (let num of numbers) {
-        sum += num;
-        if (num < min) min = num;
-        if (num > max) max = num;
-    }
-    
-    return {
-        count: numbers.length,
-        sum: sum,
-        average: sum / numbers.length,
-        min: min,
-        max: max
-    };
-}
-
-let stats = getArrayStats([10, 20, 30, 40, 50]);
-console.log("Stats:", stats);
-
-// Exercise 2.3: String manipulation
-console.log("\n=== String Manipulation ===");
-
-function createEmail(firstName, lastName, domain) {
-    const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}@${domain}`;
-    return email;
-}
-
-console.log(createEmail("John", "Doe", "example.com"));
-console.log(createEmail("Jane", "Smith", "gmail.com"));
-
-// Exercise 2.4: Temperature conversion
-console.log("\n=== Temperature Conversion ===");
-
-function celsiusToFahrenheit(celsius) {
-    return (celsius * 9/5) + 32;
-}
-
-function fahrenheitToCelsius(fahrenheit) {
-    return (fahrenheit - 32) * 5/9;
-}
-
-console.log("0°C to F:", celsiusToFahrenheit(0));
-console.log("32°F to C:", fahrenheitToCelsius(32));
-console.log("100°C to F:", celsiusToFahrenheit(100));
+console.log(square(4));
+sayHello();
 ```
 
-### Exercise 3: Return Statement
+#### Challenge 7.2 — Arrow Greeting (individual, 3 minutes)
+
+- **Requirement:** Write `const greet = name => ...` that returns a string.
+- **Time limit:** 3 minutes
+
+### 7.3 Returning Objects
+
+#### Live Code
 
 ```javascript
-// Exercise 3.1: Multiple returns
-console.log("=== Multiple Returns ===");
-
-function getAgeGroup(age) {
-    if (age < 13) return "Child";
-    if (age < 20) return "Teenager";
-    if (age < 65) return "Adult";
-    return "Senior";
-}
-
-console.log("Age 10:", getAgeGroup(10));
-console.log("Age 15:", getAgeGroup(15));
-console.log("Age 30:", getAgeGroup(30));
-console.log("Age 70:", getAgeGroup(70));
-
-// Exercise 3.2: Early return
-console.log("\n=== Early Return ===");
-
-function validateEmail(email) {
-    if (!email) return "Email is required";
-    if (!email.includes("@")) return "Email must contain @";
-    if (!email.includes(".")) return "Email must contain .";
-    return "Valid email";
-}
-
-console.log(validateEmail(""));
-console.log(validateEmail("invalid"));
-console.log(validateEmail("invalid@com"));
-console.log(validateEmail("valid@example.com"));
-
-// Exercise 3.3: Returning objects
-console.log("\n=== Returning Objects ===");
-
-function createRectangle(width, height) {
-    return {
-        width: width,
-        height: height,
-        area: width * height,
-        perimeter: 2 * (width + height)
-    };
-}
-
-let rectangle = createRectangle(5, 3);
-console.log("Rectangle:", rectangle);
-
-// Exercise 3.4: Returning functions
-console.log("\n=== Returning Functions ===");
-
-function createMultiplier(multiplier) {
-    return function(number) {
-        return number * multiplier;
-    };
-}
-
-const double = createMultiplier(2);
-const triple = createMultiplier(3);
-
-console.log("Double 5:", double(5));
-console.log("Triple 5:", triple(5));
+const createUser = (name, age) => ({ name, age });
+console.log(createUser("John", 30)); // { name: "John", age: 30 }
 ```
 
-### Exercise 4: Default Parameters
+#### Challenge 7.3 — Arrow Object (individual, 4 minutes)
+
+- **Requirement:** Write `const makeBook = (title, pages) => ...` that returns `{ title, pages }`.
+- **Time limit:** 4 minutes
+
+### 7.4 Arrow as Callback
+
+#### Live Code
 
 ```javascript
-// Exercise 4.1: Basic default parameters
-console.log("=== Basic Default Parameters ===");
+const numbers = [1, 2, 3, 4, 5];
 
-function greet(name = "Guest", time = "Day") {
-    return `Good ${time}, ${name}!`;
-}
+const doubled = numbers.map(function(num) {
+  return num * 2;
+});
 
-console.log(greet("John", "Morning"));
-console.log(greet("John"));
-console.log(greet());
-
-// Exercise 4.2: Multiple default parameters
-console.log("\n=== Multiple Default Parameters ===");
-
-function configureServer(host = "localhost", port = 3000, ssl = false) {
-    return {
-        host: host,
-        port: port,
-        ssl: ssl,
-        url: `${ssl ? "https" : "http"}://${host}:${port}`
-    };
-}
-
-console.log(configureServer());
-console.log(configureServer("example.com"));
-console.log(configureServer("example.com", 8080));
-console.log(configureServer("example.com", 8080, true));
-
-// Exercise 4.3: Default with expressions
-console.log("\n=== Default with Expressions ===");
-
-function calculateTotal(price, quantity = 1, tax = 0.1) {
-    const subtotal = price * quantity;
-    const taxAmount = subtotal * tax;
-    return subtotal + taxAmount;
-}
-
-console.log(calculateTotal(100));
-console.log(calculateTotal(100, 2));
-console.log(calculateTotal(100, 2, 0.2));
-
-// Exercise 4.4: Default parameters validation
-console.log("\n=== Default Parameters Validation ===");
-
-function createUser(name = "Anonymous", age = 18, isAdmin = false) {
-    if (age < 0) age = 0;
-    if (age > 120) age = 120;
-    
-    return {
-        name: name,
-        age: age,
-        isAdmin: isAdmin,
-        canVote: age >= 18
-    };
-}
-
-console.log(createUser());
-console.log(createUser("John", 25, true));
-console.log(createUser("Jane", -5));
-console.log(createUser("Bob", 150));
+const doubledArrow = numbers.map(num => num * 2);
+console.log(doubledArrow); // [2, 4, 6, 8, 10]
 ```
 
-### Exercise 5: Rest Parameters
+#### Challenge 7.4 — Filter Adults (individual, 4 minutes)
+
+- **Requirement:** Use an arrow function with `filter` to return users aged `18` or older.
+- **Time limit:** 4 minutes
+
+---
+
+## Part 8: Practical Function Projects
+
+### 8.1 Calculator
+
+#### Live Code
 
 ```javascript
-// Exercise 5.1: Basic rest parameters
-console.log("=== Basic Rest Parameters ===");
-
-function sumAll(...numbers) {
-    return numbers.reduce((sum, num) => sum + num, 0);
-}
-
-console.log("Sum 1,2,3:", sumAll(1, 2, 3));
-console.log("Sum 1,2,3,4,5:", sumAll(1, 2, 3, 4, 5));
-console.log("Sum nothing:", sumAll());
-
-// Exercise 5.2: Rest with regular parameters
-console.log("\n=== Rest with Regular Parameters ===");
-
-function logMessages(level, ...messages) {
-    console.log(`[${level.toUpperCase()}]`);
-    messages.forEach(msg => console.log(`  - ${msg}`));
-}
-
-logMessages("info", "Server started", "Listening on port 3000");
-logMessages("error", "Connection failed", "Timeout");
-
-// Exercise 5.3: Rest parameters manipulation
-console.log("\n=== Rest Parameters Manipulation ===");
-
-function filterNumbers(...values) {
-    return values.filter(value => typeof value === 'number');
-}
-
-console.log(filterNumbers(1, "hello", 2, true, 3, null));
-console.log(filterNumbers("a", "b", "c"));
-
-// Exercise 5.4: Rest parameters with array methods
-console.log("\n=== Rest with Array Methods ===");
-
-function findMax(...numbers) {
-    if (numbers.length === 0) return undefined;
-    return Math.max(...numbers);
-}
-
-function findMin(...numbers) {
-    if (numbers.length === 0) return undefined;
-    return Math.min(...numbers);
-}
-
-console.log("Max of 1,5,3:", findMax(1, 5, 3));
-console.log("Min of 1,5,3:", findMin(1, 5, 3));
-console.log("Max of nothing:", findMax());
-```
-
-### Exercise 6: Function Ultimate Practice
-
-```javascript
-// Exercise 6.1: Calculator function
-console.log("=== Calculator Function ===");
-
 function calculator(operation, ...numbers) {
-    if (numbers.length === 0) return "No numbers provided";
-    
-    switch (operation) {
-        case "add":
-            return numbers.reduce((sum, num) => sum + num, 0);
-        case "subtract":
-            return numbers.reduce((result, num) => result - num);
-        case "multiply":
-            return numbers.reduce((product, num) => product * num, 1);
-        case "divide":
-            if (numbers.includes(0)) return "Cannot divide by zero";
-            return numbers.reduce((result, num) => result / num);
-        default:
-            return "Invalid operation";
-    }
+  if (numbers.length === 0) return "No numbers provided";
+
+  switch (operation) {
+    case "add":
+      return numbers.reduce((sum, num) => sum + num, 0);
+    case "subtract":
+      return numbers.reduce((result, num) => result - num);
+    case "multiply":
+      return numbers.reduce((product, num) => product * num, 1);
+    case "divide":
+      if (numbers.includes(0)) return "Cannot divide by zero";
+      return numbers.reduce((result, num) => result / num);
+    default:
+      return "Invalid operation";
+  }
 }
 
-console.log("Add 1,2,3:", calculator("add", 1, 2, 3));
-console.log("Multiply 2,3,4:", calculator("multiply", 2, 3, 4));
-console.log("Divide 100,2,5:", calculator("divide", 100, 2, 5));
+console.log(calculator("add", 1, 2, 3));
+console.log(calculator("multiply", 2, 3, 4));
+console.log(calculator("divide", 100, 2, 5));
+```
 
-// Exercise 6.2: String builder
-console.log("\n=== String Builder ===");
+### 8.2 Validator
 
-function buildString(...parts) {
-    return parts.join(" ");
-}
+#### Live Code
 
-console.log(buildString("Hello", "World", "from", "JavaScript"));
-
-function buildHTML(tag, ...content) {
-    return `<${tag}>${content.join("")}</${tag}>`;
-}
-
-console.log(buildHTML("p", "Hello", " ", "World"));
-console.log(buildHTML("div", buildHTML("p", "Content")));
-
-// Exercise 6.3: Array processor
-console.log("\n=== Array Processor ===");
-
-function processArray(numbers, operation) {
-    switch (operation) {
-        case "double":
-            return numbers.map(n => n * 2);
-        case "square":
-            return numbers.map(n => n * n);
-        case "even":
-            return numbers.filter(n => n % 2 === 0);
-        case "odd":
-            return numbers.filter(n => n % 2 !== 0);
-        case "sum":
-            return numbers.reduce((sum, n) => sum + n, 0);
-        default:
-            return "Invalid operation";
-    }
-}
-
-console.log("Double:", processArray([1, 2, 3], "double"));
-console.log("Square:", processArray([1, 2, 3], "square"));
-console.log("Even:", processArray([1, 2, 3, 4, 5], "even"));
-console.log("Sum:", processArray([1, 2, 3, 4, 5], "sum"));
-
-// Exercise 6.4: Validator function
-console.log("\n=== Validator Function ===");
-
+```javascript
 function validateUser(user) {
-    const errors = [];
-    
-    if (!user.name || user.name.trim() === "") {
-        errors.push("Name is required");
-    }
-    
-    if (!user.email || !user.email.includes("@")) {
-        errors.push("Valid email is required");
-    }
-    
-    if (!user.age || user.age < 0 || user.age > 120) {
-        errors.push("Valid age (0-120) is required");
-    }
-    
-    return {
-        isValid: errors.length === 0,
-        errors: errors
-    };
+  const errors = [];
+
+  if (!user.name || user.name.trim() === "") {
+    errors.push("Name is required");
+  }
+
+  if (!user.email || !user.email.includes("@")) {
+    errors.push("Valid email is required");
+  }
+
+  if (!user.age || user.age < 0 || user.age > 120) {
+    errors.push("Valid age (0-120) is required");
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors
+  };
 }
 
 console.log(validateUser({ name: "John", email: "john@example.com", age: 30 }));
 console.log(validateUser({ name: "", email: "invalid", age: -5 }));
 ```
 
-### Exercise 7: Random Arguments Challenge
+### 8.3 Flexible Calculator
+
+#### Live Code
 
 ```javascript
-// Exercise 7.1: Handle random number of arguments
-console.log("=== Random Arguments Challenge ===");
-
-function processRandomArguments(...args) {
-    const result = {
-        count: args.length,
-        numbers: [],
-        strings: [],
-        booleans: [],
-        others: []
-    };
-    
-    for (let arg of args) {
-        if (typeof arg === 'number') {
-            result.numbers.push(arg);
-        } else if (typeof arg === 'string') {
-            result.strings.push(arg);
-        } else if (typeof arg === 'boolean') {
-            result.booleans.push(arg);
-        } else {
-            result.others.push(arg);
-        }
-    }
-    
-    return result;
-}
-
-console.log(processRandomArguments(1, "hello", true, 2, "world", false, null, {key: "value"}));
-
-// Exercise 7.2: Flexible calculator
-console.log("\n=== Flexible Calculator ===");
-
 function flexibleCalculator(...args) {
-    if (args.length === 0) return 0;
-    
-    const operation = args[0];
-    const numbers = args.slice(1);
-    
-    if (numbers.length === 0) return 0;
-    
-    switch (operation) {
-        case "+":
-            return numbers.reduce((sum, n) => sum + n, 0);
-        case "-":
-            return numbers.reduce((result, n) => result - n);
-        case "*":
-            return numbers.reduce((product, n) => product * n, 1);
-        case "/":
-            return numbers.reduce((result, n) => result / n);
-        default:
-            return "Invalid operation";
-    }
+  if (args.length === 0) return 0;
+
+  const operation = args[0];
+  const numbers = args.slice(1);
+
+  if (numbers.length === 0) return 0;
+
+  switch (operation) {
+    case "+":
+      return numbers.reduce((sum, n) => sum + n, 0);
+    case "-":
+      return numbers.reduce((result, n) => result - n);
+    case "*":
+      return numbers.reduce((product, n) => product * n, 1);
+    case "/":
+      return numbers.reduce((result, n) => result / n);
+    default:
+      return "Invalid operation";
+  }
 }
 
 console.log(flexibleCalculator("+", 1, 2, 3, 4));
 console.log(flexibleCalculator("*", 2, 3, 4));
-
-// Exercise 7.3: Dynamic function caller
-console.log("\n=== Dynamic Function Caller ===");
-
-function callFunction(funcName, ...args) {
-    const functions = {
-        add: (...nums) => nums.reduce((sum, n) => sum + n, 0),
-        multiply: (...nums) => nums.reduce((prod, n) => prod * n, 1),
-        max: (...nums) => Math.max(...nums),
-        min: (...nums) => Math.min(...nums),
-        average: (...nums) => nums.reduce((sum, n) => sum + n, 0) / nums.length
-    };
-    
-    if (functions[funcName]) {
-        return functions[funcName](...args);
-    }
-    
-    return "Function not found";
-}
-
-console.log(callFunction("add", 1, 2, 3));
-console.log(callFunction("max", 1, 5, 3, 2));
-console.log(callFunction("average", 10, 20, 30));
 ```
 
-### Exercise 8: Anonymous Functions
+---
+
+## Bug Hunt 2
+
+### Problem
+
+Find the bugs in this closure code.
 
 ```javascript
-// Exercise 8.1: Basic anonymous function
-console.log("=== Anonymous Functions ===");
-
-// Anonymous function assigned to variable
-const greet = function(name) {
-    return `Hello, ${name}!`;
-};
-
-console.log(greet("John"));
-
-// Anonymous function as callback
-const numbers = [1, 2, 3, 4, 5];
-const doubled = numbers.map(function(num) {
-    return num * 2;
-});
-console.log("Doubled:", doubled);
-
-// Exercise 8.2: Anonymous functions in arrays
-console.log("\n=== Anonymous Functions in Arrays ===");
-
-const operations = [
-    function(a, b) { return a + b; },
-    function(a, b) { return a - b; },
-    function(a, b) { return a * b; },
-    function(a, b) { return a / b; }
-];
-
-console.log("Add:", operations[0](5, 3));
-console.log("Subtract:", operations[1](5, 3));
-console.log("Multiply:", operations[2](5, 3));
-console.log("Divide:", operations[3](6, 3));
-
-// Exercise 8.3: Immediately Invoked Function Expression (IIFE)
-console.log("\n=== IIFE ===");
-
-(function() {
-    console.log("This function runs immediately!");
-})();
-
-(function(name) {
-    console.log(`Hello, ${name}!`);
-})("John");
-
-// IIFE with return value
-const result = (function(a, b) {
-    return a + b;
-})(5, 3);
-console.log("IIFE result:", result);
-
-// Exercise 8.4: Anonymous functions as object methods
-console.log("\n=== Anonymous Functions as Methods ===");
-
-const calculator = {
-    add: function(a, b) {
-        return a + b;
-    },
-    subtract: function(a, b) {
-        return a - b;
-    },
-    multiply: function(a, b) {
-        return a * b;
-    },
-    divide: function(a, b) {
-        return a / b;
-    }
-};
-
-console.log("Calculator add:", calculator.add(5, 3));
-console.log("Calculator multiply:", calculator.multiply(5, 3));
-```
-
-### Exercise 9: Returning Nested Functions
-
-```javascript
-// Exercise 9.1: Basic nested function
-console.log("=== Nested Functions ===");
-
-function outerFunction() {
-    function innerFunction() {
-        return "Hello from inner function!";
-    }
-    
-    return innerFunction;
-}
-
-const inner = outerFunction();
-console.log(inner());
-
-// Exercise 9.2: Function factory
-console.log("\n=== Function Factory ===");
-
-function createGreeter(greeting) {
-    return function(name) {
-        return `${greeting}, ${name}!`;
-    };
-}
-
-const sayHello = createGreeter("Hello");
-const sayHi = createGreeter("Hi");
-const sayGoodbye = createGreeter("Goodbye");
-
-console.log(sayHello("John"));
-console.log(sayHi("Jane"));
-console.log(sayGoodbye("Bob"));
-
-// Exercise 9.3: Counter with closure
-console.log("\n=== Counter with Closure ===");
-
 function createCounter() {
-    let count = 0;
-    
-    return {
-        increment: function() {
-            count++;
-            return count;
-        },
-        decrement: function() {
-            count--;
-            return count;
-        },
-        getCount: function() {
-            return count;
-        }
-    };
+  let count = 0;
+
+  return {
+    increment: function() {
+      count++;
+    },
+    getCount: function() {
+      return count;
+    }
+  };
 }
 
-const counter1 = createCounter();
-const counter2 = createCounter();
-
-console.log("Counter 1:", counter1.increment());
-console.log("Counter 1:", counter1.increment());
-console.log("Counter 2:", counter2.increment());
-console.log("Counter 1:", counter1.getCount());
-console.log("Counter 2:", counter2.getCount());
-
-// Exercise 9.4: Function with private data
-console.log("\n=== Function with Private Data ===");
-
-function createBankAccount(initialBalance) {
-    let balance = initialBalance;
-    
-    return {
-        deposit: function(amount) {
-            if (amount > 0) {
-                balance += amount;
-                return `Deposited $${amount}. New balance: $${balance}`;
-            }
-            return "Invalid deposit amount";
-        },
-        withdraw: function(amount) {
-            if (amount > 0 && amount <= balance) {
-                balance -= amount;
-                return `Withdrew $${amount}. New balance: $${balance}`;
-            }
-            return "Invalid withdrawal amount";
-        },
-        getBalance: function() {
-            return balance;
-        }
-    };
-}
-
-const account = createBankAccount(100);
-console.log(account.deposit(50));
-console.log(account.withdraw(30));
-console.log(account.getBalance());
+let c = createCounter();
+c.increment();
+c.increment();
+console.log(c.count);
 ```
 
-### Exercise 10: Complete Working Example
+### Issues
 
-**Complete script.js:**
+1. `count` is private. `c.count` is `undefined` because the outer variable is not accessible from outside.
+2. `increment` does not return the new count.
+
+### Fixed Version
+
 ```javascript
-// Session 7: Functions (Part 1)
-// This script demonstrates function basics, parameters, and returns
+function createCounter() {
+  let count = 0;
 
-console.log("=== Session 7: Functions (Part 1) ===");
-
-// 1. Basic function
-console.log("\n--- Basic Function ---");
-function greet(name) {
-    return `Hello, ${name}!`;
+  return {
+    increment: function() {
+      return ++count;
+    },
+    getCount: function() {
+      return count;
+    }
+  };
 }
-console.log(greet("John"));
 
-// 2. Function with parameters
-console.log("\n--- Function with Parameters ---");
-function add(a, b) {
-    return a + b;
-}
-console.log("5 + 3 =", add(5, 3));
-
-// 3. Default parameters
-console.log("\n--- Default Parameters ---");
-function sayHello(name = "Guest") {
-    return `Hello, ${name}!`;
-}
-console.log(sayHello());
-console.log(sayHello("Jane"));
-
-// 4. Rest parameters
-console.log("\n--- Rest Parameters ---");
-function sumAll(...numbers) {
-    return numbers.reduce((sum, num) => sum + num, 0);
-}
-console.log("Sum 1,2,3:", sumAll(1, 2, 3));
-console.log("Sum 1,2,3,4,5:", sumAll(1, 2, 3, 4, 5));
-
-// 5. Return statement
-console.log("\n--- Return Statement ---");
-function getGrade(score) {
-    if (score >= 90) return "A";
-    if (score >= 80) return "B";
-    if (score >= 70) return "C";
-    return "F";
-}
-console.log("Grade for 85:", getGrade(85));
-
-// 6. Anonymous function
-console.log("\n--- Anonymous Function ---");
-const multiply = function(a, b) {
-    return a * b;
-};
-console.log("5 * 3 =", multiply(5, 3));
-
-// 7. Nested function
-console.log("\n--- Nested Function ---");
-function createGreeter(greeting) {
-    return function(name) {
-        return `${greeting}, ${name}!`;
-    };
-}
-const sayHi = createGreeter("Hi");
-console.log(sayHi("John"));
-
-// 8. Function with object return
-console.log("\n--- Object Return ---");
-function createUser(name, age) {
-    return {
-        name: name,
-        age: age,
-        createdAt: new Date()
-    };
-}
-console.log(createUser("John", 30));
-
-console.log("\n=== Session 7 Complete ===");
+let c = createCounter();
+console.log(c.increment()); // 1
+console.log(c.increment()); // 2
+console.log(c.getCount());  // 2
 ```
 
-**Complete index.html:**
+### Points
+
+1 point for each found issue.
+
+---
+
+## Group Challenge: Function Builder
+
+- **Time:** 10 minutes
+- **Teams:** 2 or 3 students per team
+- **Task:** Each team must write one small function for each situation.
+- **Scoring:** 2 points per correct function. The team with the most points wins.
+
+### Situations
+
+1. `celsiusToFahrenheit(c)`.
+2. `getInitials(firstName, lastName)`.
+3. `sumEven(...numbers)`.
+4. `createMultiplier(factor)`.
+5. `validateEmail(email)`.
+
+### Instructor Answer Key
+
+```javascript
+function celsiusToFahrenheit(c) {
+  return (c * 9 / 5) + 32;
+}
+
+function getInitials(firstName, lastName) {
+  return `${firstName[0].toUpperCase()}. ${lastName}`;
+}
+
+function sumEven(...numbers) {
+  return numbers.filter(n => n % 2 === 0).reduce((sum, n) => sum + n, 0);
+}
+
+function createMultiplier(factor) {
+  return n => n * factor;
+}
+
+function validateEmail(email) {
+  if (!email) return "Email is required";
+  if (!email.includes("@")) return "Email must contain @";
+  if (!email.includes(".")) return "Email must contain .";
+  return "Valid";
+}
+```
+
+---
+
+## Individual Challenges — Progressive Difficulty
+
+### Level 1: Add and Multiply (3 minutes)
+
+- **Requirement:** Write `add(a, b)` and `multiply(a, b)`.
+
+### Level 2: Default Tax (4 minutes)
+
+- **Requirement:** Write `calculateTotal(price, tax = 0.1)`.
+
+### Level 3: Sum Rest (4 minutes)
+
+- **Requirement:** Write `sum(...numbers)` that adds all arguments.
+
+### Level 4: Arrow Average (4 minutes)
+
+- **Requirement:** Write `const average = ...` as an arrow function.
+
+### Level 5: Validator Function (5 minutes)
+
+- **Requirement:** Write `validatePassword(password)` that returns `true` if the password has at least `8` characters.
+
+### Level 6: Bank Account (6 minutes)
+
+- **Requirement:** Write a closure-based bank account with `deposit`, `withdraw`, and `getBalance`.
+
+---
+
+## Mini Project: Function Dashboard
+
+### Time
+
+25 minutes
+
+### Goal
+
+Combine function declarations, parameters, return, defaults, rest, arrow functions, and a simple closure in one HTML page.
+
+### Requirements for the Students
+
+1. Create an HTML page with sections:
+   - **Greeting:** input for name, optional age; output a personalized greeting.
+   - **Calculator:** inputs for numbers and operation; output the result.
+   - **Counter:** buttons to `+`, `-`, and `show` the count using a closure.
+
+2. Use these concepts:
+   - Function declaration
+   - Default parameters
+   - Rest parameters
+   - Arrow function as callback
+   - Closure for the counter
+
+### Starter HTML
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Session 7 - Functions (Part 1)</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        .section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .section h2 {
-            color: #1890ff;
-            margin-top: 0;
-        }
-        .demo {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 10px;
-        }
-        .demo input, .demo select, .demo button {
-            padding: 8px;
-            margin: 5px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .demo button {
-            background-color: #1890ff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .demo button:hover {
-            background-color: #0c7cd5;
-        }
-        .output {
-            background: #f0f0f0;
-            padding: 15px;
-            border-radius: 4px;
-            font-family: monospace;
-            white-space: pre-wrap;
-            margin-top: 10px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .counter-demo {
-            display: flex;
-            gap: 20px;
-            margin-top: 15px;
-        }
-        .counter {
-            background: white;
-            padding: 15px;
-            border-radius: 4px;
-            border: 1px solid #e8e8e8;
-            flex: 1;
-        }
-        .counter-display {
-            font-size: 2em;
-            text-align: center;
-            margin: 10px 0;
-        }
-        .counter-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Function Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 700px; margin: 20px auto; }
+    .section { background: #f9f9f9; padding: 15px; margin-bottom: 20px; border-radius: 4px; }
+    input, select, button { padding: 8px; margin: 5px; }
+    .output { background: #f0f0f0; padding: 15px; border-radius: 4px; margin-top: 10px; }
+  </style>
 </head>
 <body>
-    <h1>Session 7: Functions (Part 1)</h1>
-    
-    <div class="section">
-        <h2>Topics Covered</h2>
-        <ul>
-            <li>Function introduction & basic usage</li>
-            <li>Advanced function examples</li>
-            <li>Return statement</li>
-            <li>Default parameters</li>
-            <li>Rest parameters</li>
-            <li>Anonymous functions</li>
-            <li>Nested functions & closures</li>
-        </ul>
-    </div>
+  <h1>Function Dashboard</h1>
 
-    <div class="section">
-        <h2>Basic Function Demo</h2>
-        <div class="demo">
-            <input type="text" id="funcName" placeholder="Enter name">
-            <button onclick="demoGreet()">Greet</button>
-            <button onclick="demoAdd()">Add Numbers</button>
-            <button onclick="demoGrade()">Get Grade</button>
-            <div id="basicOutput" class="output">
-                Click a button to see function demo...
-            </div>
-        </div>
-    </div>
+  <div class="section">
+    <h2>Greeting</h2>
+    <input type="text" id="greetName" placeholder="Name" value="John">
+    <input type="number" id="greetAge" placeholder="Age">
+    <button onclick="showGreeting()">Greet</button>
+    <div id="greetingOutput" class="output"></div>
+  </div>
 
-    <div class="section">
-        <h2>Default Parameters Demo</h2>
-        <div class="demo">
-            <input type="text" id="defaultName" placeholder="Name (optional)">
-            <input type="number" id="defaultAge" placeholder="Age (optional)">
-            <button onclick="demoDefaultParams()">Create User</button>
-            <div id="defaultOutput" class="output">
-                Click to see default parameters...
-            </div>
-        </div>
-    </div>
+  <div class="section">
+    <h2>Calculator</h2>
+    <input type="text" id="calcNumbers" placeholder="Numbers (comma separated)" value="1,2,3,4">
+    <select id="calcOp">
+      <option value="add">Add</option>
+      <option value="subtract">Subtract</option>
+      <option value="multiply">Multiply</option>
+    </select>
+    <button onclick="showCalc()">Calculate</button>
+    <div id="calcOutput" class="output"></div>
+  </div>
 
-    <div class="section">
-        <h2>Rest Parameters Demo</h2>
-        <div class="demo">
-            <input type="text" id="restNumbers" placeholder="Enter numbers (comma separated)">
-            <button onclick="demoRestSum()">Sum All</button>
-            <button onclick="demoRestMax()">Find Max</button>
-            <button onclick="demoRestFilter()">Filter Numbers</button>
-            <div id="restOutput" class="output">
-                Click to see rest parameters...
-            </div>
-        </div>
-    </div>
+  <div class="section">
+    <h2>Counter</h2>
+    <button onclick="counter.increment(); showCounter()">+</button>
+    <button onclick="counter.decrement(); showCounter()">-</button>
+    <div class="output" id="counterOutput">0</div>
+  </div>
 
-    <div class="section">
-        <h2>Closure Counter Demo</h2>
-        <div class="counter-demo">
-            <div class="counter">
-                <h3>Counter 1</h3>
-                <div class="counter-display" id="counter1Display">0</div>
-                <div class="counter-buttons">
-                    <button onclick="counter1.increment()">+</button>
-                    <button onclick="counter1.decrement()">-</button>
-                    <button onclick="updateCounter1Display()">Show</button>
-                </div>
-            </div>
-            <div class="counter">
-                <h3>Counter 2</h3>
-                <div class="counter-display" id="counter2Display">0</div>
-                <div class="counter-buttons">
-                    <button onclick="counter2.increment()">+</button>
-                    <button onclick="counter2.decrement()">-</button>
-                    <button onclick="updateCounter2Display()">Show</button>
-                </div>
-            </div>
-        </div>
-    </div>
+  <script>
+    // Greeting
+    const makeGreeting = (name = "Guest", age) => {
+      if (age && age >= 18) return `Hello, ${name}. You are an adult.`;
+      return `Hello, ${name}.`;
+    };
 
-    <div class="section">
-        <h2>Console Output</h2>
-        <p>Open the browser console (F12) to see all JavaScript examples.</p>
-    </div>
+    function showGreeting() {
+      let name = document.getElementById("greetName").value.trim();
+      let age = parseInt(document.getElementById("greetAge").value);
+      let text = makeGreeting(name || undefined, isNaN(age) ? undefined : age);
+      document.getElementById("greetingOutput").textContent = text;
+    }
 
-    <script src="script.js" defer></script>
-    <script>
-        // Basic function demos
-        function demoGreet() {
-            const name = document.getElementById('funcName').value || 'Guest';
-            function greet(name) {
-                return `Hello, ${name}!`;
-            }
-            document.getElementById('basicOutput').textContent = greet(name);
-        }
+    // Calculator
+    function calculate(operation, ...numbers) {
+      switch (operation) {
+        case "add": return numbers.reduce((a, b) => a + b, 0);
+        case "subtract": return numbers.reduce((a, b) => a - b);
+        case "multiply": return numbers.reduce((a, b) => a * b, 1);
+        default: return "Invalid";
+      }
+    }
 
-        function demoAdd() {
-            function add(a, b) {
-                return a + b;
-            }
-            const result = add(Math.floor(Math.random() * 10), Math.floor(Math.random() * 10));
-            document.getElementById('basicOutput').textContent = `Random addition: ${result}`;
-        }
+    function showCalc() {
+      let input = document.getElementById("calcNumbers").value;
+      let numbers = input.split(",").map(n => parseFloat(n.trim())).filter(n => !isNaN(n));
+      let op = document.getElementById("calcOp").value;
+      let result = calculate(op, ...numbers);
+      document.getElementById("calcOutput").textContent = `Result: ${result}`;
+    }
 
-        function demoGrade() {
-            function getGrade(score) {
-                if (score >= 90) return "A";
-                if (score >= 80) return "B";
-                if (score >= 70) return "C";
-                if (score >= 60) return "D";
-                return "F";
-            }
-            const score = Math.floor(Math.random() * 40) + 60; // 60-100
-            document.getElementById('basicOutput').textContent = `Score ${score}: Grade ${getGrade(score)}`;
-        }
+    // Counter with closure
+    function createCounter() {
+      let count = 0;
+      return {
+        increment: () => count++,
+        decrement: () => count--,
+        getCount: () => count
+      };
+    }
 
-        // Default parameters demo
-        function demoDefaultParams() {
-            function createUser(name = "Anonymous", age = 18, country = "Unknown") {
-                return { name, age, country };
-            }
-            
-            const name = document.getElementById('defaultName').value;
-            const age = parseInt(document.getElementById('defaultAge').value);
-            
-            const user = createUser(
-                name || undefined,
-                isNaN(age) ? undefined : age
-            );
-            
-            document.getElementById('defaultOutput').textContent = JSON.stringify(user, null, 2);
-        }
+    const counter = createCounter();
 
-        // Rest parameters demo
-        function demoRestSum() {
-            function sumAll(...numbers) {
-                return numbers.reduce((sum, num) => sum + num, 0);
-            }
-            
-            const input = document.getElementById('restNumbers').value;
-            const numbers = input.split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n));
-            
-            if (numbers.length === 0) {
-                document.getElementById('restOutput').textContent = "Please enter valid numbers";
-                return;
-            }
-            
-            document.getElementById('restOutput').textContent = `Numbers: ${numbers.join(', ')}\nSum: ${sumAll(...numbers)}`;
-        }
-
-        function demoRestMax() {
-            function findMax(...numbers) {
-                return Math.max(...numbers);
-            }
-            
-            const input = document.getElementById('restNumbers').value;
-            const numbers = input.split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n));
-            
-            if (numbers.length === 0) {
-                document.getElementById('restOutput').textContent = "Please enter valid numbers";
-                return;
-            }
-            
-            document.getElementById('restOutput').textContent = `Numbers: ${numbers.join(', ')}\nMax: ${findMax(...numbers)}`;
-        }
-
-        function demoRestFilter() {
-            function filterNumbers(...values) {
-                return values.filter(value => typeof value === 'number');
-            }
-            
-            const input = document.getElementById('restNumbers').value;
-            const values = input.split(',').map(v => {
-                const trimmed = v.trim();
-                const num = parseFloat(trimmed);
-                return isNaN(num) ? trimmed : num;
-            });
-            
-            const numbers = filterNumbers(...values);
-            document.getElementById('restOutput').textContent = `Input: ${values.join(', ')}\nNumbers only: ${numbers.join(', ')}`;
-        }
-
-        // Closure counter
-        function createCounter() {
-            let count = 0;
-            
-            return {
-                increment: function() {
-                    count++;
-                },
-                decrement: function() {
-                    count--;
-                },
-                getCount: function() {
-                    return count;
-                }
-            };
-        }
-
-        const counter1 = createCounter();
-        const counter2 = createCounter();
-
-        function updateCounter1Display() {
-            document.getElementById('counter1Display').textContent = counter1.getCount();
-        }
-
-        function updateCounter2Display() {
-            document.getElementById('counter2Display').textContent = counter2.getCount();
-        }
-    </script>
+    function showCounter() {
+      document.getElementById("counterOutput").textContent = counter.getCount();
+    }
+  </script>
 </body>
 </html>
 ```
 
+### Review Questions for the Mini Project
+
+- "What is the difference between `name || undefined` and just `name` in the greeting?"
+- "Which function uses rest parameters?"
+- "Why is the counter shared between button clicks?"
+
 ---
 
-## 📝 Review (0.5h)
+## Trainer Solutions — Do Not Show Until Students Try
 
-### Arrow Function Syntax Introduction
-
-Arrow functions provide a concise syntax for writing functions. They are always anonymous and have a different `this` behavior.
-
-#### Basic Arrow Function
+### Challenge 1.1
 
 ```javascript
-// Traditional function
-function add(a, b) {
-    return a + b;
+function multiply(a, b) {
+  return a * b;
 }
-
-// Arrow function
-const add = (a, b) => {
-    return a + b;
-};
-
-// Concise arrow function (single expression)
-const add = (a, b) => a + b;
 ```
 
-#### Arrow Function with Single Parameter
+### Challenge 1.2
+
+`output` is `undefined` because `logMessage` does not return a value.
+
+### Challenge 1.3
 
 ```javascript
-// Traditional
-function square(num) {
-    return num * num;
+function getInitials(firstName, lastName) {
+  return `${firstName[0].toUpperCase()}. ${lastName}`;
 }
+```
 
-// Arrow function
+### Challenge 2.1
+
+```javascript
+function rectangleArea(width, height) {
+  return width * height;
+}
+```
+
+### Challenge 2.2
+
+```javascript
+function getGrade(score) {
+  if (score < 0 || score > 100) return "Invalid";
+  if (score >= 90) return "A";
+  if (score >= 80) return "B";
+  if (score >= 70) return "C";
+  if (score >= 60) return "D";
+  return "F";
+}
+```
+
+### Challenge 2.3
+
+```javascript
+function describe(value) {
+  if (typeof value === "number") return "number";
+  if (typeof value === "string") return "string";
+  if (typeof value === "boolean") return "boolean";
+  return "other";
+}
+```
+
+### Challenge 3.1
+
+```javascript
+function createUser(name, country = "Unknown") {
+  return { name, country };
+}
+```
+
+### Challenge 3.2
+
+```javascript
+function calculateTotal(price, quantity = 1, tax = 0.1) {
+  return price * quantity * (1 + tax);
+}
+```
+
+### Challenge 4.1
+
+```javascript
+function average(...numbers) {
+  if (numbers.length === 0) return 0;
+  return numbers.reduce((sum, n) => sum + n, 0) / numbers.length;
+}
+```
+
+### Challenge 4.2
+
+```javascript
+function buildHTML(tag, ...content) {
+  return `<${tag}>${content.join("")}</${tag}>`;
+}
+```
+
+### Challenge 5.1
+
+```javascript
+const greet = function(name) {
+  return `Hello, ${name}!`;
+};
+```
+
+### Challenge 5.2
+
+```javascript
+(() => console.log(7 * 8))();
+```
+
+### Challenge 5.3
+
+```javascript
+const math = {
+  power: (a, b) => Math.pow(a, b),
+  root: a => Math.sqrt(a)
+};
+```
+
+### Challenge 6.1
+
+```javascript
+function createMultiplier(factor) {
+  return n => n * factor;
+}
+```
+
+### Challenge 6.2
+
+```javascript
+function createBankAccount(balance) {
+  return {
+    deposit(amount) {
+      if (amount > 0) balance += amount;
+      return balance;
+    },
+    withdraw(amount) {
+      if (amount > 0 && amount <= balance) balance -= amount;
+      return balance;
+    },
+    getBalance() {
+      return balance;
+    }
+  };
+}
+```
+
+### Challenge 7.1
+
+```javascript
 const square = num => num * num;
 ```
 
-#### Arrow Function with No Parameters
+### Challenge 7.2
 
 ```javascript
-// Traditional
-function sayHello() {
-    console.log("Hello!");
+const greet = name => `Hello, ${name}!`;
+```
+
+### Challenge 7.3
+
+```javascript
+const makeBook = (title, pages) => ({ title, pages });
+```
+
+### Challenge 7.4
+
+```javascript
+let users = [
+  { name: "John", age: 30 },
+  { name: "Jane", age: 16 }
+];
+let adults = users.filter(u => u.age >= 18);
+console.log(adults);
+```
+
+### Individual Challenges Solutions
+
+```javascript
+// Level 1
+function add(a, b) { return a + b; }
+function multiply(a, b) { return a * b; }
+
+// Level 2
+function calculateTotal(price, tax = 0.1) {
+  return price * (1 + tax);
 }
 
-// Arrow function
-const sayHello = () => {
-    console.log("Hello!");
-};
-
-// Concise (if single expression)
-const sayHello = () => console.log("Hello!");
-```
-
-#### Arrow Function with Object Return
-
-```javascript
-// Traditional
-function createUser(name, age) {
-    return { name: name, age: age };
+// Level 3
+function sum(...numbers) {
+  return numbers.reduce((s, n) => s + n, 0);
 }
 
-// Arrow function (need parentheses for object)
-const createUser = (name, age) => ({ name, age });
+// Level 4
+const average = (...numbers) =>
+  numbers.length === 0 ? 0 : numbers.reduce((s, n) => s + n, 0) / numbers.length;
+
+// Level 5
+function validatePassword(password) {
+  return password.length >= 8;
+}
+
+// Level 6
+function createBankAccount(balance) {
+  return {
+    deposit(amount) { if (amount > 0) balance += amount; return balance; },
+    withdraw(amount) { if (amount > 0 && amount <= balance) balance -= amount; return balance; },
+    getBalance() { return balance; }
+  };
+}
 ```
 
-#### Arrow Functions as Callbacks
+---
 
-```javascript
-const numbers = [1, 2, 3, 4, 5];
+## Review Questions
 
-// Traditional callback
-const doubled = numbers.map(function(num) {
-    return num * 2;
-});
-
-// Arrow callback
-const doubled = numbers.map(num => num * 2);
-```
-
-### Q&A
-
-**Q1: What is the difference between function declaration and function expression?**
-A: Function declarations are hoisted (can be called before declaration), while function expressions are not. Function expressions can be anonymous and assigned to variables.
-
-**Q2: What are default parameters and when should I use them?**
-A: Default parameters provide default values for function parameters when no argument is passed. Use them when you want to make parameters optional or provide sensible defaults.
-
-**Q3: What is the difference between rest parameters and the arguments object?**
-A: Rest parameters are a modern ES6 feature that provide a true array, while the arguments object is an array-like object. Rest parameters are more readable and work better with array methods.
-
-**Q4: What is a closure?**
-A: A closure is a function that has access to variables from its outer (enclosing) scope, even after the outer function has returned. This allows for data privacy and function factories.
-
-**Q5: When should I use arrow functions vs regular functions?**
-A: Use arrow functions for short callbacks and when you want to preserve the `this` context from the surrounding scope. Use regular functions when you need a named function, function hoisting, or a dynamic `this` context.
-
-**Q6: What happens if I don't provide a return statement?**
-A: The function returns `undefined` by default. This is important to remember when you expect a function to return a value.
-
-**Q7: Can I have multiple rest parameters in a function?**
-A: No, you can only have one rest parameter, and it must be the last parameter in the function signature.
-
-**Q8: What is the difference between `return` and `console.log`?**
-A: `return` sends a value back to the caller of the function, while `console.log` prints a value to the console. Functions should `return` values for further processing, not just log them.
-
-**Q9: How do I handle errors in functions?**
-A: You can use `try-catch` blocks within functions, return error objects/strings, or throw exceptions that can be caught by the caller.
-
-**Q10: What is an IIFE (Immediately Invoked Function Expression)?**
-A: An IIFE is a function that runs immediately after it's defined. It's commonly used to create private scopes and avoid polluting the global namespace.
-
-### Review Questions
-
-1. **What is the correct syntax for a function declaration?**
-   - [ ] function add(a, b) { return a + b; }
+1. What is the correct syntax for a function declaration?
+   - [x] function add(a, b) { return a + b; }
    - [ ] const add = function(a, b) { return a + b; }
    - [ ] const add = (a, b) => a + b;
    - [ ] All of the above
 
-2. **What does a function return if no return statement is provided?**
+2. What does a function return if no return statement is provided?
    - [ ] null
-   - [ ] undefined
+   - [x] undefined
    - [ ] 0
    - [ ] Error
 
-3. **How do you set a default parameter value?**
-   - [ ] function name = "Guest"
-   - [ ] function name(default = "Guest")
+3. How do you set a default parameter value?
+   - [x] function greet(name = "Guest") {}
    - [ ] function name = "Guest" {}
-   - [ ] function name("Guest")
+   - [ ] function name(default = "Guest") {}
+   - [ ] function name("Guest") {}
 
-4. **What symbol is used for rest parameters?**
+4. What symbol is used for rest parameters?
    - [ ] *
-   - [ ] ...
+   - [x] ...
    - [ ] &
    - [ ] #
 
-5. **What is a closure?**
+5. What is a closure?
    - [ ] A way to close functions
-   - [ ] A function with access to outer scope variables
+   - [x] A function with access to outer scope variables
    - [ ] A type of loop
    - [ ] A method to end execution
 
-6. **Which arrow function syntax is correct for a single parameter?**
+6. Which arrow function syntax is correct for a single parameter?
    - [ ] (num) => num * 2
-   - [ ] num => num * 2
+   - [x] num => num * 2
    - [ ] => num * 2
    - [ ] num -> num * 2
 
-7. **Can you have multiple rest parameters in one function?**
+7. Can you have multiple rest parameters in one function?
    - [ ] Yes
-   - [ ] No
+   - [x] No
    - [ ] Only if they're the same type
    - [ ] Only in arrow functions
 
-8. **What is an IIFE?**
+8. What is an IIFE?
    - [ ] A function that returns immediately
-   - [ ] A function that runs immediately after definition
+   - [x] A function that runs immediately after definition
    - [ ] A function inside another function
    - [ ] A function with no parameters
 
-9. **How do you return an object in a concise arrow function?**
+9. How do you return an object in a concise arrow function?
    - [ ] => { key: value }
-   - [ ] => ({ key: value })
+   - [x] => ({ key: value })
    - [ ] => key: value
    - [ ] => return { key: value }
 
-10. **What is the main advantage of arrow functions?**
+10. What is the main advantage of arrow functions?
     - [ ] They're always faster
-    - [ ] They have a shorter syntax and lexical `this`
+    - [x] They have a shorter syntax and lexical this
     - [ ] They can be hoisted
     - [ ] They support more features
 
-### Correct Answers
-
-1. ✅ function add(a, b) { return a + b; }
-2. ✅ undefined
-3. ✅ function name = "Guest"
-4. ✅ ...
-5. ✅ A function with access to outer scope variables
-6. ✅ num => num * 2
-7. ✅ No
-8. ✅ A function that runs immediately after definition
-9. ✅ => ({ key: value })
-10. ✅ They have a shorter syntax and lexical `this`
-
 ---
 
-## 🎯 Next Steps
-
-1. ✅ Practice function declarations and expressions
-2. ✅ Master default parameters and rest parameters
-3. ✅ Understand closures and their use cases
-4. ✅ Practice arrow function syntax
-5. ✅ Build applications using functions
-6. ✅ Learn about function scope and hoisting
-7. ✅ Explore recursion and advanced patterns
-
----
-
-## 📚 Additional Resources
+## Additional Resources
 
 - [MDN: Functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions)
 - [MDN: Default Parameters](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Default_parameters)
@@ -1674,5 +1286,3 @@ A: An IIFE is a function that runs immediately after it's defined. It's commonly
 - [MDN: Arrow Functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
 - [JavaScript.info: Functions](https://javascript.info/function-basics)
 - [JavaScript.info: Arrow Functions](https://javascript.info/arrow-functions-basics)
-
-**Remember:** Functions are the building blocks of JavaScript applications. Master them to write clean, reusable, and maintainable code! 💪

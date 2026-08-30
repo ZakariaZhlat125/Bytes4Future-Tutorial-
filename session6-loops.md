@@ -1,1645 +1,1244 @@
-# Session 6: Loops
+# Session 6: Loops — Active Learning Redesign
 
-## 📚 Theory (1h)
+## Session Plan for the Instructor
 
-### For Loop Concept
+- **Total time:** approximately 90 to 120 minutes
+- **Pacing rule:** never explain theory continuously for more than 15–20 minutes. After every concept, students must predict, write, or fix code.
+- **Pedagogical pattern for every topic:**
+  1. **Problem** — a realistic mini-situation
+  2. **Guess** — ask: "What do you expect to happen?"
+  3. **Explain** — the shortest rule that fixes the problem
+  4. **Code** — live code written in front of the students, step by step
+  5. **Challenge** — students solve a small task on their own or in groups
+  6. **Review** — discuss the answer and the most common mistake
 
-Loops allow you to execute code repeatedly. The `for` loop is the most common loop in JavaScript.
+### Competition and Points
 
-#### Basic For Loop Syntax
+- 1 point per correct prediction in the "Guess" phase.
+- 1–3 points per completed challenge, depending on difficulty.
+- A "Bug Hunter" badge for each student who finds and fixes an intentional error.
+- Keep a simple tally on a shared board or in the chat.
+
+### Instructor Questions to Ask During the Session
+
+- "How many times will this loop run?"
+- "What is the value of `i` in this iteration?"
+- "Which loop should we use here?"
+- "What happens if `i` never changes?"
+- "Does this loop change the original array?"
+
+---
+
+## Part 0: Warm-Up — The Manual Counter (5 minutes)
+
+### Problem
+
+A teacher wants to print numbers `1` to `10` and their squares. A student writes this:
 
 ```javascript
-for (initialization; condition; increment) {
-    // code to execute
+console.log(1);
+console.log(2);
+console.log(3);
+// ... all the way to 10
+```
+
+### Guess
+
+Ask: "What if the teacher wants numbers `1` to `100`? Is this the best way?"
+
+### Explain
+
+Loops let us run the same code many times without writing it many times. The `for` loop has three parts: initialization, condition, and increment.
+
+### Live Code
+
+```javascript
+for (let i = 1; i <= 10; i++) {
+  console.log(i, i * i);
 }
 ```
 
-#### For Loop Components
+### Review
 
-1. **Initialization**: Runs once at the beginning
-2. **Condition**: Checked before each iteration
-3. **Increment**: Runs after each iteration
-4. **Body**: Code executed while condition is true
+The loop ran 10 times. The variable `i` changed each time. This is the power of loops.
 
-#### Basic For Loop Example
+---
+
+## Part 1: The For Loop
+
+### 1.1 Basic Syntax
+
+#### Problem
+
+Count from `0` to `4` and show each number.
+
+#### Live Code
 
 ```javascript
 for (let i = 0; i < 5; i++) {
-    console.log("Iteration:", i);
+  console.log("Iteration:", i);
 }
-
-// Output:
-// Iteration: 0
-// Iteration: 1
-// Iteration: 2
-// Iteration: 3
-// Iteration: 4
 ```
 
-#### For Loop Execution Flow
+#### Explain
 
-```javascript
-for (let i = 0; i < 3; i++) {
-    console.log("i =", i);
-}
-
-// Step-by-step:
-// 1. Initialize: i = 0
-// 2. Check condition: 0 < 3 (true) → Execute body
-// 3. Increment: i = 1
-// 4. Check condition: 1 < 3 (true) → Execute body
-// 5. Increment: i = 2
-// 6. Check condition: 2 < 3 (true) → Execute body
-// 7. Increment: i = 3
-// 8. Check condition: 3 < 3 (false) → Exit loop
+```
+for (initialization; condition; increment) { body }
 ```
 
-### Looping on Sequences
+- Initialization: `let i = 0` — happens once.
+- Condition: `i < 5` — checked before each loop.
+- Body: runs if condition is true.
+- Increment: `i++` — runs after the body.
 
-#### Looping Through Arrays
+#### Challenge 1.1 — Count Up (individual, 3 minutes)
+
+- **Requirement:** Print numbers `1` to `20` using a `for` loop.
+- **Time limit:** 3 minutes
+
+#### Challenge 1.2 — Count Down (individual, 3 minutes)
+
+- **Requirement:** Print numbers `10` down to `1`.
+- **Time limit:** 3 minutes
+- **Hint:** `for (let i = 10; i >= 1; i--)`.
+
+#### Challenge 1.3 — Custom Step (individual, 3 minutes)
+
+- **Requirement:** Print all even numbers from `0` to `20`.
+- **Time limit:** 3 minutes
+- **Hint:** Use `i += 2`.
+
+### 1.2 Summation and Accumulation
+
+#### Problem
+
+Add all numbers from `1` to `100`.
+
+#### Live Code
 
 ```javascript
-let fruits = ["apple", "banana", "orange"];
+let sum = 0;
+for (let i = 1; i <= 100; i++) {
+  sum += i;
+}
+console.log("Sum:", sum); // 5050
+```
 
-// Method 1: Traditional for loop
+#### Challenge 1.4 — Sum Even (individual, 4 minutes)
+
+- **Requirement:** Calculate the sum of all even numbers from `1` to `100`.
+- **Time limit:** 4 minutes
+- **Hint:** Add an `if` inside the loop or use `i += 2`.
+
+---
+
+## Part 2: Looping Through Arrays, Strings, and Objects
+
+### 2.1 Traditional For Loop Over an Array
+
+#### Problem
+
+Print each fruit in a list with its index.
+
+#### Live Code
+
+```javascript
+let fruits = ["apple", "banana", "orange", "grape"];
+
 for (let i = 0; i < fruits.length; i++) {
-    console.log(fruits[i]);
-}
-
-// Method 2: for...of loop (modern)
-for (let fruit of fruits) {
-    console.log(fruit);
-}
-
-// Method 3: forEach method
-fruits.forEach(fruit => {
-    console.log(fruit);
-});
-```
-
-#### Looping Through Strings
-
-```javascript
-let text = "Hello";
-
-// Traditional for loop
-for (let i = 0; i < text.length; i++) {
-    console.log(text[i]);
-}
-
-// for...of loop
-for (let char of text) {
-    console.log(char);
+  console.log(`${i}: ${fruits[i]}`);
 }
 ```
 
-#### Looping Through Object Properties
+#### Challenge 2.1 — Sum Array (individual, 4 minutes)
 
-```javascript
-let user = {
-    name: "John",
-    age: 30,
-    city: "New York"
-};
+- **Requirement:** Sum `let numbers = [10, 20, 30, 40, 50]` using a `for` loop.
+- **Time limit:** 4 minutes
 
-// for...in loop (for object properties)
-for (let key in user) {
-    console.log(key + ":", user[key]);
-}
+### 2.2 For...of
 
-// Using Object.keys() with for...of
-for (let key of Object.keys(user)) {
-    console.log(key + ":", user[key]);
-}
-```
+#### Problem
 
-#### Looping Through Numbers (Ranges)
+We only need the values, not the indexes.
 
-```javascript
-// Loop from 1 to 10
-for (let i = 1; i <= 10; i++) {
-    console.log(i);
-}
-
-// Loop from 10 down to 1
-for (let i = 10; i >= 1; i--) {
-    console.log(i);
-}
-
-// Loop with custom step
-for (let i = 0; i <= 10; i += 2) {
-    console.log(i); // 0, 2, 4, 6, 8, 10
-}
-```
-
-### Nested Loops
-
-Nested loops are loops inside other loops. The inner loop runs completely for each iteration of the outer loop.
-
-#### Basic Nested Loop
-
-```javascript
-for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
-        console.log(`i: ${i}, j: ${j}`);
-    }
-}
-
-// Output:
-// i: 0, j: 0
-// i: 0, j: 1
-// i: 0, j: 2
-// i: 1, j: 0
-// i: 1, j: 1
-// i: 1, j: 2
-// i: 2, j: 0
-// i: 2, j: 1
-// i: 2, j: 2
-```
-
-#### Nested Loop with Arrays
-
-```javascript
-let matrix = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9]
-];
-
-for (let i = 0; i < matrix.length; i++) {
-    for (let j = 0; j < matrix[i].length; j++) {
-        console.log(`matrix[${i}][${j}] = ${matrix[i][j]}`);
-    }
-}
-```
-
-#### Multiplication Table Example
-
-```javascript
-// Generate multiplication table
-for (let i = 1; i <= 10; i++) {
-    let row = "";
-    for (let j = 1; j <= 10; j++) {
-        row += (i * j).toString().padStart(4, " ");
-    }
-    console.log(row);
-}
-```
-
-#### Pattern Printing
-
-```javascript
-// Print triangle pattern
-for (let i = 1; i <= 5; i++) {
-    let line = "";
-    for (let j = 1; j <= i; j++) {
-        line += "* ";
-    }
-    console.log(line);
-}
-
-// Output:
-// * 
-// * * 
-// * * * 
-// * * * * 
-// * * * * * 
-```
-
-### Loop Control
-
-#### break Statement
-
-The `break` statement exits the loop immediately.
-
-```javascript
-for (let i = 0; i < 10; i++) {
-    if (i === 5) {
-        break; // Exit loop when i equals 5
-    }
-    console.log(i);
-}
-
-// Output: 0, 1, 2, 3, 4
-```
-
-#### continue Statement
-
-The `continue` statement skips the current iteration and continues with the next.
-
-```javascript
-for (let i = 0; i < 10; i++) {
-    if (i % 2 === 0) {
-        continue; // Skip even numbers
-    }
-    console.log(i);
-}
-
-// Output: 1, 3, 5, 7, 9
-```
-
-#### Labels
-
-Labels allow you to break or continue from specific loops, especially useful with nested loops.
-
-```javascript
-outer: for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
-        if (i === 1 && j === 1) {
-            break outer; // Break from outer loop
-        }
-        console.log(`i: ${i}, j: ${j}`);
-    }
-}
-
-// Output:
-// i: 0, j: 0
-// i: 0, j: 1
-// i: 0, j: 2
-// i: 1, j: 0
-```
-
-#### continue with Labels
-
-```javascript
-outer: for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
-        if (i === 1 && j === 1) {
-            continue outer; // Continue outer loop
-        }
-        console.log(`i: ${i}, j: ${j}`);
-    }
-}
-
-// Output:
-// i: 0, j: 0
-// i: 0, j: 1
-// i: 0, j: 2
-// i: 1, j: 0
-// i: 2, j: 0
-// i: 2, j: 1
-// i: 2, j: 2
-```
-
-### For...of Loop
-
-The `for...of` loop iterates over iterable objects (arrays, strings, etc.).
+#### Live Code
 
 ```javascript
 let fruits = ["apple", "banana", "orange"];
 
 for (let fruit of fruits) {
-    console.log(fruit);
+  console.log(fruit);
 }
 
 // With strings
 let text = "Hello";
 for (let char of text) {
-    console.log(char);
+  console.log(char);
 }
 
-// With index access
+// With index and value
 for (let [index, fruit] of fruits.entries()) {
-    console.log(`${index}: ${fruit}`);
+  console.log(`${index}: ${fruit}`);
 }
 ```
 
-### For...in Loop
+#### Challenge 2.2 — For...of Values (individual, 3 minutes)
 
-The `for...in` loop iterates over object properties.
+- **Requirement:** Use `for...of` to print each item in `let colors = ["red", "green", "blue"]`.
+- **Time limit:** 3 minutes
+
+### 2.3 For...in
+
+#### Problem
+
+Loop through the keys of an object.
+
+#### Live Code
 
 ```javascript
 let user = {
-    name: "John",
-    age: 30,
-    city: "New York"
+  name: "John",
+  age: 30,
+  city: "New York"
 };
 
 for (let key in user) {
-    console.log(`${key}: ${user[key]}`);
+  console.log(`${key}: ${user[key]}`);
+}
+```
+
+#### Explain
+
+- `for...in` is for objects. Avoid using it on arrays because indexes are strings and order is not guaranteed.
+- Use `for...of` for arrays and `for...in` for objects.
+
+#### Challenge 2.3 — Object Printer (individual, 4 minutes)
+
+- **Requirement:** Loop through `let book = { title: "JS", pages: 200, author: "Dev" }` and print each property.
+- **Time limit:** 4 minutes
+
+---
+
+## Part 3: While and Do-While
+
+### 3.1 While Loop
+
+#### Problem
+
+A user must enter the correct password, but we do not know how many attempts.
+
+#### Live Code
+
+```javascript
+let attempts = 0;
+let maxAttempts = 3;
+let password = "";
+
+while (password !== "secret" && attempts < maxAttempts) {
+  attempts++;
+  // In real life: password = prompt("Password:");
+  password = attempts === 2 ? "secret" : "wrong";
+  console.log(`Attempt ${attempts}: ${password}`);
 }
 
-// Note: Not recommended for arrays (order not guaranteed)
-let numbers = [10, 20, 30];
-for (let index in numbers) {
-    console.log(index); // "0", "1", "2" (strings!)
+if (password === "secret") {
+  console.log("Access granted");
+} else {
+  console.log("Access denied");
 }
+```
+
+#### Challenge 3.1 — While Count (individual, 4 minutes)
+
+- **Requirement:** Use a `while` loop to print numbers `1` to `5`.
+- **Time limit:** 4 minutes
+
+### 3.2 Do-While Loop
+
+#### Problem
+
+A menu must show at least once before the user decides to exit.
+
+#### Live Code
+
+```javascript
+let choice;
+let count = 0;
+
+do {
+  count++;
+  // Simulate user input
+  choice = count === 3 ? 3 : Math.floor(Math.random() * 3) + 1;
+  console.log(`Choice: ${choice}`);
+  if (choice === 1) console.log("Viewing products...");
+  if (choice === 2) console.log("Adding product...");
+} while (choice !== 3);
+
+console.log("Exiting menu...");
+```
+
+#### Challenge 3.2 — Do-Once (individual, 4 minutes)
+
+- **Requirement:** Write a `do...while` that prints a number once even though the condition starts as `false`.
+- **Time limit:** 4 minutes
+
+#### Review
+
+```javascript
+let x = 10;
+do {
+  console.log("This runs once", x);
+} while (x < 5);
 ```
 
 ---
 
-## 💻 Practical (1.5h)
+## Part 4: Loop Control
 
-### Exercise 1: Basic For Loop
+### 4.1 break
 
-```javascript
-// Exercise 1.1: Count from 1 to 10
-console.log("=== Count 1 to 10 ===");
-for (let i = 1; i <= 10; i++) {
-    console.log(i);
-}
+#### Problem
 
-// Exercise 1.2: Count backwards from 10 to 1
-console.log("\n=== Count 10 to 1 ===");
-for (let i = 10; i >= 1; i--) {
-    console.log(i);
-}
+Find the first number greater than `50` in an array. Stop once found.
 
-// Exercise 1.3: Count by 2s
-console.log("\n=== Count by 2s ===");
-for (let i = 0; i <= 20; i += 2) {
-    console.log(i);
-}
-
-// Exercise 1.4: Sum of numbers 1 to 100
-console.log("\n=== Sum 1 to 100 ===");
-let sum = 0;
-for (let i = 1; i <= 100; i++) {
-    sum += i;
-}
-console.log("Sum:", sum);
-```
-
-### Exercise 2: Looping Through Arrays
+#### Live Code
 
 ```javascript
-// Exercise 2.1: Loop through array with traditional for
-console.log("=== Traditional For Loop ===");
-let fruits = ["apple", "banana", "orange", "grape", "mango"];
-for (let i = 0; i < fruits.length; i++) {
-    console.log(`${i}: ${fruits[i]}`);
-}
+let numbers = [10, 25, 30, 55, 60, 70];
 
-// Exercise 2.2: Loop with for...of
-console.log("\n=== For...of Loop ===");
-for (let fruit of fruits) {
-    console.log(fruit);
-}
-
-// Exercise 2.3: Loop with forEach
-console.log("\n=== forEach Loop ===");
-fruits.forEach((fruit, index) => {
-    console.log(`${index}: ${fruit}`);
-});
-
-// Exercise 2.4: Process array elements
-console.log("\n=== Process Array ===");
-let numbers = [1, 2, 3, 4, 5];
-let doubled = [];
 for (let num of numbers) {
-    doubled.push(num * 2);
+  if (num > 50) {
+    console.log("First match:", num);
+    break;
+  }
 }
-console.log("Original:", numbers);
-console.log("Doubled:", doubled);
 ```
 
-### Exercise 3: Nested Loops
+#### Challenge 4.1 — Find First Even (individual, 3 minutes)
+
+- **Requirement:** Loop through `[1, 3, 5, 7, 8, 9]` and print the first even number, then `break`.
+- **Time limit:** 3 minutes
+
+### 4.2 continue
+
+#### Problem
+
+Print numbers `1` to `20` but skip multiples of `3`.
+
+#### Live Code
 
 ```javascript
-// Exercise 3.1: Basic nested loop
-console.log("=== Basic Nested Loop ===");
-for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
-        console.log(`i: ${i}, j: ${j}`);
+for (let i = 1; i <= 20; i++) {
+  if (i % 3 === 0) {
+    continue;
+  }
+  console.log(i);
+}
+```
+
+#### Challenge 4.2 — Skip Evens (individual, 3 minutes)
+
+- **Requirement:** Print all odd numbers from `1` to `20` using `continue`.
+- **Time limit:** 3 minutes
+
+### 4.3 Labels
+
+#### Problem
+
+In nested loops, how can we stop the outer loop from inside the inner loop?
+
+#### Live Code
+
+```javascript
+outer: for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 3; j++) {
+    if (i === 1 && j === 1) {
+      break outer;
     }
+    console.log(`i: ${i}, j: ${j}`);
+  }
 }
 
-// Exercise 3.2: Matrix traversal
-console.log("\n=== Matrix Traversal ===");
+// Continue outer
+outer: for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 3; j++) {
+    if (i === 1 && j === 1) {
+      continue outer;
+    }
+    console.log(`i: ${i}, j: ${j}`);
+  }
+}
+```
+
+#### Challenge 4.3 — Stop the Matrix (individual, 5 minutes)
+
+- **Requirement:** Write a nested loop that prints pairs `i, j` for `0 <= i < 3` and `0 <= j < 3`, but stops the entire outer loop when `i === 1 && j === 1`.
+- **Time limit:** 5 minutes
+
+---
+
+## Part 5: Nested Loops and Patterns
+
+### 5.1 Basic Nested Loop
+
+#### Problem
+
+A grid of rows and columns. Each row has a set of columns.
+
+#### Live Code
+
+```javascript
+for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 3; j++) {
+    console.log(`i: ${i}, j: ${j}`);
+  }
+}
+```
+
+#### Challenge 5.1 — Coordinate Pairs (individual, 4 minutes)
+
+- **Requirement:** Print all pairs `(i, j)` where `i` is `0` to `2` and `j` is `0` to `2`.
+- **Time limit:** 4 minutes
+
+### 5.2 Matrix Traversal
+
+#### Live Code
+
+```javascript
 let matrix = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9]
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9]
 ];
 
 for (let i = 0; i < matrix.length; i++) {
-    for (let j = 0; j < matrix[i].length; j++) {
-        console.log(`matrix[${i}][${j}] = ${matrix[i][j]}`);
-    }
-}
-
-// Exercise 3.3: Print patterns
-console.log("\n=== Pattern: Right Triangle ===");
-for (let i = 1; i <= 5; i++) {
-    let line = "";
-    for (let j = 1; j <= i; j++) {
-        line += "* ";
-    }
-    console.log(line);
-}
-
-console.log("\n=== Pattern: Square ===");
-for (let i = 1; i <= 5; i++) {
-    let line = "";
-    for (let j = 1; j <= 5; j++) {
-        line += "* ";
-    }
-    console.log(line);
-}
-
-console.log("\n=== Pattern: Number Triangle ===");
-for (let i = 1; i <= 5; i++) {
-    let line = "";
-    for (let j = 1; j <= i; j++) {
-        line += j + " ";
-    }
-    console.log(line);
+  for (let j = 0; j < matrix[i].length; j++) {
+    console.log(`matrix[${i}][${j}] = ${matrix[i][j]}`);
+  }
 }
 ```
 
-### Exercise 4: Loop Control
+#### Challenge 5.2 — Sum Matrix (individual, 5 minutes)
+
+- **Requirement:** Calculate the sum of all numbers in the matrix above.
+- **Time limit:** 5 minutes
+
+### 5.3 Pattern Printing
+
+#### Live Code
 
 ```javascript
-// Exercise 4.1: break statement
-console.log("=== Break Statement ===");
-for (let i = 0; i < 10; i++) {
-    if (i === 5) {
-        console.log("Breaking at i =", i);
-        break;
-    }
-    console.log(i);
+// Triangle
+for (let i = 1; i <= 5; i++) {
+  let line = "";
+  for (let j = 1; j <= i; j++) {
+    line += "* ";
+  }
+  console.log(line);
 }
 
-// Exercise 4.2: continue statement
-console.log("\n=== Continue Statement ===");
-for (let i = 0; i < 10; i++) {
-    if (i % 2 === 0) {
-        continue;
-    }
-    console.log(i);
+// Square
+for (let i = 1; i <= 5; i++) {
+  let line = "";
+  for (let j = 1; j <= 5; j++) {
+    line += "* ";
+  }
+  console.log(line);
 }
 
-// Exercise 4.3: Find first even number
-console.log("\n=== Find First Even ===");
-let numbers = [1, 3, 5, 7, 8, 9, 11];
-for (let num of numbers) {
-    if (num % 2 === 0) {
-        console.log("First even number:", num);
-        break;
-    }
-}
-
-// Exercise 4.4: Skip specific values
-console.log("\n=== Skip Multiples of 3 ===");
-for (let i = 1; i <= 20; i++) {
-    if (i % 3 === 0) {
-        continue;
-    }
-    console.log(i);
+// Number triangle
+for (let i = 1; i <= 5; i++) {
+  let line = "";
+  for (let j = 1; j <= i; j++) {
+    line += j + " ";
+  }
+  console.log(line);
 }
 ```
 
-### Exercise 5: Advanced For Examples
+#### Challenge 5.3 — Inverted Triangle (individual, 5 minutes)
+
+- **Requirement:** Print this pattern:
+
+```
+* * * * *
+* * * *
+* * *
+* *
+*
+```
+
+- **Time limit:** 5 minutes
+- **Hint:** The outer loop goes down from `5` to `1`.
+
+### 5.4 Multiplication Table
+
+#### Live Code
 
 ```javascript
-// Exercise 5.1: Generate multiplication table
-console.log("=== Multiplication Table ===");
-console.log("   |  1  2  3  4  5  6  7  8  9 10");
-console.log("---|----------------------------------");
-
-for (let i = 1; i <= 10; i++) {
-    let row = `${i.toString().padStart(2, " ")} |`;
-    for (let j = 1; j <= 10; j++) {
-        row += (i * j).toString().padStart(3, " ");
-    }
-    console.log(row);
+for (let i = 1; i <= 5; i++) {
+  let row = "";
+  for (let j = 1; j <= 5; j++) {
+    row += (i * j).toString().padStart(4, " ");
+  }
+  console.log(row);
 }
+```
 
-// Exercise 5.2: Find prime numbers
-console.log("\n=== Prime Numbers 1-100 ===");
+#### Challenge 5.4 — Table 1 to 10 (individual, 6 minutes)
+
+- **Requirement:** Generate a multiplication table from `1` to `10`.
+- **Time limit:** 6 minutes
+
+---
+
+## Part 6: Practical Loop Programs
+
+### 6.1 Prime Numbers
+
+#### Live Code
+
+```javascript
 function isPrime(num) {
-    if (num < 2) return false;
-    for (let i = 2; i <= Math.sqrt(num); i++) {
-        if (num % i === 0) return false;
-    }
-    return true;
+  if (num < 2) return false;
+  for (let i = 2; i <= Math.sqrt(num); i++) {
+    if (num % i === 0) return false;
+  }
+  return true;
 }
 
 for (let i = 1; i <= 100; i++) {
-    if (isPrime(i)) {
-        console.log(i);
-    }
+  if (isPrime(i)) {
+    console.log(i);
+  }
 }
+```
 
-// Exercise 5.3: Fibonacci sequence
-console.log("\n=== Fibonacci Sequence (first 10) ===");
+#### Challenge 6.1 — Is It Prime? (individual, 5 minutes)
+
+- **Requirement:** Write a function `isPrime(num)` that returns `true` or `false`.
+- **Time limit:** 5 minutes
+
+### 6.2 Fibonacci Sequence
+
+#### Live Code
+
+```javascript
 let fib = [0, 1];
 for (let i = 2; i < 10; i++) {
-    fib[i] = fib[i - 1] + fib[i - 2];
+  fib[i] = fib[i - 1] + fib[i - 2];
 }
-console.log(fib);
+console.log(fib); // [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+```
 
-// Exercise 5.4: Reverse an array
-console.log("\n=== Reverse Array ===");
+#### Challenge 6.2 — First 15 Fibonacci (individual, 4 minutes)
+
+- **Requirement:** Generate the first `15` Fibonacci numbers.
+- **Time limit:** 4 minutes
+
+### 6.3 Reverse an Array
+
+#### Live Code
+
+```javascript
 let original = [1, 2, 3, 4, 5];
 let reversed = [];
+
 for (let i = original.length - 1; i >= 0; i--) {
-    reversed.push(original[i]);
+  reversed.push(original[i]);
 }
+
 console.log("Original:", original);
 console.log("Reversed:", reversed);
 ```
 
-### Exercise 6: Add Products to Page
+#### Challenge 6.3 — Reverse String (individual, 4 minutes)
+
+- **Requirement:** Reverse `"hello"` using a loop.
+- **Time limit:** 4 minutes
+- **Hint:** Loop from the last index to `0` and build a new string.
+
+### 6.4 Factorial
+
+#### Live Code
 
 ```javascript
-// Exercise 6: Dynamic product list generation
-console.log("=== Add Products to Page ===");
-
-class ProductRenderer {
-    constructor(containerId) {
-        this.container = document.getElementById(containerId);
-        this.products = [];
-    }
-
-    addProduct(name, price, image, description) {
-        const product = {
-            id: Date.now(),
-            name,
-            price,
-            image,
-            description
-        };
-        this.products.push(product);
-        this.renderProduct(product);
-        return product;
-    }
-
-    renderProduct(product) {
-        const productCard = document.createElement('div');
-        productCard.className = 'product-card';
-        productCard.id = `product-${product.id}`;
-        
-        productCard.innerHTML = `
-            <img src="${product.image}" alt="${product.name}" class="product-image">
-            <div class="product-info">
-                <h3 class="product-name">${product.name}</h3>
-                <p class="product-price">$${product.price.toFixed(2)}</p>
-                <p class="product-description">${product.description}</p>
-                <button class="add-to-cart" onclick="addToCart(${product.id})">Add to Cart</button>
-                <button class="remove-product" onclick="removeProduct(${product.id})">Remove</button>
-            </div>
-        `;
-        
-        this.container.appendChild(productCard);
-    }
-
-    removeProduct(id) {
-        const productElement = document.getElementById(`product-${id}`);
-        if (productElement) {
-            productElement.remove();
-            this.products = this.products.filter(p => p.id !== id);
-        }
-    }
-
-    renderAllProducts() {
-        this.container.innerHTML = '';
-        for (let product of this.products) {
-            this.renderProduct(product);
-        }
-    }
-
-    filterProducts(predicate) {
-        this.container.innerHTML = '';
-        for (let product of this.products) {
-            if (predicate(product)) {
-                this.renderProduct(product);
-            }
-        }
-    }
-
-    sortProducts(compareFn) {
-        const sorted = [...this.products].sort(compareFn);
-        this.container.innerHTML = '';
-        for (let product of sorted) {
-            this.renderProduct(product);
-        }
-    }
-}
-
-// Sample usage (in browser environment)
-/*
-const renderer = new ProductRenderer('products-container');
-
-// Add products
-renderer.addProduct(
-    "Laptop",
-    999.99,
-    "https://via.placeholder.com/300",
-    "High-performance laptop for professionals"
-);
-
-renderer.addProduct(
-    "Wireless Headphones",
-    149.99,
-    "https://via.placeholder.com/300",
-    "Noise-cancelling wireless headphones"
-);
-
-renderer.addProduct(
-    "Smart Watch",
-    299.99,
-    "https://via.placeholder.com/300",
-    "Fitness tracking smartwatch"
-);
-*/
-```
-
-### Exercise 7: While Loop
-
-```javascript
-// Exercise 7.1: Basic while loop
-console.log("=== Basic While Loop ===");
-let i = 1;
-while (i <= 5) {
-    console.log(i);
-    i++;
-}
-
-// Exercise 7.2: Sum until limit
-console.log("\n=== Sum Until Limit ===");
-let sum = 0;
-let num = 1;
-while (sum < 100) {
-    sum += num;
-    num++;
-}
-console.log("Sum reached", sum, "at number", num - 1);
-
-// Exercise 7.3: Input validation simulation
-console.log("\n=== Input Validation ===");
-let password = "";
-let attempts = 0;
-const maxAttempts = 3;
-
-// Simulate password check
-while (password !== "secret123" && attempts < maxAttempts) {
-    console.log(`Attempt ${attempts + 1}: Invalid password`);
-    attempts++;
-    // In real scenario: password = prompt("Enter password:");
-    password = attempts === 2 ? "secret123" : "wrong"; // Simulate success on 3rd try
-}
-
-if (password === "secret123") {
-    console.log("Access granted!");
-} else {
-    console.log("Access denied. Too many attempts.");
-}
-
-// Exercise 7.4: Array processing with while
-console.log("\n=== Array Processing with While ===");
-let fruits = ["apple", "banana", "orange", "grape"];
-let index = 0;
-
-while (index < fruits.length) {
-    console.log(fruits[index]);
-    index++;
-}
-```
-
-### Exercise 8: Do-While Loop
-
-```javascript
-// Exercise 8.1: Basic do-while loop
-console.log("=== Basic Do-While Loop ===");
-let i = 1;
-do {
-    console.log(i);
-    i++;
-} while (i <= 5);
-
-// Exercise 8.2: Menu system simulation
-console.log("\n=== Menu System ===");
-let choice;
-do {
-    console.log("\nMenu:");
-    console.log("1. View Products");
-    console.log("2. Add Product");
-    console.log("3. Exit");
-    console.log("Enter choice:");
-    
-    // Simulate user input
-    choice = Math.floor(Math.random() * 3) + 1;
-    console.log("Selected:", choice);
-    
-    if (choice === 1) {
-        console.log("Viewing products...");
-    } else if (choice === 2) {
-        console.log("Adding product...");
-    }
-} while (choice !== 3);
-
-console.log("Exiting menu...");
-
-// Exercise 8.3: Number guessing game
-console.log("\n=== Number Guessing Game ===");
-let targetNumber = Math.floor(Math.random() * 10) + 1;
-let guess;
-let attempts = 0;
-
-console.log("Guess a number between 1 and 10");
-
-do {
-    attempts++;
-    guess = Math.floor(Math.random() * 10) + 1; // Simulate guess
-    console.log(`Attempt ${attempts}: Guessed ${guess}`);
-    
-    if (guess < targetNumber) {
-        console.log("Too low!");
-    } else if (guess > targetNumber) {
-        console.log("Too high!");
-    }
-} while (guess !== targetNumber);
-
-console.log(`Correct! You guessed it in ${attempts} attempts.`);
-
-// Exercise 8.4: Do-while vs while comparison
-console.log("\n=== Do-While vs While ===");
-
-// Do-while: Always executes at least once
-console.log("Do-while (condition false initially):");
-let x = 10;
-do {
-    console.log("Executed:", x);
-    x++;
-} while (x < 5);
-
-// While: May not execute at all
-console.log("\nWhile (condition false initially):");
-let y = 10;
-while (y < 5) {
-    console.log("Executed:", y);
-    y++;
-}
-console.log("While loop didn't execute");
-```
-
-### Exercise 9: Loop Comparison and Best Practices
-
-```javascript
-// Exercise 9.1: When to use each loop type
-console.log("=== Loop Comparison ===");
-
-let numbers = [1, 2, 3, 4, 5];
-
-// For loop: When you need index control
-console.log("For loop (with index):");
-for (let i = 0; i < numbers.length; i++) {
-    console.log(`Index ${i}: ${numbers[i]}`);
-}
-
-// For...of: When you just need values
-console.log("\nFor...of (values only):");
-for (let num of numbers) {
-    console.log(num);
-}
-
-// ForEach: When you want to process each element
-console.log("\nforEach (processing):");
-numbers.forEach((num, index) => {
-    console.log(`Processing ${num} at index ${index}`);
-});
-
-// While: When you don't know iterations in advance
-console.log("\nWhile (unknown iterations):");
-let count = 0;
-while (count < 3) {
-    console.log("Count:", count);
-    count++;
-}
-
-// Do-while: When you need at least one execution
-console.log("\nDo-while (at least once):");
-let value = 5;
-do {
-    console.log("Value:", value);
-    value--;
-} while (value > 10);
-
-// Exercise 9.2: Performance considerations
-console.log("\n=== Performance Considerations ===");
-
-let largeArray = Array.from({length: 10000}, (_, i) => i);
-
-// For loop (generally fastest)
-console.time("for loop");
-for (let i = 0; i < largeArray.length; i++) {
-    largeArray[i] *= 2;
-}
-console.timeEnd("for loop");
-
-// For...of (slower but more readable)
-console.time("for...of");
-let result = [];
-for (let num of largeArray) {
-    result.push(num * 2);
-}
-console.timeEnd("for...of");
-
-// forEach (functional approach)
-console.time("forEach");
-largeArray.forEach((num, i) => {
-    largeArray[i] = num * 2;
-});
-console.timeEnd("forEach");
-```
-
-### Exercise 10: Complete Working Example
-
-**Complete script.js:**
-```javascript
-// Session 6: Loops
-// This script demonstrates various loop types and their uses
-
-console.log("=== Session 6: Loops ===");
-
-// 1. Basic for loop
-console.log("\n--- Basic For Loop ---");
-for (let i = 1; i <= 5; i++) {
-    console.log("Iteration:", i);
-}
-
-// 2. Loop through array
-console.log("\n--- Loop Through Array ---");
-let fruits = ["apple", "banana", "orange"];
-for (let i = 0; i < fruits.length; i++) {
-    console.log(fruits[i]);
-}
-
-// 3. For...of loop
-console.log("\n--- For...of Loop ---");
-for (let fruit of fruits) {
-    console.log(fruit);
-}
-
-// 4. Nested loops
-console.log("\n--- Nested Loops ---");
-for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
-        console.log(`i: ${i}, j: ${j}`);
-    }
-}
-
-// 5. Loop control
-console.log("\n--- Loop Control ---");
-console.log("Break example:");
-for (let i = 0; i < 10; i++) {
-    if (i === 5) break;
-    console.log(i);
-}
-
-console.log("\nContinue example:");
-for (let i = 0; i < 10; i++) {
-    if (i % 2 === 0) continue;
-    console.log(i);
-}
-
-// 6. While loop
-console.log("\n--- While Loop ---");
-let count = 1;
-while (count <= 3) {
-    console.log("Count:", count);
-    count++;
-}
-
-// 7. Do-while loop
-console.log("\n--- Do-While Loop ---");
-let num = 1;
-do {
-    console.log("Number:", num);
-    num++;
-} while (num <= 3);
-
-// 8. Advanced example: Multiplication table
-console.log("\n--- Multiplication Table ---");
-for (let i = 1; i <= 5; i++) {
-    let row = "";
-    for (let j = 1; j <= 5; j++) {
-        row += (i * j).toString().padStart(4, " ");
-    }
-    console.log(row);
-}
-
-console.log("\n=== Session 6 Complete ===");
-```
-
-**Complete index.html:**
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Session 6 - Loops</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        .section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .section h2 {
-            color: #1890ff;
-            margin-top: 0;
-        }
-        .controls {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-        }
-        .controls input, .controls select, .controls button {
-            padding: 8px;
-            margin: 5px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .controls button {
-            background-color: #1890ff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .controls button:hover {
-            background-color: #0c7cd5;
-        }
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 15px;
-        }
-        .product-card {
-            background: white;
-            border: 1px solid #e8e8e8;
-            border-radius: 8px;
-            padding: 15px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        .product-image {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 4px;
-            margin-bottom: 10px;
-        }
-        .product-name {
-            margin: 0 0 5px 0;
-            color: #333;
-        }
-        .product-price {
-            color: #1890ff;
-            font-weight: bold;
-            font-size: 1.2em;
-            margin: 5px 0;
-        }
-        .product-description {
-            color: #666;
-            font-size: 0.9em;
-            margin: 5px 0 10px 0;
-        }
-        .product-actions {
-            display: flex;
-            gap: 10px;
-        }
-        .product-actions button {
-            flex: 1;
-            padding: 8px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .add-to-cart {
-            background-color: #52c41a;
-            color: white;
-        }
-        .add-to-cart:hover {
-            background-color: #389e0d;
-        }
-        .remove-product {
-            background-color: #ff4d4f;
-            color: white;
-        }
-        .remove-product:hover {
-            background-color: #cf1322;
-        }
-        .loop-demo {
-            background: #f0f0f0;
-            padding: 15px;
-            border-radius: 4px;
-            font-family: monospace;
-            white-space: pre-wrap;
-            margin-top: 10px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .pattern-output {
-            font-family: monospace;
-            background: #f0f0f0;
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 10px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Session 6: Loops</h1>
-    
-    <div class="section">
-        <h2>Topics Covered</h2>
-        <ul>
-            <li>For loop concept and syntax</li>
-            <li>Looping through sequences (arrays, strings, objects)</li>
-            <li>Nested loops</li>
-            <li>Loop control (break, continue, labels)</li>
-            <li>For...of and for...in loops</li>
-            <li>While and do-while loops</li>
-        </ul>
-    </div>
-
-    <div class="section">
-        <h2>Basic Loop Demonstrations</h2>
-        <div class="controls">
-            <button onclick="demonstrateForLoop()">For Loop (1-10)</button>
-            <button onclick="demonstrateForOf()">For...of Loop</button>
-            <button onclick="demonstrateWhile()">While Loop</button>
-            <button onclick="demonstrateDoWhile()">Do-While Loop</button>
-            <button onclick="demonstrateBreakContinue()">Break/Continue</button>
-        </div>
-        <div id="loopOutput" class="loop-demo">
-            Click a button to see loop demonstration...
-        </div>
-    </div>
-
-    <div class="section">
-        <h2>Pattern Printing</h2>
-        <div class="controls">
-            <button onclick="printTriangle()">Triangle</button>
-            <button onclick="printSquare()">Square</button>
-            <button onclick="printNumberTriangle()">Number Triangle</button>
-            <button onclick="printMultiplicationTable()">Multiplication Table</button>
-        </div>
-        <div id="patternOutput" class="pattern-output">
-            Click a button to see pattern...
-        </div>
-    </div>
-
-    <div class="section">
-        <h2>Add Products to Page</h2>
-        <div class="controls">
-            <input type="text" id="productName" placeholder="Product name">
-            <input type="number" id="productPrice" placeholder="Price" step="0.01">
-            <input type="text" id="productImage" placeholder="Image URL">
-            <input type="text" id="productDesc" placeholder="Description">
-            <button onclick="addProduct()">Add Product</button>
-            
-            <div style="margin-top: 10px;">
-                <button onclick="renderAllProducts()">Show All</button>
-                <button onclick="sortProductsPrice()">Sort by Price</button>
-                <button onclick="filterExpensive()">Filter Expensive ($50+)</button>
-                <button onclick="clearProducts()">Clear All</button>
-            </div>
-        </div>
-        <div id="productsContainer" class="products-grid">
-            <p style="grid-column: 1/-1; text-align: center; color: #999;">No products yet</p>
-        </div>
-    </div>
-
-    <div class="section">
-        <h2>Nested Loop Examples</h2>
-        <div class="controls">
-            <button onclick="demonstrateNestedLoops()">Basic Nested Loop</button>
-            <button onclick="demonstrateMatrix()">Matrix Traversal</button>
-            <button onclick="findPrimes()">Find Primes (1-100)</button>
-            <button onclick="generateFibonacci()">Fibonacci Sequence</button>
-        </div>
-        <div id="nestedOutput" class="loop-demo">
-            Click a button to see nested loop examples...
-        </div>
-    </div>
-
-    <div class="section">
-        <h2>Console Output</h2>
-        <p>Open the browser console (F12) to see all JavaScript examples.</p>
-    </div>
-
-    <script src="script.js" defer></script>
-    <script>
-        // Loop demonstrations
-        function demonstrateForLoop() {
-            let output = "For Loop (1-10):\n";
-            for (let i = 1; i <= 10; i++) {
-                output += i + " ";
-            }
-            document.getElementById('loopOutput').textContent = output;
-        }
-
-        function demonstrateForOf() {
-            let fruits = ["apple", "banana", "orange", "grape"];
-            let output = "For...of Loop:\n";
-            for (let fruit of fruits) {
-                output += fruit + "\n";
-            }
-            document.getElementById('loopOutput').textContent = output;
-        }
-
-        function demonstrateWhile() {
-            let output = "While Loop:\n";
-            let i = 1;
-            while (i <= 5) {
-                output += i + " ";
-                i++;
-            }
-            document.getElementById('loopOutput').textContent = output;
-        }
-
-        function demonstrateDoWhile() {
-            let output = "Do-While Loop:\n";
-            let i = 1;
-            do {
-                output += i + " ";
-                i++;
-            } while (i <= 5);
-            document.getElementById('loopOutput').textContent = output;
-        }
-
-        function demonstrateBreakContinue() {
-            let output = "Break/Continue Example:\n";
-            output += "Break (stop at 5):\n";
-            for (let i = 0; i < 10; i++) {
-                if (i === 5) break;
-                output += i + " ";
-            }
-            output += "\n\nContinue (skip evens):\n";
-            for (let i = 0; i < 10; i++) {
-                if (i % 2 === 0) continue;
-                output += i + " ";
-            }
-            document.getElementById('loopOutput').textContent = output;
-        }
-
-        // Pattern printing
-        function printTriangle() {
-            let output = "";
-            for (let i = 1; i <= 5; i++) {
-                for (let j = 1; j <= i; j++) {
-                    output += "* ";
-                }
-                output += "\n";
-            }
-            document.getElementById('patternOutput').textContent = output;
-        }
-
-        function printSquare() {
-            let output = "";
-            for (let i = 1; i <= 5; i++) {
-                for (let j = 1; j <= 5; j++) {
-                    output += "* ";
-                }
-                output += "\n";
-            }
-            document.getElementById('patternOutput').textContent = output;
-        }
-
-        function printNumberTriangle() {
-            let output = "";
-            for (let i = 1; i <= 5; i++) {
-                for (let j = 1; j <= i; j++) {
-                    output += j + " ";
-                }
-                output += "\n";
-            }
-            document.getElementById('patternOutput').textContent = output;
-        }
-
-        function printMultiplicationTable() {
-            let output = "Multiplication Table (1-5):\n";
-            output += "   |  1  2  3  4  5\n";
-            output += "---|---------------\n";
-            for (let i = 1; i <= 5; i++) {
-                output += i.toString().padStart(2, " ") + " |";
-                for (let j = 1; j <= 5; j++) {
-                    output += (i * j).toString().padStart(3, " ");
-                }
-                output += "\n";
-            }
-            document.getElementById('patternOutput').textContent = output;
-        }
-
-        // Product management
-        let products = [];
-
-        function addProduct() {
-            const name = document.getElementById('productName').value;
-            const price = parseFloat(document.getElementById('productPrice').value);
-            const image = document.getElementById('productImage').value || 'https://via.placeholder.com/300';
-            const desc = document.getElementById('productDesc').value;
-
-            if (!name || isNaN(price)) {
-                alert('Please enter name and price');
-                return;
-            }
-
-            const product = {
-                id: Date.now(),
-                name,
-                price,
-                image,
-                description: desc
-            };
-
-            products.push(product);
-            renderProducts();
-            clearInputs();
-        }
-
-        function renderProducts(productList = products) {
-            const container = document.getElementById('productsContainer');
-            
-            if (productList.length === 0) {
-                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999;">No products</p>';
-                return;
-            }
-
-            container.innerHTML = productList.map(product => `
-                <div class="product-card" id="product-${product.id}">
-                    <img src="${product.image}" alt="${product.name}" class="product-image">
-                    <h3 class="product-name">${product.name}</h3>
-                    <p class="product-price">$${product.price.toFixed(2)}</p>
-                    <p class="product-description">${product.description || 'No description'}</p>
-                    <div class="product-actions">
-                        <button class="add-to-cart" onclick="addToCart(${product.id})">Add to Cart</button>
-                        <button class="remove-product" onclick="removeProduct(${product.id})">Remove</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function removeProduct(id) {
-            products = products.filter(p => p.id !== id);
-            renderProducts();
-        }
-
-        function renderAllProducts() {
-            renderProducts();
-        }
-
-        function sortProductsPrice() {
-            const sorted = [...products].sort((a, b) => a.price - b.price);
-            renderProducts(sorted);
-        }
-
-        function filterExpensive() {
-            const expensive = products.filter(p => p.price >= 50);
-            renderProducts(expensive);
-        }
-
-        function clearProducts() {
-            products = [];
-            renderProducts();
-        }
-
-        function addToCart(id) {
-            const product = products.find(p => p.id === id);
-            alert(`Added ${product.name} to cart!`);
-        }
-
-        function clearInputs() {
-            document.getElementById('productName').value = '';
-            document.getElementById('productPrice').value = '';
-            document.getElementById('productImage').value = '';
-            document.getElementById('productDesc').value = '';
-        }
-
-        // Nested loop examples
-        function demonstrateNestedLoops() {
-            let output = "Basic Nested Loop:\n";
-            for (let i = 0; i < 3; i++) {
-                for (let j = 0; j < 3; j++) {
-                    output += `i: ${i}, j: ${j}\n`;
-                }
-            }
-            document.getElementById('nestedOutput').textContent = output;
-        }
-
-        function demonstrateMatrix() {
-            let matrix = [
-                [1, 2, 3],
-                [4, 5, 6],
-                [7, 8, 9]
-            ];
-            let output = "Matrix Traversal:\n";
-            for (let i = 0; i < matrix.length; i++) {
-                for (let j = 0; j < matrix[i].length; j++) {
-                    output += `matrix[${i}][${j}] = ${matrix[i][j]}\n`;
-                }
-            }
-            document.getElementById('nestedOutput').textContent = output;
-        }
-
-        function findPrimes() {
-            function isPrime(num) {
-                if (num < 2) return false;
-                for (let i = 2; i <= Math.sqrt(num); i++) {
-                    if (num % i === 0) return false;
-                }
-                return true;
-            }
-
-            let output = "Prime Numbers (1-100):\n";
-            for (let i = 1; i <= 100; i++) {
-                if (isPrime(i)) {
-                    output += i + " ";
-                }
-            }
-            document.getElementById('nestedOutput').textContent = output;
-        }
-
-        function generateFibonacci() {
-            let fib = [0, 1];
-            for (let i = 2; i < 15; i++) {
-                fib[i] = fib[i - 1] + fib[i - 2];
-            }
-            document.getElementById('nestedOutput').textContent = "Fibonacci Sequence (first 15):\n" + fib.join(", ");
-        }
-    </script>
-</body>
-</html>
-```
-
----
-
-## 📝 Review (0.5h)
-
-### Loop Challenge
-
-```javascript
-// Challenge 1: Print numbers 1-20, but skip multiples of 3
-console.log("=== Challenge 1: Skip Multiples of 3 ===");
-// Your code here
-
-// Challenge 2: Find the sum of all even numbers from 1-100
-console.log("\n=== Challenge 2: Sum Even Numbers ===");
-// Your code here
-
-// Challenge 3: Print the following pattern:
-// *
-// **
-// ***
-// ****
-// *****
-console.log("\n=== Challenge 3: Pattern ===");
-// Your code here
-
-// Challenge 4: Reverse an array using a loop
-let arr = [1, 2, 3, 4, 5];
-console.log("\n=== Challenge 4: Reverse Array ===");
-// Your code here
-
-// Challenge 5: Find the largest number in an array
-let numbers = [10, 5, 20, 8, 15];
-console.log("\n=== Challenge 5: Find Largest ===");
-// Your code here
-
-// Challenge 6: Count occurrences of each element in an array
-let items = ["apple", "banana", "apple", "orange", "banana", "apple"];
-console.log("\n=== Challenge 6: Count Occurrences ===");
-// Your code here
-
-// Challenge 7: Generate a random number between 1-10 and keep guessing until correct
-console.log("\n=== Challenge 7: Number Guessing ===");
-// Your code here
-
-// Challenge 8: Create a multiplication table for numbers 1-10
-console.log("\n=== Challenge 8: Multiplication Table ===");
-// Your code here
-
-// Challenge 9: Remove duplicates from an array using loops
-let duplicates = [1, 2, 3, 2, 4, 5, 3, 6];
-console.log("\n=== Challenge 9: Remove Duplicates ===");
-// Your code here
-
-// Challenge 10: Find the factorial of a number using a loop
 let num = 5;
-console.log("\n=== Challenge 10: Factorial ===");
-// Your code here
+let factorial = 1;
+
+for (let i = 2; i <= num; i++) {
+  factorial *= i;
+}
+
+console.log(`Factorial of ${num}:`, factorial); // 120
 ```
 
-### Challenge Solutions
+#### Challenge 6.4 — Factorial Function (individual, 4 minutes)
+
+- **Requirement:** Write a function `factorial(n)`.
+- **Time limit:** 4 minutes
+
+### 6.5 Number Guessing Game
+
+#### Live Code
 
 ```javascript
-// Challenge 1: Print numbers 1-20, skip multiples of 3
-console.log("=== Challenge 1: Skip Multiples of 3 ===");
-for (let i = 1; i <= 20; i++) {
-    if (i % 3 === 0) continue;
-    console.log(i);
-}
-
-// Challenge 2: Sum of even numbers 1-100
-console.log("\n=== Challenge 2: Sum Even Numbers ===");
-let sum = 0;
-for (let i = 1; i <= 100; i++) {
-    if (i % 2 === 0) {
-        sum += i;
-    }
-}
-console.log("Sum of even numbers:", sum);
-
-// Challenge 3: Print pattern
-console.log("\n=== Challenge 3: Pattern ===");
-for (let i = 1; i <= 5; i++) {
-    let line = "";
-    for (let j = 1; j <= i; j++) {
-        line += "*";
-    }
-    console.log(line);
-}
-
-// Challenge 4: Reverse array
-console.log("\n=== Challenge 4: Reverse Array ===");
-let arr = [1, 2, 3, 4, 5];
-let reversed = [];
-for (let i = arr.length - 1; i >= 0; i--) {
-    reversed.push(arr[i]);
-}
-console.log("Original:", arr);
-console.log("Reversed:", reversed);
-
-// Challenge 5: Find largest number
-console.log("\n=== Challenge 5: Find Largest ===");
-let numbers = [10, 5, 20, 8, 15];
-let largest = numbers[0];
-for (let num of numbers) {
-    if (num > largest) {
-        largest = num;
-    }
-}
-console.log("Largest number:", largest);
-
-// Challenge 6: Count occurrences
-console.log("\n=== Challenge 6: Count Occurrences ===");
-let items = ["apple", "banana", "apple", "orange", "banana", "apple"];
-let counts = {};
-for (let item of items) {
-    counts[item] = (counts[item] || 0) + 1;
-}
-console.log("Occurrences:", counts);
-
-// Challenge 7: Number guessing
-console.log("\n=== Challenge 7: Number Guessing ===");
 let target = Math.floor(Math.random() * 10) + 1;
 let guess;
 let attempts = 0;
 
 while (true) {
-    attempts++;
-    guess = Math.floor(Math.random() * 10) + 1; // Simulate guess
-    console.log(`Attempt ${attempts}: Guessed ${guess}`);
-    
-    if (guess === target) {
-        console.log(`Correct! Found ${target} in ${attempts} attempts`);
-        break;
-    }
+  attempts++;
+  // Simulate input
+  guess = Math.floor(Math.random() * 10) + 1;
+  console.log(`Attempt ${attempts}: ${guess}`);
+
+  if (guess === target) {
+    console.log(`Correct! Found ${target} in ${attempts} attempts.`);
+    break;
+  }
+
+  if (guess < target) {
+    console.log("Too low!");
+  } else {
+    console.log("Too high!");
+  }
+}
+```
+
+---
+
+## Bug Hunt 1
+
+### Problem
+
+The following code has three deliberate bugs or surprises. Ask students to find them.
+
+```javascript
+let numbers = [1, 2, 3, 4, 5];
+let sum = 0;
+
+for (let i = 0; i <= numbers.length; i++) {
+  sum += numbers[i];
 }
 
-// Challenge 8: Multiplication table
-console.log("\n=== Challenge 8: Multiplication Table ===");
-for (let i = 1; i <= 10; i++) {
-    let row = "";
-    for (let j = 1; j <= 10; j++) {
-        row += (i * j).toString().padStart(4, " ");
-    }
-    console.log(row);
+console.log("Sum:", sum);
+
+for (let i = 0; i < 10; i++); {
+  console.log("Number:", i);
 }
 
-// Challenge 9: Remove duplicates
-console.log("\n=== Challenge 9: Remove Duplicates ===");
+let count = 0;
+while (count < 5) {
+  console.log(count);
+}
+```
+
+### Issues
+
+1. `i <= numbers.length` tries to access `numbers[5]`, which is `undefined`. Should be `i < numbers.length`.
+2. `for (let i = 0; i < 10; i++);` has a semicolon after the loop, so the block after it runs once with `i` being `10` (out of scope in some cases, or the variable `i` is accessible due to `var`? It uses `let`, so `i` is not accessible and an error may occur).
+3. `while (count < 5)` does not increment `count`, causing an infinite loop.
+
+### Fixed Version (for the instructor)
+
+```javascript
+let numbers = [1, 2, 3, 4, 5];
+let sum = 0;
+
+for (let i = 0; i < numbers.length; i++) {
+  sum += numbers[i];
+}
+console.log("Sum:", sum);
+
+for (let i = 0; i < 10; i++) {
+  console.log("Number:", i);
+}
+
+let count = 0;
+while (count < 5) {
+  console.log(count);
+  count++;
+}
+```
+
+### Points
+
+1 point for each found bug.
+
+---
+
+## Part 7: When to Use Which Loop
+
+### Live Code
+
+```javascript
+let numbers = [1, 2, 3, 4, 5];
+
+// Use for when you need the index
+console.log("For loop with index:");
+for (let i = 0; i < numbers.length; i++) {
+  console.log(`Index ${i}: ${numbers[i]}`);
+}
+
+// Use for...of when you only need values
+console.log("\nFor...of values:");
+for (let num of numbers) {
+  console.log(num);
+}
+
+// Use forEach when you want to do something with each
+console.log("\nforEach:");
+numbers.forEach((num, index) => {
+  console.log(`Processing ${num} at index ${index}`);
+});
+
+// Use while when you do not know how many iterations
+console.log("\nWhile unknown:");
+let total = 0;
+let i = 1;
+while (total < 50) {
+  total += i;
+  i++;
+}
+console.log("Total:", total);
+
+// Use do...when when at least one run is required
+console.log("\nDo-while:");
+let x = 5;
+do {
+  console.log("At least once:", x);
+  x++;
+} while (x < 3);
+```
+
+---
+
+## Bug Hunt 2
+
+### Problem
+
+The pattern printer has bugs. Ask students to find them.
+
+```javascript
+for (let i = 1; i <= 5; i++) {
+  let line = "";
+  for (let j = 1; j <= i; j++); {
+    line += "*";
+  }
+  console.log(line);
+}
+```
+
+### Issues
+
+1. The inner `for` loop has a semicolon `;` after it. The block `{ line += "*"; }` then runs once per outer iteration, not per inner iteration.
+2. Because of the semicolon, `line` will only have one `*` each time.
+
+### Fixed Version
+
+```javascript
+for (let i = 1; i <= 5; i++) {
+  let line = "";
+  for (let j = 1; j <= i; j++) {
+    line += "*";
+  }
+  console.log(line);
+}
+```
+
+### Points
+
+1 point for the semicolon bug, 1 point for explaining the output.
+
+---
+
+## Group Challenge: Pattern Race
+
+- **Time:** 10 minutes
+- **Teams:** 2 or 3 students per team
+- **Task:** Each team must print the requested pattern using nested loops.
+- **Scoring:** 2 points for the first correct pattern, 1 point for each additional correct pattern within the time limit.
+
+### Patterns
+
+1. Right triangle of `*` with height `5`.
+2. Square of `*` with side `5`.
+3. Number triangle:
+
+```
+1
+1 2
+1 2 3
+1 2 3 4
+1 2 3 4 5
+```
+
+4. Inverted right triangle:
+
+```
+* * * * *
+* * * *
+* * *
+* *
+*
+```
+
+### Instructor Answer Key
+
+```javascript
+// 1
+for (let i = 1; i <= 5; i++) {
+  let line = "";
+  for (let j = 1; j <= i; j++) line += "*";
+  console.log(line);
+}
+
+// 2
+for (let i = 1; i <= 5; i++) {
+  let line = "";
+  for (let j = 1; j <= 5; j++) line += "*";
+  console.log(line);
+}
+
+// 3
+for (let i = 1; i <= 5; i++) {
+  let line = "";
+  for (let j = 1; j <= i; j++) line += j + " ";
+  console.log(line);
+}
+
+// 4
+for (let i = 5; i >= 1; i--) {
+  let line = "";
+  for (let j = 1; j <= i; j++) line += "* ";
+  console.log(line);
+}
+```
+
+---
+
+## Individual Challenges — Progressive Difficulty
+
+### Level 1: Count by 3 (3 minutes)
+
+- **Requirement:** Print numbers from `1` to `30`, skipping multiples of `3`.
+- **Expected:** Use `continue`.
+
+### Level 2: Sum of Odds (3 minutes)
+
+- **Requirement:** Sum all odd numbers from `1` to `50`.
+- **Expected:** Use a `for` loop.
+
+### Level 3: Find Largest (4 minutes)
+
+- **Requirement:** Find the largest number in `let numbers = [10, 5, 20, 8, 15]` using a loop.
+- **Hint:** Track the largest value as you loop.
+
+### Level 4: Count Occurrences (5 minutes)
+
+- **Requirement:** Count how many times each item appears in `let items = ["apple", "banana", "apple", "orange", "banana", "apple"]`.
+- **Hint:** Use an object as a counter.
+
+### Level 5: Remove Duplicates (5 minutes)
+
+- **Requirement:** Remove duplicates from `let duplicates = [1, 2, 3, 2, 4, 5, 3, 6]` using loops.
+- **Hint:** Create a new array and use `includes` before pushing.
+
+### Level 6: Number Guessing (6 minutes)
+
+- **Requirement:** Generate a random number `1` to `10`. Use a `while` loop to guess until correct.
+- **Hint:** Use `Math.random` and `break`.
+
+---
+
+## Mini Project: Pattern and Product Dashboard
+
+### Time
+
+25 minutes
+
+### Goal
+
+Combine `for`, `while`, nested loops, `break`, and `continue` into one small HTML page.
+
+### Requirements for the Students
+
+1. Create a page with two sections:
+   - **Pattern Printer:** a dropdown to choose pattern (triangle, square, number triangle, multiplication table) and a button to render it.
+   - **Number Guess:** a button that starts the game and shows the attempts.
+
+2. Use `for` and nested `for` for patterns.
+
+3. Use `while` for the number guessing game.
+
+### Time Limit
+
+25 minutes
+
+### Starter HTML
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loop Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 700px; margin: 20px auto; }
+    .section { background: #f9f9f9; padding: 15px; margin-bottom: 20px; border-radius: 4px; }
+    select, button, input { padding: 8px; margin: 5px; }
+    pre { background: #f0f0f0; padding: 15px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Loop Dashboard</h1>
+
+  <div class="section">
+    <h2>Pattern Printer</h2>
+    <select id="pattern">
+      <option value="triangle">Triangle</option>
+      <option value="square">Square</option>
+      <option value="numbers">Number Triangle</option>
+      <option value="table">Multiplication Table</option>
+    </select>
+    <button onclick="printPattern()">Print</button>
+    <pre id="patternOutput"></pre>
+  </div>
+
+  <div class="section">
+    <h2>Number Guess Game</h2>
+    <button onclick="playGame()">Play</button>
+    <pre id="gameOutput"></pre>
+  </div>
+
+  <script>
+    function printPattern() {
+      let type = document.getElementById("pattern").value;
+      let output = "";
+
+      if (type === "triangle") {
+        for (let i = 1; i <= 5; i++) {
+          for (let j = 1; j <= i; j++) output += "* ";
+          output += "\n";
+        }
+      } else if (type === "square") {
+        for (let i = 1; i <= 5; i++) {
+          for (let j = 1; j <= 5; j++) output += "* ";
+          output += "\n";
+        }
+      } else if (type === "numbers") {
+        for (let i = 1; i <= 5; i++) {
+          for (let j = 1; j <= i; j++) output += j + " ";
+          output += "\n";
+        }
+      } else if (type === "table") {
+        for (let i = 1; i <= 5; i++) {
+          for (let j = 1; j <= 5; j++) {
+            output += (i * j).toString().padStart(4, " ");
+          }
+          output += "\n";
+        }
+      }
+
+      document.getElementById("patternOutput").textContent = output;
+    }
+
+    function playGame() {
+      let target = Math.floor(Math.random() * 10) + 1;
+      let guess;
+      let attempts = 0;
+      let output = `Target: ${target}\n`;
+
+      do {
+        attempts++;
+        guess = Math.floor(Math.random() * 10) + 1;
+        output += `Attempt ${attempts}: ${guess}\n`;
+      } while (guess !== target);
+
+      output += `Correct in ${attempts} attempts!`;
+      document.getElementById("gameOutput").textContent = output;
+    }
+  </script>
+</body>
+</html>
+```
+
+### Review Questions for the Mini Project
+
+- "Why does the pattern use nested `for` loops?"
+- "What is the difference between `while` and `do...while` in the game?"
+- "What happens if we forget `\n` inside the pattern loop?"
+
+---
+
+## Trainer Solutions — Do Not Show Until Students Try
+
+### Challenge 1.4
+
+```javascript
+let sum = 0;
+for (let i = 2; i <= 100; i += 2) {
+  sum += i;
+}
+console.log(sum);
+```
+
+### Challenge 2.1
+
+```javascript
+let numbers = [10, 20, 30, 40, 50];
+let sum = 0;
+for (let i = 0; i < numbers.length; i++) {
+  sum += numbers[i];
+}
+console.log(sum);
+```
+
+### Challenge 2.2
+
+```javascript
+let colors = ["red", "green", "blue"];
+for (let color of colors) {
+  console.log(color);
+}
+```
+
+### Challenge 2.3
+
+```javascript
+let book = { title: "JS", pages: 200, author: "Dev" };
+for (let key in book) {
+  console.log(`${key}: ${book[key]}`);
+}
+```
+
+### Challenge 3.2
+
+```javascript
+let x = 10;
+do {
+  console.log("Run once", x);
+} while (x < 5);
+```
+
+### Challenge 4.1
+
+```javascript
+let numbers = [1, 3, 5, 7, 8, 9];
+for (let num of numbers) {
+  if (num % 2 === 0) {
+    console.log("First even:", num);
+    break;
+  }
+}
+```
+
+### Challenge 4.2
+
+```javascript
+for (let i = 1; i <= 20; i++) {
+  if (i % 2 === 0) continue;
+  console.log(i);
+}
+```
+
+### Challenge 5.2
+
+```javascript
+let matrix = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9]
+];
+let sum = 0;
+for (let i = 0; i < matrix.length; i++) {
+  for (let j = 0; j < matrix[i].length; j++) {
+    sum += matrix[i][j];
+  }
+}
+console.log(sum); // 45
+```
+
+### Challenge 5.3
+
+```javascript
+for (let i = 5; i >= 1; i--) {
+  let line = "";
+  for (let j = 1; j <= i; j++) {
+    line += "* ";
+  }
+  console.log(line);
+}
+```
+
+### Challenge 6.1
+
+```javascript
+function isPrime(num) {
+  if (num < 2) return false;
+  for (let i = 2; i <= Math.sqrt(num); i++) {
+    if (num % i === 0) return false;
+  }
+  return true;
+}
+```
+
+### Challenge 6.2
+
+```javascript
+let fib = [0, 1];
+for (let i = 2; i < 15; i++) {
+  fib[i] = fib[i - 1] + fib[i - 2];
+}
+console.log(fib);
+```
+
+### Challenge 6.3
+
+```javascript
+let text = "hello";
+let reversed = "";
+for (let i = text.length - 1; i >= 0; i--) {
+  reversed += text[i];
+}
+console.log(reversed); // "olleh"
+```
+
+### Challenge 6.4
+
+```javascript
+function factorial(n) {
+  let result = 1;
+  for (let i = 2; i <= n; i++) {
+    result *= i;
+  }
+  return result;
+}
+```
+
+### Individual Challenges Solutions
+
+```javascript
+// Level 1
+for (let i = 1; i <= 30; i++) {
+  if (i % 3 === 0) continue;
+  console.log(i);
+}
+
+// Level 2
+let sum = 0;
+for (let i = 1; i <= 50; i += 2) {
+  sum += i;
+}
+console.log(sum);
+
+// Level 3
+let numbers = [10, 5, 20, 8, 15];
+let largest = numbers[0];
+for (let num of numbers) {
+  if (num > largest) largest = num;
+}
+console.log(largest);
+
+// Level 4
+let items = ["apple", "banana", "apple", "orange", "banana", "apple"];
+let counts = {};
+for (let item of items) {
+  counts[item] = (counts[item] || 0) + 1;
+}
+console.log(counts);
+
+// Level 5
 let duplicates = [1, 2, 3, 2, 4, 5, 3, 6];
 let unique = [];
 for (let num of duplicates) {
-    if (!unique.includes(num)) {
-        unique.push(num);
-    }
+  if (!unique.includes(num)) unique.push(num);
 }
-console.log("Original:", duplicates);
-console.log("Unique:", unique);
+console.log(unique);
 
-// Challenge 10: Factorial
-console.log("\n=== Challenge 10: Factorial ===");
-let num = 5;
-let factorial = 1;
-for (let i = 2; i <= num; i++) {
-    factorial *= i;
+// Level 6
+let target = Math.floor(Math.random() * 10) + 1;
+let guess;
+let attempts = 0;
+while (true) {
+  attempts++;
+  guess = Math.floor(Math.random() * 10) + 1;
+  if (guess === target) {
+    console.log(`Found ${target} in ${attempts} attempts`);
+    break;
+  }
 }
-console.log(`Factorial of ${num}:`, factorial);
 ```
 
-### Review Questions
+---
 
-1. **What is the correct syntax for a for loop?**
+## Review Questions
+
+1. What is the correct syntax for a for loop?
    - [ ] for (i = 0; i < 5; i++)
-   - [ ] for (let i = 0; i < 5; i++)
+   - [x] for (let i = 0; i < 5; i++)
    - [ ] for (i < 5; i++)
    - [ ] for (let i = 0; i < 5)
 
-2. **What does the `break` statement do?**
+2. What does the `break` statement do?
    - [ ] Skips the current iteration
-   - [ ] Exits the loop immediately
+   - [x] Exits the loop immediately
    - [ ] Restarts the loop
    - [ ] Pauses the loop
 
-3. **What does the `continue` statement do?**
+3. What does the `continue` statement do?
    - [ ] Exits the loop
-   - [ ] Skips the current iteration
+   - [x] Skips the current iteration
    - [ ] Restarts the loop
    - [ ] Pauses execution
 
-4. **Which loop is best for iterating over array values?**
+4. Which loop is best for iterating over array values?
    - [ ] for loop
    - [ ] while loop
-   - [ ] for...of loop
+   - [x] for...of loop
    - [ ] do-while loop
 
-5. **What is the difference between while and do-while?**
+5. What is the difference between while and do-while?
    - [ ] No difference
-   - [ ] do-while always executes at least once
+   - [x] do-while always executes at least once
    - [ ] while always executes at least once
    - [ ] do-while is faster
 
-6. **How do you exit a nested loop from the inner loop?**
+6. How do you exit a nested loop from the inner loop?
    - [ ] break
    - [ ] continue
-   - [ ] labeled break
+   - [x] labeled break
    - [ ] return
 
-7. **What happens if the loop condition is initially false in a while loop?**
+7. What happens if the loop condition is initially false in a while loop?
    - [ ] Error
    - [ ] Loop executes once
-   - [ ] Loop doesn't execute
+   - [x] Loop doesn't execute
    - [ ] Infinite loop
 
-8. **Which loop would you use when you don't know the number of iterations?**
+8. Which loop would you use when you don't know the number of iterations?
    - [ ] for loop
-   - [ ] while loop
+   - [x] while loop
    - [ ] for...of loop
    - [ ] All of the above
 
-9. **What does `for...in` iterate over?**
+9. What does `for...in` iterate over?
    - [ ] Array values
-   - [ ] Object properties
+   - [x] Object properties
    - [ ] String characters
    - [ ] Map entries
 
-10. **How many times will this loop execute? `for (let i = 0; i < 5; i++)`**
+10. How many times will this loop execute? `for (let i = 0; i < 5; i++)`
     - [ ] 4 times
-    - [ ] 5 times
+    - [x] 5 times
     - [ ] 6 times
     - [ ] Infinite
 
-### Correct Answers
-
-1. ✅ for (let i = 0; i < 5; i++)
-2. ✅ Exits the loop immediately
-3. ✅ Skips the current iteration
-4. ✅ for...of loop
-5. ✅ do-while always executes at least once
-6. ✅ labeled break
-7. ✅ Loop doesn't execute
-8. ✅ while loop
-9. ✅ Object properties
-10. ✅ 5 times
-
 ---
 
-## 🎯 Next Steps
-
-1. ✅ Practice all loop types
-2. ✅ Master nested loops
-3. ✅ Understand when to use each loop type
-4. ✅ Practice loop control statements
-5. ✅ Complete all challenge exercises
-6. ✅ Build applications using loops
-7. ✅ Learn about performance considerations
-
----
-
-## 📚 Additional Resources
+## Additional Resources
 
 - [MDN: for](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for)
 - [MDN: while](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/while)
@@ -1647,5 +1246,3 @@ console.log(`Factorial of ${num}:`, factorial);
 - [MDN: for...in](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in)
 - [JavaScript.info: Loops](https://javascript.info/while-for)
 - [JavaScript.info: for...of](https://javascript.info/for..of)
-
-**Remember:** Loops are fundamental to programming. Master them to automate repetitive tasks and process data efficiently! 💪

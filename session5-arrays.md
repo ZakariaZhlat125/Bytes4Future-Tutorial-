@@ -1,1534 +1,1422 @@
-# Session 5: Arrays
+# Session 5: Arrays — Active Learning Redesign
 
-## 📚 Theory (1h)
+## Session Plan for the Instructor
 
-### Array Introduction
+- **Total time:** approximately 90 to 120 minutes
+- **Pacing rule:** never explain theory continuously for more than 15–20 minutes. After every concept, students must predict, write, or fix code.
+- **Pedagogical pattern for every topic:**
+  1. **Problem** — a realistic mini-situation
+  2. **Guess** — ask: "What do you expect to happen?"
+  3. **Explain** — the shortest rule that fixes the problem
+  4. **Code** — live code written in front of the students, step by step
+  5. **Challenge** — students solve a small task on their own or in groups
+  6. **Review** — discuss the answer and the most common mistake
 
-An array is a data structure that stores multiple values in a single variable. Arrays are ordered collections that can hold any type of data.
+### Competition and Points
 
-#### What is an Array?
+- 1 point per correct prediction in the "Guess" phase.
+- 1–3 points per completed challenge, depending on difficulty.
+- A "Bug Hunter" badge for each student who finds and fixes an intentional error.
+- Keep a simple tally on a shared board or in the chat.
+
+### Instructor Questions to Ask During the Session
+
+- "What do you expect the array to look like after this line?"
+- "Which index is the first element?"
+- "Does this method change the original array?"
+- "Which method gives you one value back, and which gives you a new array?"
+- "What would you use if you wanted all matching items?"
+
+---
+
+## Part 0: Warm-Up — The Shopping List Is Broken (5 minutes)
+
+### Problem
+
+A shopping list app stores items in separate variables and cannot count them.
 
 ```javascript
-// Array is like a container that holds multiple values
+let item1 = "Milk";
+let item2 = "Bread";
+let item3 = "Eggs";
+
+console.log(item1, item2, item3);
+console.log("Total items: ???");
+```
+
+### Guess
+
+Ask: "How would you store 100 items? What if you want to add more?"
+
+### Explain
+
+An array is a single variable that can hold many values in order. Each value has an index starting at `0`.
+
+### Live Code
+
+```javascript
+let shoppingList = ["Milk", "Bread", "Eggs"];
+
+console.log(shoppingList[0]);          // "Milk"
+console.log(shoppingList.length);      // 3
+console.log(shoppingList[shoppingList.length - 1]); // "Eggs"
+
+shoppingList.push("Butter");
+console.log(shoppingList);
+```
+
+### Review
+
+Arrays solve the problem of storing many values. The first item is at index `0`. `length` gives the count.
+
+---
+
+## Part 1: Creating and Accessing Arrays
+
+### 1.1 Array Literal and Constructor
+
+#### Problem
+
+Create a list of colors and a list of scores.
+
+#### Explain
+
+The easiest way to create an array is with square brackets `[]`. You can also use `new Array()` or `Array.from()`.
+
+#### Live Code
+
+```javascript
+// Array literal
 let fruits = ["apple", "banana", "orange"];
 let numbers = [1, 2, 3, 4, 5];
-let mixed = [1, "hello", true, null, {name: "John"}];
+let mixed = [1, "hello", true, null, { name: "John" }];
+let empty = [];
+
+console.log(fruits, numbers, mixed, empty);
+
+// Array constructor
+let moreFruits = new Array("grape", "mango");
+let fiveSlots = new Array(5); // 5 empty slots
+console.log(moreFruits);
+console.log(fiveSlots);
+
+// Array.from
+let letters = Array.from("hello");
+console.log(letters); // ["h", "e", "l", "l", "o"]
+
+let range = Array.from({ length: 5 }, (_, i) => i + 1);
+console.log(range); // [1, 2, 3, 4, 5]
 ```
 
-#### Creating Arrays
+#### Challenge 1.1 — Create Your Own (individual, 3 minutes)
 
-**1. Array Literal (Recommended)**
+- **Requirement:** Create three arrays: one with your top 3 movies, one with 3 numbers, and one mixed. Log each first and last item.
+- **Time limit:** 3 minutes
+
+#### Review
+
+Check that students use `array[0]` and `array[array.length - 1]`.
+
+### 1.2 Length and Index Access
+
+#### Problem
+
+A student tries to get the last item like this:
+
 ```javascript
+let colors = ["red", "green", "blue"];
+console.log(colors[colors.length]); // undefined
+```
+
+#### Guess
+
+Ask: "Why is the last item `undefined`?"
+
+#### Explain
+
+- `length` is the number of items. The last index is `length - 1`.
+- `length` can also be set to shrink or clear an array.
+
+#### Live Code
+
+```javascript
+let colors = ["red", "green", "blue", "yellow"];
+
+console.log(colors.length);              // 4
+console.log(colors[0]);                  // "red"
+console.log(colors[colors.length - 1]);  // "yellow"
+console.log(colors[10]);                 // undefined
+
+// Shrink
 let fruits = ["apple", "banana", "orange"];
-let emptyArray = [];
-```
-
-**2. Array Constructor**
-```javascript
-let fruits = new Array("apple", "banana", "orange");
-let emptyArray = new Array();
-let arrayWithSize = new Array(5); // Creates array with 5 empty slots
-```
-
-**3. Array.from()**
-```javascript
-let fromString = Array.from("hello"); // ["h", "e", "l", "l", "o"]
-let fromRange = Array.from({length: 5}, (_, i) => i + 1); // [1, 2, 3, 4, 5]
-```
-
-#### Array Characteristics
-
-```javascript
-let fruits = ["apple", "banana", "orange"];
-
-// Ordered - elements have positions
-console.log(fruits[0]); // "apple" (first element)
-console.log(fruits[1]); // "banana" (second element)
-
-// Zero-indexed - positions start at 0
-console.log(fruits.length); // 3 (number of elements)
-
-// Can hold any type
-let mixed = [1, "string", true, null, undefined, {key: "value"}, [1, 2, 3]];
-
-// Dynamic - can change size
-fruits.push("grape"); // Add element
-fruits.pop();         // Remove element
-```
-
-### Array Length
-
-The `length` property returns the number of elements in an array.
-
-```javascript
-let fruits = ["apple", "banana", "orange"];
-console.log(fruits.length); // 3
-
-// Length is not read-only
-fruits.length = 5; // Adds two empty slots
-console.log(fruits); // ["apple", "banana", "orange", empty × 2]
-
-fruits.length = 2; // Removes elements
+fruits.length = 2;
 console.log(fruits); // ["apple", "banana"]
 
-// Clear array
+// Clear
 fruits.length = 0;
 console.log(fruits); // []
 ```
 
-### Accessing Array Elements
+#### Challenge 1.2 — Safe Last Item (individual, 3 minutes)
+
+- **Requirement:** Write a line that always gets the last item of any array `arr`.
+- **Time limit:** 3 minutes
+- **Hint:** `arr[arr.length - 1]`.
+
+---
+
+## Part 2: Adding and Removing Elements
+
+### 2.1 Adding to the End and Beginning
+
+#### Problem
+
+A queue of customers. New customers can arrive at the front (VIP) or the back.
+
+#### Live Code
+
+```javascript
+let queue = ["John", "Jane"];
+
+// End
+queue.push("Bob");
+console.log(queue); // ["John", "Jane", "Bob"]
+
+queue.push("Alice", "Tom");
+console.log(queue); // ["John", "Jane", "Bob", "Alice", "Tom"]
+
+// Beginning
+queue.unshift("VIP");
+console.log(queue); // ["VIP", "John", ...]
+
+queue.unshift("VIP2", "VIP3");
+console.log(queue);
+```
+
+#### Challenge 2.1 — Add and Remove (individual, 4 minutes)
+
+- **Requirement:** Start with `let tasks = ["Email"];`. Add `"Code"` to the end and `"Plan"` to the beginning. Log the result.
+- **Time limit:** 4 minutes
+
+### 2.2 Removing from the End and Beginning
+
+#### Live Code
 
 ```javascript
 let fruits = ["apple", "banana", "orange", "grape"];
 
-// Access by index
-console.log(fruits[0]);    // "apple" (first)
-console.log(fruits[1]);    // "banana"
-console.log(fruits[3]);    // "grape"
+let last = fruits.pop();
+console.log(last);       // "grape"
+console.log(fruits);     // ["apple", "banana", "orange"]
 
-// Access last element
-console.log(fruits[fruits.length - 1]); // "grape"
-
-// Negative indices (not supported in basic arrays)
-// Use slice for negative-like access
-console.log(fruits.slice(-1)[0]); // "grape"
-
-// Accessing non-existent index
-console.log(fruits[10]);   // undefined
+let first = fruits.shift();
+console.log(first);      // "apple"
+console.log(fruits);     // ["banana", "orange"]
 ```
 
-### Adding Elements
+#### Challenge 2.2 — Stack (individual, 4 minutes)
 
-#### Adding to End
+- **Requirement:** Simulate a stack. Start with `let stack = ["A", "B", "C"];`. Pop the last item, then push `"D"`, then pop again. Log the stack after each step.
+- **Time limit:** 4 minutes
+
+### 2.3 splice — Add or Remove at Any Position
+
+#### Problem
+
+A playlist needs a song inserted in the middle, or removed from the middle.
+
+#### Explain
+
+`splice(start, deleteCount, ...items)` modifies the original array.
+
+#### Live Code
 
 ```javascript
-let fruits = ["apple", "banana"];
+let songs = ["Song A", "Song B", "Song D"];
 
-// push() - adds to end, returns new length
-fruits.push("orange");
-console.log(fruits); // ["apple", "banana", "orange"]
+songs.splice(2, 0, "Song C");
+console.log(songs); // ["Song A", "Song B", "Song C", "Song D"]
 
-// push multiple elements
-fruits.push("grape", "mango");
-console.log(fruits); // ["apple", "banana", "orange", "grape", "mango"]
+songs.splice(1, 1);
+console.log(songs); // ["Song A", "Song C", "Song D"]
 
-// Using length property
-fruits[fruits.length] = "kiwi";
-console.log(fruits); // [..., "kiwi"]
+songs.splice(1, 1, "New Song", "Another Song");
+console.log(songs);
 ```
 
-#### Adding to Beginning
+#### Challenge 2.3 — Edit in Place (individual, 5 minutes)
 
-```javascript
-let fruits = ["banana", "orange"];
+- **Requirement:** Start with `let items = ["pen", "pencil", "eraser", "ruler"]`. Remove `"pencil"` and insert `"marker"` in its place.
+- **Time limit:** 5 minutes
+- **Hint:** Find the index first, then `splice(index, 1, "marker")`.
 
-// unshift() - adds to beginning, returns new length
-fruits.unshift("apple");
-console.log(fruits); // ["apple", "banana", "orange"]
+---
 
-// unshift multiple elements
-fruits.unshift("pear", "grape");
-console.log(fruits); // ["pear", "grape", "apple", "banana", "orange"]
-```
+## Part 3: Searching in Arrays
 
-#### Adding at Specific Position
+### 3.1 indexOf, lastIndexOf, includes
 
-```javascript
-let fruits = ["apple", "banana", "grape"];
+#### Problem
 
-// splice() - can add/remove at any position
-// splice(start, deleteCount, item1, item2, ...)
-fruits.splice(2, 0, "orange"); // Add "orange" at index 2
-console.log(fruits); // ["apple", "banana", "orange", "grape"]
+A student wants to know if `"banana"` is in the list and where it is.
 
-// Add multiple elements
-fruits.splice(1, 0, "pear", "kiwi");
-console.log(fruits); // ["apple", "pear", "kiwi", "banana", "orange", "grape"]
-```
-
-### Removing Elements
-
-#### Removing from End
-
-```javascript
-let fruits = ["apple", "banana", "orange", "grape"];
-
-// pop() - removes last element, returns removed element
-let lastFruit = fruits.pop();
-console.log(lastFruit); // "grape"
-console.log(fruits);    // ["apple", "banana", "orange"]
-```
-
-#### Removing from Beginning
-
-```javascript
-let fruits = ["apple", "banana", "orange", "grape"];
-
-// shift() - removes first element, returns removed element
-let firstFruit = fruits.shift();
-console.log(firstFruit); // "apple"
-console.log(fruits);     // ["banana", "orange", "grape"]
-```
-
-#### Removing at Specific Position
-
-```javascript
-let fruits = ["apple", "banana", "orange", "grape", "mango"];
-
-// splice() - removes elements
-fruits.splice(2, 1); // Remove 1 element at index 2
-console.log(fruits); // ["apple", "banana", "grape", "mango"]
-
-// Remove multiple elements
-fruits.splice(1, 2); // Remove 2 elements starting at index 1
-console.log(fruits); // ["apple", "mango"]
-
-// Remove and add
-fruits.splice(1, 1, "banana", "orange"); // Replace "mango" with "banana", "orange"
-console.log(fruits); // ["apple", "banana", "orange"]
-```
-
-#### Removing by Value
-
-```javascript
-let fruits = ["apple", "banana", "orange", "banana", "grape"];
-
-// Find index and remove
-let index = fruits.indexOf("banana");
-if (index > -1) {
-    fruits.splice(index, 1);
-}
-console.log(fruits); // ["apple", "orange", "banana", "grape"]
-
-// Remove all occurrences
-let fruits = ["apple", "banana", "orange", "banana", "grape"];
-fruits = fruits.filter(item => item !== "banana");
-console.log(fruits); // ["apple", "orange", "grape"]
-```
-
-### Searching in Arrays
-
-#### indexOf() and lastIndexOf()
+#### Live Code
 
 ```javascript
 let fruits = ["apple", "banana", "orange", "grape", "banana"];
 
-// indexOf() - returns first index or -1
-console.log(fruits.indexOf("banana"));  // 1
-console.log(fruits.indexOf("pear"));    // -1 (not found)
-
-// lastIndexOf() - returns last index or -1
-console.log(fruits.lastIndexOf("banana")); // 4
-console.log(fruits.lastIndexOf("pear"));   // -1
-
-// Starting position
-console.log(fruits.indexOf("banana", 2)); // 4 (search from index 2)
+console.log(fruits.indexOf("banana"));      // 1
+console.log(fruits.lastIndexOf("banana"));  // 4
+console.log(fruits.indexOf("pear"));        // -1
+console.log(fruits.includes("orange"));     // true
+console.log(fruits.includes("Banana"));     // false (case-sensitive)
 ```
 
-#### includes()
+#### Challenge 3.1 — Find the Position (individual, 4 minutes)
 
-```javascript
-let fruits = ["apple", "banana", "orange"];
+- **Requirement:** Given `let names = ["Ada", "Grace", "Alan", "Grace"]`, find and log the first and last index of `"Grace"`.
+- **Time limit:** 4 minutes
 
-// includes() - returns true/false
-console.log(fruits.includes("banana")); // true
-console.log(fruits.includes("pear"));   // false
+### 3.2 find and findIndex
 
-// Case-sensitive
-console.log(fruits.includes("Banana")); // false
-```
+#### Problem
 
-#### find() and findIndex()
+Find the first adult in a list of people.
+
+#### Live Code
 
 ```javascript
 let users = [
-    { id: 1, name: "John", age: 30 },
-    { id: 2, name: "Jane", age: 25 },
-    { id: 3, name: "Bob", age: 35 }
+  { id: 1, name: "John", age: 30 },
+  { id: 2, name: "Jane", age: 25 },
+  { id: 3, name: "Bob", age: 35 }
 ];
 
-// find() - returns first element that matches condition
-let user = users.find(u => u.age > 30);
-console.log(user); // { id: 3, name: "Bob", age: 35 }
+let firstAdult = users.find(u => u.age >= 30);
+console.log(firstAdult); // John
 
-// findIndex() - returns index of first matching element
-let index = users.findIndex(u => u.name === "Jane");
-console.log(index); // 1
+let janeIndex = users.findIndex(u => u.name === "Jane");
+console.log(janeIndex);  // 1
 
-// Not found
 let notFound = users.find(u => u.age > 50);
-console.log(notFound); // undefined
+console.log(notFound);   // undefined
 ```
 
-### Sorting Arrays
+#### Challenge 3.2 — Find One (individual, 4 minutes)
 
-#### sort() - String Sorting
+- **Requirement:** Given an array of products, find the first product with a price greater than `100`.
+- **Time limit:** 4 minutes
+- **Hint:** Use `products.find(p => p.price > 100)`.
+
+---
+
+## Bug Hunt 1
+
+### Problem
+
+The following code has three deliberate bugs. Ask students to find them.
+
+```javascript
+let cart = ["Milk", "Bread", "Eggs"];
+
+cart.push("Cheese");
+cart.pop();
+console.log(cart[3]);
+
+let index = cart.indexOf("bread");
+if (index > 0) {
+  cart.splice(index, 1);
+}
+
+console.log(cart);
+```
+
+### Issues
+
+1. `cart[3]` is `undefined` because the array only has 3 items after pop.
+2. `indexOf("bread")` is case-sensitive, so it returns `-1`.
+3. The `if` condition uses `> 0` instead of `>= 0` or `> -1`, so it will not remove `"Bread"` even if found.
+
+### Fixed Version (for the instructor)
+
+```javascript
+let cart = ["Milk", "Bread", "Eggs"];
+
+cart.push("Cheese");
+cart.pop();
+console.log(cart[cart.length - 1]);
+
+let index = cart.indexOf("Bread");
+if (index !== -1) {
+  cart.splice(index, 1);
+}
+
+console.log(cart);
+```
+
+### Points
+
+1 point for each found bug.
+
+---
+
+## Part 4: Sorting Arrays
+
+### 4.1 String Sorting and Reverse
+
+#### Problem
+
+A list of words should be in alphabetical order.
+
+#### Live Code
 
 ```javascript
 let fruits = ["banana", "apple", "orange", "grape"];
 
-// Default sort (alphabetical)
 fruits.sort();
 console.log(fruits); // ["apple", "banana", "grape", "orange"]
 
-// Reverse sort
 fruits.reverse();
 console.log(fruits); // ["orange", "grape", "banana", "apple"]
 ```
 
-#### sort() - Numeric Sorting
+#### Challenge 4.1 — Sort Names (individual, 3 minutes)
+
+- **Requirement:** Sort `let names = ["Zara", "Alice", "Mike", "Bob"]` alphabetically and log the result.
+- **Time limit:** 3 minutes
+
+### 4.2 Numeric Sorting
+
+#### Problem
+
+The same `sort()` gives wrong results for numbers.
+
+#### Guess
+
+Ask: "What will `[10, 5, 100, 1, 50].sort()` print?"
+
+#### Explain
+
+`sort()` converts numbers to strings and compares them as strings. Use a compare function for numbers.
+
+#### Live Code
 
 ```javascript
 let numbers = [10, 5, 100, 1, 50];
 
-// Default sort (converts to strings)
 numbers.sort();
-console.log(numbers); // [1, 10, 100, 5, 50] (incorrect for numbers)
+console.log(numbers); // [1, 10, 100, 5, 50] — wrong!
 
-// Numeric sort with compare function
 numbers.sort((a, b) => a - b);
 console.log(numbers); // [1, 5, 10, 50, 100]
 
-// Descending order
 numbers.sort((a, b) => b - a);
 console.log(numbers); // [100, 50, 10, 5, 1]
 ```
 
-#### sort() - Object Sorting
+#### Challenge 4.2 — Sort Prices (individual, 4 minutes)
+
+- **Requirement:** Sort `let prices = [9.99, 4.50, 12.00, 1.99]` from lowest to highest.
+- **Time limit:** 4 minutes
+- **Hint:** `prices.sort((a, b) => a - b)`.
+
+### 4.3 Sorting Objects
+
+#### Live Code
 
 ```javascript
 let users = [
-    { name: "John", age: 30 },
-    { name: "Jane", age: 25 },
-    { name: "Bob", age: 35 }
+  { name: "John", age: 30 },
+  { name: "Jane", age: 25 },
+  { name: "Bob", age: 35 }
 ];
 
-// Sort by age
 users.sort((a, b) => a.age - b.age);
-console.log(users); // Jane (25), John (30), Bob (35)
+console.log(users); // Jane, John, Bob
 
-// Sort by name
 users.sort((a, b) => a.name.localeCompare(b.name));
 console.log(users); // Bob, Jane, John
 ```
 
-### Slicing Arrays
+#### Challenge 4.3 — Sort Products (individual, 5 minutes)
 
-#### slice() - Extract Portion
+- **Requirement:** Sort `let products = [{name: "Laptop", price: 999}, {name: "Mouse", price: 25}, {name: "Book", price: 15}]` by price ascending.
+- **Time limit:** 5 minutes
+
+---
+
+## Part 5: Slicing, Joining, and Combining
+
+### 5.1 slice
+
+#### Problem
+
+Extract a subset of an array without changing the original.
+
+#### Live Code
 
 ```javascript
 let fruits = ["apple", "banana", "orange", "grape", "mango"];
 
-// slice(start, end) - end is not included
-console.log(fruits.slice(1, 3));    // ["banana", "orange"]
-console.log(fruits.slice(2));       // ["orange", "grape", "mango"]
-console.log(fruits.slice(0, 2));    // ["apple", "banana"]
+console.log(fruits.slice(1, 3));  // ["banana", "orange"]
+console.log(fruits.slice(2));     // ["orange", "grape", "mango"]
+console.log(fruits.slice(-2));    // ["grape", "mango"]
+console.log(fruits.slice(1, -1)); // ["banana", "orange", "grape"]
 
-// Negative indices
-console.log(fruits.slice(-2));      // ["grape", "mango"]
-console.log(fruits.slice(1, -1));   // ["banana", "orange", "grape"]
-
-// Clone array
+// Clone
 let clone = fruits.slice();
-console.log(clone); // ["apple", "banana", "orange", "grape", "mango"]
+clone.push("kiwi");
+console.log(fruits);  // unchanged
+console.log(clone);   // has kiwi
 ```
 
-### Array Iteration Methods
+#### Challenge 5.1 — First Three (individual, 3 minutes)
 
-#### forEach()
+- **Requirement:** Use `slice` to get the first three items of any array.
+- **Time limit:** 3 minutes
+- **Hint:** `arr.slice(0, 3)`.
+
+### 5.2 join and concat
+
+#### Live Code
 
 ```javascript
 let fruits = ["apple", "banana", "orange"];
 
-// forEach() - executes function for each element
-fruits.forEach((fruit, index) => {
-    console.log(`${index}: ${fruit}`);
-});
+console.log(fruits.join());          // "apple,banana,orange"
+console.log(fruits.join(", "));    // "apple, banana, orange"
+console.log(fruits.join(" - "));    // "apple - banana - orange"
 
-// Output:
-// 0: apple
-// 1: banana
-// 2: orange
+let group1 = ["apple", "banana"];
+let group2 = ["orange", "grape"];
+let all = group1.concat(group2);
+console.log(all);
+
+// Modern spread
+let combined = [...group1, ...group2];
+console.log(combined);
 ```
 
-#### map()
+#### Challenge 5.2 — Sentence Builder (individual, 4 minutes)
+
+- **Requirement:** Convert `let words = ["I", "love", "JavaScript"]` into the sentence `"I love JavaScript."` using `join`.
+- **Time limit:** 4 minutes
+- **Hint:** `words.join(" ") + "."`.
+
+---
+
+## Part 6: Array Iteration Methods
+
+### 6.1 forEach
+
+#### Problem
+
+Print every item in a list with its position.
+
+#### Live Code
+
+```javascript
+let fruits = ["apple", "banana", "orange"];
+
+fruits.forEach((fruit, index) => {
+  console.log(`${index}: ${fruit}`);
+});
+```
+
+#### Challenge 6.1 — Log Prices (individual, 3 minutes)
+
+- **Requirement:** Use `forEach` to print each price in `let prices = [10, 20, 30]` with the format `"Price: $10"`.
+- **Time limit:** 3 minutes
+
+### 6.2 map
+
+#### Problem
+
+Apply the same transformation to every item and make a new array.
+
+#### Live Code
 
 ```javascript
 let numbers = [1, 2, 3, 4, 5];
 
-// map() - creates new array with transformed elements
 let doubled = numbers.map(num => num * 2);
 console.log(doubled); // [2, 4, 6, 8, 10]
 
-// map with objects
 let users = [
-    { name: "John", age: 30 },
-    { name: "Jane", age: 25 }
+  { name: "John", age: 30 },
+  { name: "Jane", age: 25 }
 ];
 let names = users.map(user => user.name);
 console.log(names); // ["John", "Jane"]
 ```
 
-#### filter()
+#### Challenge 6.2 — Double and Uppercase (individual, 4 minutes)
+
+- **Requirement:** Map `[1, 2, 3]` to `[2, 4, 6]` and `["a", "b", "c"]` to `["A", "B", "C"]`.
+- **Time limit:** 4 minutes
+
+### 6.3 filter
+
+#### Live Code
 
 ```javascript
 let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-// filter() - creates new array with elements that pass condition
-let evenNumbers = numbers.filter(num => num % 2 === 0);
-console.log(evenNumbers); // [2, 4, 6, 8, 10]
+let even = numbers.filter(n => n % 2 === 0);
+console.log(even); // [2, 4, 6, 8, 10]
 
 let users = [
-    { name: "John", age: 30 },
-    { name: "Jane", age: 25 },
-    { name: "Bob", age: 35 }
+  { name: "John", age: 30 },
+  { name: "Jane", age: 25 },
+  { name: "Bob", age: 35 }
 ];
-let adults = users.filter(user => user.age >= 30);
-console.log(adults); // [{ name: "John", age: 30 }, { name: "Bob", age: 35 }]
+let adults = users.filter(u => u.age >= 30);
+console.log(adults); // John and Bob
 ```
 
-#### reduce()
+#### Challenge 6.3 — Filter by Category (individual, 5 minutes)
+
+- **Requirement:** Filter `let products = [{name: "Book", category: "Books"}, {name: "Phone", category: "Electronics"}, {name: "Pen", category: "Stationery"}]` to only `"Electronics"`.
+- **Time limit:** 5 minutes
+
+### 6.4 reduce
+
+#### Problem
+
+Calculate the total price of a shopping cart.
+
+#### Live Code
 
 ```javascript
 let numbers = [1, 2, 3, 4, 5];
-
-// reduce() - reduces array to single value
-let sum = numbers.reduce((acc, num) => acc + num, 0);
+let sum = numbers.reduce((acc, n) => acc + n, 0);
 console.log(sum); // 15
 
-// With objects
 let cart = [
-    { item: "Book", price: 10 },
-    { item: "Pen", price: 2 },
-    { item: "Notebook", price: 5 }
+  { item: "Book", price: 10 },
+  { item: "Pen", price: 2 },
+  { item: "Notebook", price: 5 }
 ];
 let total = cart.reduce((acc, item) => acc + item.price, 0);
 console.log(total); // 17
 ```
 
-### Joining Arrays
+#### Challenge 6.4 — Total Price (individual, 5 minutes)
 
-#### join()
+- **Requirement:** Use `reduce` to get the total of `let prices = [10, 20, 30, 40]`.
+- **Time limit:** 5 minutes
+- **Hint:** Start the accumulator at `0`.
 
-```javascript
-let fruits = ["apple", "banana", "orange"];
+---
 
-// join() - converts array to string
-console.log(fruits.join());          // "apple,banana,orange"
-console.log(fruits.join(", "));     // "apple, banana, orange"
-console.log(fruits.join(" - "));    // "apple - banana - orange"
-console.log(fruits.join(""));       // "applebananaorange"
-```
+## Part 7: Other Useful Array Methods
 
-#### concat()
+### 7.1 every and some
 
-```javascript
-let fruits1 = ["apple", "banana"];
-let fruits2 = ["orange", "grape"];
+#### Problem
 
-// concat() - merges arrays
-let allFruits = fruits1.concat(fruits2);
-console.log(allFruits); // ["apple", "banana", "orange", "grape"]
+Check if all students passed, or if any student scored above 90.
 
-// Multiple arrays
-let moreFruits = allFruits.concat(["mango"], ["kiwi"]);
-console.log(moreFruits); // ["apple", "banana", "orange", "grape", "mango", "kiwi"]
-
-// Spread operator (modern approach)
-let combined = [...fruits1, ...fruits2];
-console.log(combined); // ["apple", "banana", "orange", "grape"]
-```
-
-### Other Useful Array Methods
-
-#### every() and some()
+#### Live Code
 
 ```javascript
-let numbers = [2, 4, 6, 8, 10];
+let scores = [80, 85, 90, 95];
 
-// every() - true if all elements pass condition
-let allEven = numbers.every(num => num % 2 === 0);
-console.log(allEven); // true
+let allPassed = scores.every(s => s >= 60);
+console.log(allPassed); // true
 
-// some() - true if at least one element passes condition
-let hasGreaterThan5 = numbers.some(num => num > 5);
-console.log(hasGreaterThan5); // true
+let hasTopScore = scores.some(s => s >= 90);
+console.log(hasTopScore); // true
 ```
 
-#### flat() and flatMap()
+#### Challenge 7.1 — Check Conditions (individual, 4 minutes)
+
+- **Requirement:** Use `every` to check if all numbers in `[2, 4, 6, 8]` are even, and `some` to check if any are greater than `5`.
+- **Time limit:** 4 minutes
+
+### 7.2 flat and flatMap
+
+#### Live Code
 
 ```javascript
 let nested = [1, [2, [3, [4, 5]]]];
 
-// flat() - flattens nested arrays
-console.log(nested.flat());      // [1, 2, [3, [4, 5]]]
-console.log(nested.flat(2));     // [1, 2, 3, [4, 5]]
-console.log(nested.flat(Infinity)); // [1, 2, 3, 4, 5]
+console.log(nested.flat());           // [1, 2, [3, [4, 5]]]
+console.log(nested.flat(2));          // [1, 2, 3, [4, 5]]
+console.log(nested.flat(Infinity));   // [1, 2, 3, 4, 5]
 
-// flatMap() - maps then flattens
 let numbers = [1, 2, 3];
-let doubled = numbers.flatMap(num => [num, num * 2]);
+let doubled = numbers.flatMap(n => [n, n * 2]);
 console.log(doubled); // [1, 2, 2, 4, 3, 6]
+```
+
+#### Challenge 7.2 — Flatten (individual, 4 minutes)
+
+- **Requirement:** Flatten `let groups = [["A", "B"], ["C"], ["D", "E"]]` to a single array.
+- **Time limit:** 4 minutes
+- **Hint:** Use `flat()` or `flat(Infinity)`.
+
+---
+
+## Part 8: Practical Array Projects
+
+### 8.1 Product Manager
+
+#### Live Code
+
+```javascript
+class ProductManager {
+  constructor() {
+    this.products = [];
+  }
+
+  addProduct(name, price, category) {
+    const product = {
+      id: Date.now(),
+      name,
+      price,
+      category
+    };
+    this.products.push(product);
+    console.log(`Added: ${name} ($${price})`);
+    return product;
+  }
+
+  removeProduct(id) {
+    const index = this.products.findIndex(p => p.id === id);
+    if (index > -1) {
+      const removed = this.products.splice(index, 1)[0];
+      console.log(`Removed: ${removed.name}`);
+      return removed;
+    }
+    console.log("Product not found");
+    return null;
+  }
+
+  findProduct(name) {
+    return this.products.find(p =>
+      p.name.toLowerCase() === name.toLowerCase()
+    ) || null;
+  }
+
+  getByCategory(category) {
+    return this.products.filter(p =>
+      p.category.toLowerCase() === category.toLowerCase()
+    );
+  }
+
+  sortByPrice(ascending = true) {
+    return [...this.products].sort((a, b) =>
+      ascending ? a.price - b.price : b.price - a.price
+    );
+  }
+
+  getTotalValue() {
+    return this.products.reduce((total, p) => total + p.price, 0);
+  }
+
+  display() {
+    console.log("\n--- Products ---");
+    this.products.forEach((p, i) => {
+      console.log(`${i + 1}. ${p.name} - $${p.price} (${p.category})`);
+    });
+  }
+}
+
+const manager = new ProductManager();
+manager.addProduct("Laptop", 999.99, "Electronics");
+manager.addProduct("Book", 19.99, "Books");
+manager.addProduct("Headphones", 149.99, "Electronics");
+manager.display();
+```
+
+### 8.2 Task Manager
+
+#### Live Code
+
+```javascript
+class TaskManager {
+  constructor() {
+    this.tasks = [];
+  }
+
+  addTask(title, priority = "medium") {
+    const task = {
+      id: Date.now(),
+      title,
+      priority,
+      completed: false
+    };
+    this.tasks.push(task);
+    return task;
+  }
+
+  completeTask(id) {
+    const task = this.tasks.find(t => t.id === id);
+    if (task) {
+      task.completed = true;
+      return task;
+    }
+    return null;
+  }
+
+  deleteTask(id) {
+    const index = this.tasks.findIndex(t => t.id === id);
+    if (index > -1) {
+      return this.tasks.splice(index, 1)[0];
+    }
+    return null;
+  }
+
+  getPending() {
+    return this.tasks.filter(t => !t.completed);
+  }
+
+  getCompleted() {
+    return this.tasks.filter(t => t.completed);
+  }
+
+  sortByPriority() {
+    const order = { high: 0, medium: 1, low: 2 };
+    return [...this.tasks].sort((a, b) =>
+      order[a.priority] - order[b.priority]
+    );
+  }
+
+  display() {
+    console.log("\n--- Tasks ---");
+    this.tasks.forEach((t, i) => {
+      const status = t.completed ? "done" : "pending";
+      console.log(`${i + 1}. [${status}] ${t.title} (${t.priority})`);
+    });
+  }
+}
 ```
 
 ---
 
-## 💻 Practical (1.5h)
+## Bug Hunt 2
 
-### Exercise 1: Array Basics
+### Problem
 
-```javascript
-// Exercise 1.1: Creating arrays
-console.log("=== Creating Arrays ===");
-
-let fruits = ["apple", "banana", "orange"];
-let numbers = [1, 2, 3, 4, 5];
-let mixed = [1, "hello", true, null, {name: "John"}];
-let empty = [];
-
-console.log("Fruits:", fruits);
-console.log("Numbers:", numbers);
-console.log("Mixed:", mixed);
-console.log("Empty:", empty);
-
-// Exercise 1.2: Array length
-console.log("\n=== Array Length ===");
-
-console.log("Fruits length:", fruits.length);
-console.log("Numbers length:", numbers.length);
-
-// Modify length
-fruits.length = 5;
-console.log("Fruits after length=5:", fruits);
-
-fruits.length = 2;
-console.log("Fruits after length=2:", fruits);
-
-// Exercise 1.3: Accessing elements
-console.log("\n=== Accessing Elements ===");
-
-let colors = ["red", "green", "blue", "yellow"];
-
-console.log("First element:", colors[0]);
-console.log("Second element:", colors[1]);
-console.log("Last element:", colors[colors.length - 1]);
-console.log("Non-existent:", colors[10]);
-```
-
-### Exercise 2: Adding Elements
+The task manager has bugs. Ask students to find them.
 
 ```javascript
-// Exercise 2.1: Adding to end
-console.log("=== Adding to End ===");
+let tasks = [
+  { id: 1, title: "Read", completed: false },
+  { id: 2, title: "Write", completed: false }
+];
 
-let fruits = ["apple", "banana"];
-console.log("Original:", fruits);
-
-fruits.push("orange");
-console.log("After push:", fruits);
-
-fruits.push("grape", "mango");
-console.log("After push multiple:", fruits);
-
-// Exercise 2.2: Adding to beginning
-console.log("\n=== Adding to Beginning ===");
-
-fruits.unshift("pear");
-console.log("After unshift:", fruits);
-
-fruits.unshift("kiwi", "berry");
-console.log("After unshift multiple:", fruits);
-
-// Exercise 2.3: Adding at specific position
-console.log("\n=== Adding at Specific Position ===");
-
-fruits.splice(3, 0, "peach");
-console.log("After splice insert:", fruits);
-
-fruits.splice(1, 0, "lemon", "lime");
-console.log("After splice multiple:", fruits);
-```
-
-### Exercise 3: Removing Elements
-
-```javascript
-// Exercise 3.1: Removing from end
-console.log("=== Removing from End ===");
-
-let fruits = ["apple", "banana", "orange", "grape", "mango"];
-console.log("Original:", fruits);
-
-let removed = fruits.pop();
-console.log("Removed:", removed);
-console.log("After pop:", fruits);
-
-// Exercise 3.2: Removing from beginning
-console.log("\n=== Removing from Beginning ===");
-
-removed = fruits.shift();
-console.log("Removed:", removed);
-console.log("After shift:", fruits);
-
-// Exercise 3.3: Removing at specific position
-console.log("\n=== Removing at Specific Position ===");
-
-fruits.splice(1, 1);
-console.log("After splice remove:", fruits);
-
-// Exercise 3.4: Removing by value
-console.log("\n=== Removing by Value ===");
-
-let items = ["apple", "banana", "orange", "banana", "grape"];
-console.log("Original:", items);
-
-let index = items.indexOf("banana");
-if (index > -1) {
-    items.splice(index, 1);
+function completeTask(id) {
+  let task = tasks.find(t => t.id === id);
+  task.completed = true;
 }
-console.log("After removing first 'banana':", items);
 
-// Remove all occurrences
-items = items.filter(item => item !== "banana");
-console.log("After removing all 'banana':", items);
+function deleteTask(id) {
+  let task = tasks.find(t => t.id === id);
+  tasks = tasks.filter(t => t !== task);
+}
+
+completeTask(2);
+deleteTask(2);
+console.log(tasks.length);
+
+tasks.sort((a, b) => a.completed > b.completed);
+console.log(tasks);
 ```
 
-### Exercise 4: Searching Arrays
+### Issues
+
+1. `completeTask(2)` changes `completed` but then `deleteTask(2)` removes the same task. The order matters, but the logic is not obviously wrong.
+2. `tasks.sort((a, b) => a.completed > b.completed)` uses `>` which returns a boolean, not a number. This can cause inconsistent sort results.
+3. `completeTask` does not check if `task` exists. If `id` is not found, `task` is `undefined` and `task.completed` throws an error.
+
+### Fixed Version (for the instructor)
 
 ```javascript
-// Exercise 4.1: indexOf and lastIndexOf
-console.log("=== indexOf and lastIndexOf ===");
-
-let fruits = ["apple", "banana", "orange", "grape", "banana"];
-
-console.log("indexOf('banana'):", fruits.indexOf("banana"));
-console.log("lastIndexOf('banana'):", fruits.lastIndexOf("banana"));
-console.log("indexOf('pear'):", fruits.indexOf("pear"));
-
-// Exercise 4.2: includes
-console.log("\n=== includes ===");
-
-console.log("includes('orange'):", fruits.includes("orange"));
-console.log("includes('pear'):", fruits.includes("pear"));
-
-// Exercise 4.3: find and findIndex
-console.log("\n=== find and findIndex ===");
-
-let users = [
-    { id: 1, name: "John", age: 30 },
-    { id: 2, name: "Jane", age: 25 },
-    { id: 3, name: "Bob", age: 35 }
+let tasks = [
+  { id: 1, title: "Read", completed: false },
+  { id: 2, title: "Write", completed: false }
 ];
 
-let user = users.find(u => u.age > 30);
-console.log("User with age > 30:", user);
+function completeTask(id) {
+  let task = tasks.find(t => t.id === id);
+  if (task) {
+    task.completed = true;
+  }
+}
 
-let index = users.findIndex(u => u.name === "Jane");
-console.log("Index of Jane:", index);
+function deleteTask(id) {
+  tasks = tasks.filter(t => t.id !== id);
+}
+
+completeTask(2);
+console.log(tasks.find(t => t.id === 2));
+
+tasks.sort((a, b) => a.completed - b.completed);
+console.log(tasks);
 ```
 
-### Exercise 5: Sorting Arrays
+### Points
+
+1 point for each found issue.
+
+---
+
+## Group Challenge: Array Olympics
+
+- **Time:** 10 minutes
+- **Teams:** 2 or 3 students per team
+- **Task:** Each team receives the same data. They must solve as many of the following as possible.
+- **Scoring:** 2 points per correct solution. The team with the most points wins.
+
+### Data
 
 ```javascript
-// Exercise 5.1: String sorting
-console.log("=== String Sorting ===");
-
-let fruits = ["banana", "apple", "orange", "grape"];
-console.log("Original:", fruits);
-
-fruits.sort();
-console.log("After sort:", fruits);
-
-fruits.reverse();
-console.log("After reverse:", fruits);
-
-// Exercise 5.2: Numeric sorting
-console.log("\n=== Numeric Sorting ===");
-
-let numbers = [10, 5, 100, 1, 50];
-console.log("Original:", numbers);
-
-numbers.sort();
-console.log("After default sort:", numbers);
-
-numbers.sort((a, b) => a - b);
-console.log("After numeric sort (asc):", numbers);
-
-numbers.sort((a, b) => b - a);
-console.log("After numeric sort (desc):", numbers);
-
-// Exercise 5.3: Object sorting
-console.log("\n=== Object Sorting ===");
-
-let users = [
-    { name: "John", age: 30 },
-    { name: "Jane", age: 25 },
-    { name: "Bob", age: 35 }
+let students = [
+  { name: "Alice", score: 85 },
+  { name: "Bob", score: 55 },
+  { name: "Carol", score: 92 },
+  { name: "Dave", score: 70 },
+  { name: "Eve", score: 45 }
 ];
-
-users.sort((a, b) => a.age - b.age);
-console.log("Sorted by age:", users);
-
-users.sort((a, b) => a.name.localeCompare(b.name));
-console.log("Sorted by name:", users);
 ```
 
-### Exercise 6: Slicing and Joining
+### Tasks
+
+1. Find the first student who passed (`score >= 60`).
+2. Make a new array of names only.
+3. Filter students who passed.
+4. Calculate the average score.
+5. Sort the students by score, highest first.
+
+### Instructor Answer Key
 
 ```javascript
-// Exercise 6.1: Slicing
-console.log("=== Slicing ===");
+// 1
+students.find(s => s.score >= 60);
 
-let fruits = ["apple", "banana", "orange", "grape", "mango"];
+// 2
+students.map(s => s.name);
 
-console.log("slice(1, 3):", fruits.slice(1, 3));
-console.log("slice(2):", fruits.slice(2));
-console.log("slice(-2):", fruits.slice(-2));
-console.log("slice():", fruits.slice()); // Clone
+// 3
+students.filter(s => s.score >= 60);
 
-// Exercise 6.2: Joining
-console.log("\n=== Joining ===");
+// 4
+let average = students.reduce((sum, s) => sum + s.score, 0) / students.length;
 
-console.log("join():", fruits.join());
-console.log("join(', '):", fruits.join(", "));
-console.log("join(' - '):", fruits.join(" - "));
-
-// Exercise 6.3: Concatenating
-console.log("\n=== Concatenating ===");
-
-let fruits1 = ["apple", "banana"];
-let fruits2 = ["orange", "grape"];
-
-let combined = fruits1.concat(fruits2);
-console.log("concat:", combined);
-
-let spreadCombined = [...fruits1, ...fruits2];
-console.log("spread:", spreadCombined);
+// 5
+students.sort((a, b) => b.score - a.score);
 ```
 
-### Exercise 7: Array Iteration Methods
+---
+
+## Individual Challenges — Progressive Difficulty
+
+### Level 1: Push and Pop (3 minutes)
+
+- **Requirement:** Start with `let stack = []`. Push `"A"`, `"B"`, `"C"`, then pop the last item and log the stack.
+- **Expected:** `["A", "B"]`
+
+### Level 2: Find and Remove (4 minutes)
+
+- **Requirement:** From `let colors = ["red", "blue", "green", "blue"]`, remove the first `"blue"` and log the result.
+- **Hint:** Use `indexOf` and `splice`.
+
+### Level 3: Map and Filter (5 minutes)
+
+- **Requirement:** From `let numbers = [1, 2, 3, 4, 5, 6]`, create a new array of the doubled values of only the odd numbers.
+- **Hint:** Filter odd, then map to double.
+
+### Level 4: Total by Category (5 minutes)
+
+- **Requirement:** Calculate the total price of all `"Electronics"` items in the following array.
 
 ```javascript
-// Exercise 7.1: forEach
-console.log("=== forEach ===");
-
-let fruits = ["apple", "banana", "orange"];
-fruits.forEach((fruit, index) => {
-    console.log(`${index}: ${fruit}`);
-});
-
-// Exercise 7.2: map
-console.log("\n=== map ===");
-
-let numbers = [1, 2, 3, 4, 5];
-let doubled = numbers.map(num => num * 2);
-console.log("Original:", numbers);
-console.log("Doubled:", doubled);
-
-let users = [
-    { name: "John", age: 30 },
-    { name: "Jane", age: 25 }
-];
-let names = users.map(user => user.name);
-console.log("Names:", names);
-
-// Exercise 7.3: filter
-console.log("\n=== filter ===");
-
-let allNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-let evenNumbers = allNumbers.filter(num => num % 2 === 0);
-console.log("Even numbers:", evenNumbers);
-
-let adults = users.filter(user => user.age >= 30);
-console.log("Adults:", adults);
-
-// Exercise 7.4: reduce
-console.log("\n=== reduce ===");
-
-let nums = [1, 2, 3, 4, 5];
-let sum = nums.reduce((acc, num) => acc + num, 0);
-console.log("Sum:", sum);
-
 let cart = [
-    { item: "Book", price: 10 },
-    { item: "Pen", price: 2 },
-    { item: "Notebook", price: 5 }
+  { name: "Phone", price: 500, category: "Electronics" },
+  { name: "Book", price: 20, category: "Books" },
+  { name: "Cable", price: 10, category: "Electronics" }
 ];
-let total = cart.reduce((acc, item) => acc + item.price, 0);
-console.log("Cart total:", total);
 ```
 
-### Exercise 8: Array Challenge - Product List Manager
+- **Hint:** Filter by category, then reduce.
 
-```javascript
-// Exercise 8: Complete Product List Manager
-console.log("=== Product List Manager ===");
+### Level 5: Sort and Slice (5 minutes)
 
-class ProductManager {
-    constructor() {
-        this.products = [];
-    }
+- **Requirement:** Sort `let scores = [88, 92, 55, 70, 100]` from highest to lowest, then get the top 3.
+- **Hint:** `scores.sort((a, b) => b - a).slice(0, 3)`.
 
-    // Add product
-    addProduct(name, price, category) {
-        const product = {
-            id: Date.now(),
-            name,
-            price,
-            category
-        };
-        this.products.push(product);
-        console.log(`Added: ${name} ($${price})`);
-        return product;
-    }
+---
 
-    // Remove product by id
-    removeProduct(id) {
-        const index = this.products.findIndex(p => p.id === id);
-        if (index > -1) {
-            const removed = this.products.splice(index, 1)[0];
-            console.log(`Removed: ${removed.name}`);
-            return removed;
-        }
-        console.log("Product not found");
-        return null;
-    }
+## Mini Project: Interactive Task and Product Dashboard
 
-    // Find product by name
-    findProduct(name) {
-        const product = this.products.find(p => 
-            p.name.toLowerCase() === name.toLowerCase()
-        );
-        return product || null;
-    }
+### Time
 
-    // Get all products
-    getAllProducts() {
-        return this.products;
-    }
+25 minutes
 
-    // Get products by category
-    getProductsByCategory(category) {
-        return this.products.filter(p => 
-            p.category.toLowerCase() === category.toLowerCase()
-        );
-    }
+### Goal
 
-    // Sort products by price
-    sortByPrice(ascending = true) {
-        const sorted = [...this.products].sort((a, b) => 
-            ascending ? a.price - b.price : b.price - a.price
-        );
-        return sorted;
-    }
+Combine array creation, search, sort, filter, map, and reduce in one HTML page with two mini-apps.
 
-    // Get total value
-    getTotalValue() {
-        return this.products.reduce((total, product) => 
-            total + product.price, 0
-        );
-    }
+### Requirements for the Students
 
-    // Get product count
-    getProductCount() {
-        return this.products.length;
-    }
+1. Create an HTML page with two sections:
+   - **Products:** inputs for name, price, category; buttons to add, remove, sort, and filter by category.
+   - **Tasks:** input for task title and priority; buttons to add, complete, delete, filter, and sort.
 
-    // Display all products
-    displayProducts() {
-        console.log("\n--- Products ---");
-        this.products.forEach((product, index) => {
-            console.log(`${index + 1}. ${product.name} - $${product.price} (${product.category})`);
-        });
-        console.log(`Total: ${this.getProductCount()} products, $${this.getTotalValue()}`);
-    }
-}
+2. Use one array for `products` and one for `tasks`.
 
-// Test the ProductManager
-const manager = new ProductManager();
+3. Use these methods:
+   - `push` to add
+   - `find` or `findIndex` to locate
+   - `splice` or `filter` to remove
+   - `sort` to order
+   - `filter` to show subsets
+   - `map` to render HTML
+   - `reduce` to calculate totals
 
-// Add products
-manager.addProduct("Laptop", 999.99, "Electronics");
-manager.addProduct("Book", 19.99, "Books");
-manager.addProduct("Headphones", 149.99, "Electronics");
-manager.addProduct("Notebook", 5.99, "Stationery");
-manager.addProduct("Mouse", 29.99, "Electronics");
+4. Display the list, total value, and counts.
 
-manager.displayProducts();
+### Time Limit
 
-// Find product
-console.log("\n--- Find Product ---");
-const laptop = manager.findProduct("Laptop");
-console.log("Found:", laptop);
+25 minutes
 
-// Get by category
-console.log("\n--- Electronics ---");
-const electronics = manager.getProductsByCategory("Electronics");
-console.log("Electronics products:", electronics);
+### Hints (optional)
 
-// Sort by price
-console.log("\n--- Sorted by Price (Ascending) ---");
-const sortedAsc = manager.sortByPrice(true);
-console.log(sortedAsc);
+- Use `innerHTML = array.map(item => `<div>...</div>`).join("")` to render.
+- For `Date.now()`, use it as a simple unique ID.
+- Use `parseFloat` for prices.
 
-console.log("\n--- Sorted by Price (Descending) ---");
-const sortedDesc = manager.sortByPrice(false);
-console.log(sortedDesc);
+### Starter HTML
 
-// Remove product
-console.log("\n--- Remove Product ---");
-const removed = manager.removeProduct(laptop.id);
-console.log("Removed:", removed);
-
-manager.displayProducts();
-```
-
-### Exercise 9: Task List Manager
-
-```javascript
-// Exercise 9: Task List Manager
-console.log("\n=== Task List Manager ===");
-
-class TaskManager {
-    constructor() {
-        this.tasks = [];
-    }
-
-    // Add task
-    addTask(title, priority = "medium") {
-        const task = {
-            id: Date.now(),
-            title,
-            priority,
-            completed: false,
-            createdAt: new Date()
-        };
-        this.tasks.push(task);
-        console.log(`Added task: ${title} (${priority})`);
-        return task;
-    }
-
-    // Complete task
-    completeTask(id) {
-        const task = this.tasks.find(t => t.id === id);
-        if (task) {
-            task.completed = true;
-            console.log(`Completed: ${task.title}`);
-            return task;
-        }
-        console.log("Task not found");
-        return null;
-    }
-
-    // Delete task
-    deleteTask(id) {
-        const index = this.tasks.findIndex(t => t.id === id);
-        if (index > -1) {
-            const removed = this.tasks.splice(index, 1)[0];
-            console.log(`Deleted: ${removed.title}`);
-            return removed;
-        }
-        console.log("Task not found");
-        return null;
-    }
-
-    // Get pending tasks
-    getPendingTasks() {
-        return this.tasks.filter(t => !t.completed);
-    }
-
-    // Get completed tasks
-    getCompletedTasks() {
-        return this.tasks.filter(t => t.completed);
-    }
-
-    // Get tasks by priority
-    getTasksByPriority(priority) {
-        return this.tasks.filter(t => 
-            t.priority.toLowerCase() === priority.toLowerCase()
-        );
-    }
-
-    // Sort by priority
-    sortByPriority() {
-        const priorityOrder = { high: 0, medium: 1, low: 2 };
-        return [...this.tasks].sort((a, b) => 
-            priorityOrder[a.priority] - priorityOrder[b.priority]
-        );
-    }
-
-    // Display tasks
-    displayTasks() {
-        console.log("\n--- Tasks ---");
-        this.tasks.forEach((task, index) => {
-            const status = task.completed ? "✓" : "○";
-            console.log(`${status} ${index + 1}. ${task.title} (${task.priority})`);
-        });
-        console.log(`Total: ${this.tasks.length} tasks`);
-        console.log(`Pending: ${this.getPendingTasks().length}`);
-        console.log(`Completed: ${this.getCompletedTasks().length}`);
-    }
-}
-
-// Test the TaskManager
-const taskManager = new TaskManager();
-
-// Add tasks
-taskManager.addTask("Complete project", "high");
-taskManager.addTask("Review code", "medium");
-taskManager.addTask("Write documentation", "low");
-taskManager.addTask("Fix bugs", "high");
-taskManager.addTask("Team meeting", "medium");
-
-taskManager.displayTasks();
-
-// Complete some tasks
-console.log("\n--- Complete Tasks ---");
-const task1 = taskManager.tasks[0];
-const task2 = taskManager.tasks[2];
-taskManager.completeTask(task1.id);
-taskManager.completeTask(task2.id);
-
-taskManager.displayTasks();
-
-// Get pending tasks
-console.log("\n--- Pending Tasks ---");
-const pending = taskManager.getPendingTasks();
-console.log("Pending:", pending);
-
-// Get high priority tasks
-console.log("\n--- High Priority Tasks ---");
-const highPriority = taskManager.getTasksByPriority("high");
-console.log("High priority:", highPriority);
-
-// Sort by priority
-console.log("\n--- Sorted by Priority ---");
-const sorted = taskManager.sortByPriority();
-console.log(sorted);
-```
-
-### Exercise 10: Complete Working Example
-
-**Complete script.js:**
-```javascript
-// Session 5: Arrays
-// This script demonstrates array operations and methods
-
-console.log("=== Session 5: Arrays ===");
-
-// 1. Array creation
-console.log("\n--- Array Creation ---");
-let fruits = ["apple", "banana", "orange"];
-let numbers = [1, 2, 3, 4, 5];
-console.log("Fruits:", fruits);
-console.log("Numbers:", numbers);
-
-// 2. Adding elements
-console.log("\n--- Adding Elements ---");
-fruits.push("grape");
-console.log("After push:", fruits);
-fruits.unshift("pear");
-console.log("After unshift:", fruits);
-
-// 3. Removing elements
-console.log("\n--- Removing Elements ---");
-let removed = fruits.pop();
-console.log("Removed:", removed);
-console.log("After pop:", fruits);
-
-// 4. Searching
-console.log("\n--- Searching ---");
-console.log("indexOf('banana'):", fruits.indexOf("banana"));
-console.log("includes('orange'):", fruits.includes("orange"));
-
-// 5. Sorting
-console.log("\n--- Sorting ---");
-let unsorted = [10, 5, 100, 1, 50];
-console.log("Original:", unsorted);
-unsorted.sort((a, b) => a - b);
-console.log("Sorted:", unsorted);
-
-// 6. Array methods
-console.log("\n--- Array Methods ---");
-let doubled = numbers.map(n => n * 2);
-console.log("Mapped:", doubled);
-
-let even = numbers.filter(n => n % 2 === 0);
-console.log("Filtered:", even);
-
-let sum = numbers.reduce((acc, n) => acc + n, 0);
-console.log("Reduced:", sum);
-
-// 7. Slicing and joining
-console.log("\n--- Slicing and Joining ---");
-console.log("slice(1, 3):", fruits.slice(1, 3));
-console.log("join(', '):", fruits.join(", "));
-
-console.log("\n=== Session 5 Complete ===");
-```
-
-**Complete index.html:**
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Session 5 - Arrays</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        .section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .section h2 {
-            color: #1890ff;
-            margin-top: 0;
-        }
-        .manager {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 10px;
-        }
-        .manager input, .manager select {
-            padding: 8px;
-            margin: 5px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            width: 200px;
-        }
-        .manager button {
-            padding: 10px 20px;
-            background-color: #1890ff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 5px;
-        }
-        .manager button:hover {
-            background-color: #0c7cd5;
-        }
-        .manager button.danger {
-            background-color: #ff4d4f;
-        }
-        .manager button.danger:hover {
-            background-color: #cf1322;
-        }
-        .list {
-            background: white;
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 15px;
-            border: 1px solid #e8e8e8;
-        }
-        .list-item {
-            padding: 10px;
-            border-bottom: 1px solid #f0f0f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .list-item:last-child {
-            border-bottom: none;
-        }
-        .list-item .actions button {
-            padding: 5px 10px;
-            margin: 0 2px;
-            font-size: 12px;
-        }
-        .priority-high { color: #ff4d4f; }
-        .priority-medium { color: #faad14; }
-        .priority-low { color: #52c41a; }
-        .completed {
-            text-decoration: line-through;
-            color: #999;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Array Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; }
+    .section { background: #f9f9f9; padding: 15px; margin-bottom: 20px; border-radius: 4px; }
+    input, select { padding: 5px; margin: 5px; }
+    button { padding: 8px 15px; margin: 5px; }
+    .list { background: white; padding: 10px; border: 1px solid #ddd; margin-top: 10px; }
+    .item { padding: 8px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
+    .item:last-child { border-bottom: none; }
+  </style>
 </head>
 <body>
-    <h1>Session 5: Arrays</h1>
-    
-    <div class="section">
-        <h2>Topics Covered</h2>
-        <ul>
-            <li>Array creation and basics</li>
-            <li>Adding and removing elements</li>
-            <li>Searching in arrays</li>
-            <li>Sorting arrays</li>
-            <li>Slicing and joining</li>
-            <li>Array iteration methods (forEach, map, filter, reduce)</li>
-        </ul>
-    </div>
+  <h1>Array Dashboard</h1>
 
-    <div class="section">
-        <h2>Product List Manager</h2>
-        <div class="manager">
-            <input type="text" id="productName" placeholder="Product name">
-            <input type="number" id="productPrice" placeholder="Price" step="0.01">
-            <select id="productCategory">
-                <option value="Electronics">Electronics</option>
-                <option value="Books">Books</option>
-                <option value="Clothing">Clothing</option>
-                <option value="Food">Food</option>
-            </select>
-            <button onclick="addProduct()">Add Product</button>
-            
-            <div class="list" id="productList">
-                <p>No products yet</p>
-            </div>
-            
-            <div style="margin-top: 15px;">
-                <button onclick="sortProductsByPrice('asc')">Sort by Price (Low to High)</button>
-                <button onclick="sortProductsByPrice('desc')">Sort by Price (High to Low)</button>
-                <button onclick="filterByCategory()">Filter by Category</button>
-                <button onclick="showAllProducts()">Show All</button>
-            </div>
-            
-            <div style="margin-top: 10px;">
-                <strong>Total Value: $<span id="totalValue">0.00</span></strong>
-                <strong style="margin-left: 20px;">Count: <span id="productCount">0</span></strong>
-            </div>
+  <div class="section">
+    <h2>Products</h2>
+    <input type="text" id="pName" placeholder="Name">
+    <input type="number" id="pPrice" placeholder="Price" step="0.01">
+    <select id="pCategory">
+      <option>Electronics</option>
+      <option>Books</option>
+      <option>Food</option>
+    </select>
+    <button onclick="addProduct()">Add</button>
+    <div id="productList" class="list"></div>
+    <button onclick="sortProducts('asc')">Sort Price Low-High</button>
+    <button onclick="sortProducts('desc')">Sort Price High-Low</button>
+    <button onclick="filterProducts('Electronics')">Filter Electronics</button>
+    <button onclick="showAllProducts()">Show All</button>
+    <p><strong>Total:</strong> $<span id="productTotal">0.00</span> | <strong>Count:</strong> <span id="productCount">0</span></p>
+  </div>
+
+  <div class="section">
+    <h2>Tasks</h2>
+    <input type="text" id="tTitle" placeholder="Task">
+    <select id="tPriority">
+      <option value="high">High</option>
+      <option value="medium">Medium</option>
+      <option value="low">Low</option>
+    </select>
+    <button onclick="addTask()">Add</button>
+    <div id="taskList" class="list"></div>
+    <button onclick="showTasks('all')">All</button>
+    <button onclick="showTasks('pending')">Pending</button>
+    <button onclick="showTasks('completed')">Completed</button>
+    <p><strong>Pending:</strong> <span id="pendingCount">0</span> | <strong>Completed:</strong> <span id="completedCount">0</span></p>
+  </div>
+
+  <script>
+    let products = [];
+    let tasks = [];
+
+    function addProduct() {
+      let name = document.getElementById("pName").value.trim();
+      let price = parseFloat(document.getElementById("pPrice").value);
+      let category = document.getElementById("pCategory").value;
+      if (!name || isNaN(price)) return;
+      products.push({ id: Date.now(), name, price, category });
+      renderProducts(products);
+    }
+
+    function renderProducts(list) {
+      let html = list.map(p => `
+        <div class="item">
+          <span>${p.name} - $${p.price.toFixed(2)} (${p.category})</span>
+          <button onclick="removeProduct(${p.id})">Remove</button>
         </div>
-    </div>
+      `).join("");
+      document.getElementById("productList").innerHTML = html || "<p>No products</p>";
+      let total = products.reduce((sum, p) => sum + p.price, 0);
+      document.getElementById("productTotal").textContent = total.toFixed(2);
+      document.getElementById("productCount").textContent = products.length;
+    }
 
-    <div class="section">
-        <h2>Task List Manager</h2>
-        <div class="manager">
-            <input type="text" id="taskTitle" placeholder="Task title">
-            <select id="taskPriority">
-                <option value="high">High Priority</option>
-                <option value="medium" selected>Medium Priority</option>
-                <option value="low">Low Priority</option>
-            </select>
-            <button onclick="addTask()">Add Task</button>
-            
-            <div class="list" id="taskList">
-                <p>No tasks yet</p>
-            </div>
-            
-            <div style="margin-top: 15px;">
-                <button onclick="showPendingTasks()">Show Pending</button>
-                <button onclick="showCompletedTasks()">Show Completed</button>
-                <button onclick="showAllTasks()">Show All</button>
-                <button onclick="sortByPriority()">Sort by Priority</button>
-            </div>
-            
-            <div style="margin-top: 10px;">
-                <strong>Pending: <span id="pendingCount">0</span></strong>
-                <strong style="margin-left: 20px;">Completed: <span id="completedCount">0</span></strong>
-            </div>
+    function removeProduct(id) {
+      products = products.filter(p => p.id !== id);
+      renderProducts(products);
+    }
+
+    function sortProducts(order) {
+      let sorted = [...products].sort((a, b) =>
+        order === "asc" ? a.price - b.price : b.price - a.price
+      );
+      renderProducts(sorted);
+    }
+
+    function filterProducts(category) {
+      let filtered = products.filter(p => p.category === category);
+      renderProducts(filtered);
+    }
+
+    function showAllProducts() {
+      renderProducts(products);
+    }
+
+    function addTask() {
+      let title = document.getElementById("tTitle").value.trim();
+      let priority = document.getElementById("tPriority").value;
+      if (!title) return;
+      tasks.push({ id: Date.now(), title, priority, completed: false });
+      renderTasks(tasks);
+    }
+
+    function renderTasks(list) {
+      let html = list.map(t => `
+        <div class="item">
+          <span>${t.completed ? "[x]" : "[ ]"} ${t.title} (${t.priority})</span>
+          <span>
+            <button onclick="toggleTask(${t.id})">${t.completed ? "Undo" : "Done"}</button>
+            <button onclick="deleteTask(${t.id})">Delete</button>
+          </span>
         </div>
-    </div>
+      `).join("");
+      document.getElementById("taskList").innerHTML = html || "<p>No tasks</p>";
+      document.getElementById("pendingCount").textContent = tasks.filter(t => !t.completed).length;
+      document.getElementById("completedCount").textContent = tasks.filter(t => t.completed).length;
+    }
 
-    <div class="section">
-        <h2>Console Output</h2>
-        <p>Open the browser console (F12) to see all JavaScript examples.</p>
-    </div>
+    function toggleTask(id) {
+      let task = tasks.find(t => t.id === id);
+      if (task) {
+        task.completed = !task.completed;
+        renderTasks(tasks);
+      }
+    }
 
-    <script src="script.js" defer></script>
-    <script>
-        // Product Manager
-        let products = [];
+    function deleteTask(id) {
+      tasks = tasks.filter(t => t.id !== id);
+      renderTasks(tasks);
+    }
 
-        function addProduct() {
-            const name = document.getElementById('productName').value;
-            const price = parseFloat(document.getElementById('productPrice').value);
-            const category = document.getElementById('productCategory').value;
-
-            if (!name || isNaN(price)) {
-                alert('Please enter a valid name and price');
-                return;
-            }
-
-            const product = {
-                id: Date.now(),
-                name,
-                price,
-                category
-            };
-
-            products.push(product);
-            renderProducts();
-            clearProductInputs();
-        }
-
-        function removeProduct(id) {
-            products = products.filter(p => p.id !== id);
-            renderProducts();
-        }
-
-        function sortProductsByPrice(order) {
-            products.sort((a, b) => order === 'asc' ? a.price - b.price : b.price - a.price);
-            renderProducts();
-        }
-
-        function filterByCategory() {
-            const category = document.getElementById('productCategory').value;
-            const filtered = products.filter(p => p.category === category);
-            renderProducts(filtered);
-        }
-
-        function showAllProducts() {
-            renderProducts();
-        }
-
-        function renderProducts(productList = products) {
-            const listDiv = document.getElementById('productList');
-            
-            if (productList.length === 0) {
-                listDiv.innerHTML = '<p>No products</p>';
-            } else {
-                listDiv.innerHTML = productList.map(product => `
-                    <div class="list-item">
-                        <div>
-                            <strong>${product.name}</strong> - $${product.price.toFixed(2)} (${product.category})
-                        </div>
-                        <div class="actions">
-                            <button class="danger" onclick="removeProduct(${product.id})">Remove</button>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            document.getElementById('totalValue').textContent = products.reduce((sum, p) => sum + p.price, 0).toFixed(2);
-            document.getElementById('productCount').textContent = products.length;
-        }
-
-        function clearProductInputs() {
-            document.getElementById('productName').value = '';
-            document.getElementById('productPrice').value = '';
-        }
-
-        // Task Manager
-        let tasks = [];
-
-        function addTask() {
-            const title = document.getElementById('taskTitle').value;
-            const priority = document.getElementById('taskPriority').value;
-
-            if (!title) {
-                alert('Please enter a task title');
-                return;
-            }
-
-            const task = {
-                id: Date.now(),
-                title,
-                priority,
-                completed: false
-            };
-
-            tasks.push(task);
-            renderTasks();
-            document.getElementById('taskTitle').value = '';
-        }
-
-        function toggleTask(id) {
-            const task = tasks.find(t => t.id === id);
-            if (task) {
-                task.completed = !task.completed;
-                renderTasks();
-            }
-        }
-
-        function deleteTask(id) {
-            tasks = tasks.filter(t => t.id !== id);
-            renderTasks();
-        }
-
-        function showPendingTasks() {
-            const pending = tasks.filter(t => !t.completed);
-            renderTasks(pending);
-        }
-
-        function showCompletedTasks() {
-            const completed = tasks.filter(t => t.completed);
-            renderTasks(completed);
-        }
-
-        function showAllTasks() {
-            renderTasks();
-        }
-
-        function sortByPriority() {
-            const priorityOrder = { high: 0, medium: 1, low: 2 };
-            tasks.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
-            renderTasks();
-        }
-
-        function renderTasks(taskList = tasks) {
-            const listDiv = document.getElementById('taskList');
-            
-            if (taskList.length === 0) {
-                listDiv.innerHTML = '<p>No tasks</p>';
-            } else {
-                listDiv.innerHTML = taskList.map(task => `
-                    <div class="list-item ${task.completed ? 'completed' : ''}">
-                        <div>
-                            <span class="priority-${task.priority}">[${task.priority.toUpperCase()}]</span>
-                            ${task.title}
-                        </div>
-                        <div class="actions">
-                            <button onclick="toggleTask(${task.id})">${task.completed ? 'Undo' : 'Complete'}</button>
-                            <button class="danger" onclick="deleteTask(${task.id})">Delete</button>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            document.getElementById('pendingCount').textContent = tasks.filter(t => !t.completed).length;
-            document.getElementById('completedCount').textContent = tasks.filter(t => t.completed).length;
-        }
-    </script>
+    function showTasks(type) {
+      let list;
+      if (type === "pending") list = tasks.filter(t => !t.completed);
+      else if (type === "completed") list = tasks.filter(t => t.completed);
+      else list = tasks;
+      renderTasks(list);
+    }
+  </script>
 </body>
 </html>
 ```
 
+### Review Questions for the Mini Project
+
+- "Why did we use `[...products].sort()` instead of `products.sort()`?"
+- "What happens if `renderProducts` receives an empty array?"
+- "Which method would you use to find one task by its title?"
+
 ---
 
-## 📝 Review (0.5h)
+## Trainer Solutions — Do Not Show Until Students Try
 
-### Q&A
+### Challenge 1.1
 
-**Q1: What is the difference between `push()` and `unshift()`?**
-A: `push()` adds elements to the end of an array, while `unshift()` adds elements to the beginning of an array.
+```javascript
+let movies = ["Inception", "Matrix", "Interstellar"];
+let numbers = [7, 14, 21];
+let mixed = ["hello", 42, true];
+console.log(movies[0], movies[movies.length - 1]);
+```
 
-**Q2: How do you remove the last element from an array?**
-A: Use the `pop()` method, which removes and returns the last element.
+### Challenge 1.2
 
-**Q3: What is the difference between `slice()` and `splice()`?**
-A: `slice()` extracts a portion of an array without modifying the original, while `splice()` can add/remove elements and modifies the original array.
+```javascript
+arr[arr.length - 1];
+```
 
-**Q4: Why does `sort()` not work correctly for numbers by default?**
-A: Because `sort()` converts elements to strings and compares them lexicographically. Use a compare function `(a, b) => a - b` for numeric sorting.
+### Challenge 2.1
 
-**Q5: What is the difference between `map()` and `forEach()`?**
-A: `map()` creates a new array with transformed elements, while `forEach()` executes a function for each element without returning a new array.
+```javascript
+let tasks = ["Email"];
+tasks.push("Code");
+tasks.unshift("Plan");
+console.log(tasks); // ["Plan", "Email", "Code"]
+```
 
-**Q6: How do you check if an array contains a specific value?**
-A: Use the `includes()` method for simple values, or `find()` for complex conditions with objects.
+### Challenge 2.2
 
-**Q7: What does `reduce()` do?**
-A: `reduce()` iterates through an array and reduces it to a single value by applying a function to each element.
+```javascript
+let stack = ["A", "B", "C"];
+stack.pop(); // ["A", "B"]
+stack.push("D"); // ["A", "B", "D"]
+stack.pop(); // ["A", "B"]
+console.log(stack);
+```
 
-**Q8: How do you clone an array?**
-A: Use `slice()`, spread operator `[...array]`, or `Array.from(array)`.
+### Challenge 2.3
 
-**Q9: What is the difference between `filter()` and `find()`?**
-A: `filter()` returns all elements that match the condition, while `find()` returns only the first matching element.
+```javascript
+let items = ["pen", "pencil", "eraser", "ruler"];
+let index = items.indexOf("pencil");
+if (index !== -1) {
+  items.splice(index, 1, "marker");
+}
+console.log(items);
+```
 
-**Q10: How do you remove an element from the middle of an array?**
-A: Use `splice(index, 1)` to remove one element at the specified index.
+### Challenge 3.1
 
-### Review Questions
+```javascript
+let names = ["Ada", "Grace", "Alan", "Grace"];
+console.log(names.indexOf("Grace"));     // 1
+console.log(names.lastIndexOf("Grace")); // 3
+```
 
-1. **Which method adds an element to the end of an array?**
+### Challenge 3.2
+
+```javascript
+let products = [
+  { name: "Book", price: 15 },
+  { name: "Laptop", price: 999 },
+  { name: "Mouse", price: 25 }
+];
+let expensive = products.find(p => p.price > 100);
+console.log(expensive);
+```
+
+### Challenge 4.1
+
+```javascript
+let names = ["Zara", "Alice", "Mike", "Bob"];
+names.sort();
+console.log(names);
+```
+
+### Challenge 4.2
+
+```javascript
+let prices = [9.99, 4.50, 12.00, 1.99];
+prices.sort((a, b) => a - b);
+console.log(prices);
+```
+
+### Challenge 4.3
+
+```javascript
+let products = [
+  { name: "Laptop", price: 999 },
+  { name: "Mouse", price: 25 },
+  { name: "Book", price: 15 }
+];
+products.sort((a, b) => a.price - b.price);
+console.log(products);
+```
+
+### Challenge 5.1
+
+```javascript
+arr.slice(0, 3);
+```
+
+### Challenge 5.2
+
+```javascript
+let words = ["I", "love", "JavaScript"];
+let sentence = words.join(" ") + ".";
+console.log(sentence);
+```
+
+### Challenge 6.1
+
+```javascript
+let prices = [10, 20, 30];
+prices.forEach(price => console.log(`Price: $${price}`));
+```
+
+### Challenge 6.2
+
+```javascript
+let nums = [1, 2, 3];
+let doubled = nums.map(n => n * 2);
+
+let letters = ["a", "b", "c"];
+let upper = letters.map(l => l.toUpperCase());
+```
+
+### Challenge 6.3
+
+```javascript
+let products = [
+  { name: "Book", category: "Books" },
+  { name: "Phone", category: "Electronics" },
+  { name: "Pen", category: "Stationery" }
+];
+let electronics = products.filter(p => p.category === "Electronics");
+console.log(electronics);
+```
+
+### Challenge 6.4
+
+```javascript
+let prices = [10, 20, 30, 40];
+let total = prices.reduce((sum, p) => sum + p, 0);
+console.log(total);
+```
+
+### Challenge 7.1
+
+```javascript
+let nums = [2, 4, 6, 8];
+console.log(nums.every(n => n % 2 === 0)); // true
+console.log(nums.some(n => n > 5));        // true
+```
+
+### Challenge 7.2
+
+```javascript
+let groups = [["A", "B"], ["C"], ["D", "E"]];
+console.log(groups.flat());
+```
+
+### Individual Challenges Solutions
+
+```javascript
+// Level 1
+let stack = [];
+stack.push("A");
+stack.push("B");
+stack.push("C");
+stack.pop();
+console.log(stack); // ["A", "B"]
+
+// Level 2
+let colors = ["red", "blue", "green", "blue"];
+let idx = colors.indexOf("blue");
+if (idx !== -1) colors.splice(idx, 1);
+console.log(colors);
+
+// Level 3
+let numbers = [1, 2, 3, 4, 5, 6];
+let result = numbers.filter(n => n % 2 !== 0).map(n => n * 2);
+console.log(result); // [2, 6, 10]
+
+// Level 4
+let cart = [
+  { name: "Phone", price: 500, category: "Electronics" },
+  { name: "Book", price: 20, category: "Books" },
+  { name: "Cable", price: 10, category: "Electronics" }
+];
+let electronicsTotal = cart
+  .filter(item => item.category === "Electronics")
+  .reduce((sum, item) => sum + item.price, 0);
+console.log(electronicsTotal); // 510
+
+// Level 5
+let scores = [88, 92, 55, 70, 100];
+let top3 = scores.sort((a, b) => b - a).slice(0, 3);
+console.log(top3); // [100, 92, 88]
+```
+
+---
+
+## Review Questions
+
+1. Which method adds an element to the end of an array?
    - [ ] unshift()
-   - [ ] push()
+   - [x] push()
    - [ ] pop()
    - [ ] shift()
 
-2. **What does `pop()` do?**
+2. What does `pop()` do?
    - [ ] Adds element to end
    - [ ] Removes first element
-   - [ ] Removes last element
+   - [x] Removes last element
    - [ ] Adds element to beginning
 
-3. **Which method is used to search for an element in an array?**
+3. Which method is used to search for an element in an array?
    - [ ] search()
-   - [ ] find()
+   - [x] find()
    - [ ] locate()
    - [ ] get()
 
-4. **What does `map()` return?**
+4. What does `map()` return?
    - [ ] The original array
-   - [ ] A new array with transformed elements
+   - [x] A new array with transformed elements
    - [ ] A single value
    - [ ] Nothing
 
-5. **How do you sort numbers correctly?**
+5. How do you sort numbers correctly?
    - [ ] array.sort()
-   - [ ] array.sort((a, b) => a - b)
+   - [x] array.sort((a, b) => a - b)
    - [ ] array.sort((a, b) => b - a)
    - [ ] array.order()
 
-6. **What does `filter()` do?**
+6. What does `filter()` do?
    - [ ] Modifies original array
-   - [ ] Returns elements that pass condition
+   - [x] Returns elements that pass condition
    - [ ] Returns first matching element
    - [ ] Removes all elements
 
-7. **Which method concatenates arrays?**
+7. Which method concatenates arrays?
    - [ ] join()
-   - [ ] concat()
+   - [x] concat()
    - [ ] merge()
    - [ ] combine()
 
-8. **What does `slice()` do to the original array?**
+8. What does `slice()` do to the original array?
    - [ ] Modifies it
-   - [ ] Does not modify it
+   - [x] Does not modify it
    - [ ] Deletes elements
    - [ ] Adds elements
 
-9. **How do you get the length of an array?**
+9. How do you get the length of an array?
    - [ ] array.size
-   - [ ] array.length
+   - [x] array.length
    - [ ] array.count
    - [ ] array.total
 
-10. **What does `reduce()` return?**
+10. What does `reduce()` return?
     - [ ] A new array
-    - [ ] A single value
+    - [x] A single value
     - [ ] The original array
     - [ ] Nothing
 
-### Correct Answers
-
-1. ✅ push()
-2. ✅ Removes last element
-3. ✅ find()
-4. ✅ A new array with transformed elements
-5. ✅ array.sort((a, b) => a - b)
-6. ✅ Returns elements that pass condition
-7. ✅ concat()
-8. ✅ Does not modify it
-9. ✅ array.length
-10. ✅ A single value
-
 ---
 
-## 🎯 Next Steps
-
-1. ✅ Practice all array methods
-2. ✅ Build array-based applications
-3. ✅ Master array iteration methods
-4. ✅ Understand when to use map vs filter vs reduce
-5. ✅ Practice array manipulation challenges
-6. ✅ Learn about array destructuring
-7. ✅ Explore advanced array methods (flat, flatMap, etc.)
-
----
-
-## 📚 Additional Resources
+## Additional Resources
 
 - [MDN: Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)
 - [MDN: Array Methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array#instance_methods)
 - [JavaScript.info: Arrays](https://javascript.info/array)
 - [JavaScript.info: Array Methods](https://javascript.info/array-methods)
 - [Array Explorer](https://arrayexplorer.com/)
-
-**Remember:** Arrays are fundamental data structures in JavaScript. Mastering array methods will make you a more efficient and effective developer! 💪
