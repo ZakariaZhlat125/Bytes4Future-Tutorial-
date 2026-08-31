@@ -1,1544 +1,863 @@
-# Session 14: JSON, APIs & Asynchronous JavaScript
+# Session 14: JSON, APIs & Asynchronous JavaScript — Active Learning Redesign
+
+## Session Plan for the Instructor
+
+- **Total time:** approximately 90 to 120 minutes
+- **Pacing rule:** never explain theory continuously for more than 15–20 minutes. After every concept, students must predict, write, or fix code.
+- **Pedagogical pattern for every topic:**
+  1. **Problem** — a realistic mini-situation
+  2. **Guess** — ask: "What do you expect to happen?"
+  3. **Explain** — the shortest rule that fixes the problem
+  4. **Code** — live code written in front of the students, step by step
+  5. **Challenge** — students solve a small task on their own or in groups
+  6. **Review** — discuss the answer and the most common mistake
+
+### Competition and Points
+
+- 1 point per correct prediction in the "Guess" phase.
+- 1–3 points per completed challenge, depending on difficulty.
+- A "Bug Hunter" badge for each student who finds and fixes an intentional error.
+- Keep a simple tally on a shared board or in the chat.
+
+### Instructor Questions to Ask During the Session
+
+- "What does `JSON.stringify` leave out?"
+- "Why do we need `await`?"
+- "What does `response.ok` check?"
+- "When should we use `Promise.all`?"
+- "What is the event loop doing here?"
 
 ---
 
-## 📚 Theory (1h)
+## Part 0: Warm-Up — The Waiting Problem (5 minutes)
 
-### What is JSON
+### Problem
 
-JSON (JavaScript Object Notation) is a lightweight data interchange format that is easy for humans to read and write, and easy for machines to parse and generate.
+A program fetches data from a server. The code should keep working while the data is loading.
 
-#### JSON vs JavaScript Objects
+### Guess
+
+Ask: "What happens if we run `fetch` and then immediately try to use the result?"
+
+### Explain
+
+Network requests take time. JavaScript can continue doing other things while waiting.
+
+### Live Code
 
 ```javascript
-// JavaScript Object (can have functions, undefined, etc.)
-const jsObject = {
-    name: "John",
-    age: 30,
-    greet: function() { return "Hello"; },
-    active: true,
-    address: undefined
+console.log("Start");
+setTimeout(() => console.log("Async"), 1000);
+console.log("End");
+```
+
+### Review
+
+`setTimeout` does not block. Output: Start, End, Async.
+
+---
+
+## Part 1: JSON
+
+### 1.1 What is JSON
+
+#### Problem
+
+We need to send data as a string and convert it back to an object.
+
+#### Live Code
+
+```javascript
+const user = { name: "John", age: 30, active: true };
+const json = JSON.stringify(user);
+console.log(json);
+
+const parsed = JSON.parse(json);
+console.log(parsed.name);
+```
+
+#### Challenge 1.1 — Stringify and Parse (individual, 3 minutes)
+
+- **Requirement:** Convert `const product = { name: "Laptop", price: 999 }` to a JSON string, then parse it back.
+- **Time limit:** 3 minutes
+
+### 1.2 JSON Rules
+
+#### Live Code
+
+```javascript
+const object = {
+  name: "John",
+  greet: function() { return "Hello"; },
+  address: undefined
 };
 
-// JSON (must be valid JSON)
-const jsonString = {
-    "name": "John",
-    "age": 30,
-    "active": true,
-    "address": null  // No undefined, no functions
-};
-
-// JSON string
-const jsonStringified = '{"name":"John","age":30,"active":true,"address":null}';
+console.log(JSON.stringify(object)); // Only name
 ```
 
-#### Key Differences
+#### Challenge 1.2 — What is Lost? (individual, 3 minutes)
 
-| Feature | JavaScript Object | JSON |
-|---------|------------------|------|
-| Functions | ✅ Allowed | ❌ Not allowed |
-| undefined | ✅ Allowed | ❌ Use null |
-| Comments | ✅ Allowed | ❌ Not allowed |
-| Quotes | Optional on keys | Required on keys and strings |
-| Trailing commas | ✅ Allowed | ❌ Not allowed |
+- **Requirement:** Predict what `JSON.stringify` will produce for an object with a function and `undefined`, then test it.
+- **Time limit:** 3 minutes
 
-### What is an API
+---
 
-API (Application Programming Interface) is a set of rules and protocols that allows different software applications to communicate with each other.
+## Part 2: Synchronous vs Asynchronous
 
-#### Web APIs
+### 2.1 Order of Execution
 
-Web APIs allow your JavaScript code to interact with external services over HTTP.
+#### Problem
+
+Understand why async code does not run immediately.
+
+#### Live Code
 
 ```javascript
-// Example: Fetching data from an API
-fetch('https://api.example.com/users')
-    .then(response => response.json())
-    .then(data => console.log(data));
+console.log("1");
+setTimeout(() => console.log("2"), 0);
+console.log("3");
 ```
 
-#### Common API Concepts
+#### Challenge 2.1 — Predict Order (individual, 2 minutes)
 
-- **Endpoint**: The URL where the API is accessed
-- **Request**: Sending data to the API
-- **Response**: Receiving data from the API
-- **HTTP Methods**: GET, POST, PUT, DELETE, etc.
-- **Status Codes**: 200 (OK), 404 (Not Found), 500 (Server Error), etc.
+- **Requirement:** Predict the output, then run the code.
+- **Time limit:** 2 minutes
 
-### JSON.parse/stringify
+### 2.2 Event Loop
 
-#### JSON.parse()
+#### Explain
 
-Converts a JSON string into a JavaScript object.
+Synchronous code runs first on the call stack. Async callbacks wait in the queue. The event loop moves them to the stack when it is empty.
+
+---
+
+## Part 3: Promises
+
+### 3.1 Creating a Promise
+
+#### Problem
+
+A function that will eventually succeed or fail.
+
+#### Live Code
 
 ```javascript
-const jsonString = '{"name":"John","age":30}';
-const jsObject = JSON.parse(jsonString);
+const promise = new Promise((resolve, reject) => {
+  const success = true;
+  if (success) {
+    resolve("Done");
+  } else {
+    reject("Failed");
+  }
+});
 
-console.log(jsObject.name); // "John"
-console.log(jsObject.age);  // 30
+promise
+  .then(result => console.log(result))
+  .catch(error => console.log(error));
 ```
 
-#### JSON.stringify()
+#### Challenge 3.1 — Promise with Timeout (individual, 3 minutes)
 
-Converts a JavaScript object into a JSON string.
+- **Requirement:** Create a promise that resolves with `"Ready"` after 1 second.
+- **Time limit:** 3 minutes
+
+### 3.2 Promise Chaining
+
+#### Live Code
 
 ```javascript
-const jsObject = { name: "John", age: 30 };
-const jsonString = JSON.stringify(jsObject);
-
-console.log(jsonString); // '{"name":"John","age":30}'
+fetchUser(1)
+  .then(user => {
+    console.log(user.name);
+    return fetchPosts(user.id);
+  })
+  .then(posts => console.log(posts.length))
+  .catch(error => console.log(error.message));
 ```
 
-#### With Formatting
+#### Challenge 3.2 — Chain Promises (individual, 4 minutes)
+
+- **Requirement:** Create `step1()` that resolves `"Step 1"`, then chain `step2(result)` that returns `"Step 2: Step 1"`.
+- **Time limit:** 4 minutes
+
+---
+
+## Bug Hunt 1
+
+### Problem
+
+Find the bug in this async code.
 
 ```javascript
-const data = { name: "John", age: 30 };
-const formatted = JSON.stringify(data, null, 2);
-
-console.log(formatted);
-/*
-{
-  "name": "John",
-  "age": 30
-}
-*/
-```
-
-### Sync vs Async Programming
-
-#### Synchronous Programming
-
-Code executes line by line, blocking until each operation completes.
-
-```javascript
-console.log("Start");
-console.log("Middle");
-console.log("End");
-// Output: Start, Middle, End (in order)
-```
-
-#### Asynchronous Programming
-
-Code can execute without blocking, allowing other operations to run while waiting for long tasks.
-
-```javascript
-console.log("Start");
-setTimeout(() => console.log("Middle"), 1000);
-console.log("End");
-// Output: Start, End, Middle (after 1 second)
-```
-
-### Call Stack & Web API
-
-#### Call Stack
-
-The call stack is a mechanism for the JavaScript interpreter to keep track of function calls.
-
-```javascript
-function first() {
-    second();
-    console.log("First");
+function getData() {
+  const data = fetch("https://jsonplaceholder.typicode.com/users/1");
+  console.log(data.name);
 }
 
-function second() {
-    third();
-    console.log("Second");
-}
-
-function third() {
-    console.log("Third");
-}
-
-first();
-// Stack: first -> second -> third -> third completes -> second completes -> first completes
+getData();
 ```
 
-#### Web API
+### Issues
 
-Web APIs are provided by the browser (setTimeout, fetch, DOM events, etc.) and handle asynchronous operations.
+1. `fetch` returns a `Promise`, not the actual data. Must use `.then` or `await` and call `.json()`.
+
+### Fixed Version
 
 ```javascript
-console.log("Start");
-setTimeout(() => console.log("Timeout"), 0);
-console.log("End");
-// Web API handles setTimeout, then puts callback in queue
+async function getData() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/users/1");
+  const data = await response.json();
+  console.log(data.name);
+}
+
+getData();
 ```
 
-### Event Loop & Callback Queue
+### Points
 
-#### Event Loop
+1 point for finding the bug.
 
-The event loop is the mechanism that coordinates the call stack, callback queue, and Web APIs.
+---
 
-```
-┌─────────────────────┐
-│   Call Stack        │
-├─────────────────────┤
-│   Web APIs          │
-├─────────────────────┤
-│   Callback Queue    │
-└─────────────────────┘
-```
+## Part 4: Fetch API
 
-#### How It Works
+### 4.1 GET Request
 
-1. Synchronous code runs on the call stack
-2. Async operations are handled by Web APIs
-3. When async operations complete, callbacks go to the callback queue
-4. Event loop moves callbacks from queue to stack when stack is empty
+#### Problem
+
+Get data from an API.
+
+#### Live Code
 
 ```javascript
-console.log("1"); // Stack: log("1")
-setTimeout(() => console.log("2"), 0); // Web API: setTimeout
-console.log("3"); // Stack: log("3")
-// Event loop moves callback to stack when empty
-// Output: 1, 3, 2
+async function getUser(id) {
+  try {
+    const response = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log(data.name);
+  } catch (error) {
+    console.log("Error:", error.message);
+  }
+}
+
+getUser(1);
+```
+
+#### Challenge 4.1 — Fetch Posts (individual, 4 minutes)
+
+- **Requirement:** Use `fetch` to get `https://jsonplaceholder.typicode.com/posts` and log the number of posts.
+- **Time limit:** 4 minutes
+
+### 4.2 POST Request
+
+#### Live Code
+
+```javascript
+async function createPost(post) {
+  const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(post)
+  });
+
+  const data = await response.json();
+  console.log(data);
+}
+
+createPost({ title: "Hello", body: "World", userId: 1 });
+```
+
+#### Challenge 4.2 — POST User (individual, 4 minutes)
+
+- **Requirement:** Send a POST request to `https://jsonplaceholder.typicode.com/users` with a new user object.
+- **Time limit:** 4 minutes
+
+---
+
+## Part 5: Working with Fetched Data
+
+### 5.1 Looping and Filtering
+
+#### Live Code
+
+```javascript
+async function getUsers() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/users");
+  const users = await response.json();
+
+  users.forEach(user => console.log(user.name));
+
+  const topUsers = users.filter(user => user.id <= 5);
+  console.log(topUsers.length);
+}
+```
+
+#### Challenge 5.1 — Transform Data (individual, 4 minutes)
+
+- **Requirement:** Fetch users and create an array of `{ name, email }` objects.
+- **Time limit:** 4 minutes
+
+### 5.2 Promise Combinators
+
+#### Live Code
+
+```javascript
+const p1 = fetch("https://jsonplaceholder.typicode.com/users/1").then(r => r.json());
+const p2 = fetch("https://jsonplaceholder.typicode.com/users/2").then(r => r.json());
+
+const [user1, user2] = await Promise.all([p1, p2]);
+console.log(user1.name, user2.name);
+```
+
+#### Challenge 5.2 — Fetch in Parallel (individual, 4 minutes)
+
+- **Requirement:** Use `Promise.all` to fetch users 1, 2, and 3 in parallel.
+- **Time limit:** 4 minutes
+
+---
+
+## Bug Hunt 2
+
+### Problem
+
+Find the bug in this fetch code.
+
+```javascript
+async function getUsers() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/users");
+  const users = response.json();
+  console.log(users.length);
+}
+
+getUsers();
+```
+
+### Issues
+
+1. `response.json()` returns a promise. It must be awaited.
+
+### Fixed Version
+
+```javascript
+async function getUsers() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/users");
+  const users = await response.json();
+  console.log(users.length);
+}
+```
+
+### Points
+
+1 point for finding the bug.
+
+---
+
+## Part 6: Async/Await
+
+### 6.1 Making Async Code Readable
+
+#### Problem
+
+Nested `.then` is hard to read.
+
+#### Live Code
+
+```javascript
+async function loadData() {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/users/1");
+    const user = await response.json();
+    const postsResponse = await fetch(`https://jsonplaceholder.typicode.com/posts?userId=${user.id}`);
+    const posts = await postsResponse.json();
+    console.log(user.name, posts.length);
+  } catch (error) {
+    console.log("Error:", error.message);
+  }
+}
+```
+
+#### Challenge 6.1 — User and Posts (individual, 5 minutes)
+
+- **Requirement:** Fetch user 1, then fetch their posts using `user.id`. Log the user's name and number of posts.
+- **Time limit:** 5 minutes
+
+### 6.2 try/catch/finally
+
+#### Live Code
+
+```javascript
+async function fetchData(url) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.log("Failed:", error.message);
+    return null;
+  } finally {
+    console.log("Request completed");
+  }
+}
+```
+
+#### Challenge 6.2 — Error Handling (individual, 4 minutes)
+
+- **Requirement:** Fetch from an invalid URL and log a friendly error message in `catch`.
+- **Time limit:** 4 minutes
+
+---
+
+## Group Challenge: API Race
+
+- **Time:** 12 minutes
+- **Teams:** 2 or 3 students per team
+- **Task:** Each team writes one task.
+- **Scoring:** 2 points per correct solution.
+
+### Tasks
+
+1. Fetch `https://jsonplaceholder.typicode.com/users` and display the first 5 names.
+2. Create a new post with POST and log the returned `id`.
+3. Fetch user 1 and their posts in parallel using `Promise.all`.
+4. Use `try/catch` to fetch from `https://jsonplaceholder.typicode.com/invalid` and log the error.
+
+### Instructor Answer Key
+
+```javascript
+// 1
+async function getNames() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/users");
+  const users = await response.json();
+  users.slice(0, 5).forEach(user => console.log(user.name));
+}
+
+// 2
+async function create() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title: "Test", body: "Body", userId: 1 })
+  });
+  const data = await response.json();
+  console.log(data.id);
+}
+
+// 3
+async function userAndPosts() {
+  const [user, posts] = await Promise.all([
+    fetch("https://jsonplaceholder.typicode.com/users/1").then(r => r.json()),
+    fetch("https://jsonplaceholder.typicode.com/posts?userId=1").then(r => r.json())
+  ]);
+  console.log(user.name, posts.length);
+}
+
+// 4
+async function fetchInvalid() {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/invalid");
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 ```
 
 ---
 
-## 💻 Practical (1.5h)
+## Individual Challenges — Progressive Difficulty
 
-### Exercise 1: JSON Operations
+### Level 1: JSON (3 minutes)
 
-```javascript
-// Exercise 1.1: JSON.parse
-console.log("=== JSON.parse ===");
+- **Requirement:** Convert `{ name: "John" }` to a JSON string and parse it back.
 
-const jsonString = '{"name":"John","age":30,"city":"New York"}';
-const user = JSON.parse(jsonString);
+### Level 2: Promise (3 minutes)
 
-console.log("User:", user);
-console.log("Name:", user.name);
-console.log("Age:", user.age);
+- **Requirement:** Create a promise that resolves after 1 second with `"Done"`.
 
-// Exercise 1.2: JSON.stringify
-console.log("\n=== JSON.stringify ===");
+### Level 3: Fetch GET (4 minutes)
 
-const data = {
-    name: "Jane",
-    age: 25,
-    active: true,
-    skills: ["JavaScript", "Python"]
-};
+- **Requirement:** Fetch a single user and log their `name` and `email`.
 
-const jsonStringified = JSON.stringify(data);
-console.log("Stringified:", jsonStringified);
+### Level 4: Fetch POST (4 minutes)
 
-// Exercise 1.3: JSON.stringify with formatting
-console.log("\n=== JSON.stringify Formatted ===");
+- **Requirement:** POST a new comment to `/comments` and log the response.
 
-const formatted = JSON.stringify(data, null, 2);
-console.log("Formatted:");
-console.log(formatted);
+### Level 5: Parallel (5 minutes)
 
-// Exercise 1.4: JSON.stringify with replacer
-console.log("\n=== JSON.stringify with Replacer ===");
+- **Requirement:** Use `Promise.all` to fetch 3 users at the same time and log their names.
 
-const data2 = {
-    name: "John",
-    age: 30,
-    password: "secret123",
-    email: "john@example.com"
-};
+### Level 6: Error Handling (4 minutes)
 
-// Exclude password
-const sanitized = JSON.stringify(data2, (key, value) => {
-    if (key === "password") return undefined;
-    return value;
-}, 2);
+- **Requirement:** Fetch from an invalid endpoint and handle the error with `try/catch`.
 
-console.log("Sanitized:", sanitized);
+---
 
-// Exercise 1.5: Error handling
-console.log("\n=== JSON Error Handling ===");
+## Mini Project: User Dashboard with Fetch
 
-const invalidJson = '{"name":"John",}'; // Invalid JSON
+### Time
 
-try {
-    const parsed = JSON.parse(invalidJson);
-} catch (error) {
-    console.log("Parse error:", error.message);
-}
-```
+25 minutes
 
-### Exercise 2: What is AJAX
+### Goal
 
-```javascript
-// Exercise 2.1: Traditional AJAX with XMLHttpRequest
-console.log("=== Traditional AJAX ===");
+Build a page that fetches and displays user data from an API.
 
-function makeAJAXRequest(url) {
-    return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        
-        xhr.open("GET", url);
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                resolve(JSON.parse(xhr.responseText));
-            } else {
-                reject(new Error(`HTTP error! status: ${xhr.status}`));
-            }
-        };
-        xhr.onerror = function() {
-            reject(new Error("Network error"));
-        };
-        xhr.send();
-    });
-}
+### Requirements for the Students
 
-// Usage (commented out - requires actual API)
-// makeAJAXRequest("https://jsonplaceholder.typicode.com/users/1")
-//     .then(data => console.log("AJAX data:", data))
-//     .catch(error => console.log("AJAX error:", error));
+1. Create an HTML page with:
+   - A button "Load Users"
+   - A `div` to display users
+   - A dropdown to select a user
+   - A button "Load Posts" to show the selected user's posts
 
-// Exercise 2.2: AJAX with POST
-console.log("\n=== AJAX POST ===");
+2. On clicking "Load Users", fetch `https://jsonplaceholder.typicode.com/users` and display each user's name and email.
 
-function makeAJAXPost(url, data) {
-    return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        
-        xhr.open("POST", url);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        
-        xhr.onload = function() {
-            if (xhr.status === 201) {
-                resolve(JSON.parse(xhr.responseText));
-            } else {
-                reject(new Error(`HTTP error! status: ${xhr.status}`));
-            }
-        };
-        
-        xhr.onerror = function() {
-            reject(new Error("Network error"));
-        };
-        
-        xhr.send(JSON.stringify(data));
-    });
-}
+3. On clicking "Load Posts", fetch `https://jsonplaceholder.typicode.com/posts?userId=` + user id.
 
-// Usage (commented out)
-// makeAJAXPost("https://jsonplaceholder.typicode.com/posts", {
-//     title: "Test Post",
-//     body: "This is a test",
-//     userId: 1
-// })
-//     .then(data => console.log("POST response:", data))
-//     .catch(error => console.log("POST error:", error));
+4. Show the posts in a list.
 
-// Exercise 2.3: AJAX with query parameters
-console.log("\n=== AJAX with Query Params ===");
+5. Handle loading and error states.
 
-function buildURL(baseURL, params) {
-    const url = new URL(baseURL);
-    Object.keys(params).forEach(key => {
-        url.searchParams.append(key, params[key]);
-    });
-    return url.toString();
-}
+### Starter HTML
 
-const url = buildURL("https://jsonplaceholder.typicode.com/posts", {
-    userId: 1,
-    _limit: 5
-});
-
-console.log("URL with params:", url);
-```
-
-### Exercise 3: Real API Request/Response
-
-```javascript
-// Exercise 3.1: Fetch API - GET request
-console.log("=== Fetch API GET ===");
-
-async function fetchUser(userId) {
-    try {
-        const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log("User data:", data);
-        return data;
-    } catch (error) {
-        console.log("Fetch error:", error.message);
-    }
-}
-
-// fetchUser(1);
-
-// Exercise 3.2: Fetch API - POST request
-console.log("\n=== Fetch API POST ===");
-
-async function createPost(postData) {
-    try {
-        const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(postData)
-        });
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log("Created post:", data);
-        return data;
-    } catch (error) {
-        console.log("POST error:", error.message);
-    }
-}
-
-// createPost({
-//     title: "My Post",
-//     body: "This is my post content",
-//     userId: 1
-// });
-
-// Exercise 3.3: Fetch API - PUT request
-console.log("\n=== Fetch API PUT ===");
-
-async function updatePost(postId, postData) {
-    try {
-        const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(postData)
-        });
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log("Updated post:", data);
-        return data;
-    } catch (error) {
-        console.log("PUT error:", error.message);
-    }
-}
-
-// updatePost(1, { title: "Updated Title", body: "Updated Body", userId: 1 });
-
-// Exercise 3.4: Fetch API - DELETE request
-console.log("\n=== Fetch API DELETE ===");
-
-async function deletePost(postId) {
-    try {
-        const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`, {
-            method: "DELETE"
-        });
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        console.log("Post deleted successfully");
-        return true;
-    } catch (error) {
-        console.log("DELETE error:", error.message);
-    }
-}
-
-// deletePost(1);
-```
-
-### Exercise 4: Looping on Fetched Data
-
-```javascript
-// Exercise 4.1: Fetch and loop through array
-console.log("=== Fetch and Loop ===");
-
-async function fetchAndLoopUsers() {
-    try {
-        const response = await fetch("https://jsonplaceholder.typicode.com/users");
-        const users = await response.json();
-        
-        console.log("Total users:", users.length);
-        
-        users.forEach(user => {
-            console.log(`User: ${user.name} (${user.email})`);
-        });
-        
-        return users;
-    } catch (error) {
-        console.log("Error:", error.message);
-    }
-}
-
-// fetchAndLoopUsers();
-
-// Exercise 4.2: Filter fetched data
-console.log("\n=== Filter Fetched Data ===");
-
-async function fetchActiveUsers() {
-    try {
-        const response = await fetch("https://jsonplaceholder.typicode.com/users");
-        const users = await response.json();
-        
-        const activeUsers = users.filter(user => 
-            user.company.name.includes("Group")
-        );
-        
-        console.log("Active users:", activeUsers.length);
-        activeUsers.forEach(user => {
-            console.log(`- ${user.name} from ${user.company.name}`);
-        });
-        
-        return activeUsers;
-    } catch (error) {
-        console.log("Error:", error.message);
-    }
-}
-
-// fetchActiveUsers();
-
-// Exercise 4.3: Transform fetched data
-console.log("\n=== Transform Fetched Data ===");
-
-async function fetchUserSummaries() {
-    try {
-        const response = await fetch("https://jsonplaceholder.typicode.com/users");
-        const users = await response.json();
-        
-        const summaries = users.map(user => ({
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            company: user.company.name
-        }));
-        
-        console.log("User summaries:", summaries);
-        return summaries;
-    } catch (error) {
-        console.log("Error:", error.message);
-    }
-}
-
-// fetchUserSummaries();
-
-// Exercise 4.4: Reduce fetched data
-console.log("\n=== Reduce Fetched Data ===");
-
-async function fetchUsersByCompany() {
-    try {
-        const response = await fetch("https://jsonplaceholder.typicode.com/users");
-        const users = await response.json();
-        
-        const byCompany = users.reduce((acc, user) => {
-            const company = user.company.name;
-            if (!acc[company]) {
-                acc[company] = [];
-            }
-            acc[company].push(user.name);
-            return acc;
-        }, {});
-        
-        console.log("Users by company:", byCompany);
-        return byCompany;
-    } catch (error) {
-        console.log("Error:", error.message);
-    }
-}
-
-// fetchUsersByCompany();
-```
-
-### Exercise 5: Callback Hell
-
-```javascript
-// Exercise 5.1: What is callback hell
-console.log("=== Callback Hell Example ===");
-
-// Simulating nested callbacks
-function step1(callback) {
-    console.log("Step 1");
-    setTimeout(() => callback("Step 1 done"), 1000);
-}
-
-function step2(data, callback) {
-    console.log("Step 2:", data);
-    setTimeout(() => callback("Step 2 done"), 1000);
-}
-
-function step3(data, callback) {
-    console.log("Step 3:", data);
-    setTimeout(() => callback("Step 3 done"), 1000);
-}
-
-// Callback hell
-step1((result1) => {
-    step2(result1, (result2) => {
-        step3(result2, (result3) => {
-            console.log("Final:", result3);
-        });
-    });
-});
-
-// Exercise 5.2: Promises solution
-console.log("\n=== Promises Solution ===");
-
-function step1Promise() {
-    return new Promise(resolve => {
-        console.log("Step 1");
-        setTimeout(() => resolve("Step 1 done"), 1000);
-    });
-}
-
-function step2Promise(data) {
-    return new Promise(resolve => {
-        console.log("Step 2:", data);
-        setTimeout(() => resolve("Step 2 done"), 1000);
-    });
-}
-
-function step3Promise(data) {
-    return new Promise(resolve => {
-        console.log("Step 3:", data);
-        setTimeout(() => resolve("Step 3 done"), 1000);
-    });
-}
-
-// Chained promises
-step1Promise()
-    .then(result1 => step2Promise(result1))
-    .then(result2 => step3Promise(result2))
-    .then(result3 => console.log("Final:", result3));
-
-// Exercise 5.3: async/await solution
-console.log("\n=== async/await Solution ===");
-
-async function runSteps() {
-    const result1 = await step1Promise();
-    const result2 = await step2Promise(result1);
-    const result3 = await step3Promise(result2);
-    console.log("Final:", result3);
-}
-
-// runSteps();
-```
-
-### Exercise 6: Promises (Intro, then/catch/finally)
-
-```javascript
-// Exercise 6.1: Creating Promises
-console.log("=== Creating Promises ===");
-
-function fetchUserPromise(userId) {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            if (userId > 0) {
-                resolve({ id: userId, name: "John Doe" });
-            } else {
-                reject(new Error("Invalid user ID"));
-            }
-        }, 1000);
-    });
-}
-
-// Exercise 6.2: then/catch
-console.log("\n=== then/catch ===");
-
-fetchUserPromise(1)
-    .then(user => {
-        console.log("User found:", user);
-        return user.name;
-    })
-    .then(name => {
-        console.log("User name:", name);
-    })
-    .catch(error => {
-        console.log("Error:", error.message);
-    });
-
-fetchUserPromise(-1)
-    .then(user => console.log("User:", user))
-    .catch(error => console.log("Error:", error.message));
-
-// Exercise 6.3: finally
-console.log("\n=== finally ===");
-
-fetchUserPromise(1)
-    .then(user => console.log("Success:", user.name))
-    .catch(error => console.log("Error:", error.message))
-    .finally(() => console.log("Operation complete"));
-
-// Exercise 6.4: Promise chaining
-console.log("\n=== Promise Chaining ===");
-
-function fetchPosts() {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve([
-                { id: 1, title: "Post 1" },
-                { id: 2, title: "Post 2" }
-            ]);
-        }, 1000);
-    });
-}
-
-function fetchComments(postId) {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve([
-                { id: 1, postId: postId, text: "Comment 1" },
-                { id: 2, postId: postId, text: "Comment 2" }
-            ]);
-        }, 1000);
-    });
-}
-
-fetchPosts()
-    .then(posts => {
-        console.log("Posts:", posts);
-        return fetchComments(posts[0].id);
-    })
-    .then(comments => {
-        console.log("Comments:", comments);
-    })
-    .catch(error => {
-        console.log("Error:", error.message);
-    });
-```
-
-### Exercise 7: Fetch API
-
-```javascript
-// Exercise 7.1: Basic fetch
-console.log("=== Basic Fetch ===");
-
-async function basicFetch() {
-    try {
-        const response = await fetch("https://jsonplaceholder.typicode.com/posts/1");
-        const data = await response.json();
-        console.log("Fetched data:", data);
-    } catch (error) {
-        console.log("Error:", error.message);
-    }
-}
-
-// basicFetch();
-
-// Exercise 7.2: Fetch with headers
-console.log("\n=== Fetch with Headers ===");
-
-async function fetchWithHeaders() {
-    try {
-        const response = await fetch("https://jsonplaceholder.typicode.com/posts/1", {
-            headers: {
-                "Accept": "application/json",
-                "Authorization": "Bearer token123"
-            }
-        });
-        const data = await response.json();
-        console.log("Data with headers:", data);
-    } catch (error) {
-        console.log("Error:", error.message);
-    }
-}
-
-// fetchWithHeaders();
-
-// Exercise 7.3: Fetch with query parameters
-console.log("\n=== Fetch with Query Params ===");
-
-async function fetchWithParams() {
-    try {
-        const url = new URL("https://jsonplaceholder.typicode.com/posts");
-        url.searchParams.append("userId", "1");
-        url.searchParams.append("_limit", "5");
-        
-        const response = await fetch(url);
-        const data = await response.json();
-        console.log("Data with params:", data);
-    } catch (error) {
-        console.log("Error:", error.message);
-    }
-}
-
-// fetchWithParams();
-
-// Exercise 7.4: Error handling with fetch
-console.log("\n=== Fetch Error Handling ===");
-
-async function fetchWithErrorHandling() {
-    try {
-        const response = await fetch("https://jsonplaceholder.typicode.com/invalid");
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log("Data:", data);
-    } catch (error) {
-        console.log("Fetch error:", error.message);
-    }
-}
-
-// fetchWithErrorHandling();
-```
-
-### Exercise 8: Promise.all/allSettled/race
-
-```javascript
-// Exercise 8.1: Promise.all
-console.log("=== Promise.all ===");
-
-async function fetchMultipleUsers() {
-    try {
-        const promises = [
-            fetch("https://jsonplaceholder.typicode.com/users/1").then(r => r.json()),
-            fetch("https://jsonplaceholder.typicode.com/users/2").then(r => r.json()),
-            fetch("https://jsonplaceholder.typicode.com/users/3").then(r => r.json())
-        ];
-        
-        const users = await Promise.all(promises);
-        console.log("All users:", users);
-        return users;
-    } catch (error) {
-        console.log("Error:", error.message);
-    }
-}
-
-// fetchMultipleUsers();
-
-// Exercise 8.2: Promise.allSettled
-console.log("\n=== Promise.allSettled ===");
-
-async function fetchWithAllSettled() {
-    try {
-        const promises = [
-            fetch("https://jsonplaceholder.typicode.com/users/1").then(r => r.json()),
-            fetch("https://jsonplaceholder.typicode.com/invalid").then(r => r.json()),
-            fetch("https://jsonplaceholder.typicode.com/users/3").then(r => r.json())
-        ];
-        
-        const results = await Promise.allSettled(promises);
-        
-        results.forEach((result, index) => {
-            if (result.status === "fulfilled") {
-                console.log(`Request ${index + 1} succeeded:`, result.value.name);
-            } else {
-                console.log(`Request ${index + 1} failed:`, result.reason.message);
-            }
-        });
-        
-        return results;
-    } catch (error) {
-        console.log("Error:", error.message);
-    }
-}
-
-// fetchWithAllSettled();
-
-// Exercise 8.3: Promise.race
-console.log("\n=== Promise.race ===");
-
-async function fetchWithRace() {
-    try {
-        const slowRequest = fetch("https://jsonplaceholder.typicode.com/users/1")
-            .then(r => r.json());
-        
-        const fastRequest = new Promise(resolve => 
-            setTimeout(() => resolve({ source: "timeout" }), 100)
-        );
-        
-        const result = await Promise.race([slowRequest, fastRequest]);
-        console.log("Race result:", result);
-        return result;
-    } catch (error) {
-        console.log("Error:", error.message);
-    }
-}
-
-// fetchWithRace();
-
-// Exercise 8.4: Promise.any
-console.log("\n=== Promise.any ===");
-
-async function fetchWithAny() {
-    try {
-        const promises = [
-            fetch("https://jsonplaceholder.typicode.com/users/1").then(r => r.json()),
-            fetch("https://jsonplaceholder.typicode.com/users/2").then(r => r.json()),
-            fetch("https://jsonplaceholder.typicode.com/users/3").then(r => r.json())
-        ];
-        
-        const firstSuccess = await Promise.any(promises);
-        console.log("First successful:", firstSuccess);
-        return firstSuccess;
-    } catch (error) {
-        console.log("All promises failed:", error.message);
-    }
-}
-
-// fetchWithAny();
-```
-
-### Exercise 9: Complete Working Example
-
-**Complete script.js:**
-```javascript
-// Session 14: JSON, APIs & Asynchronous JavaScript
-// This script demonstrates JSON, API requests, and async patterns
-
-console.log("=== Session 14: JSON, APIs & Async ===");
-
-// 1. JSON operations
-console.log("\n--- JSON Operations ---");
-const data = { name: "John", age: 30 };
-const jsonString = JSON.stringify(data);
-const parsed = JSON.parse(jsonString);
-
-console.log("Original:", data);
-console.log("Stringified:", jsonString);
-console.log("Parsed:", parsed);
-
-// 2. Async demonstration
-console.log("\n--- Async Demonstration ---");
-console.log("Start");
-setTimeout(() => console.log("Async operation"), 1000);
-console.log("End");
-
-// 3. Promise example
-console.log("\n--- Promise Example ---");
-
-function simulateFetch() {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve({ id: 1, name: "John" });
-        }, 1000);
-    });
-}
-
-simulateFetch()
-    .then(data => console.log("Fetched:", data))
-    .catch(error => console.log("Error:", error));
-
-// 4. async/await example
-console.log("\n--- async/await Example ===");
-
-async function fetchData() {
-    try {
-        const response = await fetch("https://jsonplaceholder.typicode.com/users/1");
-        const data = await response.json();
-        console.log("User:", data.name);
-    } catch (error) {
-        console.log("Error:", error.message);
-    }
-}
-
-fetchData();
-
-console.log("\n=== Session 14 Complete ===");
-```
-
-**Complete index.html:**
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Session 14 - JSON, APIs & Async</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        .section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .section h2 {
-            color: #1890ff;
-            margin-top: 0;
-        }
-        .demo {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 10px;
-        }
-        .demo input, .demo button, .demo select {
-            padding: 8px;
-            margin: 5px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .demo button {
-            background-color: #1890ff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .demo button:hover {
-            background-color: #0c7cd5;
-        }
-        .demo button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-        .output {
-            background: #f0f0f0;
-            padding: 15px;
-            border-radius: 4px;
-            font-family: monospace;
-            white-space: pre-wrap;
-            margin-top: 10px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        .loading {
-            color: #1890ff;
-            font-style: italic;
-        }
-        .error {
-            color: #ff4d4f;
-        }
-        .success {
-            color: #52c41a;
-        }
-        .user-card {
-            background: white;
-            padding: 15px;
-            border-radius: 4px;
-            border: 1px solid #e8e8e8;
-            margin: 10px 0;
-        }
-        .user-card h3 {
-            margin: 0 0 10px 0;
-            color: #333;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; }
+    .card { background: #f9f9f9; padding: 10px; margin: 10px 0; border-radius: 4px; }
+    .output { margin-top: 20px; }
+    .error { color: red; }
+    .loading { color: blue; }
+  </style>
 </head>
 <body>
-    <h1>Session 14: JSON, APIs & Asynchronous JavaScript</h1>
-    
-    <div class="section">
-        <h2>Topics Covered</h2>
-        <ul>
-            <li>JSON (parse, stringify, syntax)</li>
-            <li>APIs (REST, HTTP methods, status codes)</li>
-            <li>Asynchronous programming (sync vs async)</li>
-            <li>Call stack, Web API, Event loop</li>
-            <li>AJAX & Fetch API</li>
-            <li>Callback hell, Promises</li>
-            <li>async/await</li>
-            <li>Promise methods (all, allSettled, race)</li>
-        </ul>
-    </div>
+  <h1>User Dashboard</h1>
+  <button id="loadUsers">Load Users</button>
+  <select id="userSelect" disabled></select>
+  <button id="loadPosts" disabled>Load Posts</button>
+  <div id="users" class="output"></div>
+  <div id="posts" class="output"></div>
 
-    <div class="section">
-        <h2>JSON Operations</h2>
-        <div class="demo">
-            <input type="text" id="jsonInput" placeholder='{"name":"John","age":30}'>
-            <button onclick="parseJSON()">Parse JSON</button>
-            <button onclick="stringifyJSON()">Stringify Object</button>
-            <div id="jsonOutput" class="output">
-                JSON operations result...
-            </div>
-        </div>
-    </div>
+  <script>
+    const API = "https://jsonplaceholder.typicode.com";
 
-    <div class="section">
-        <h2>API Request Demo</h2>
-        <div class="demo">
-            <select id="apiEndpoint">
-                <option value="users">Users</option>
-                <option value="posts">Posts</option>
-                <option value="comments">Comments</option>
-                <option value="albums">Albums</option>
-                <option value="todos">Todos</option>
-            </select>
-            <input type="number" id="resourceId" placeholder="ID (optional)" min="1">
-            <button onclick="fetchData()">Fetch Data</button>
-            <button onclick="fetchMultiple()">Fetch Multiple</button>
-            <div id="apiOutput" class="output">
-                API response will appear here...
-            </div>
-        </div>
-    </div>
+    async function loadUsers() {
+      const usersDiv = document.getElementById("users");
+      const select = document.getElementById("userSelect");
+      usersDiv.innerHTML = "<p class='loading'>Loading...</p>";
 
-    <div class="section">
-        <h2>Promise Demo</h2>
-        <div class="demo">
-            <button onclick="demoPromise()">Demo Promise</button>
-            <button onclick="demoPromiseAll()">Promise.all</button>
-            <button onclick="demoPromiseRace()">Promise.race</button>
-            <div id="promiseOutput" class="output">
-                Promise demonstrations...
-            </div>
-        </div>
-    </div>
+      try {
+        const response = await fetch(`${API}/users`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const users = await response.json();
 
-    <div class="section">
-        <h2>async/await Demo</h2>
-        <div class="demo">
-            <button onclick="demoAsyncAwait()">async/await Example</button>
-            <button onclick="demoErrorHandling()">Error Handling</button>
-            <button onclick="demoParallelRequests()">Parallel Requests</button>
-            <div id="asyncOutput" class="output">
-                async/await demonstrations...
-            </div>
-        </div>
-    </div>
+        usersDiv.innerHTML = "";
+        select.innerHTML = "";
 
-    <div class="section">
-        <h2>Users Display</h2>
-        <div class="demo">
-            <button onclick="displayUsers()">Load Users</button>
-            <button onclick="displayUserDetails()">Load User Details</button>
-            <div id="usersContainer">
-                <!-- Users will be displayed here -->
-            </div>
-        </div>
-    </div>
+        users.forEach(user => {
+          const div = document.createElement("div");
+          div.className = "card";
+          div.textContent = `${user.name} — ${user.email}`;
+          usersDiv.appendChild(div);
 
-    <div class="section">
-        <h2>Console Output</h2>
-        <p>Open the browser console (F12) to see all JavaScript examples.</p>
-    </div>
+          const option = document.createElement("option");
+          option.value = user.id;
+          option.textContent = user.name;
+          select.appendChild(option);
+        });
 
-    <script src="script.js" defer></script>
-    <script>
-        // JSON operations
-        function parseJSON() {
-            const input = document.getElementById("jsonInput").value;
-            try {
-                const parsed = JSON.parse(input);
-                document.getElementById("jsonOutput").textContent = 
-                    "Parsed:\n" + JSON.stringify(parsed, null, 2);
-            } catch (error) {
-                document.getElementById("jsonOutput").textContent = 
-                    "Error: " + error.message;
-            }
-        }
+        select.disabled = false;
+        document.getElementById("loadPosts").disabled = false;
+      } catch (error) {
+        usersDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+      }
+    }
 
-        function stringifyJSON() {
-            const obj = { name: "John", age: 30, active: true };
-            const stringified = JSON.stringify(obj, null, 2);
-            document.getElementById("jsonOutput").textContent = 
-                "Stringified:\n" + stringified;
-        }
+    async function loadPosts() {
+      const userId = document.getElementById("userSelect").value;
+      const postsDiv = document.getElementById("posts");
+      postsDiv.innerHTML = "<p class='loading'>Loading posts...</p>";
 
-        // API requests
-        async function fetchData() {
-            const endpoint = document.getElementById("apiEndpoint").value;
-            const id = document.getElementById("resourceId").value;
-            
-            let url = `https://jsonplaceholder.typicode.com/${endpoint}`;
-            if (id) {
-                url += `/${id}`;
-            }
-            
-            const output = document.getElementById("apiOutput");
-            output.textContent = "Loading...";
-            output.className = "output loading";
-            
-            try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                output.textContent = JSON.stringify(data, null, 2);
-                output.className = "output success";
-            } catch (error) {
-                output.textContent = "Error: " + error.message;
-                output.className = "output error";
-            }
-        }
+      try {
+        const response = await fetch(`${API}/posts?userId=${userId}`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const posts = await response.json();
 
-        async function fetchMultiple() {
-            const output = document.getElementById("apiOutput");
-            output.textContent = "Loading multiple requests...";
-            output.className = "output loading";
-            
-            try {
-                const promises = [
-                    fetch("https://jsonplaceholder.typicode.com/users/1").then(r => r.json()),
-                    fetch("https://jsonplaceholder.typicode.com/users/2").then(r => r.json()),
-                    fetch("https://jsonplaceholder.typicode.com/users/3").then(r => r.json())
-                ];
-                
-                const results = await Promise.all(promises);
-                output.textContent = JSON.stringify(results, null, 2);
-                output.className = "output success";
-            } catch (error) {
-                output.textContent = "Error: " + error.message;
-                output.className = "output error";
-            }
-        }
+        postsDiv.innerHTML = "";
+        const ul = document.createElement("ul");
+        posts.slice(0, 10).forEach(post => {
+          const li = document.createElement("li");
+          li.textContent = post.title;
+          ul.appendChild(li);
+        });
+        postsDiv.appendChild(ul);
+      } catch (error) {
+        postsDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+      }
+    }
 
-        // Promise demos
-        function demoPromise() {
-            const output = document.getElementById("promiseOutput");
-            output.textContent = "Loading...";
-            
-            const promise = new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    resolve("Promise resolved!");
-                }, 1000);
-            });
-            
-            promise
-                .then(result => {
-                    output.textContent = "Result: " + result;
-                })
-                .catch(error => {
-                    output.textContent = "Error: " + error.message;
-                });
-        }
-
-        function demoPromiseAll() {
-            const output = document.getElementById("promiseOutput");
-            output.textContent = "Loading Promise.all...";
-            
-            const promises = [
-                new Promise(resolve => setTimeout(() => resolve("Task 1"), 1000)),
-                new Promise(resolve => setTimeout(() => resolve("Task 2"), 1500)),
-                new Promise(resolve => setTimeout(() => resolve("Task 3"), 2000))
-            ];
-            
-            Promise.all(promises)
-                .then(results => {
-                    output.textContent = "All completed:\n" + results.join("\n");
-                })
-                .catch(error => {
-                    output.textContent = "Error: " + error.message;
-                });
-        }
-
-        function demoPromiseRace() {
-            const output = document.getElementById("promiseOutput");
-            output.textContent = "Running race...";
-            
-            const promises = [
-                new Promise(resolve => setTimeout(() => resolve("Fast - 500ms"), 500)),
-                new Promise(resolve => setTimeout(() => resolve("Slow - 2000ms"), 2000)),
-                new Promise(resolve => setTimeout(() => resolve("Medium - 1000ms"), 1000))
-            ];
-            
-            Promise.race(promises)
-                .then(result => {
-                    output.textContent = "Winner: " + result;
-                })
-                .catch(error => {
-                    output.textContent = "Error: " + error.message;
-                });
-        }
-
-        // async/await demos
-        async function demoAsyncAwait() {
-            const output = document.getElementById("asyncOutput");
-            output.textContent = "Loading...";
-            
-            try {
-                const response = await fetch("https://jsonplaceholder.typicode.com/users/1");
-                const data = await response.json();
-                output.textContent = "User: " + data.name + "\n" + JSON.stringify(data, null, 2);
-            } catch (error) {
-                output.textContent = "Error: " + error.message;
-            }
-        }
-
-        async function demoErrorHandling() {
-            const output = document.getElementById("asyncOutput");
-            output.textContent = "Testing error handling...";
-            
-            try {
-                const response = await fetch("https://jsonplaceholder.typicode.com/invalid");
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                output.textContent = JSON.stringify(data, null, 2);
-            } catch (error) {
-                output.textContent = "Caught error: " + error.message;
-            }
-        }
-
-        async function demoParallelRequests() {
-            const output = document.getElementById("asyncOutput");
-            output.textContent = "Loading parallel requests...";
-            
-            try {
-                const [users, posts] = await Promise.all([
-                    fetch("https://jsonplaceholder.typicode.com/users").then(r => r.json()),
-                    fetch("https://jsonplaceholder.typicode.com/posts").then(r => r.json())
-                ]);
-                
-                output.textContent = 
-                    `Users: ${users.length}\n` +
-                    `Posts: ${posts.length}\n` +
-                    `Total data points: ${users.length + posts.length}`;
-            } catch (error) {
-                output.textContent = "Error: " + error.message;
-            }
-        }
-
-        // Display users
-        async function displayUsers() {
-            const container = document.getElementById("usersContainer");
-            container.innerHTML = "Loading...";
-            
-            try {
-                const response = await fetch("https://jsonplaceholder.typicode.com/users");
-                const users = await response.json();
-                
-                container.innerHTML = "";
-                users.forEach(user => {
-                    const card = document.createElement("div");
-                    card.className = "user-card";
-                    card.innerHTML = `
-                        <h3>${user.name}</h3>
-                        <p><strong>Email:</strong> ${user.email}</p>
-                        <p><strong>Company:</strong> ${user.company.name}</p>
-                    `;
-                    container.appendChild(card);
-                });
-            } catch (error) {
-                container.innerHTML = "Error: " + error.message;
-            }
-        }
-
-        async function displayUserDetails() {
-            const container = document.getElementById("usersContainer");
-            container.innerHTML = "Loading...";
-            
-            try {
-                const [user, posts] = await Promise.all([
-                    fetch("https://jsonplaceholder.typicode.com/users/1").then(r => r.json()),
-                    fetch("https://jsonplaceholder.typicode.com/posts?userId=1").then(r => r.json())
-                ]);
-                
-                container.innerHTML = `
-                    <div class="user-card">
-                        <h3>${user.name}</h3>
-                        <p><strong>Email:</strong> ${user.email}</p>
-                        <p><strong>Phone:</strong> ${user.phone}</p>
-                        <p><strong>Website:</strong> ${user.website}</p>
-                        <p><strong>Posts:</strong> ${posts.length}</p>
-                    </div>
-                `;
-            } catch (error) {
-                container.innerHTML = "Error: " + error.message;
-            }
-        }
-    </script>
+    document.getElementById("loadUsers").addEventListener("click", loadUsers);
+    document.getElementById("loadPosts").addEventListener("click", loadPosts);
+  </script>
 </body>
 </html>
 ```
 
----
+### Review Questions for the Mini Project
 
-## 📝 Review (0.5h)
-
-### async/await Training
-
-```javascript
-// Exercise 1: Basic async/await
-async function basicAsync() {
-    try {
-        const response = await fetch("https://jsonplaceholder.typicode.com/users/1");
-        const user = await response.json();
-        console.log("User:", user.name);
-    } catch (error) {
-        console.log("Error:", error.message);
-    }
-}
-
-// Exercise 2: Sequential async operations
-async function sequential() {
-    const user1 = await fetch("https://jsonplaceholder.typicode.com/users/1")
-        .then(r => r.json());
-    const user2 = await fetch("https://jsonplaceholder.typicode.com/users/2")
-        .then(r => r.json());
-    console.log("Users:", user1.name, user2.name);
-}
-
-// Exercise 3: Parallel async operations
-async function parallel() {
-    const [user1, user2] = await Promise.all([
-        fetch("https://jsonplaceholder.typicode.com/users/1").then(r => r.json()),
-        fetch("https://jsonplaceholder.typicode.com/users/2").then(r => r.json())
-    ]);
-    console.log("Users:", user1.name, user2.name);
-}
-```
-
-### try/catch/finally with Fetch
-
-```javascript
-async function fetchWithErrorHandling(url) {
-    try {
-        const response = await fetch(url);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        return data;
-        
-    } catch (error) {
-        console.log("Fetch error:", error.message);
-        throw error; // Re-throw if needed
-        
-    } finally {
-        console.log("Fetch attempt complete");
-    }
-}
-
-// Usage
-fetchWithErrorHandling("https://jsonplaceholder.typicode.com/users/1")
-    .then(data => console.log("Success:", data))
-    .catch(error => console.log("Final error:", error.message));
-```
-
-### Wrap-up: JavaScript Phase Complete
-
-Congratulations! You've completed the JavaScript phase of your training. Here's what you've mastered:
-
-#### Core Fundamentals
-- ✅ Variables, Data Types, Strings
-- ✅ Operators, Numbers
-- ✅ Conditionals
-- ✅ Arrays
-- ✅ Loops
-- ✅ Functions
-
-#### Advanced Concepts
-- ✅ Scope, Arrow Functions, Higher-Order Functions
-- ✅ Objects (OOP, Classes, Inheritance)
-- ✅ DOM Manipulation
-- ✅ BOM (Browser Object Model)
-- ✅ Destructuring, Set, Map
-- ✅ Regex, Date, Generators, Modules
-
-#### Asynchronous Programming
-- ✅ JSON
-- ✅ APIs & AJAX
-- ✅ Promises
-- ✅ async/await
-- ✅ Fetch API
-
-#### Next Steps in Your Journey
-1. 🚀 Practice with real-world projects
-2. 🌐 Learn about frameworks (React, Vue, Angular)
-3. 📦 Explore Node.js for backend development
-4. 🧪 Practice with more complex APIs
-5. 🎯 Build full-stack applications
+- "Why do we use `await` on `response.json()`?"
+- "What does `!response.ok` check?"
+- "How can we show a loading state?"
 
 ---
 
-## 🎯 Review Questions
+<details>
+<summary>Trainer Solutions — Do Not Show Until Students Try</summary>
 
-1. **What is JSON?**
+## Trainer Solutions — Do Not Show Until Students Try
+
+### Challenge 1.1
+
+```javascript
+const json = JSON.stringify(product);
+const parsed = JSON.parse(json);
+```
+
+### Challenge 1.2
+
+Functions and `undefined` are removed. Only `name` appears in the JSON string.
+
+### Challenge 2.1
+
+Output: `1`, `3`, `2`.
+
+### Challenge 3.1
+
+```javascript
+const promise = new Promise(resolve => {
+  setTimeout(() => resolve("Ready"), 1000);
+});
+```
+
+### Challenge 3.2
+
+```javascript
+function step1() {
+  return Promise.resolve("Step 1");
+}
+
+function step2(result) {
+  return `Step 2: ${result}`;
+}
+
+step1().then(step2).then(console.log);
+```
+
+### Challenge 4.1
+
+```javascript
+async function getPosts() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+  const posts = await response.json();
+  console.log(posts.length);
+}
+```
+
+### Challenge 4.2
+
+```javascript
+async function postUser() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/users", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name: "New User", email: "new@example.com" })
+  });
+  const data = await response.json();
+  console.log(data);
+}
+```
+
+### Challenge 5.1
+
+```javascript
+async function getUsers() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/users");
+  const users = await response.json();
+  const summaries = users.map(user => ({ name: user.name, email: user.email }));
+  console.log(summaries);
+}
+```
+
+### Challenge 5.2
+
+```javascript
+async function getThree() {
+  const ids = [1, 2, 3];
+  const promises = ids.map(id =>
+    fetch(`https://jsonplaceholder.typicode.com/users/${id}`).then(r => r.json())
+  );
+  const users = await Promise.all(promises);
+  users.forEach(user => console.log(user.name));
+}
+```
+
+### Challenge 6.1
+
+```javascript
+async function load() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/users/1");
+  const user = await response.json();
+  const postsResponse = await fetch(`https://jsonplaceholder.typicode.com/posts?userId=${user.id}`);
+  const posts = await postsResponse.json();
+  console.log(user.name, posts.length);
+}
+```
+
+### Challenge 6.2
+
+```javascript
+async function fetchInvalid() {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/invalid");
+    if (!response.ok) throw new Error("Not found");
+  } catch (error) {
+    console.log("Could not load data:", error.message);
+  }
+}
+```
+
+### Individual Challenges Solutions
+
+```javascript
+// Level 1
+const json = JSON.stringify({ name: "John" });
+const parsed = JSON.parse(json);
+
+// Level 2
+const p = new Promise(resolve => setTimeout(() => resolve("Done"), 1000));
+p.then(console.log);
+
+// Level 3
+async function getUser() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/users/1");
+  const user = await response.json();
+  console.log(user.name, user.email);
+}
+
+// Level 4
+async function postComment() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/comments", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ postId: 1, name: "Test", email: "test@test.com", body: "Hello" })
+  });
+  const data = await response.json();
+  console.log(data);
+}
+
+// Level 5
+async function threeUsers() {
+  const promises = [1, 2, 3].map(id =>
+    fetch(`https://jsonplaceholder.typicode.com/users/${id}`).then(r => r.json())
+  );
+  const users = await Promise.all(promises);
+  users.forEach(user => console.log(user.name));
+}
+
+// Level 6
+async function handleError() {
+  try {
+    await fetch("https://jsonplaceholder.typicode.com/invalid");
+  } catch (error) {
+    console.log("Error:", error.message);
+  }
+}
+```
+
+</details>
+
+---
+
+## Review Questions
+
+1. What is JSON?
    - [ ] A programming language
-   - [ ] A data interchange format
+   - [x] A data interchange format
    - [ ] A database
    - [ ] A framework
 
-2. **What does JSON.parse() do?**
+2. What does JSON.parse() do?
    - [ ] Converts object to string
-   - [ ] Converts string to object
+   - [x] Converts string to object
    - [ ] Validates JSON
    - [ ] Formats JSON
 
-3. **What is an API?**
-   - [ ] A programming interface for software communication
+3. What is an API?
+   - [x] A programming interface for software communication
    - [ ] A database
    - [ ] A programming language
    - [ ] A UI framework
 
-4. **What is the difference between sync and async?**
+4. What is the difference between sync and async?
    - [ ] No difference
-   - [ ] Sync blocks, async doesn't
+   - [x] Sync blocks, async doesn't
    - [ ] Async blocks, sync doesn't
    - [ ] Both block
 
-5. **What is the event loop?**
+5. What is the event loop?
    - [ ] A looping construct
-   - [ ] Mechanism that coordinates call stack and callback queue
+   - [x] Mechanism that coordinates call stack and callback queue
    - [ ] A database query
    - [ ] A UI component
 
-6. **What is callback hell?**
+6. What is callback hell?
    - [ ] A place where callbacks go
-   - [ ] Deeply nested callbacks that are hard to read
+   - [x] Deeply nested callbacks that are hard to read
    - [ ] A callback that errors
    - [ ] A callback that never executes
 
-7. **What does Promise.all() do?**
-   - [ ] Resolves when all promises resolve
+7. What does Promise.all() do?
+   - [x] Resolves when all promises resolve
    - [ ] Resolves when first promise resolves
    - [ ] Resolves when all promises settle
    - [ ] Rejects immediately
 
-8. **What does async/await do?**
+8. What does async/await do?
    - [ ] Makes code synchronous
-   - [ ] Allows writing async code that looks synchronous
+   - [x] Allows writing async code that looks synchronous
    - [ ] Makes code faster
    - [ ] Prevents errors
 
-9. **What does try/catch do?**
+9. What does try/catch do?
    - [ ] Tries to catch errors
-   - [ ] Handles errors gracefully
+   - [x] Handles errors gracefully
    - [ ] Creates errors
    - [ ] Ignores errors
 
-10. **What does finally do?**
+10. What does finally do?
     - [ ] Runs only on success
     - [ ] Runs only on error
-    - [ ] Runs regardless of success or error
+    - [x] Runs regardless of success or error
     - [ ] Never runs
-
-### Correct Answers
-
-1. ✅ A data interchange format
-2. ✅ Converts string to object
-3. ✅ A programming interface for software communication
-4. ✅ Sync blocks, async doesn't
-5. ✅ Mechanism that coordinates call stack and callback queue
-6. ✅ Deeply nested callbacks that are hard to read
-7. ✅ Resolves when all promises resolve
-8. ✅ Allows writing async code that looks synchronous
-9. ✅ Handles errors gracefully
-10. ✅ Runs regardless of success or error
 
 ---
 
-## 📚 Additional Resources
+## Additional Resources
 
 - [MDN: JSON](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON)
 - [MDN: Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
 - [MDN: Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
 - [MDN: async/await](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
 - [JSONPlaceholder](https://jsonplaceholder.typicode.com/) - Free fake API for testing
-- [REST API Tutorial](https://restfulapi.net/)
 - [JavaScript.info: Promises](https://javascript.info/promise-basics)
 - [JavaScript.info: async/await](https://javascript.info/async)
-
-**🎉 Congratulations on completing the JavaScript phase! You now have a solid foundation to build modern web applications. The skills you've learned are essential for frontend development and will serve you well in your journey as a developer.** 💪🚀

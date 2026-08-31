@@ -1490,6 +1490,9 @@ Type the HTML and JS in front of the students, stopping after each step so they 
 
 ---
 
+<details>
+<summary>Trainer Solutions — Do Not Show Until Students Try</summary>
+
 ## Trainer Solutions — Do Not Show Until Students Try
 
 These are the reference answers for all challenges in this session.
@@ -1657,6 +1660,8 @@ function badge(name) {
 }
 console.log(badge("  aDA lovelace  "));
 ```
+
+</details>
 
 ---
 

@@ -1,1153 +1,1025 @@
-# Session 2: Variables, Data Types & Strings Basics
+# Session 2: Variables, Data Types & Strings Basics — Active Learning Redesign
 
-## 📚 Theory (1h)
+## Session Plan for the Instructor
 
-### Data Types & typeof
+- **Total time:** approximately 90 to 120 minutes
+- **Pacing rule:** never explain theory continuously for more than 15–20 minutes. After every concept, students must predict, write, or fix code.
+- **Pedagogical pattern for every topic:**
+  1. **Problem** — a realistic mini-situation
+  2. **Guess** — ask: "What do you expect to happen?"
+  3. **Explain** — the shortest rule that fixes the problem
+  4. **Code** — live code written in front of the students, step by step
+  5. **Challenge** — students solve a small task on their own or in groups
+  6. **Review** — discuss the answer and the most common mistake
 
-JavaScript has two categories of data types: **primitive** and **reference**.
+### Competition and Points
 
-#### Primitive Data Types
-Primitive types are immutable and stored directly in memory.
+- 1 point per correct prediction in the "Guess" phase.
+- 1–3 points per completed challenge, depending on difficulty.
+- A "Bug Hunter" badge for each student who finds and fixes an intentional error.
+- Keep a simple tally on a shared board or in the chat.
 
-| Type | Description | Example |
-|------|-------------|---------|
-| **String** | Textual data | `"Hello"`, `'World'` |
-| **Number** | Numeric values (integers & floats) | `42`, `3.14` |
-| **Boolean** | Logical values | `true`, `false` |
-| **Undefined** | Variable declared but not assigned | `let x;` |
-| **Null** | Intentional absence of value | `null` |
-| **Symbol** | Unique identifiers (ES6) | `Symbol("id")` |
-| **BigInt** | Large integers (ES2020) | `9007199254740991n` |
+### Instructor Questions to Ask During the Session
 
-#### Reference Data Types
-Reference types are stored as references and can be modified.
+- "What type is this value?"
+- "What happens if we reassign a `const`?"
+- "Which naming convention should we use?"
+- "Is this a good variable name?"
+- "Why does `typeof null` say `object`?"
 
-| Type | Description | Example |
-|------|-------------|---------|
-| **Object** | Collection of properties | `{name: "John", age: 30}` |
-| **Array** | Ordered list of values | `[1, 2, 3]` |
-| **Function** | Executable code blocks | `function() {}` |
-| **Date** | Date and time values | `new Date()` |
-| **RegExp** | Pattern matching | `/pattern/` |
+---
 
-#### Using typeof Operator
+## Part 0: Warm-Up — The Sticky Notes (5 minutes)
 
-The `typeof` operator returns the type of a value.
+### Problem
+
+A student wants to remember a username, a score, and whether the user is logged in. The student writes everything in one big message string.
 
 ```javascript
-// Primitive types
-typeof "Hello"           // "string"
-typeof 42                // "number"
-typeof true              // "boolean"
-typeof undefined         // "undefined"
-typeof null              // "object" (historical bug)
-typeof Symbol("id")      // "symbol"
-typeof 9007199254740991n // "bigint"
-
-// Reference types
-typeof {}                // "object"
-typeof []                // "object"
-typeof function() {}     // "function"
-typeof new Date()        // "object"
-typeof /pattern/         // "object"
+let everything = "John 250 true";
 ```
 
-**Important Note:** `typeof null` returns `"object"` due to a historical JavaScript bug. Always check for null explicitly.
+### Guess
+
+Ask: "Is this easy to work with? What if we need to add 10 to the score?"
+
+### Explain
+
+Variables let us store values with names. Each variable has a type, which tells JavaScript what kind of data it holds.
+
+### Live Code
 
 ```javascript
-// Better null check
-const value = null;
-console.log(value === null); // true
-console.log(value === undefined); // false
-```
-
-### Variables Introduction
-
-Variables are containers for storing data values. In JavaScript, you can declare variables using `var`, `let`, or `const`.
-
-#### What is a Variable?
-A variable is a named storage location in memory that holds a value.
-
-```javascript
-// Variable declaration and assignment
 let userName = "John";
-let userAge = 30;
+let score = 250;
+let isLoggedIn = true;
+
+score = score + 10;
+console.log(userName, score, isLoggedIn);
 ```
 
-#### Variable Declaration vs Assignment
+### Review
+
+Variables make values easy to read, update, and reuse.
+
+---
+
+## Part 1: Data Types
+
+### 1.1 Primitive Types
+
+#### Problem
+
+We have different kinds of values. JavaScript needs to know what kind each one is.
+
+#### Live Code
 
 ```javascript
-// Declaration only
-let userName; // undefined
+let name = "John";
+let age = 30;
+let price = 19.99;
+let isActive = true;
+let nothing = null;
+let notAssigned;
+
+console.log(typeof name);        // "string"
+console.log(typeof age);         // "number"
+console.log(typeof price);       // "number"
+console.log(typeof isActive);    // "boolean"
+console.log(typeof nothing);     // "object" (historical bug)
+console.log(typeof notAssigned); // "undefined"
+```
+
+#### Explain
+
+- Primitive types: `string`, `number`, `boolean`, `undefined`, `null`, `symbol`, `bigint`.
+- `typeof null` is a historical bug; use `value === null` to check for null.
+- `undefined` means a variable was declared but not assigned.
+
+#### Challenge 1.1 — typeof Predictions (individual, 3 minutes)
+
+- **Requirement:** Predict the type of each value before running the code.
+- **Time limit:** 3 minutes
+- **Values:** `"42"`, `42`, `true`, `null`, `undefined`, `Symbol("id")`, `9007199254740991n`.
+
+### 1.2 Reference Types
+
+#### Live Code
+
+```javascript
+let user = { name: "John", age: 30 };
+let colors = ["red", "green", "blue"];
+
+console.log(typeof user);   // "object"
+console.log(typeof colors); // "object"
+console.log(Array.isArray(colors)); // true
+```
+
+#### Challenge 1.2 — Array or Object? (individual, 3 minutes)
+
+- **Requirement:** Write `isArray(value)` that returns `true` only for arrays.
+- **Time limit:** 3 minutes
+- **Hint:** Use `Array.isArray`.
+
+---
+
+## Part 2: Variables
+
+### 2.1 Declaration and Assignment
+
+#### Problem
+
+We need a place to store a value and change it later.
+
+#### Live Code
+
+```javascript
+// Declaration
+let userName;
+console.log(userName); // undefined
 
 // Assignment
 userName = "John";
+console.log(userName); // "John"
 
-// Declaration and assignment together
+// Declaration and assignment
 let userAge = 30;
 ```
 
-#### Variable Scope
-The scope determines where variables are accessible.
+#### Challenge 2.1 — Declare and Assign (individual, 2 minutes)
 
-- **Global Scope:** Accessible everywhere in the code
-- **Function Scope:** Accessible within a function
-- **Block Scope:** Accessible within a block `{}`
+- **Requirement:** Declare `let city;`, then assign `"New York"`, then print it.
+- **Time limit:** 2 minutes
 
-### Identifier Naming Rules
+### 2.2 var, let, const
 
-Identifiers are names used for variables, functions, and other program elements.
+#### Problem
 
-#### Valid Identifier Rules
+Some variables should change, others should not. `var` can cause unexpected bugs.
 
-1. **Must start with:**
-   - Letter (a-z, A-Z)
-   - Underscore (_)
-   - Dollar sign ($)
-
-2. **Can contain:**
-   - Letters
-   - Numbers (0-9)
-   - Underscores
-   - Dollar signs
-
-3. **Cannot:**
-   - Start with a number
-   - Contain spaces
-   - Use reserved keywords
-
-#### Examples
+#### Live Code
 
 ```javascript
-// Valid identifiers
-let userName;
-let _private;
-let $special;
-let user123;
-let user_name;
-let USER_NAME;
-
-// Invalid identifiers
-let 123user;        // Cannot start with number
-let user name;      // Cannot contain space
-let class;          // Cannot use reserved keyword
-let user@name;      // Cannot contain special characters
-```
-
-#### Naming Conventions
-
-**Camel Case (recommended for variables):**
-```javascript
-let userName;
-let userAge;
-let isActive;
-```
-
-**Pascal Case (recommended for classes/constructors):**
-```javascript
-class UserAccount {}
-class DatabaseConnection {}
-```
-
-**Snake Case (sometimes used for constants):**
-```javascript
-const MAX_SIZE = 100;
-const API_KEY = "secret";
-```
-
-**Screaming Snake Case (for constants):**
-```javascript
-const MAX_CONNECTIONS = 100;
-const DEFAULT_TIMEOUT = 5000;
-```
-
-#### Descriptive Naming
-
-```javascript
-// Bad - unclear purpose
-let x;
-let n;
-let temp;
-
-// Good - descriptive
-let userName;
-let numberOfUsers;
-let temporaryStorage;
-```
-
-### var vs let vs const Comparison
-
-#### var (Old Way - Avoid Using)
-
-```javascript
-var name = "John";
-```
-
-**Characteristics:**
-- **Function scoped** (not block scoped)
-- Can be **redeclared** in same scope
-- Can be **reassigned**
-- **Hoisted** to top of scope (initialized as `undefined`)
-- Creates **global variable** when declared outside function
-
-**Problems with var:**
-```javascript
-// Problem 1: Function scope only
+// var is function scoped
 if (true) {
-    var x = 10;
+  var oldWay = "I leak out";
 }
-console.log(x); // 10 (accessible outside block)
+console.log(oldWay); // works
 
-// Problem 2: Can be redeclared
-var x = 10;
-var x = 20; // No error
-
-// Problem 3: Hoisting issues
-console.log(y); // undefined (not error)
-var y = 10;
-```
-
-#### let (Modern Way)
-
-```javascript
-let name = "John";
-name = "Jane"; // Can reassign
-```
-
-**Characteristics:**
-- **Block scoped**
-- Cannot be **redeclared** in same scope
-- Can be **reassigned**
-- **Hoisted** to top of block (but not initialized - Temporal Dead Zone)
-- Cannot be accessed before declaration
-
-**Examples:**
-```javascript
-// Block scope
+// let is block scoped
 if (true) {
-    let x = 10;
+  let newWay = "I stay inside";
 }
-console.log(x); // ReferenceError: x is not defined
+// console.log(newWay); // ReferenceError
 
-// Cannot redeclare
-let x = 10;
-let x = 20; // SyntaxError: Identifier 'x' has already been declared
-
-// Temporal Dead Zone
-console.log(y); // ReferenceError: Cannot access 'y' before initialization
-let y = 10;
+// const cannot be reassigned
+const PI = 3.14159;
+// PI = 3.14; // TypeError
 ```
 
-#### const (Modern Way for Constants)
+#### Challenge 2.2 — Fix the var (individual, 4 minutes)
+
+- **Requirement:** Rewrite this code using `let` or `const` and explain why it is safer.
+- **Time limit:** 4 minutes
 
 ```javascript
-const PI = 3.14159;
-// PI = 3.14; // TypeError: Assignment to constant variable
+var score = 0;
+var score = 10;
+console.log(score);
 ```
 
-**Characteristics:**
-- **Block scoped**
-- Cannot be **redeclared** in same scope
-- Cannot be **reassigned**
-- Must be **initialized** at declaration
-- **Hoisted** to top of block (but not initialized)
+### 2.3 const with Objects and Arrays
 
-**Important Note:** For objects and arrays, the reference cannot be changed, but contents can be modified.
+#### Problem
+
+A `const` object cannot be replaced, but can its contents change?
+
+#### Live Code
 
 ```javascript
-// Primitive value
-const PI = 3.14159;
-PI = 3.14; // Error
-
-// Object - can modify properties
 const user = { name: "John", age: 30 };
 user.name = "Jane"; // OK
-user.age = 31;     // OK
-// user = {};       // Error - cannot reassign
+user.age = 31;      // OK
+// user = {};       // Error
 
-// Array - can modify elements
 const numbers = [1, 2, 3];
-numbers.push(4);  // OK
-numbers[0] = 10;  // OK
-// numbers = [];  // Error - cannot reassign
+numbers.push(4);    // OK
+numbers[0] = 10;    // OK
+// numbers = [];    // Error
 ```
 
-#### Comparison Table
+#### Challenge 2.3 — Const Surprise (individual, 4 minutes)
 
-| Feature | var | let | const |
-|---------|-----|-----|-------|
-| Scope | Function | Block | Block |
-| Redeclaration | Allowed | Not allowed | Not allowed |
-| Reassignment | Allowed | Allowed | Not allowed |
-| Hoisting | Yes (initialized as undefined) | Yes (TDZ) | Yes (TDZ) |
-| Initialization at declaration | Optional | Optional | Required |
-| Use in modern code | Avoid | Default for variables | Default for constants |
+- **Requirement:** Predict which lines will error, then run the code.
+- **Time limit:** 4 minutes
 
-#### When to Use Which
+### 2.4 When to Use Which
+
+#### Live Code
 
 ```javascript
-// Use const for values that never change
 const MAX_USERS = 100;
 const API_URL = "https://api.example.com";
-const CONFIG = { timeout: 5000 };
 
-// Use let for values that will change
 let counter = 0;
 let currentUser = null;
-let isActive = false;
 
-// Avoid var in modern JavaScript
-// var is kept for backward compatibility only
+// Use const unless you need to reassign
 ```
 
-### String Syntax & Escape Sequences
+#### Challenge 2.4 — let or const? (individual, 3 minutes)
 
-#### String Syntax
+- **Requirement:** Choose `let` or `const` for: userName, totalScore, PI, apiKey.
+- **Time limit:** 3 minutes
 
-JavaScript supports three ways to create strings:
+---
 
-**1. Single Quotes:**
+## Part 3: Naming Rules and Conventions
+
+### 3.1 Valid Identifiers
+
+#### Problem
+
+Variable names must follow rules or JavaScript throws an error.
+
+#### Live Code
+
 ```javascript
-let message = 'Hello, World!';
+// Valid
+let userName;
+let _private;
+let $button;
+let user123;
+let user_name;
+
+// Invalid
+// let 123user;     // Cannot start with number
+// let user name;   // Cannot contain space
+// let class;       // Reserved keyword
 ```
 
-**2. Double Quotes:**
+#### Challenge 3.1 — Valid or Invalid? (individual, 3 minutes)
+
+- **Requirement:** Classify each name: `firstName`, `2ndPlace`, `my-variable`, `class`, `_score`, `$value`.
+- **Time limit:** 3 minutes
+
+### 3.2 Naming Conventions
+
+#### Live Code
+
 ```javascript
-let message = "Hello, World!";
+// camelCase for variables
+let userName = "John";
+let numberOfUsers = 100;
+
+// PascalCase for classes
+class UserAccount {}
+
+// SCREAMING_SNAKE_CASE for constants
+const MAX_CONNECTIONS = 100;
 ```
 
-**3. Template Literals (Backticks):**
+#### Challenge 3.2 — Rename (individual, 3 minutes)
+
+- **Requirement:** Rewrite these with camelCase or screaming snake case: `myname`, `totalscore`, `apikey`, `maxusers`.
+- **Time limit:** 3 minutes
+
+---
+
+## Part 4: Strings
+
+### 4.1 String Syntax
+
+#### Problem
+
+We need to create text. JavaScript gives us three ways.
+
+#### Live Code
+
 ```javascript
-let message = `Hello, World!`;
+let single = 'Hello';
+let double = "World";
+let template = `Hello, ${double}!`;
+
+console.log(single);
+console.log(double);
+console.log(template);
 ```
 
-**Choosing Quotes:**
-- Single quotes are most common in JavaScript
-- Double quotes are useful when string contains single quotes
-- Template literals are best for strings with variables or multi-line strings
+#### Challenge 4.1 — Choose Quotes (individual, 3 minutes)
 
-#### Escape Sequences
+- **Requirement:** Write these strings: `It's a nice day`, `"Hello," she said`, `He said, "It's fine"`.
+- **Time limit:** 3 minutes
+- **Hint:** Mix quotes or use backslashes.
 
-Escape sequences allow you to include special characters in strings.
+### 4.2 Escape Sequences
 
-| Escape Sequence | Character | Description |
-|-----------------|-----------|-------------|
-| `\'` | `'` | Single quote |
-| `\"` | `"` | Double quote |
-| `\\` | `\` | Backslash |
-| `\n` | | New line |
-| `\r` | | Carriage return |
-| `\t` | | Tab |
-| `\b` | | Backspace |
-| `\f` | | Form feed |
-| `\uXXXX` | Unicode | Unicode character (e.g., `\u00A9` = ©) |
+#### Problem
 
-**Examples:**
+Special characters inside strings need special treatment.
+
+#### Live Code
+
 ```javascript
-// Quotes inside strings
-let quote1 = 'He said, "Hello!"';
-let quote2 = "He said, 'Hello!'";
-let quote3 = 'He said, \'Hello!\'';  // Using escape
-let quote4 = "He said, \"Hello!\"";  // Using escape
-
-// New lines
-let multiline = "Line 1\nLine 2\nLine 3";
-
-// Tab
-let formatted = "Name:\tJohn\nAge:\t30";
-
-// Backslash
-let path = "C:\\Users\\John\\Documents";
-
-// Unicode
-let copyright = "\u00A9"; // ©
-let heart = "\u2764";     // ❤
+console.log("He said, \"Hello!\"");
+console.log("Line 1\nLine 2");
+console.log("Name:\tJohn");
+console.log("C:\\Users\\John");
+console.log("\u00A9"); // ©
 ```
 
-#### Template Literals (ES6)
+#### Challenge 4.2 — Escape Practice (individual, 3 minutes)
 
-Template literals provide powerful string features.
+- **Requirement:** Print this exact output using one `console.log`:
 
-**Basic Usage:**
-```javascript
-let name = "John";
-let age = 30;
-let message = `My name is ${name} and I'm ${age} years old`;
+```
+Name: "John"
+Age:	30
 ```
 
-**Multi-line Strings:**
-```javascript
-let html = `
-    <div>
-        <h1>Hello, ${name}!</h1>
-        <p>Age: ${age}</p>
-    </div>
-`;
-```
+- **Time limit:** 3 minutes
 
-**Expressions:**
-```javascript
-let a = 10;
-let b = 20;
-let result = `The sum of ${a} and ${b} is ${a + b}`;
+### 4.3 String Methods
 
-// Function calls
-let message = `Current time: ${new Date().toLocaleTimeString()}`;
+#### Live Code
 
-// Property access
-let user = { name: "John", age: 30 };
-let info = `User: ${user.name}, Age: ${user.age}`;
-```
-
-**Nested Template Literals:**
-```javascript
-let name = "John";
-let greeting = `Hello, ${`Mr. ${name}`}!`;
-```
-
-**Tagged Template Literals:**
-```javascript
-function highlight(strings, ...values) {
-    return strings.reduce((result, string, i) => {
-        const value = values[i] ? `<strong>${values[i]}</strong>` : '';
-        return result + string + value;
-    }, '');
-}
-
-let name = "John";
-let age = 30;
-let message = highlight`Name: ${name}, Age: ${age}`;
-// Result: "Name: <strong>John</strong>, Age: <strong>30</strong>"
-```
-
-#### String Properties and Methods
-
-**Length:**
 ```javascript
 let text = "Hello, World!";
-console.log(text.length); // 13
+
+console.log(text.length);                  // 13
+console.log(text[0]);                      // "H"
+console.log(text.toUpperCase());           // "HELLO, WORLD!"
+console.log(text.toLowerCase());           // "hello, world!"
+console.log(text.indexOf("World"));        // 6
+console.log(text.includes("World"));       // true
+console.log(text.startsWith("Hello"));     // true
+console.log(text.slice(0, 5));             // "Hello"
+console.log(text.replace("World", "JS"));  // "Hello, JS!"
+console.log("  hello  ".trim());           // "hello"
+console.log("a,b,c".split(","));           // ["a", "b", "c"]
 ```
 
-**Accessing Characters:**
+#### Challenge 4.3 — String Detective (individual, 4 minutes)
+
+- **Requirement:** Extract the word "World" from `"Hello, World!"` and make it uppercase.
+- **Time limit:** 4 minutes
+
+### 4.4 Concatenation vs Template Literals
+
+#### Problem
+
+Build a sentence from variables.
+
+#### Live Code
+
 ```javascript
-let text = "Hello";
-console.log(text[0]);     // "H"
-console.log(text.charAt(0)); // "H"
+let name = "John";
+let age = 30;
+
+// Concatenation
+let message1 = name + " is " + age + " years old";
+
+// Template literal
+let message2 = `${name} is ${age} years old`;
+
+console.log(message1);
+console.log(message2);
 ```
 
-**Case Conversion:**
-```javascript
-let text = "Hello World";
-console.log(text.toUpperCase()); // "HELLO WORLD"
-console.log(text.toLowerCase()); // "hello world"
+#### Challenge 4.4 — Build a Product Card (individual, 5 minutes)
+
+- **Requirement:** Use a template literal to build this string:
+
+```
+Product: Laptop
+Price: $999.99
+In Stock: true
 ```
 
-**Finding Substrings:**
+- **Time limit:** 5 minutes
+
+### 4.5 Multi-line Strings
+
+#### Live Code
+
 ```javascript
-let text = "Hello World";
-console.log(text.indexOf("World")); // 6
-console.log(text.includes("World")); // true
-console.log(text.startsWith("Hello")); // true
-console.log(text.endsWith("World")); // true
+let name = "John";
+let age = 30;
+
+let html = `
+  <div class="user-card">
+    <h2>${name}</h2>
+    <p>Age: ${age}</p>
+  </div>
+`;
+
+console.log(html);
 ```
 
-**Extracting Parts:**
+#### Challenge 4.5 — Email Template (individual, 5 minutes)
+
+- **Requirement:** Create a multi-line email template using template literals.
+- **Time limit:** 5 minutes
+
+---
+
+## Bug Hunt 1
+
+### Problem
+
+The following code has three deliberate bugs. Ask students to find them.
+
 ```javascript
-let text = "Hello World";
-console.log(text.slice(0, 5));    // "Hello"
-console.log(text.substring(0, 5)); // "Hello"
-console.log(text.substr(0, 5));    // "Hello"
+let user name = "John";
+let score = 0;
+score = "ten";
+
+const PI = 3.14;
+PI = 3.14159;
+
+let count = 0;
+let count = 1;
 ```
 
-**Replacing:**
+### Issues
+
+1. `let user name` contains a space, which is invalid.
+2. `const PI = 3.14; PI = 3.14159;` tries to reassign a `const`.
+3. `let count` is declared twice in the same scope.
+
+### Fixed Version
+
 ```javascript
-let text = "Hello World";
-console.log(text.replace("World", "JavaScript")); // "Hello JavaScript"
+let userName = "John";
+let score = 0;
+score = 10;
+
+const PI = 3.14;
+// PI = 3.14159; // Not allowed
+
+let count = 0;
+count = 1;
 ```
 
-**Splitting:**
+### Points
+
+1 point per found bug.
+
+---
+
+## Part 5: Type Checking in Practice
+
+### Live Code
+
 ```javascript
-let text = "apple,banana,orange";
-console.log(text.split(",")); // ["apple", "banana", "orange"]
+function checkType(value) {
+  if (value === null) return "null";
+  if (Array.isArray(value)) return "array";
+  return typeof value;
+}
+
+console.log(checkType(null));           // "null"
+console.log(checkType([1, 2, 3]));      // "array"
+console.log(checkType({ a: 1 }));       // "object"
+console.log(checkType(42));             // "number"
 ```
 
-**Trimming:**
+#### Challenge 5.1 — Better typeof (individual, 4 minutes)
+
+- **Requirement:** Write `checkType(value)` that returns `"null"` for `null`, `"array"` for arrays, and `typeof` for everything else.
+- **Time limit:** 4 minutes
+
+---
+
+## Part 6: Concatenation and Template Literals
+
+### 6.1 Building Strings
+
+#### Live Code
+
 ```javascript
-let text = "  Hello World  ";
-console.log(text.trim()); // "Hello World"
-console.log(text.trimStart()); // "Hello World  "
-console.log(text.trimEnd()); // "  Hello World"
+let firstName = "John";
+let lastName = "Doe";
+let fullName = firstName + " " + lastName;
+console.log(fullName);
+
+let address = "123 Main St" + ", " + "New York" + " " + "10001";
+console.log(address);
+```
+
+#### Challenge 6.1 — Address Builder (individual, 3 minutes)
+
+- **Requirement:** Build a full address string from `street`, `city`, `zip`.
+- **Time limit:** 3 minutes
+
+### 6.2 Template Literals with Expressions
+
+#### Live Code
+
+```javascript
+let price = 100;
+let discount = 0.2;
+let finalPrice = price * (1 - discount);
+
+let message = `Original: $${price}, Discount: ${discount * 100}%, Final: $${finalPrice}`;
+console.log(message);
+```
+
+#### Challenge 6.2 — Price Tag (individual, 4 minutes)
+
+- **Requirement:** Use a template literal to show price, discount, and final price.
+- **Time limit:** 4 minutes
+
+### 6.3 User Profile Generator
+
+#### Live Code
+
+```javascript
+function generateUserProfile(firstName, lastName, age, email, city) {
+  let fullName = firstName + " " + lastName;
+  return `
+    USER PROFILE
+    ============
+    Name: ${fullName}
+    Age: ${age}
+    Email: ${email}
+    City: ${city}
+
+    ${fullName} is ${age} years old and lives in ${city}.
+    Contact them at ${email}.
+  `;
+}
+
+console.log(generateUserProfile("John", "Doe", 30, "john@example.com", "New York"));
+```
+
+#### Challenge 6.3 — Product Description (individual, 5 minutes)
+
+- **Requirement:** Write `generateProductDescription(name, price, category, inStock)`.
+- **Time limit:** 5 minutes
+- **Hint:** Use a ternary for stock status.
+
+---
+
+## Bug Hunt 2
+
+### Problem
+
+Find the bugs in this string code.
+
+```javascript
+let price = 19.99;
+let message = "The price is $" + price.toFixed(2)"!";
+console.log(message);
+
+let name = "John";
+let age = 30;
+let info = `My name is ${name} and I am ${Age} years old.`;
+console.log(info);
+
+let html = "
+  <div>
+    <h1>Hello</h1>
+  </div>
+";
+console.log(html);
+```
+
+### Issues
+
+1. `+ price.toFixed(2)"!"` is missing the `+` operator.
+2. `${Age}` uses uppercase `Age` but the variable is `age`.
+3. Multi-line string uses double quotes, which is not valid without `\n` or using template literals.
+
+### Fixed Version
+
+```javascript
+let price = 19.99;
+let message = "The price is $" + price.toFixed(2) + "!";
+console.log(message);
+
+let name = "John";
+let age = 30;
+let info = `My name is ${name} and I am ${age} years old.`;
+console.log(info);
+
+let html = `
+  <div>
+    <h1>Hello</h1>
+  </div>
+`;
+console.log(html);
+```
+
+### Points
+
+1 point per found issue.
+
+---
+
+## Group Challenge: Type Detective Race
+
+- **Time:** 10 minutes
+- **Teams:** 2 or 3 students per team
+- **Task:** Each team writes the correct `checkType` output for a list of values.
+- **Scoring:** 1 point per correct answer. First team to finish with all correct gets 2 bonus points.
+
+### Values
+
+```javascript
+[ "Hello", 42, 3.14, true, null, undefined, {}, [], new Date(), Symbol("x"), 100n ]
+```
+
+### Instructor Answer Key
+
+```javascript
+"Hello"         -> "string"
+42              -> "number"
+3.14            -> "number"
+true            -> "boolean"
+null            -> "null" (not "object")
+undefined       -> "undefined"
+{}              -> "object"
+[]              -> "array"
+new Date()      -> "object"
+Symbol("x")     -> "symbol"
+100n            -> "bigint"
 ```
 
 ---
 
-## 💻 Practical (1.5h)
-
-### Exercise 1: Data Types & typeof
-
-```javascript
-// Exercise 1.1: Test typeof operator
-console.log("=== typeof Operator Tests ===");
-
-let values = [
-    "Hello",
-    42,
-    3.14,
-    true,
-    false,
-    undefined,
-    null,
-    Symbol("id"),
-    9007199254740991n,
-    {},
-    [],
-    function() {},
-    new Date()
-];
-
-values.forEach((value, index) => {
-    console.log(`Value ${index + 1}:`, value, "- Type:", typeof value);
-});
-
-// Exercise 1.2: Type checking function
-function checkType(value) {
-    const type = typeof value;
-    if (type === 'object' && value === null) {
-        return 'null';
-    }
-    if (Array.isArray(value)) {
-        return 'array';
-    }
-    return type;
-}
-
-console.log("\n=== Custom Type Checking ===");
-console.log("null:", checkType(null));              // "null"
-console.log("array:", checkType([1, 2, 3]));        // "array"
-console.log("object:", checkType({a: 1}));          // "object"
-console.log("function:", checkType(function() {}));  // "function"
-```
-
-### Exercise 2: Variables & Naming
-
-```javascript
-// Exercise 2.1: Variable declarations
-console.log("=== Variable Declarations ===");
-
-// Using let
-let userName = "John";
-let userAge = 30;
-let isActive = true;
-
-console.log("User:", userName, "Age:", userAge, "Active:", isActive);
-
-// Using const
-const MAX_USERS = 100;
-const API_URL = "https://api.example.com";
-const DEFAULT_CONFIG = {
-    timeout: 5000,
-    retries: 3
-};
-
-console.log("Max users:", MAX_USERS);
-console.log("API URL:", API_URL);
-console.log("Config:", DEFAULT_CONFIG);
-
-// Exercise 2.2: Variable reassignment
-console.log("\n=== Variable Reassignment ===");
-
-let counter = 0;
-console.log("Initial counter:", counter);
-
-counter = counter + 1;
-console.log("After increment:", counter);
-
-counter += 5;
-console.log("After adding 5:", counter);
-
-// Exercise 2.3: Object and array modification with const
-console.log("\n=== Const with Objects/Arrays ===");
-
-const user = {
-    name: "John",
-    age: 30
-};
-
-console.log("Original user:", user);
-
-user.name = "Jane";  // OK - modifying property
-user.age = 31;       // OK - modifying property
-console.log("Modified user:", user);
-
-// user = {};        // Error - cannot reassign
-
-const numbers = [1, 2, 3];
-console.log("Original array:", numbers);
-
-numbers.push(4);     // OK - adding element
-numbers[0] = 10;     // OK - modifying element
-console.log("Modified array:", numbers);
-
-// numbers = [];     // Error - cannot reassign
-```
-
-### Exercise 3: String Basics
-
-```javascript
-// Exercise 3.1: String syntax
-console.log("=== String Syntax ===");
-
-let singleQuote = 'Hello, World!';
-let doubleQuote = "Hello, World!";
-let templateLiteral = `Hello, World!`;
-
-console.log("Single quote:", singleQuote);
-console.log("Double quote:", doubleQuote);
-console.log("Template literal:", templateLiteral);
-
-// Exercise 3.2: Escape sequences
-console.log("\n=== Escape Sequences ===");
-
-let withQuotes = 'He said, "Hello!"';
-let withNewLine = "Line 1\nLine 2\nLine 3";
-let withTab = "Name:\tJohn\nAge:\t30";
-let withBackslash = "C:\\Users\\John\\Documents";
-let withUnicode = "Copyright: \u00A9";
-
-console.log("With quotes:", withQuotes);
-console.log("With new lines:", withNewLine);
-console.log("With tabs:", withTab);
-console.log("With backslash:", withBackslash);
-console.log("With unicode:", withUnicode);
-
-// Exercise 3.3: String methods
-console.log("\n=== String Methods ===");
-
-let text = "Hello, World!";
-
-console.log("Original:", text);
-console.log("Length:", text.length);
-console.log("Uppercase:", text.toUpperCase());
-console.log("Lowercase:", text.toLowerCase());
-console.log("Includes 'World':", text.includes("World"));
-console.log("Starts with 'Hello':", text.startsWith("Hello"));
-console.log("Ends with '!':", text.endsWith("!"));
-console.log("Replace 'World' with 'JavaScript':", text.replace("World", "JavaScript"));
-console.log("Slice (0,5):", text.slice(0, 5));
-console.log("Split by ',':", text.split(","));
-console.log("Trim:", "  Hello  ".trim());
-```
-
-### Exercise 4: Concatenation
-
-```javascript
-// Exercise 4.1: Basic concatenation
-console.log("=== Basic Concatenation ===");
-
-let firstName = "John";
-let lastName = "Doe";
-let fullName = firstName + " " + lastName;
-
-console.log("First name:", firstName);
-console.log("Last name:", lastName);
-console.log("Full name:", fullName);
-
-// Exercise 4.2: Concatenation with different types
-console.log("\n=== Concatenation with Different Types ===");
-
-let name = "John";
-let age = 30;
-let message = name + " is " + age + " years old";
-
-console.log("Message:", message);
-
-let price = 19.99;
-let item = "Book";
-let description = item + " costs $" + price;
-
-console.log("Description:", description);
-
-// Exercise 4.3: Concatenation challenges
-console.log("\n=== Concatenation Challenges ===");
-
-// Challenge 1: Create a greeting
-let greeting = "Hello";
-let target = "World";
-let fullGreeting = greeting + ", " + target + "!";
-console.log("Greeting:", fullGreeting);
-
-// Challenge 2: Build an address
-let street = "123 Main St";
-let city = "New York";
-let zip = "10001";
-let address = street + ", " + city + " " + zip;
-console.log("Address:", address);
-
-// Challenge 3: Format a date
-let day = "15";
-let month = "August";
-let year = "2026";
-let date = day + " " + month + " " + year;
-console.log("Date:", date);
-```
-
-### Exercise 5: Template Literals
-
-```javascript
-// Exercise 5.1: Basic template literals
-console.log("=== Basic Template Literals ===");
-
-let name = "John";
-let age = 30;
-let occupation = "Developer";
-
-let message = `My name is ${name}, I'm ${age} years old, and I work as a ${occupation}`;
-console.log("Message:", message);
-
-// Exercise 5.2: Template literals with expressions
-console.log("\n=== Template Literals with Expressions ===");
-
-let a = 10;
-let b = 20;
-let sum = `The sum of ${a} and ${b} is ${a + b}`;
-console.log("Sum:", sum);
-
-let price = 100;
-let discount = 0.2;
-let finalPrice = `Original: $${price}, Discount: ${discount * 100}%, Final: $${price * (1 - discount)}`;
-console.log("Price calculation:", finalPrice);
-
-// Exercise 5.3: Multi-line template literals
-console.log("\n=== Multi-line Template Literals ===");
-
-let html = `
-    <div class="user-card">
-        <h2>${name}</h2>
-        <p>Age: ${age}</p>
-        <p>Occupation: ${occupation}</p>
-    </div>
-`;
-console.log("HTML template:", html);
-
-let email = `
-    Dear ${name},
-
-    Thank you for your interest in our company.
-    We will review your application and get back to you soon.
-
-    Best regards,
-    HR Team
-`;
-console.log("Email template:", email);
-
-// Exercise 5.4: Template literals with objects
-console.log("\n=== Template Literals with Objects ===");
-
-let user = {
-    name: "John Doe",
-    email: "john@example.com",
-    age: 30,
-    city: "New York"
-};
-
-let userInfo = `
-    User Profile:
-    -------------
-    Name: ${user.name}
-    Email: ${user.email}
-    Age: ${user.age}
-    City: ${user.city}
-`;
-console.log(userInfo);
-```
-
-### Exercise 6: Variables & Concatenation Challenge
-
-```javascript
-// Challenge: Build a user profile generator
-console.log("=== User Profile Generator Challenge ===");
-
-function generateUserProfile(firstName, lastName, age, email, city) {
-    // Your task: Complete this function using template literals
-    // Return a formatted user profile string
-
-    let fullName = firstName + " " + lastName;
-    let userProfile = `
-        USER PROFILE
-        ============
-        Name: ${fullName}
-        Age: ${age}
-        Email: ${email}
-        City: ${city}
-        
-        User ${fullName} is ${age} years old and lives in ${city}.
-        Contact them at ${email}.
-    `;
-
-    return userProfile;
-}
-
-// Test the function
-let profile1 = generateUserProfile("John", "Doe", 30, "john@example.com", "New York");
-console.log(profile1);
-
-let profile2 = generateUserProfile("Jane", "Smith", 25, "jane@example.com", "Los Angeles");
-console.log(profile2);
-
-// Challenge: Build a product description generator
-console.log("\n=== Product Description Generator Challenge ===");
-
-function generateProductDescription(name, price, category, inStock) {
-    // Your task: Complete this function
-    // Return a formatted product description
-
-    let stockStatus = inStock ? "In Stock" : "Out of Stock";
-    let description = `
-        PRODUCT DETAILS
-        ================
-        Product: ${name}
-        Price: $${price}
-        Category: ${category}
-        Status: ${stockStatus}
-        
-        ${name} is available in the ${category} category for $${price}.
-        Current status: ${stockStatus}.
-    `;
-
-    return description;
-}
-
-// Test the function
-let product1 = generateProductDescription("Laptop", 999.99, "Electronics", true);
-console.log(product1);
-
-let product2 = generateProductDescription("T-Shirt", 19.99, "Clothing", false);
-console.log(product2);
-
-// Challenge: Build a sentence builder
-console.log("\n=== Sentence Builder Challenge ===");
-
-function buildSentence(article, noun, verb, adjective, adverb) {
-    // Your task: Build a sentence using template literals
-    // Example: "The quick brown fox jumps quickly"
-
-    let sentence = `${article} ${adjective} ${noun} ${verb} ${adverb}.`;
-    return sentence;
-}
-
-// Test the function
-console.log(buildSentence("The", "fox", "jumps", "quick", "quickly"));
-console.log(buildSentence("A", "cat", "sleeps", "lazy", "peacefully"));
-console.log(buildSentence("The", "developer", "codes", "talented", "efficiently"));
-```
-
-### Exercise 7: Complete Working Example
-
-**Complete script.js:**
-```javascript
-// Session 2: Variables, Data Types & Strings Basics
-// This script demonstrates variables, data types, and string operations
-
-console.log("=== Session 2: Variables, Data Types & Strings ===");
-
-// 1. Data types demonstration
-console.log("\n--- Data Types ---");
-let stringValue = "Hello";
-let numberValue = 42;
-let booleanValue = true;
-let nullValue = null;
-let undefinedValue = undefined;
-let objectValue = { name: "John", age: 30 };
-let arrayValue = [1, 2, 3, 4, 5];
-
-console.log("String:", stringValue, "Type:", typeof stringValue);
-console.log("Number:", numberValue, "Type:", typeof numberValue);
-console.log("Boolean:", booleanValue, "Type:", typeof booleanValue);
-console.log("Null:", nullValue, "Type:", typeof nullValue, "(Note: typeof null is 'object')");
-console.log("Undefined:", undefinedValue, "Type:", typeof undefinedValue);
-console.log("Object:", objectValue, "Type:", typeof objectValue);
-console.log("Array:", arrayValue, "Type:", typeof arrayValue);
-
-// 2. Variables demonstration
-console.log("\n--- Variables ---");
-
-// let - can be reassigned
-let counter = 0;
-console.log("Initial counter:", counter);
-counter = 10;
-console.log("Updated counter:", counter);
-
-// const - cannot be reassigned
-const MAX_VALUE = 100;
-console.log("Max value:", MAX_VALUE);
-// MAX_VALUE = 200; // This would cause an error
-
-// const with objects (can modify properties)
-const user = {
-    name: "John",
-    age: 30
-};
-console.log("Original user:", user);
-user.name = "Jane"; // This is allowed
-user.age = 31;     // This is allowed
-console.log("Modified user:", user);
-
-// 3. String operations
-console.log("\n--- String Operations ---");
-
-let firstName = "John";
-let lastName = "Doe";
-
-// Concatenation
-let fullNameConcat = firstName + " " + lastName;
-console.log("Concatenation:", fullNameConcat);
-
-// Template literals
-let fullNameTemplate = `${firstName} ${lastName}`;
-console.log("Template literal:", fullNameTemplate);
-
-// String methods
-let message = "Hello, World!";
-console.log("Original:", message);
-console.log("Uppercase:", message.toUpperCase());
-console.log("Length:", message.length);
-console.log("Includes 'World':", message.includes("World"));
-
-// 4. Escape sequences
-console.log("\n--- Escape Sequences ---");
-let quotedText = 'He said, "Hello!"';
-let multiline = "Line 1\nLine 2\nLine 3";
-let withTab = "Name:\tJohn";
-console.log("Quoted:", quotedText);
-console.log("Multiline:", multiline);
-console.log("With tab:", withTab);
-
-// 5. Practical example: User profile
-console.log("\n--- User Profile Example ---");
-
-function createUserProfile(name, age, email, city) {
-    return `
-        USER PROFILE
-        ============
-        Name: ${name}
-        Age: ${age}
-        Email: ${email}
-        City: ${city}
-        
-        ${name} is ${age} years old and lives in ${city}.
-    `;
-}
-
-let userProfile = createUserProfile("John Doe", 30, "john@example.com", "New York");
-console.log(userProfile);
-
-console.log("\n=== Session 2 Complete ===");
-```
-
-**Complete index.html:**
+## Individual Challenges — Progressive Difficulty
+
+### Level 1: Fix the Name (3 minutes)
+
+- **Requirement:** These names are invalid or bad. Rewrite them: `let 1stName; let my-name; let CLASS; let total score;`.
+
+### Level 2: typeof Output (3 minutes)
+
+- **Requirement:** Predict the output of `typeof` for these values: `"42"`, `42`, `true`, `null`, `undefined`, `[]`, `{}`.
+
+### Level 3: let or const (3 minutes)
+
+- **Requirement:** Choose `let` or `const` for: `userName`, `PI`, `score`, `MAX_ATTEMPTS`, `email`.
+
+### Level 4: Escape the Path (4 minutes)
+
+- **Requirement:** Print `C:\Users\John\Documents` using one `console.log`.
+
+### Level 5: String Slice (4 minutes)
+
+- **Requirement:** Extract `"World"` from `"Hello, World!"` and convert it to uppercase.
+
+### Level 6: Product Card (5 minutes)
+
+- **Requirement:** Use a template literal to display product info from variables.
+
+---
+
+## Mini Project: Profile Card Generator
+
+### Time
+
+25 minutes
+
+### Goal
+
+Combine variables, data types, `typeof`, template literals, and string methods into one HTML page.
+
+### Requirements for the Students
+
+1. Create an HTML page with inputs:
+   - First name
+   - Last name
+   - Age
+   - Email
+   - City
+   - Job title
+
+2. On a button click, display a formatted profile card using template literals.
+
+3. Show the `typeof` each input value in the console.
+
+### Starter HTML
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Session 2 - Variables, Data Types & Strings</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        .section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .section h2 {
-            color: #1890ff;
-            margin-top: 0;
-        }
-        .output {
-            background: #f0f0f0;
-            padding: 15px;
-            border-radius: 4px;
-            font-family: monospace;
-            white-space: pre-wrap;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile Card Generator</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; }
+    .section { background: #f9f9f9; padding: 15px; margin-bottom: 20px; border-radius: 4px; }
+    input, button { padding: 8px; margin: 5px; }
+    .card { background: white; border: 1px solid #ddd; padding: 20px; border-radius: 4px; }
+  </style>
 </head>
 <body>
-    <h1>Session 2: Variables, Data Types & Strings</h1>
-    
-    <div class="section">
-        <h2>Instructions</h2>
-        <p>Open the browser console (F12) to see the JavaScript output.</p>
-        <p>This session covers:</p>
-        <ul>
-            <li>Data types and typeof operator</li>
-            <li>Variables (let, const)</li>
-            <li>Identifier naming rules</li>
-            <li>String syntax and escape sequences</li>
-            <li>Concatenation and template literals</li>
-        </ul>
-    </div>
+  <h1>Profile Card Generator</h1>
 
-    <div class="section">
-        <h2>Console Output</h2>
-        <div class="output" id="console-output">
-            JavaScript output will appear in the browser console...
-        </div>
-    </div>
+  <div class="section">
+    <input type="text" id="firstName" placeholder="First name" value="John">
+    <input type="text" id="lastName" placeholder="Last name" value="Doe">
+    <input type="number" id="age" placeholder="Age" value="30">
+    <input type="text" id="email" placeholder="Email" value="john@example.com">
+    <input type="text" id="city" placeholder="City" value="New York">
+    <input type="text" id="job" placeholder="Job title" value="Developer">
+    <button onclick="generateCard()">Generate</button>
+  </div>
 
-    <script src="script.js" defer></script>
+  <div class="card" id="cardOutput">
+    Your card will appear here...
+  </div>
+
+  <script>
+    function generateCard() {
+      let firstName = document.getElementById("firstName").value;
+      let lastName = document.getElementById("lastName").value;
+      let age = parseInt(document.getElementById("age").value);
+      let email = document.getElementById("email").value;
+      let city = document.getElementById("city").value;
+      let job = document.getElementById("job").value;
+
+      console.log("firstName:", typeof firstName);
+      console.log("age:", typeof age);
+      console.log("email:", typeof email);
+
+      let fullName = firstName + " " + lastName;
+      let initials = (firstName[0] + lastName[0]).toUpperCase();
+
+      let card = `
+        <h2>${fullName}</h2>
+        <p><strong>Initials:</strong> ${initials}</p>
+        <p><strong>Age:</strong> ${age}</p>
+        <p><strong>Job:</strong> ${job}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>City:</strong> ${city}</p>
+      `;
+
+      document.getElementById("cardOutput").innerHTML = card;
+    }
+  </script>
 </body>
 </html>
 ```
 
+### Review Questions for the Mini Project
+
+- "Why does `age` need `parseInt`?"
+- "What happens if `firstName` is empty?"
+- "How can we make the initials using `slice`?"
+
 ---
 
-## 📝 Review (0.5h)
+<details>
+<summary>Trainer Solutions — Do Not Show Until Students Try</summary>
 
-### Q&A
+## Trainer Solutions — Do Not Show Until Students Try
 
-**Q1: What is the difference between primitive and reference data types?**
-A: Primitive types (string, number, boolean, etc.) are stored directly in memory and are immutable. Reference types (objects, arrays, functions) are stored as references and can be modified.
+### Challenge 1.2
 
-**Q2: Why does `typeof null` return "object"?**
-A: This is a historical bug in JavaScript. `null` should technically return "null", but for backward compatibility, it returns "object". Always check for null explicitly using `value === null`.
+```javascript
+function isArray(value) {
+  return Array.isArray(value);
+}
+```
 
-**Q3: When should I use `let` vs `const`?**
-A: Use `const` by default for values that won't change. Use `let` only when you need to reassign a variable. Avoid `var` in modern JavaScript.
+### Challenge 2.2
 
-**Q4: What is the Temporal Dead Zone?**
-A: The Temporal Dead Zone (TDZ) is the period between entering a scope and the actual declaration of a `let` or `const` variable. During this time, accessing the variable throws a ReferenceError.
+```javascript
+let score = 0;
+score = 10;
+console.log(score);
+```
 
-**Q5: Can I modify properties of a `const` object?**
-A: Yes, you can modify properties of a `const` object or add/remove elements from a `const` array. What you cannot do is reassign the entire object or array to a new value.
+### Challenge 2.3
 
-**Q6: What are template literals and when should I use them?**
-A: Template literals are strings enclosed in backticks (`) that support interpolation (${expression}) and multi-line strings. Use them when you need to include variables or expressions in strings, or for multi-line strings.
+```javascript
+const user = { name: "John", age: 30 };
+user.name = "Jane"; // OK
+// user = {};       // Error
 
-**Q7: What are escape sequences used for?**
-A: Escape sequences allow you to include special characters in strings that would otherwise be difficult to represent, such as quotes, newlines, tabs, and Unicode characters.
+const numbers = [1, 2, 3];
+numbers.push(4);   // OK
+// numbers = [];   // Error
+```
 
-**Q8: What is the difference between `slice()`, `substring()`, and `substr()`?**
-A: 
-- `slice(start, end)`: Extracts from start to end (end not included). Supports negative indices.
-- `substring(start, end)`: Similar to slice but doesn't support negative indices.
-- `substr(start, length)`: Extracts from start for a specified length. (Deprecated)
+### Challenge 2.4
 
-**Q9: How do I check if a value is an array?**
-A: Use `Array.isArray(value)`. This is the most reliable method since `typeof []` returns "object".
+- `userName` → `let`
+- `totalScore` → `let`
+- `PI` → `const`
+- `apiKey` → `const`
 
-**Q10: What are the naming conventions for JavaScript identifiers?**
-A: 
-- Variables and functions: camelCase (userName, calculateTotal)
-- Classes/Constructors: PascalCase (UserAccount, DatabaseConnection)
-- Constants: SCREAMING_SNAKE_CASE (MAX_USERS, API_URL)
+### Challenge 3.1
 
-### Review Questions
+- `firstName` → valid
+- `2ndPlace` → invalid
+- `my-variable` → invalid
+- `class` → invalid
+- `_score` → valid
+- `$value` → valid
 
-1. **What does `typeof null` return?**
+### Challenge 3.2
+
+- `myname` → `myName`
+- `totalscore` → `totalScore`
+- `apikey` → `apiKey`
+- `maxusers` → `MAX_USERS`
+
+### Challenge 4.1
+
+```javascript
+let sentence1 = "It's a nice day";
+let sentence2 = '"Hello," she said';
+let sentence3 = 'He said, "It\'s fine"';
+```
+
+### Challenge 4.2
+
+```javascript
+console.log("Name: \"John\"\nAge:\t30");
+```
+
+### Challenge 4.3
+
+```javascript
+let text = "Hello, World!";
+let word = text.slice(7, 12).toUpperCase();
+console.log(word); // "WORLD"
+```
+
+### Challenge 4.4
+
+```javascript
+let productName = "Laptop";
+let productPrice = 999.99;
+let inStock = true;
+
+let card = `
+  Product: ${productName}
+  Price: $${productPrice}
+  In Stock: ${inStock}
+`;
+console.log(card);
+```
+
+### Challenge 5.1
+
+```javascript
+function checkType(value) {
+  if (value === null) return "null";
+  if (Array.isArray(value)) return "array";
+  return typeof value;
+}
+```
+
+### Challenge 6.1
+
+```javascript
+let street = "123 Main St";
+let city = "New York";
+let zip = "10001";
+let address = street + ", " + city + " " + zip;
+console.log(address);
+```
+
+### Challenge 6.2
+
+```javascript
+let price = 100;
+let discount = 0.2;
+let finalPrice = price * (1 - discount);
+console.log(`Original: $${price}, Discount: ${discount * 100}%, Final: $${finalPrice}`);
+```
+
+### Challenge 6.3
+
+```javascript
+function generateProductDescription(name, price, category, inStock) {
+  let status = inStock ? "In Stock" : "Out of Stock";
+  return `
+    PRODUCT: ${name}
+    Price: $${price}
+    Category: ${category}
+    Status: ${status}
+  `;
+}
+```
+
+### Individual Challenges Solutions
+
+```javascript
+// Level 1
+let firstName;
+let myName;
+let className; // or myClass
+let totalScore;
+
+// Level 2
+"42"        -> "string"
+42          -> "number"
+true        -> "boolean"
+null        -> "object" (typeof bug)
+undefined   -> "undefined"
+[]          -> "object"
+{}          -> "object"
+
+// Level 3
+let userName;
+const PI = 3.14;
+let score;
+const MAX_ATTEMPTS = 3;
+let email;
+
+// Level 4
+console.log("C:\\Users\\John\\Documents");
+
+// Level 5
+let text = "Hello, World!";
+console.log(text.slice(7, 12).toUpperCase());
+
+// Level 6
+let productName = "Book";
+let productPrice = 19.99;
+let inStock = true;
+console.log(`Product: ${productName}\nPrice: $${productPrice}\nIn Stock: ${inStock}`);
+```
+
+</details>
+
+---
+
+## Review Questions
+
+1. What does `typeof null` return?
    - [ ] "null"
-   - [ ] "object"
+   - [x] "object"
    - [ ] "undefined"
    - [ ] "string"
 
-2. **Which keyword should you use by default for variables that won't change?**
+2. Which keyword should you use by default for values that won't change?
    - [ ] var
    - [ ] let
-   - [ ] const
+   - [x] const
    - [ ] All of the above
 
-3. **What is the correct way to include a variable in a string?**
-   - [ ] `"Hello " + name`
+3. What is the correct way to include a variable in a string?
+   - [x] `"Hello " + name`
    - [ ] `"Hello {name}"`
-   - [ ] `` `Hello ${name}` ``
+   - [x] `` `Hello ${name}` ``
    - [ ] Both A and C
 
-4. **Which escape sequence represents a new line?**
+4. Which escape sequence represents a new line?
    - [ ] `\t`
-   - [ ] `\n`
+   - [x] `\n`
    - [ ] `\r`
    - [ ] `\b`
 
-5. **What is the Temporal Dead Zone?**
+5. What is the Temporal Dead Zone?
    - [ ] A gaming term
-   - [ ] The period before a let/const variable is declared
+   - [x] The period before a let/const variable is declared
    - [ ] A debugging tool
    - [ ] A type of error
 
-6. **Can you modify properties of a const object?**
-   - [ ] Yes
+6. Can you modify properties of a const object?
+   - [x] Yes
    - [ ] No
    - [ ] Only if it's an array
    - [ ] Only if you use let
 
-7. **What is the naming convention for variables in JavaScript?**
+7. What is the naming convention for variables in JavaScript?
    - [ ] snake_case
    - [ ] PascalCase
-   - [ ] camelCase
+   - [x] camelCase
    - [ ] kebab-case
 
-8. **How do you check if a value is an array?**
+8. How do you check if a value is an array?
    - [ ] `typeof value === "array"`
    - [ ] `value instanceof Array`
-   - [ ] `Array.isArray(value)`
+   - [x] `Array.isArray(value)`
    - [ ] Both B and C
 
-9. **What is the result of `"Hello" + " " + "World"`?**
-   - [ ] `"Hello World"`
+9. What is the result of `"Hello" + " " + "World"`?
+   - [x] `"Hello World"`
    - [ ] `"HelloWorld"`
    - [ ] `"Hello  World"`
    - [ ] Error
 
-10. **Which string method converts text to uppercase?**
+10. Which string method converts text to uppercase?
     - [ ] `toUpper()`
-    - [ ] `toUpperCase()`
+    - [x] `toUpperCase()`
     - [ ] `upperCase()`
     - [ ] `toUpperString()`
 
-### Correct Answers
-
-1. ✅ "object"
-2. ✅ const
-3. ✅ Both A and C
-4. ✅ `\n`
-5. ✅ The period before a let/const variable is declared
-6. ✅ Yes
-7. ✅ camelCase
-8. ✅ Both B and C
-9. ✅ "Hello World"
-10. ✅ `toUpperCase()`
-
 ---
 
-## 🎯 Next Steps
-
-1. ✅ Practice using `let` and `const` in different scenarios
-2. ✅ Master template literals for string interpolation
-3. ✅ Learn all common string methods
-4. ✅ Understand the difference between primitive and reference types
-5. ✅ Practice proper naming conventions
-6. ✅ Complete the user profile generator challenge
-
----
-
-## 📚 Additional Resources
+## Additional Resources
 
 - [MDN: Data Types](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures)
 - [MDN: typeof](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof)
 - [MDN: Template Literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals)
 - [JavaScript.info: Variables](https://javascript.info/variables)
 - [JavaScript.info: Strings](https://javascript.info/string)
-
-**Remember:** Understanding data types and proper variable usage is fundamental to writing clean, bug-free JavaScript code! 💪

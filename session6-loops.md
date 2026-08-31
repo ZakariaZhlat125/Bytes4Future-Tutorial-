@@ -973,6 +973,9 @@ Combine `for`, `while`, nested loops, `break`, and `continue` into one small HTM
 
 ---
 
+<details>
+<summary>Trainer Solutions — Do Not Show Until Students Try</summary>
+
 ## Trainer Solutions — Do Not Show Until Students Try
 
 ### Challenge 1.4
@@ -1171,6 +1174,8 @@ while (true) {
   }
 }
 ```
+
+</details>
 
 ---
 

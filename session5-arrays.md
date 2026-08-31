@@ -1147,6 +1147,9 @@ Combine array creation, search, sort, filter, map, and reduce in one HTML page w
 
 ---
 
+<details>
+<summary>Trainer Solutions — Do Not Show Until Students Try</summary>
+
 ## Trainer Solutions — Do Not Show Until Students Try
 
 ### Challenge 1.1
@@ -1346,6 +1349,8 @@ let scores = [88, 92, 55, 70, 100];
 let top3 = scores.sort((a, b) => b - a).slice(0, 3);
 console.log(top3); // [100, 92, 88]
 ```
+
+</details>
 
 ---
 

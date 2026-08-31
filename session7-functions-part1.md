@@ -1009,6 +1009,9 @@ Combine function declarations, parameters, return, defaults, rest, arrow functio
 
 ---
 
+<details>
+<summary>Trainer Solutions — Do Not Show Until Students Try</summary>
+
 ## Trainer Solutions — Do Not Show Until Students Try
 
 ### Challenge 1.1
@@ -1211,6 +1214,8 @@ function createBankAccount(balance) {
   };
 }
 ```
+
+</details>
 
 ---
 

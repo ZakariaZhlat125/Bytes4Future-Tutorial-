@@ -1317,6 +1317,9 @@ Combine comparisons, logical operators, `if/else`, `switch`, ternary, and `??` i
 
 ---
 
+<details>
+<summary>Trainer Solutions — Do Not Show Until Students Try</summary>
+
 ## Trainer Solutions — Do Not Show Until Students Try
 
 ### Challenge 1.1
@@ -1490,6 +1493,8 @@ function gradeMessage(grade) {
 let count = undefined;
 let value = count ?? 0;
 ```
+
+</details>
 
 ---
 

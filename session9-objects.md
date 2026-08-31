@@ -1,1702 +1,1169 @@
-# Session 9: Objects
-
-## 📚 Theory (1h)
-
-### Object Introduction
-
-Objects are fundamental data structures in JavaScript that store key-value pairs and represent complex entities.
-
-#### What is an Object?
-
-An object is a collection of related data and functionality. It stores properties (data) and methods (functions).
-
-#### Creating Objects
-
-**1. Object Literal (Most Common)**
-```javascript
-const person = {
-    name: "John",
-    age: 30,
-    greet: function() {
-        console.log("Hello!");
-    }
-};
-```
-
-**2. Using `new Object()`**
-```javascript
-const person = new Object();
-person.name = "John";
-person.age = 30;
-person.greet = function() {
-    console.log("Hello!");
-};
-```
-
-**3. Constructor Function**
-```javascript
-function Person(name, age) {
-    this.name = name;
-    this.age = age;
-    this.greet = function() {
-        console.log("Hello!");
-    };
-}
-
-const person = new Person("John", 30);
-```
-
-**4. ES6 Classes**
-```javascript
-class Person {
-    constructor(name, age) {
-        this.name = name;
-        this.age = age;
-    }
-    
-    greet() {
-        console.log("Hello!");
-    }
-}
-
-const person = new Person("John", 30);
-```
-
-#### Object Properties
-
-Properties are the values associated with an object.
-
-```javascript
-const person = {
-    name: "John",           // String property
-    age: 30,               // Number property
-    isStudent: true,       // Boolean property
-    address: {             // Object property
-        street: "123 Main St",
-        city: "New York"
-    },
-    hobbies: ["reading", "coding"],  // Array property
-    greet: function() {    // Method property
-        console.log("Hello!");
-    }
-};
-```
-
-#### Accessing Properties
-
-**Dot Notation**
-```javascript
-const person = {
-    name: "John",
-    age: 30
-};
-
-console.log(person.name);  // "John"
-console.log(person.age);   // 30
-```
-
-**Bracket Notation**
-```javascript
-console.log(person["name"]);  // "John"
-console.log(person["age"]);   // 30
-```
-
-### Dot vs Bracket Notation
-
-#### Dot Notation
-
-```javascript
-const person = {
-    name: "John",
-    age: 30
-};
-
-// Dot notation
-person.name = "Jane";
-console.log(person.name);
-
-// Dot notation is cleaner and more readable
-// Preferred when property name is known
-```
-
-**Advantages:**
-- More readable and concise
-- Easier to write
-- Better for static property names
-
-**Limitations:**
-- Cannot use property names with spaces or special characters
-- Cannot use property names that are reserved words
-- Cannot use variable names as properties
-
-#### Bracket Notation
-
-```javascript
-const person = {
-    name: "John",
-    "first name": "John",  // Property with space
-    "user-name": "john_doe"  // Property with hyphen
-};
-
-// Bracket notation
-console.log(person["name"]);        // "John"
-console.log(person["first name"]);  // "John"
-console.log(person["user-name"]);   // "john_doe"
-
-// Using variables
-const propertyName = "name";
-console.log(person[propertyName]);  // "John"
-```
-
-**Advantages:**
-- Can use any string as property name
-- Can use variables to access properties
-- Can use property names with spaces/special characters
-
-**When to Use:**
-- Property name contains spaces or special characters
-- Property name is a variable
-- Property name is a reserved word
-
-#### Comparison
-
-```javascript
-const person = {
-    name: "John",
-    age: 30,
-    "first name": "John"
-};
-
-// Dot notation (preferred when possible)
-console.log(person.name);  // "John"
-
-// Bracket notation (required for special cases)
-console.log(person["first name"]);  // "John"
-
-// Dynamic property access
-const prop = "age";
-console.log(person[prop]);  // 30
-```
-
-### Nested Objects
-
-Objects can contain other objects as properties, creating complex data structures.
-
-#### Basic Nested Objects
-
-```javascript
-const person = {
-    name: "John",
-    age: 30,
-    address: {
-        street: "123 Main St",
-        city: "New York",
-        country: "USA",
-        zipCode: "10001"
-    },
-    contact: {
-        email: "john@example.com",
-        phone: "555-1234"
-    }
-};
-
-// Accessing nested properties
-console.log(person.address.city);        // "New York"
-console.log(person.contact.email);       // "john@example.com"
-console.log(person["address"]["city"]);  // "New York"
-```
-
-#### Deeply Nested Objects
-
-```javascript
-const company = {
-    name: "Tech Corp",
-    departments: {
-        engineering: {
-            frontend: {
-                teamLead: "Alice",
-                developers: ["Bob", "Charlie"]
-            },
-            backend: {
-                teamLead: "David",
-                developers: ["Eve", "Frank"]
-            }
-        },
-        marketing: {
-            manager: "Grace",
-            team: ["Henry", "Ivy"]
-        }
-    }
-};
-
-// Accessing deeply nested properties
-console.log(company.departments.engineering.frontend.teamLead);  // "Alice"
-console.log(company.departments.marketing.manager);               // "Grace"
-```
-
-#### Safe Property Access
-
-```javascript
-const person = {
-    name: "John"
-    // address property might not exist
-};
-
-// Unsafe - will throw error if address doesn't exist
-// console.log(person.address.city);  // Error
-
-// Safe - using optional chaining
-console.log(person.address?.city);  // undefined
-
-// Safe - using logical AND
-console.log(person.address && person.address.city);  // undefined
-```
-
-### Creating Objects with `new`
-
-The `new` keyword is used with constructor functions to create object instances.
-
-#### Constructor Functions
-
-```javascript
-function Person(name, age) {
-    this.name = name;
-    this.age = age;
-    this.greet = function() {
-        console.log(`Hello, my name is ${this.name}`);
-    };
-}
-
-const person1 = new Person("John", 30);
-const person2 = new Person("Jane", 25);
-
-console.log(person1.name);  // "John"
-console.log(person2.name);  // "Jane"
-person1.greet();           // "Hello, my name is John"
-```
-
-#### Built-in Object Constructors
-
-```javascript
-// Object
-const obj = new Object();
-obj.name = "John";
-
-// Array
-const arr = new Array(1, 2, 3);
-
-// Date
-const date = new Date();
-
-// RegExp
-const regex = new RegExp("pattern");
-
-// Map
-const map = new Map();
-
-// Set
-const set = new Set();
-```
-
-#### `new` with Built-in Types
-
-```javascript
-// String
-const str1 = "Hello";
-const str2 = new String("Hello");
-
-console.log(typeof str1);  // "string"
-console.log(typeof str2);  // "object"
-
-// Number
-const num1 = 42;
-const num2 = new Number(42);
-
-console.log(typeof num1);  // "number"
-console.log(typeof num2);  // "object"
-
-// Boolean
-const bool1 = true;
-const bool2 = new Boolean(true);
-
-console.log(typeof bool1);  // "boolean"
-console.log(typeof bool2);  // "object"
-```
-
-#### Object.create()
-
-`Object.create()` creates a new object with a specified prototype.
-
-```javascript
-const personPrototype = {
-    greet: function() {
-        console.log(`Hello, my name is ${this.name}`);
-    }
-};
-
-const person1 = Object.create(personPrototype);
-person1.name = "John";
-person1.greet();  // "Hello, my name is John"
-
-const person2 = Object.create(personPrototype);
-person2.name = "Jane";
-person2.greet();  // "Hello, my name is Jane"
-```
+# Session 9: Objects — Active Learning Redesign
+
+## Session Plan for the Instructor
+
+- **Total time:** approximately 90 to 120 minutes
+- **Pacing rule:** never explain theory continuously for more than 15–20 minutes. After every concept, students must predict, write, or fix code.
+- **Pedagogical pattern for every topic:**
+  1. **Problem** — a realistic mini-situation
+  2. **Guess** — ask: "What do you expect to happen?"
+  3. **Explain** — the shortest rule that fixes the problem
+  4. **Code** — live code written in front of the students, step by step
+  5. **Challenge** — students solve a small task on their own or in groups
+  6. **Review** — discuss the answer and the most common mistake
+
+### Competition and Points
+
+- 1 point per correct prediction in the "Guess" phase.
+- 1–3 points per completed challenge, depending on difficulty.
+- A "Bug Hunter" badge for each student who finds and fixes an intentional error.
+- Keep a simple tally on a shared board or in the chat.
+
+### Instructor Questions to Ask During the Session
+
+- "Which notation should we use here?"
+- "What does `this` refer to?"
+- "Where is the data stored?"
+- "Is this a shallow or deep copy?"
+- "Does this create a new object or modify the old one?"
 
 ---
 
-## 💻 Practical (1.5h)
+## Part 0: Warm-Up — The Variable Explosion (5 minutes)
 
-### Exercise 1: Object Basics
+### Problem
+
+A program stores user data in many separate variables.
 
 ```javascript
-// Exercise 1.1: Creating objects
-console.log("=== Creating Objects ===");
-
-// Object literal
-const person1 = {
-    name: "John",
-    age: 30,
-    city: "New York"
-};
-
-console.log("Person 1:", person1);
-
-// Using new Object()
-const person2 = new Object();
-person2.name = "Jane";
-person2.age = 25;
-person2.city = "Los Angeles";
-
-console.log("Person 2:", person2);
-
-// Exercise 1.2: Accessing properties
-console.log("\n=== Accessing Properties ===");
-
-const person = {
-    name: "John",
-    age: 30,
-    "first name": "John",
-    "last name": "Doe"
-};
-
-console.log("Dot notation:", person.name);
-console.log("Bracket notation:", person["name"]);
-console.log("Space property:", person["first name"]);
-console.log("Hyphen property:", person["last name"]);
-
-// Exercise 1.3: Adding and modifying properties
-console.log("\n=== Adding and Modifying ===");
-
-person.email = "john@example.com";
-person.age = 31;
-console.log("After changes:", person);
-
-// Exercise 1.4: Deleting properties
-console.log("\n=== Deleting Properties ===");
-
-delete person.email;
-console.log("After delete:", person);
+let userName = "John";
+let userAge = 30;
+let userEmail = "john@example.com";
 ```
 
-### Exercise 2: Dot vs Bracket Notation
+### Guess
+
+Ask: "What if we want to pass all this user data to a function? Is this the best way?"
+
+### Explain
+
+Objects group related data into one value. This makes it easier to organize, pass, and modify data.
+
+### Live Code
 
 ```javascript
-// Exercise 2.1: When to use each
-console.log("=== Dot vs Bracket Notation ===");
-
 const user = {
-    name: "John",
-    age: 30,
-    "user-id": 123,
-    "first name": "John",
-    "last name": "Doe"
+  name: "John",
+  age: 30,
+  email: "john@example.com"
 };
 
-// Dot notation (preferred)
-console.log("Name:", user.name);
-console.log("Age:", user.age);
-
-// Bracket notation (required for special cases)
-console.log("User ID:", user["user-id"]);
-console.log("First name:", user["first name"]);
-
-// Exercise 2.2: Dynamic property access
-console.log("\n=== Dynamic Access ===");
-
-const propertyName = "name";
-console.log("Dynamic name:", user[propertyName]);
-
-const properties = ["name", "age", "user-id"];
-properties.forEach(prop => {
-    console.log(`${prop}:`, user[prop]);
-});
-
-// Exercise 2.3: Computed property names
-console.log("\n=== Computed Property Names ===");
-
-const key = "dynamic";
-const value = "I'm dynamic";
-
-const obj = {
-    [key]: value,
-    [`computed_${key}`]: "Computed value"
-};
-
-console.log("Computed properties:", obj);
+console.log(user.name);
+console.log(user.email);
 ```
 
-### Exercise 3: Nested Objects
+### Review
+
+Objects are containers with named properties. `user.name` is dot notation.
+
+---
+
+## Part 1: Object Basics
+
+### 1.1 Creating Objects
+
+#### Problem
+
+Store a product's name, price, and stock.
+
+#### Live Code
 
 ```javascript
-// Exercise 3.1: Basic nested objects
-console.log("=== Nested Objects ===");
+const product = {
+  name: "Laptop",
+  price: 999.99,
+  inStock: true
+};
 
+console.log(product);
+```
+
+#### Challenge 1.1 — Make a User (individual, 3 minutes)
+
+- **Requirement:** Create an object for a student with `name`, `age`, and `grade`.
+- **Time limit:** 3 minutes
+
+### 1.2 Dot vs Bracket Notation
+
+#### Problem
+
+Some property names have spaces or come from variables.
+
+#### Live Code
+
+```javascript
+const user = {
+  name: "John",
+  "user-id": 123,
+  "first name": "John"
+};
+
+// Dot notation
+console.log(user.name);
+
+// Bracket notation
+console.log(user["user-id"]);
+console.log(user["first name"]);
+
+// Dynamic access
+let prop = "name";
+console.log(user[prop]);
+```
+
+#### Challenge 1.2 — Bracket Access (individual, 3 minutes)
+
+- **Requirement:** Create an object with a property `"email address"` and access it with bracket notation.
+- **Time limit:** 3 minutes
+
+### 1.3 Adding, Modifying, and Deleting Properties
+
+#### Live Code
+
+```javascript
+const car = {
+  make: "Toyota",
+  model: "Camry"
+};
+
+car.year = 2020;            // add
+car.make = "Honda";         // modify
+delete car.model;           // delete
+
+console.log(car);
+```
+
+#### Challenge 1.3 — Modify Product (individual, 3 minutes)
+
+- **Requirement:** Add `category` to `product`, change `price` to `899.99`, then delete `inStock`.
+- **Time limit:** 3 minutes
+
+---
+
+## Part 2: Nested Objects and Safe Access
+
+### 2.1 Nested Objects
+
+#### Problem
+
+A user has an address and contact info.
+
+#### Live Code
+
+```javascript
 const person = {
-    name: "John",
-    age: 30,
-    address: {
-        street: "123 Main St",
-        city: "New York",
-        country: "USA",
-        coordinates: {
-            lat: 40.7128,
-            lng: -74.0060
-        }
-    },
-    contact: {
-        email: "john@example.com",
-        phone: "555-1234",
-        social: {
-            twitter: "@john",
-            linkedin: "john-doe"
-        }
-    }
+  name: "John",
+  address: {
+    street: "123 Main St",
+    city: "New York",
+    country: "USA"
+  },
+  contact: {
+    email: "john@example.com",
+    phone: "555-1234"
+  }
 };
 
-console.log("City:", person.address.city);
-console.log("Latitude:", person.address.coordinates.lat);
-console.log("Twitter:", person.contact.social.twitter);
-
-// Exercise 3.2: Modifying nested properties
-console.log("\n=== Modifying Nested ===");
-
-person.address.city = "Boston";
-person.contact.social.twitter = "@john_updated";
-console.log("Modified person:", person);
-
-// Exercise 3.3: Safe property access
-console.log("\n=== Safe Property Access ===");
-
-const user1 = {
-    name: "John",
-    address: {
-        city: "New York"
-    }
-};
-
-const user2 = {
-    name: "Jane"
-    // No address property
-};
-
-console.log("User1 city:", user1.address?.city);     // "New York"
-console.log("User2 city:", user2.address?.city);     // undefined
-console.log("User2 city (safe):", user2.address?.city ?? "Unknown");  // "Unknown"
-
-// Exercise 3.4: Nested object operations
-console.log("\n=== Nested Operations ===");
-
-const company = {
-    name: "Tech Corp",
-    employees: [
-        { name: "John", department: "Engineering", salary: 80000 },
-        { name: "Jane", department: "Marketing", salary: 60000 },
-        { name: "Bob", department: "Engineering", salary: 90000 }
-    ],
-    departments: {
-        engineering: { budget: 500000 },
-        marketing: { budget: 200000 }
-    }
-};
-
-// Calculate total engineering salary
-const engSalary = company.employees
-    .filter(emp => emp.department === "Engineering")
-    .reduce((sum, emp) => sum + emp.salary, 0);
-
-console.log("Engineering total salary:", engSalary);
-console.log("Engineering budget:", company.departments.engineering.budget);
+console.log(person.address.city);
+console.log(person.contact.email);
 ```
 
-### Exercise 4: Creating Objects with `new`
+#### Challenge 2.1 — Company (individual, 4 minutes)
+
+- **Requirement:** Create a `company` object with nested `departments` (`engineering` and `marketing`).
+- **Time limit:** 4 minutes
+
+### 2.2 Optional Chaining
+
+#### Problem
+
+A nested property might not exist. How do we avoid errors?
+
+#### Live Code
 
 ```javascript
-// Exercise 4.1: Constructor function
-console.log("=== Constructor Function ===");
+const user1 = { name: "John", address: { city: "New York" } };
+const user2 = { name: "Jane" };
 
+console.log(user1.address?.city);          // "New York"
+console.log(user2.address?.city);          // undefined
+console.log(user2.address?.city ?? "Unknown"); // "Unknown"
+```
+
+#### Challenge 2.2 — Safe Access (individual, 3 minutes)
+
+- **Requirement:** Use optional chaining to print `user.profile.bio` safely.
+- **Time limit:** 3 minutes
+
+---
+
+## Part 3: Creating Objects with `new` and Constructors
+
+### 3.1 Constructor Functions
+
+#### Problem
+
+We need many objects with the same shape.
+
+#### Live Code
+
+```javascript
 function Car(make, model, year) {
-    this.make = make;
-    this.model = model;
-    this.year = year;
-    this.isRunning = false;
-    
-    this.start = function() {
-        this.isRunning = true;
-        console.log(`${this.make} ${this.model} started`);
-    };
-    
-    this.stop = function() {
-        this.isRunning = false;
-        console.log(`${this.make} ${this.model} stopped`);
-    };
-    
-    this.getInfo = function() {
-        return `${this.year} ${this.make} ${this.model}`;
-    };
+  this.make = make;
+  this.model = model;
+  this.year = year;
+  this.isRunning = false;
+
+  this.start = function() {
+    this.isRunning = true;
+    console.log(`${this.make} started`);
+  };
 }
 
 const car1 = new Car("Toyota", "Camry", 2020);
 const car2 = new Car("Honda", "Civic", 2021);
 
-console.log("Car 1:", car1.getInfo());
-console.log("Car 2:", car2.getInfo());
-car1.start();
+console.log(car1.model);
 car2.start();
-
-// Exercise 4.2: Constructor with methods in prototype
-console.log("\n=== Prototype Methods ===");
-
-function Animal(name, species) {
-    this.name = name;
-    this.species = species;
-}
-
-Animal.prototype.speak = function() {
-    console.log(`${this.name} the ${this.species} makes a sound`);
-};
-
-Animal.prototype.eat = function(food) {
-    console.log(`${this.name} eats ${food}`);
-};
-
-const dog = new Animal("Buddy", "Dog");
-const cat = new Animal("Whiskers", "Cat");
-
-dog.speak();
-dog.eat("dog food");
-cat.speak();
-cat.eat("cat food");
-
-// Exercise 4.3: Built-in constructors
-console.log("\n=== Built-in Constructors ===");
-
-const date = new Date();
-console.log("Current date:", date.toLocaleDateString());
-
-const map = new Map([
-    ["name", "John"],
-    ["age", 30]
-]);
-console.log("Map:", map.get("name"));
-
-const set = new Set([1, 2, 3, 2, 1]);
-console.log("Set:", [...set]);
-
-// Exercise 4.4: Object.create()
-console.log("\n=== Object.create() ===");
-
-const personPrototype = {
-    greet: function() {
-        console.log(`Hello, I'm ${this.name}`);
-    },
-    introduce: function() {
-        console.log(`I'm ${this.name}, ${this.age} years old`);
-    }
-};
-
-const person1 = Object.create(personPrototype);
-person1.name = "John";
-person1.age = 30;
-
-const person2 = Object.create(personPrototype);
-person2.name = "Jane";
-person2.age = 25;
-
-person1.greet();
-person1.introduce();
-person2.greet();
-person2.introduce();
 ```
 
-### Exercise 5: this Keyword
+#### Challenge 3.1 — User Constructor (individual, 4 minutes)
+
+- **Requirement:** Write a `User` constructor with `name`, `email`, and a `greet` method.
+- **Time limit:** 4 minutes
+
+### 3.2 ES6 Classes
+
+#### Live Code
 
 ```javascript
-// Exercise 5.1: this in methods
-console.log("=== this in Methods ===");
+class Product {
+  constructor(name, price, stock) {
+    this.name = name;
+    this.price = price;
+    this.stock = stock;
+  }
 
+  applyDiscount(percent) {
+    this.price -= this.price * percent / 100;
+    return this.price;
+  }
+
+  sell(amount) {
+    if (amount > this.stock) return "Not enough stock";
+    this.stock -= amount;
+    return `Sold ${amount}. Remaining: ${this.stock}`;
+  }
+}
+
+const laptop = new Product("Laptop", 1000, 10);
+console.log(laptop.applyDiscount(10));
+console.log(laptop.sell(3));
+```
+
+#### Challenge 3.2 — Book Class (individual, 5 minutes)
+
+- **Requirement:** Write a `Book` class with `title`, `author`, `isbn`, `isAvailable`, and `borrow()`/`return()` methods.
+- **Time limit:** 5 minutes
+
+---
+
+## Part 4: `this` Keyword
+
+### 4.1 `this` in Methods
+
+#### Problem
+
+A method needs to access its own object's data.
+
+#### Live Code
+
+```javascript
 const person = {
-    name: "John",
-    age: 30,
-    
-    greet: function() {
-        console.log(`Hello, I'm ${this.name}`);
-    },
-    
-    getAge: () => {
-        console.log(`Age: ${this.age}`); // this is not person
-    }
+  name: "John",
+  greet: function() {
+    console.log(`Hello, I'm ${this.name}`);
+  },
+  badGreet: () => {
+    console.log(`Hello, I'm ${this.name}`);
+  }
 };
 
-person.greet();  // "Hello, I'm John"
-person.getAge(); // "Age: undefined"
-
-// Exercise 5.2: this in constructor functions
-console.log("\n=== this in Constructor ===");
-
-function Person(name, age) {
-    this.name = name;
-    this.age = age;
-    
-    this.greet = function() {
-        console.log(`Hello, I'm ${this.name}`);
-    };
-}
-
-const person1 = new Person("John", 30);
-person1.greet();  // "Hello, I'm John"
-
-// Exercise 5.3: this with call, apply, bind
-console.log("\n=== call, apply, bind ===");
-
-const person2 = {
-    name: "Jane",
-    age: 25
-};
-
-function greet(greeting) {
-    console.log(`${greeting}, I'm ${this.name}`);
-}
-
-greet.call(person2, "Hello");           // "Hello, I'm Jane"
-greet.apply(person2, ["Hi"]);            // "Hi, I'm Jane"
-
-const boundGreet = greet.bind(person2, "Hey");
-boundGreet();                             // "Hey, I'm Jane"
-
-// Exercise 5.4: this in nested functions
-console.log("\n=== this in Nested Functions ===");
-
-const obj = {
-    name: "John",
-    
-    outer: function() {
-        console.log("Outer this:", this.name);
-        
-        const inner = () => {
-            console.log("Inner this:", this.name); // Inherits from outer
-        };
-        
-        inner();
-    }
-};
-
-obj.outer();
+person.greet();    // "John"
+person.badGreet(); // undefined
 ```
 
-### Exercise 6: Object.create()
+#### Challenge 4.1 — this Prediction (individual, 3 minutes)
+
+- **Requirement:** Predict the output, then run:
 
 ```javascript
-// Exercise 6.1: Basic Object.create()
-console.log("=== Object.create() ===");
-
-const prototype = {
-    greet: function() {
-        console.log(`Hello, I'm ${this.name}`);
-    },
-    farewell: function() {
-        console.log(`Goodbye from ${this.name}`);
-    }
+const obj = {
+  value: 10,
+  show: function() { console.log(this.value); }
 };
+obj.show();
+```
 
-const person1 = Object.create(prototype);
-person1.name = "John";
+- **Time limit:** 3 minutes
 
-const person2 = Object.create(prototype);
-person2.name = "Jane";
+### 4.2 `call`, `apply`, `bind`
 
-person1.greet();
-person2.farewell();
+#### Live Code
 
-// Exercise 6.2: Object.create() with properties
-console.log("\n=== Object.create() with Properties ===");
+```javascript
+function greet(greeting) {
+  console.log(`${greeting}, I'm ${this.name}`);
+}
 
-const person3 = Object.create(prototype, {
-    name: {
-        value: "Bob",
-        writable: true,
-        enumerable: true,
-        configurable: true
-    },
-    age: {
-        value: 35,
-        writable: true,
-        enumerable: true,
-        configurable: true
-    }
-});
+const person = { name: "Jane" };
 
-console.log("Person 3:", person3);
-person3.greet();
+greet.call(person, "Hello");
+greet.apply(person, ["Hi"]);
+const sayHey = greet.bind(person, "Hey");
+sayHey();
+```
 
-// Exercise 6.3: Prototype chain
-console.log("\n=== Prototype Chain ===");
+---
 
+## Part 5: Prototypes and `Object.create`
+
+### 5.1 `Object.create`
+
+#### Problem
+
+Create an object that shares methods with another object.
+
+#### Live Code
+
+```javascript
 const animal = {
-    eat: function() {
-        console.log(`${this.name} is eating`);
-    }
+  eat: function() {
+    console.log(`${this.name} is eating`);
+  }
 };
 
-const mammal = Object.create(animal);
-mammal.giveBirth = function() {
-    console.log(`${this.name} gave birth`);
-};
-
-const dog = Object.create(mammal);
+const dog = Object.create(animal);
 dog.name = "Buddy";
 dog.bark = function() {
-    console.log(`${this.name} is barking`);
+  console.log(`${this.name} is barking`);
 };
 
-dog.eat();       // From animal prototype
-dog.giveBirth();  // From mammal prototype
-dog.bark();       // Own method
-
-// Exercise 6.4: Object.create() vs new
-console.log("\n=== Object.create() vs new ===");
-
-// Using constructor
-function Person(name) {
-    this.name = name;
-}
-Person.prototype.greet = function() {
-    console.log(`Hello, ${this.name}`);
-};
-
-const personA = new Person("John");
-personA.greet();
-
-// Using Object.create()
-const personB = Object.create(Person.prototype);
-Person.call(personB, "Jane");
-personB.greet();
+dog.eat();  // From animal prototype
+dog.bark(); // Own method
 ```
 
-### Exercise 7: Object.assign()
+#### Challenge 5.1 — Prototype Chain (individual, 4 minutes)
+
+- **Requirement:** Create a `vehicle` prototype with `drive`, then a `car` object that uses it.
+- **Time limit:** 4 minutes
+
+---
+
+## Part 6: `Object.assign` and Copies
+
+### 6.1 Merging Objects
+
+#### Problem
+
+Combine default and user settings.
+
+#### Live Code
 
 ```javascript
-// Exercise 7.1: Basic Object.assign()
-console.log("=== Object.assign() ===");
-
-const target = { a: 1, b: 2 };
-const source = { b: 3, c: 4 };
-
-const result = Object.assign(target, source);
-console.log("Result:", result);  // { a: 1, b: 3, c: 4 }
-console.log("Target modified:", target);  // { a: 1, b: 3, c: 4 }
-
-// Exercise 7.2: Cloning objects
-console.log("\n=== Cloning Objects ===");
-
-const original = { name: "John", age: 30 };
-const clone = Object.assign({}, original);
-
-console.log("Clone:", clone);
-console.log("Same reference:", original === clone);  // false
-
-clone.name = "Jane";
-console.log("Original unchanged:", original);  // { name: "John", age: 30 }
-
-// Exercise 7.3: Merging multiple objects
-console.log("\n=== Merging Multiple Objects ===");
-
-const obj1 = { a: 1 };
-const obj2 = { b: 2 };
-const obj3 = { c: 3 };
-
-const merged = Object.assign({}, obj1, obj2, obj3);
-console.log("Merged:", merged);  // { a: 1, b: 2, c: 3 }
-
-// Exercise 7.4: Deep vs shallow copy
-console.log("\n=== Shallow Copy Issue ===");
-
-const original2 = {
-    name: "John",
-    address: {
-        city: "New York"
-    }
+const defaults = {
+  theme: "light",
+  language: "en",
+  notifications: true
 };
 
-const shallowCopy = Object.assign({}, original2);
-shallowCopy.address.city = "Boston";
-
-console.log("Original city changed:", original2.address.city);  // "Boston"
-
-// Deep copy solution
-const deepCopy = JSON.parse(JSON.stringify(original2));
-deepCopy.address.city = "Los Angeles";
-
-console.log("Original city unchanged:", original2.address.city);  // "Boston"
-
-// Exercise 7.5: Practical example - default configuration
-console.log("\n=== Default Configuration ===");
-
-const defaultConfig = {
-    theme: "light",
-    language: "en",
-    notifications: true,
-    autosave: true
+const userSettings = {
+  theme: "dark",
+  notifications: false
 };
 
-const userConfig = {
-    theme: "dark",
-    notifications: false
-};
-
-const finalConfig = Object.assign({}, defaultConfig, userConfig);
-console.log("Final config:", finalConfig);
-// { theme: "dark", language: "en", notifications: false, autosave: true }
+const final = Object.assign({}, defaults, userSettings);
+console.log(final);
 ```
 
-### Exercise 8: Practical Object Modeling
+#### Challenge 6.1 — Merge Config (individual, 3 minutes)
+
+- **Requirement:** Merge `defaultConfig` and `userConfig` into a new object.
+- **Time limit:** 3 minutes
+
+### 6.2 Shallow vs Deep Copy
+
+#### Problem
+
+Copy an object, but the nested data still points to the same place.
+
+#### Live Code
 
 ```javascript
-// Exercise 8.1: User model
-console.log("=== User Model ===");
+const original = {
+  name: "John",
+  address: { city: "New York" }
+};
 
+const shallow = Object.assign({}, original);
+shallow.address.city = "Boston";
+console.log(original.address.city); // "Boston" (same inner object)
+
+const deep = JSON.parse(JSON.stringify(original));
+deep.address.city = "Los Angeles";
+console.log(original.address.city); // "Boston" (unaffected now)
+```
+
+#### Challenge 6.2 — Deep Copy (individual, 4 minutes)
+
+- **Requirement:** Deep copy `original` and change the nested `city` without affecting the original.
+- **Time limit:** 4 minutes
+
+---
+
+## Bug Hunt 1
+
+### Problem
+
+Find the bugs in this object code.
+
+```javascript
+const user = {
+  name: "John",
+  address: {
+    city: "New York"
+  }
+};
+
+console.log(user.address.country);
+
+const copy = user;
+copy.name = "Jane";
+console.log(user.name);
+
+const clone = Object.assign({}, user);
+clone.address.city = "Boston";
+console.log(user.address.city);
+```
+
+### Issues
+
+1. `user.address.country` is `undefined` because `country` does not exist.
+2. `copy = user` does not create a new object; both variables point to the same object.
+3. `Object.assign` is a shallow copy, so changing `clone.address.city` also changes `user.address.city`.
+
+### Fixed Version
+
+```javascript
+const user = {
+  name: "John",
+  address: {
+    city: "New York"
+  }
+};
+
+console.log(user.address.country); // undefined
+
+const copy = { ...user };
+copy.name = "Jane";
+console.log(user.name); // "John"
+
+const clone = JSON.parse(JSON.stringify(user));
+clone.address.city = "Boston";
+console.log(user.address.city); // "New York"
+```
+
+### Points
+
+1 point per found issue.
+
+---
+
+## Part 7: Practical Object Models
+
+### 7.1 User Model
+
+#### Live Code
+
+```javascript
 class User {
-    constructor(name, email, age) {
-        this.name = name;
-        this.email = email;
-        this.age = age;
-        this.createdAt = new Date();
-    }
-    
-    getInfo() {
-        return {
-            name: this.name,
-            email: this.email,
-            age: this.age,
-            memberSince: this.createdAt.toLocaleDateString()
-        };
-    }
-    
-    updateEmail(newEmail) {
-        this.email = newEmail;
-    }
-    
-    isAdult() {
-        return this.age >= 18;
-    }
+  constructor(name, email, age) {
+    this.name = name;
+    this.email = email;
+    this.age = age;
+  }
+
+  isAdult() {
+    return this.age >= 18;
+  }
+
+  updateEmail(newEmail) {
+    this.email = newEmail;
+  }
 }
 
-const user1 = new User("John Doe", "john@example.com", 30);
-const user2 = new User("Jane Smith", "jane@example.com", 17);
+const u1 = new User("John", "john@example.com", 30);
+console.log(u1.isAdult()); // true
+```
 
-console.log("User 1 info:", user1.getInfo());
-console.log("User 1 is adult:", user1.isAdult());
-console.log("User 2 is adult:", user2.isAdult());
+#### Challenge 7.1 — User Methods (individual, 4 minutes)
 
-// Exercise 8.2: Product model
-console.log("\n=== Product Model ===");
+- **Requirement:** Add `getInfo()` to `User` that returns an object with `name`, `email`, and `isAdult`.
+- **Time limit:** 4 minutes
 
-class Product {
-    constructor(name, price, category, stock) {
-        this.name = name;
-        this.price = price;
-        this.category = category;
-        this.stock = stock;
-        this.id = Date.now() + Math.random();
-    }
-    
-    applyDiscount(discountPercentage) {
-        const discount = this.price * (discountPercentage / 100);
-        this.price -= discount;
-        return this.price;
-    }
-    
-    sell(quantity) {
-        if (quantity > this.stock) {
-            return "Insufficient stock";
-        }
-        this.stock -= quantity;
-        return `Sold ${quantity} items. Remaining: ${this.stock}`;
-    }
-    
-    restock(quantity) {
-        this.stock += quantity;
-        return `Restocked. New stock: ${this.stock}`;
-    }
-}
+### 7.2 Shopping Cart
 
-const product = new Product("Laptop", 999.99, "Electronics", 10);
-console.log("Product:", product.name);
-console.log("After 10% discount:", product.applyDiscount(10));
-console.log("Sell 3:", product.sell(3));
-console.log("Restock 5:", product.restock(5));
+#### Live Code
 
-// Exercise 8.3: ShoppingCart model
-console.log("\n=== Shopping Cart Model ===");
-
+```javascript
 class ShoppingCart {
-    constructor() {
-        this.items = [];
-        this.createdAt = new Date();
+  constructor() {
+    this.items = [];
+  }
+
+  addItem(product, quantity) {
+    const existing = this.items.find(item => item.product.id === product.id);
+    if (existing) {
+      existing.quantity += quantity;
+    } else {
+      this.items.push({ product, quantity });
     }
-    
-    addItem(product, quantity) {
-        const existingItem = this.items.find(item => item.product.id === product.id);
-        
-        if (existingItem) {
-            existingItem.quantity += quantity;
-        } else {
-            this.items.push({ product, quantity });
-        }
-    }
-    
-    removeItem(productId) {
-        this.items = this.items.filter(item => item.product.id !== productId);
-    }
-    
-    getTotal() {
-        return this.items.reduce((total, item) => 
-            total + (item.product.price * item.quantity), 0
-        );
-    }
-    
-    getItemCount() {
-        return this.items.reduce((count, item) => count + item.quantity, 0);
-    }
-    
-    clear() {
-        this.items = [];
-    }
+  }
+
+  getTotal() {
+    return this.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  }
 }
 
 const cart = new ShoppingCart();
-const laptop = new Product("Laptop", 999.99, "Electronics", 10);
-const mouse = new Product("Mouse", 29.99, "Electronics", 50);
+cart.addItem({ id: 1, name: "Mouse", price: 29.99 }, 2);
+cart.addItem({ id: 2, name: "Keyboard", price: 59.99 }, 1);
+console.log(cart.getTotal());
+```
 
-cart.addItem(laptop, 1);
-cart.addItem(mouse, 2);
-cart.addItem(mouse, 1);  // Add more of existing item
+#### Challenge 7.2 — Remove Item (individual, 5 minutes)
 
-console.log("Cart total:", cart.getTotal());
-console.log("Item count:", cart.getItemCount());
-cart.removeItem(mouse.id);
-console.log("After removal:", cart.getTotal());
+- **Requirement:** Add `removeItem(productId)` to `ShoppingCart`.
+- **Time limit:** 5 minutes
 
-// Exercise 8.4: Library model
-console.log("\n=== Library Model ===");
+### 7.3 Library and Book
 
+#### Live Code
+
+```javascript
 class Book {
-    constructor(title, author, isbn) {
-        this.title = title;
-        this.author = author;
-        this.isbn = isbn;
-        this.isAvailable = true;
-    }
-    
-    borrow() {
-        if (!this.isAvailable) {
-            return "Book is already borrowed";
-        }
-        this.isAvailable = false;
-        return `Borrowed: ${this.title}`;
-    }
-    
-    return() {
-        this.isAvailable = true;
-        return `Returned: ${this.title}`;
-    }
+  constructor(title, author, isbn) {
+    this.title = title;
+    this.author = author;
+    this.isbn = isbn;
+    this.isAvailable = true;
+  }
+
+  borrow() {
+    if (!this.isAvailable) return "Already borrowed";
+    this.isAvailable = false;
+    return `Borrowed: ${this.title}`;
+  }
+
+  returnBook() {
+    this.isAvailable = true;
+    return `Returned: ${this.title}`;
+  }
 }
 
 class Library {
-    constructor(name) {
-        this.name = name;
-        this.books = [];
-    }
-    
-    addBook(book) {
-        this.books.push(book);
-    }
-    
-    findBookByTitle(title) {
-        return this.books.find(book => 
-            book.title.toLowerCase() === title.toLowerCase()
-        );
-    }
-    
-    listAvailableBooks() {
-        return this.books.filter(book => book.isAvailable);
-    }
-    
-    borrowBook(title) {
-        const book = this.findBookByTitle(title);
-        if (!book) return "Book not found";
-        return book.borrow();
-    }
+  constructor(name) {
+    this.name = name;
+    this.books = [];
+  }
+
+  addBook(book) {
+    this.books.push(book);
+  }
+
+  listAvailable() {
+    return this.books.filter(book => book.isAvailable);
+  }
+
+  findByTitle(title) {
+    return this.books.find(book =>
+      book.title.toLowerCase() === title.toLowerCase()
+    );
+  }
+
+  borrowBook(title) {
+    const book = this.findByTitle(title);
+    if (!book) return "Not found";
+    return book.borrow();
+  }
+}
+```
+
+---
+
+## Bug Hunt 2
+
+### Problem
+
+Find the bugs in this class code.
+
+```javascript
+class Product {
+  constructor(name, price) {
+    name = name;
+    price = price;
+  }
+
+  applyDiscount(percent) {
+    price = price - (price * percent / 100);
+    return price;
+  }
 }
 
-const library = new Library("City Library");
-const book1 = new Book("JavaScript Guide", "John Doe", "123-456");
-const book2 = new Book("Python Basics", "Jane Smith", "789-012");
-
-library.addBook(book1);
-library.addBook(book2);
-
-console.log("Available books:", library.listAvailableBooks().length);
-console.log("Borrow result:", library.borrowBook("JavaScript Guide"));
-console.log("Available after borrow:", library.listAvailableBooks().length);
+const laptop = new Product("Laptop", 1000);
+console.log(laptop.name);
+console.log(laptop.applyDiscount(10));
 ```
 
-### Exercise 9: Complete Working Example
+### Issues
 
-**Complete script.js:**
+1. In the constructor, `name` and `price` are not assigned to `this`. Should be `this.name = name`.
+2. In `applyDiscount`, `price` is not `this.price` and is not updated on the object.
+
+### Fixed Version
+
 ```javascript
-// Session 9: Objects
-// This script demonstrates object creation, manipulation, and methods
+class Product {
+  constructor(name, price) {
+    this.name = name;
+    this.price = price;
+  }
 
-console.log("=== Session 9: Objects ===");
+  applyDiscount(percent) {
+    this.price = this.price - (this.price * percent / 100);
+    return this.price;
+  }
+}
 
-// 1. Object creation
-console.log("\n--- Object Creation ---");
-const person = {
-    name: "John",
-    age: 30,
-    city: "New York",
-    greet: function() {
-        console.log(`Hello, I'm ${this.name}`);
-    }
-};
-
-console.log("Person:", person);
-person.greet();
-
-// 2. Dot vs bracket notation
-console.log("\n--- Dot vs Bracket Notation ---");
-const user = {
-    name: "John",
-    "user-id": 123
-};
-
-console.log("Dot notation:", user.name);
-console.log("Bracket notation:", user["user-id"]);
-
-// 3. Nested objects
-console.log("\n--- Nested Objects ---");
-const company = {
-    name: "Tech Corp",
-    address: {
-        city: "New York",
-        country: "USA"
-    }
-};
-
-console.log("Company city:", company.address.city);
-
-// 4. this keyword
-console.log("\n--- this Keyword ---");
-const obj = {
-    name: "John",
-    showName: function() {
-        console.log("Name:", this.name);
-    }
-};
-
-obj.showName();
-
-// 5. Object.create()
-console.log("\n--- Object.create() ---");
-const prototype = {
-    greet: function() {
-        console.log(`Hello, ${this.name}`);
-    }
-};
-
-const person1 = Object.create(prototype);
-person1.name = "Jane";
-person1.greet();
-
-// 6. Object.assign()
-console.log("\n--- Object.assign() ---");
-const target = { a: 1 };
-const source = { b: 2 };
-const merged = Object.assign(target, source);
-console.log("Merged:", merged);
-
-console.log("\n=== Session 9 Complete ===");
+const laptop = new Product("Laptop", 1000);
+console.log(laptop.name);
+console.log(laptop.applyDiscount(10));
 ```
 
-**Complete index.html:**
+### Points
+
+1 point per found issue.
+
+---
+
+## Group Challenge: Object Builder Race
+
+- **Time:** 12 minutes
+- **Teams:** 2 or 3 students per team
+- **Task:** Each team creates a class and demonstrates it.
+- **Scoring:** 2 points per correct class, 1 point for correct usage.
+
+### Tasks
+
+1. `Rectangle` class with `width`, `height`, `area()`, and `perimeter()`.
+2. `BankAccount` class with `deposit(amount)`, `withdraw(amount)`, `getBalance()`.
+3. `Student` class with `name`, `scores[]`, and `getAverage()`.
+4. `TodoList` class with `add(task)`, `remove(index)`, and `list()`.
+
+### Instructor Answer Key
+
+```javascript
+class Rectangle {
+  constructor(w, h) {
+    this.w = w;
+    this.h = h;
+  }
+  area() { return this.w * this.h; }
+  perimeter() { return 2 * (this.w + this.h); }
+}
+
+class BankAccount {
+  constructor(balance = 0) {
+    this.balance = balance;
+  }
+  deposit(amount) {
+    if (amount > 0) this.balance += amount;
+    return this.balance;
+  }
+  withdraw(amount) {
+    if (amount > 0 && amount <= this.balance) this.balance -= amount;
+    return this.balance;
+  }
+  getBalance() { return this.balance; }
+}
+
+class Student {
+  constructor(name) {
+    this.name = name;
+    this.scores = [];
+  }
+  addScore(score) { this.scores.push(score); }
+  getAverage() {
+    if (this.scores.length === 0) return 0;
+    return this.scores.reduce((s, n) => s + n, 0) / this.scores.length;
+  }
+}
+
+class TodoList {
+  constructor() {
+    this.tasks = [];
+  }
+  add(task) { this.tasks.push(task); }
+  remove(index) { this.tasks.splice(index, 1); }
+  list() { return this.tasks; }
+}
+```
+
+---
+
+## Individual Challenges — Progressive Difficulty
+
+### Level 1: Make an Object (3 minutes)
+
+- **Requirement:** Create an object representing a `book` with `title`, `author`, and `year`.
+
+### Level 2: Dot and Bracket (3 minutes)
+
+- **Requirement:** Create an object with `"book title"` and `"author-name"`. Access both using dot and bracket notation.
+
+### Level 3: Nested (4 minutes)
+
+- **Requirement:** Create a `store` object with nested `products` array. Print the first product name.
+
+### Level 4: Constructor (4 minutes)
+
+- **Requirement:** Write a `Movie(title, year)` constructor and create two instances.
+
+### Level 5: Class (5 minutes)
+
+- **Requirement:** Write a `Rectangle` class with `area()` and `perimeter()` methods.
+
+### Level 6: Copy (5 minutes)
+
+- **Requirement:** Create a deep copy of an object with a nested object.
+
+---
+
+## Mini Project: Library Management System
+
+### Time
+
+25 minutes
+
+### Goal
+
+Combine objects, classes, nested data, and methods in one HTML page.
+
+### Requirements for the Students
+
+1. Create an HTML page with inputs for:
+   - Book title
+   - Author
+   - ISBN
+
+2. Add buttons:
+   - Add Book
+   - Show Available Books
+   - Borrow Book (by title)
+   - Return Book (by title)
+
+3. Use a `Library` class and `Book` class.
+
+4. Display results in a `<ul>` or `<pre>`.
+
+### Starter HTML
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Session 9 - Objects</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        .section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .section h2 {
-            color: #1890ff;
-            margin-top: 0;
-        }
-        .demo {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 10px;
-        }
-        .demo input, .demo button {
-            padding: 8px;
-            margin: 5px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .demo button {
-            background-color: #1890ff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .demo button:hover {
-            background-color: #0c7cd5;
-        }
-        .output {
-            background: #f0f0f0;
-            padding: 15px;
-            border-radius: 4px;
-            font-family: monospace;
-            white-space: pre-wrap;
-            margin-top: 10px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .object-display {
-            background: white;
-            padding: 15px;
-            border-radius: 4px;
-            border: 1px solid #e8e8e8;
-            margin-top: 10px;
-        }
-        .object-display pre {
-            margin: 0;
-            overflow-x: auto;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Library Manager</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; }
+    .section { background: #f9f9f9; padding: 15px; margin-bottom: 20px; border-radius: 4px; }
+    input, button { padding: 8px; margin: 5px; }
+    .output { background: #f0f0f0; padding: 15px; border-radius: 4px; margin-top: 10px; }
+  </style>
 </head>
 <body>
-    <h1>Session 9: Objects</h1>
-    
-    <div class="section">
-        <h2>Topics Covered</h2>
-        <ul>
-            <li>Object introduction and creation</li>
-            <li>Dot vs bracket notation</li>
-            <li>Nested objects</li>
-            <li>Creating objects with new</li>
-            <li>this keyword</li>
-            <li>Object.create() and Object.assign()</li>
-        </ul>
-    </div>
+  <h1>Library Manager</h1>
 
-    <div class="section">
-        <h2>Object Creation Demo</h2>
-        <div class="demo">
-            <input type="text" id="objName" placeholder="Name">
-            <input type="number" id="objAge" placeholder="Age">
-            <input type="text" id="objCity" placeholder="City">
-            <button onclick="createObject()">Create Object</button>
-            <button onclick="createWithNew()">Create with new</button>
-            <div id="objectOutput" class="object-display">
-                <pre>Object will be displayed here...</pre>
-            </div>
-        </div>
-    </div>
+  <div class="section">
+    <input type="text" id="title" placeholder="Title" value="JavaScript Guide">
+    <input type="text" id="author" placeholder="Author" value="John Doe">
+    <input type="text" id="isbn" placeholder="ISBN" value="123">
+    <button onclick="addBook()">Add Book</button>
+  </div>
 
-    <div class="section">
-        <h2>Dot vs Bracket Notation</h2>
-        <div class="demo">
-            <input type="text" id="propName" placeholder="Property name">
-            <input type="text" id="propValue" placeholder="Property value">
-            <button onclick="demoDotNotation()">Dot Notation</button>
-            <button onclick="demoBracketNotation()">Bracket Notation</button>
-            <div id="notationOutput" class="output">
-                Click to see notation demonstration...
-            </div>
-        </div>
-    </div>
+  <div class="section">
+    <input type="text" id="actionTitle" placeholder="Book title" value="JavaScript Guide">
+    <button onclick="borrowBook()">Borrow</button>
+    <button onclick="returnBook()">Return</button>
+    <button onclick="showAvailable()">Show Available</button>
+    <div id="output" class="output"></div>
+  </div>
 
-    <div class="section">
-        <h2>Nested Objects Demo</h2>
-        <div class="demo">
-            <button onclick="demoNestedObjects()">Create Nested Object</button>
-            <button onclick="accessNested()">Access Nested Properties</button>
-            <div id="nestedOutput" class="object-display">
-                <pre>Nested object will be displayed here...</pre>
-            </div>
-        </div>
-    </div>
+  <script>
+    class Book {
+      constructor(title, author, isbn) {
+        this.title = title;
+        this.author = author;
+        this.isbn = isbn;
+        this.isAvailable = true;
+      }
 
-    <div class="section">
-        <h2>this Keyword Demo</h2>
-        <div class="demo">
-            <button onclick="demoThisMethod()">this in Method</button>
-            <button onclick="demoThisConstructor()">this in Constructor</button>
-            <button onclick="demoThisArrow()">this in Arrow Function</button>
-            <div id="thisOutput" class="output">
-                Click to see this demonstration...
-            </div>
-        </div>
-    </div>
+      borrow() {
+        if (!this.isAvailable) return "Already borrowed";
+        this.isAvailable = false;
+        return `Borrowed: ${this.title}`;
+      }
 
-    <div class="section">
-        <h2>Object.create() Demo</h2>
-        <div class="demo">
-            <button onclick="demoObjectCreate()">Create with Prototype</button>
-            <button onclick="demoPrototypeChain()">Prototype Chain</button>
-            <div id="createOutput" class="output">
-                Click to see Object.create() demonstration...
-            </div>
-        </div>
-    </div>
+      returnBook() {
+        this.isAvailable = true;
+        return `Returned: ${this.title}`;
+      }
+    }
 
-    <div class="section">
-        <h2>Object.assign() Demo</h2>
-        <div class="demo">
-            <button onclick="demoObjectAssign()">Merge Objects</button>
-            <button onclick="demoClone()">Clone Object</button>
-            <button onclick="demoDeepCopy()">Deep Copy</button>
-            <div id="assignOutput" class="output">
-                Click to see Object.assign() demonstration...
-            </div>
-        </div>
-    </div>
+    class Library {
+      constructor() {
+        this.books = [];
+      }
 
-    <div class="section">
-        <h2>Console Output</h2>
-        <p>Open the browser console (F12) to see all JavaScript examples.</p>
-    </div>
+      addBook(book) {
+        this.books.push(book);
+      }
 
-    <script src="script.js" defer></script>
-    <script>
-        // Object creation
-        function createObject() {
-            const name = document.getElementById('objName').value || 'John';
-            const age = parseInt(document.getElementById('objAge').value) || 30;
-            const city = document.getElementById('objCity').value || 'New York';
-            
-            const person = {
-                name: name,
-                age: age,
-                city: city,
-                createdAt: new Date()
-            };
-            
-            document.getElementById('objectOutput').innerHTML = 
-                '<pre>' + JSON.stringify(person, null, 2) + '</pre>';
-        }
+      listAvailable() {
+        return this.books.filter(book => book.isAvailable);
+      }
 
-        function createWithNew() {
-            function Person(name, age, city) {
-                this.name = name;
-                this.age = age;
-                this.city = city;
-                this.createdAt = new Date();
-            }
-            
-            const name = document.getElementById('objName').value || 'John';
-            const age = parseInt(document.getElementById('objAge').value) || 30;
-            const city = document.getElementById('objCity').value || 'New York';
-            
-            const person = new Person(name, age, city);
-            
-            document.getElementById('objectOutput').innerHTML = 
-                '<pre>' + JSON.stringify(person, null, 2) + '</pre>';
-        }
+      findByTitle(title) {
+        return this.books.find(book => book.title.toLowerCase() === title.toLowerCase());
+      }
 
-        // Dot vs bracket notation
-        function demoDotNotation() {
-            const propName = document.getElementById('propName').value || 'name';
-            const propValue = document.getElementById('propValue').value || 'John';
-            
-            const obj = {};
-            obj[propName] = propValue;
-            
-            let output = "=== Dot Notation ===\n";
-            output += `Created object: ${JSON.stringify(obj)}\n`;
-            
-            if (propName.indexOf(' ') === -1 && propName.indexOf('-') === -1) {
-                output += `Access with dot: obj.${propName} = ${obj[propName]}\n`;
-            } else {
-                output += `Cannot use dot notation (property has special characters)\n`;
-            }
-            
-            document.getElementById('notationOutput').textContent = output;
-        }
+      borrowBook(title) {
+        const book = this.findByTitle(title);
+        if (!book) return "Not found";
+        return book.borrow();
+      }
 
-        function demoBracketNotation() {
-            const propName = document.getElementById('propName').value || 'name';
-            const propValue = document.getElementById('propValue').value || 'John';
-            
-            const obj = {};
-            obj[propName] = propValue;
-            
-            let output = "=== Bracket Notation ===\n";
-            output += `Created object: ${JSON.stringify(obj)}\n`;
-            output += `Access with brackets: obj["${propName}"] = ${obj[propName]}\n`;
-            output += `Access with variable: obj[propName] = ${obj[propName]}\n`;
-            
-            document.getElementById('notationOutput').textContent = output;
-        }
+      returnBook(title) {
+        const book = this.findByTitle(title);
+        if (!book) return "Not found";
+        return book.returnBook();
+      }
+    }
 
-        // Nested objects
-        function demoNestedObjects() {
-            const company = {
-                name: "Tech Corp",
-                address: {
-                    street: "123 Main St",
-                    city: "New York",
-                    country: "USA"
-                },
-                employees: {
-                    engineering: {
-                        count: 10,
-                        lead: "Alice"
-                    },
-                    marketing: {
-                        count: 5,
-                        lead: "Bob"
-                    }
-                }
-            };
-            
-            document.getElementById('nestedOutput').innerHTML = 
-                '<pre>' + JSON.stringify(company, null, 2) + '</pre>';
-        }
+    const library = new Library();
 
-        function accessNested() {
-            const company = {
-                name: "Tech Corp",
-                address: {
-                    city: "New York",
-                    country: "USA"
-                }
-            };
-            
-            let output = "=== Accessing Nested Properties ===\n";
-            output += `Company name: ${company.name}\n`;
-            output += `City: ${company.address.city}\n`;
-            output += `Country: ${company.address.country}\n`;
-            output += `Safe access: ${company.address?.zipCode ?? "Not provided"}\n`;
-            
-            document.getElementById('nestedOutput').innerHTML = 
-                '<pre>' + output + '</pre>';
-        }
+    function addBook() {
+      const title = document.getElementById("title").value;
+      const author = document.getElementById("author").value;
+      const isbn = document.getElementById("isbn").value;
+      library.addBook(new Book(title, author, isbn));
+      showAvailable();
+    }
 
-        // this keyword
-        function demoThisMethod() {
-            const person = {
-                name: "John",
-                showName: function() {
-                    return `Name: ${this.name}`;
-                }
-            };
-            
-            document.getElementById('thisOutput').textContent = 
-                `this in method: ${person.showName()}`;
-        }
+    function borrowBook() {
+      const title = document.getElementById("actionTitle").value;
+      document.getElementById("output").textContent = library.borrowBook(title);
+    }
 
-        function demoThisConstructor() {
-            function Person(name) {
-                this.name = name;
-                this.showName = function() {
-                    return `Name: ${this.name}`;
-                };
-            }
-            
-            const person = new Person("Jane");
-            document.getElementById('thisOutput').textContent = 
-                `this in constructor: ${person.showName()}`;
-        }
+    function returnBook() {
+      const title = document.getElementById("actionTitle").value;
+      document.getElementById("output").textContent = library.returnBook(title);
+    }
 
-        function demoThisArrow() {
-            const person = {
-                name: "John",
-                regular: function() {
-                    return `Regular: ${this.name}`;
-                },
-                arrow: () => {
-                    return `Arrow: ${this.name}`; // this is not person
-                }
-            };
-            
-            document.getElementById('thisOutput').textContent = 
-                `Regular function: ${person.regular()}\nArrow function: ${person.arrow()}`;
-        }
-
-        // Object.create()
-        function demoObjectCreate() {
-            const prototype = {
-                greet: function() {
-                    return `Hello, ${this.name}`;
-                },
-                farewell: function() {
-                    return `Goodbye, ${this.name}`;
-                }
-            };
-            
-            const person1 = Object.create(prototype);
-            person1.name = "John";
-            
-            const person2 = Object.create(prototype);
-            person2.name = "Jane";
-            
-            let output = "=== Object.create() ===\n";
-            output += `Person 1: ${person1.greet()}\n`;
-            output += `Person 2: ${person2.farewell()}\n`;
-            output += `Same prototype: ${Object.getPrototypeOf(person1) === Object.getPrototypeOf(person2)}`;
-            
-            document.getElementById('createOutput').textContent = output;
-        }
-
-        function demoPrototypeChain() {
-            const animal = {
-                eat: function() {
-                    return `${this.name} is eating`;
-                }
-            };
-            
-            const mammal = Object.create(animal);
-            mammal.giveBirth = function() {
-                return `${this.name} gave birth`;
-            };
-            
-            const dog = Object.create(mammal);
-            dog.name = "Buddy";
-            dog.bark = function() {
-                return `${this.name} is barking`;
-            };
-            
-            let output = "=== Prototype Chain ===\n";
-            output += `Eat (from animal): ${dog.eat()}\n`;
-            output += `Give birth (from mammal): ${dog.giveBirth()}\n`;
-            output += `Bark (own method): ${dog.bark()}`;
-            
-            document.getElementById('createOutput').textContent = output;
-        }
-
-        // Object.assign()
-        function demoObjectAssign() {
-            const target = { a: 1, b: 2 };
-            const source = { b: 3, c: 4 };
-            
-            const result = Object.assign(target, source);
-            
-            let output = "=== Object.assign() ===\n";
-            output += `Target: { a: 1, b: 2 }\n`;
-            output += `Source: { b: 3, c: 4 }\n`;
-            output += `Result: ${JSON.stringify(result)}\n`;
-            output += `Target modified: ${JSON.stringify(target)}`;
-            
-            document.getElementById('assignOutput').textContent = output;
-        }
-
-        function demoClone() {
-            const original = { name: "John", age: 30 };
-            const clone = Object.assign({}, original);
-            
-            clone.name = "Jane";
-            
-            let output = "=== Shallow Clone ===\n";
-            output += `Original: ${JSON.stringify(original)}\n`;
-            output += `Clone: ${JSON.stringify(clone)}\n`;
-            output += `Same reference: ${original === clone}`;
-            
-            document.getElementById('assignOutput').textContent = output;
-        }
-
-        function demoDeepCopy() {
-            const original = {
-                name: "John",
-                address: {
-                    city: "New York"
-                }
-            };
-            
-            const shallow = Object.assign({}, original);
-            const deep = JSON.parse(JSON.stringify(original));
-            
-            shallow.address.city = "Boston";
-            deep.address.city = "Los Angeles";
-            
-            let output = "=== Deep Copy ===\n";
-            output += `Original city: ${original.address.city}\n`;
-            output += `Shallow copy changed original: true\n`;
-            output += `Deep copy did not change original: true`;
-            
-            document.getElementById('assignOutput').textContent = output;
-        }
-    </script>
+    function showAvailable() {
+      const books = library.listAvailable().map(book => `${book.title} by ${book.author}`).join("\n");
+      document.getElementById("output").textContent = books || "No books available";
+    }
+  </script>
 </body>
 </html>
 ```
 
+### Review Questions for the Mini Project
+
+- "Why do we need `this` in the `Book` class?"
+- "What is the difference between `find` and `filter`?"
+- "What happens if a book is already borrowed?"
+
 ---
 
-## 📝 Review (0.5h)
+<details>
+<summary>Trainer Solutions — Do Not Show Until Students Try</summary>
 
-### Q&A
+## Trainer Solutions — Do Not Show Until Students Try
 
-**Q1: What is the difference between dot notation and bracket notation?**
-A: Dot notation is cleaner and preferred for simple property names. Bracket notation is required for property names with spaces, special characters, or when using variables as property names.
+### Challenge 1.2
 
-**Q2: What is a nested object?**
-A: A nested object is an object that contains other objects as properties, allowing you to represent complex, hierarchical data structures.
+```javascript
+const user = {
+  "email address": "john@example.com"
+};
+console.log(user["email address"]);
+```
 
-**Q3: What does the `new` keyword do?**
-A: The `new` keyword creates a new instance of an object, calling the constructor function and setting `this` to the new object.
+### Challenge 1.3
 
-**Q4: What is `this` in JavaScript?**
-A: `this` refers to the context in which a function is called. In methods, it refers to the object the method belongs to. Its value depends on how a function is called.
+```javascript
+product.category = "Electronics";
+product.price = 899.99;
+delete product.inStock;
+console.log(product);
+```
 
-**Q5: What does `Object.create()` do?**
-A: `Object.create()` creates a new object with a specified prototype, allowing for inheritance and shared methods between objects.
+### Challenge 2.1
 
-**Q6: What does `Object.assign()` do?**
-A: `Object.assign()` copies all enumerable own properties from one or more source objects to a target object, returning the modified target object.
+```javascript
+const company = {
+  name: "Tech Corp",
+  departments: {
+    engineering: { lead: "Alice" },
+    marketing: { lead: "Bob" }
+  }
+};
+console.log(company.departments.engineering.lead);
+```
 
-**Q7: What is the difference between shallow copy and deep copy?**
-A: Shallow copy copies references to nested objects, so changes to nested objects affect both copies. Deep copy creates entirely new copies of nested objects.
+### Challenge 2.2
 
-**Q8: When should you use arrow functions vs regular functions for object methods?**
-A: Use regular functions for object methods when you need access to `this` referring to the object. Arrow functions inherit `this` from the surrounding scope and don't have their own `this`.
+```javascript
+console.log(user?.profile?.bio);
+```
 
-**Q9: What is a constructor function?**
-A: A constructor function is a special function used to create and initialize objects. It's called with the `new` keyword and typically capitalizes the first letter.
+### Challenge 3.1
 
-**Q10: How do you safely access nested object properties?**
-A: Use optional chaining (`?.`) to safely access nested properties that might not exist, avoiding errors: `obj.address?.city`.
+```javascript
+function User(name, email) {
+  this.name = name;
+  this.email = email;
+  this.greet = function() {
+    return `Hello, I'm ${this.name}`;
+  };
+}
 
-### Review Questions
+const u = new User("John", "john@example.com");
+console.log(u.greet());
+```
 
-1. **Which notation is preferred for simple property names?**
+### Challenge 3.2
+
+```javascript
+class Book {
+  constructor(title, author, isbn) {
+    this.title = title;
+    this.author = author;
+    this.isbn = isbn;
+    this.isAvailable = true;
+  }
+
+  borrow() {
+    if (!this.isAvailable) return "Already borrowed";
+    this.isAvailable = false;
+    return `Borrowed: ${this.title}`;
+  }
+
+  returnBook() {
+    this.isAvailable = true;
+    return `Returned: ${this.title}`;
+  }
+}
+```
+
+### Challenge 4.1
+
+Output: `10`. `this` refers to `obj` because `show` is a regular method.
+
+### Challenge 5.1
+
+```javascript
+const vehicle = {
+  drive: function() {
+    console.log(`${this.name} is driving`);
+  }
+};
+
+const car = Object.create(vehicle);
+car.name = "Toyota";
+car.drive();
+```
+
+### Challenge 6.1
+
+```javascript
+const defaultConfig = { theme: "light", notifications: true };
+const userConfig = { theme: "dark" };
+const final = Object.assign({}, defaultConfig, userConfig);
+console.log(final);
+```
+
+### Challenge 6.2
+
+```javascript
+const deepCopy = JSON.parse(JSON.stringify(original));
+deepCopy.address.city = "Los Angeles";
+console.log(original.address.city); // original value
+```
+
+### Challenge 7.1
+
+```javascript
+getInfo() {
+  return {
+    name: this.name,
+    email: this.email,
+    isAdult: this.isAdult()
+  };
+}
+```
+
+### Challenge 7.2
+
+```javascript
+removeItem(productId) {
+  this.items = this.items.filter(item => item.product.id !== productId);
+}
+```
+
+### Individual Challenges Solutions
+
+```javascript
+// Level 1
+const book = {
+  title: "JavaScript Guide",
+  author: "John Doe",
+  year: 2024
+};
+
+// Level 2
+const obj = {
+  "book title": "JS",
+  "author-name": "JD"
+};
+console.log(obj["book title"]); // bracket
+console.log(obj["author-name"]); // bracket
+
+// Level 3
+const store = {
+  products: [
+    { name: "Laptop", price: 1000 },
+    { name: "Mouse", price: 30 }
+  ]
+};
+console.log(store.products[0].name);
+
+// Level 4
+function Movie(title, year) {
+  this.title = title;
+  this.year = year;
+}
+const m1 = new Movie("Inception", 2010);
+const m2 = new Movie("Interstellar", 2014);
+
+// Level 5
+class Rectangle {
+  constructor(w, h) {
+    this.w = w;
+    this.h = h;
+  }
+  area() { return this.w * this.h; }
+  perimeter() { return 2 * (this.w + this.h); }
+}
+
+// Level 6
+const original = { person: { name: "John" } };
+const copy = JSON.parse(JSON.stringify(original));
+copy.person.name = "Jane";
+console.log(original.person.name); // "John"
+```
+
+</details>
+
+---
+
+## Review Questions
+
+1. Which notation is preferred for simple property names?
    - [ ] Bracket notation
-   - [ ] Dot notation
+   - [x] Dot notation
    - [ ] Both are equal
    - [ ] Neither
 
-2. **What does `new` do?**
+2. What does `new` do?
    - [ ] Creates a new variable
-   - [ ] Creates a new object instance
+   - [x] Creates a new object instance
    - [ ] Deletes an object
    - [ ] Copies an object
 
-3. **What is `this` in a method?**
+3. What is `this` in a method?
    - [ ] Always the global object
-   - [ ] The object the method belongs to
+   - [x] The object the method belongs to
    - [ ] Always undefined
    - [ ] The function itself
 
-4. **What does `Object.create()` do?**
-   - [ ] Creates a new object with a prototype
+4. What does `Object.create()` do?
+   - [x] Creates a new object with a prototype
    - [ ] Creates a deep copy
    - [ ] Merges objects
    - [ ] Deletes properties
 
-5. **What does `Object.assign()` do?**
+5. What does `Object.assign()` do?
    - [ ] Creates a new object
-   - [ ] Copies properties from source to target
+   - [x] Copies properties from source to target
    - [ ] Deletes properties
    - [ ] Creates a deep copy
 
-6. **When is bracket notation required?**
+6. When is bracket notation required?
    - [ ] Always
    - [ ] Never
-   - [ ] For property names with spaces/special characters
+   - [x] For property names with spaces/special characters
    - [ ] Only for numbers
 
-7. **What is a nested object?**
+7. What is a nested object?
    - [ ] An object with many properties
-   - [ ] An object containing other objects
+   - [x] An object containing other objects
    - [ ] An object with methods
    - [ ] An object with arrays
 
-8. **What is optional chaining used for?**
+8. What is optional chaining used for?
    - [ ] Chaining methods
-   - [ ] Safe property access
+   - [x] Safe property access
    - [ ] Creating objects
    - [ ] Deleting properties
 
-9. **How do you create a deep copy?**
+9. How do you create a deep copy?
    - [ ] Object.assign()
    - [ ] Spread operator
-   - [ ] JSON.parse(JSON.stringify())
+   - [x] JSON.parse(JSON.stringify())
    - [ ] Direct assignment
 
-10. **What is a constructor function?**
+10. What is a constructor function?
     - [ ] A function that constructs strings
-    - [ ] A function used with `new` to create objects
+    - [x] A function used with `new` to create objects
     - [ ] A function that deletes objects
     - [ ] A function that copies objects
 
-### Correct Answers
-
-1. ✅ Dot notation
-2. ✅ Creates a new object instance
-3. ✅ The object the method belongs to
-4. ✅ Creates a new object with a prototype
-5. ✅ Copies properties from source to target
-6. ✅ For property names with spaces/special characters
-7. ✅ An object containing other objects
-8. ✅ Safe property access
-9. ✅ JSON.parse(JSON.stringify())
-10. ✅ A function used with `new` to create objects
-
 ---
 
-## 🎯 Next Steps
-
-1. ✅ Practice object creation with different methods
-2. ✅ Master dot vs bracket notation
-3. ✅ Work with nested objects
-4. ✅ Understand `this` keyword in different contexts
-5. ✅ Practice prototype-based inheritance
-6. ✅ Learn about object methods (keys, values, entries)
-7. ✅ Explore ES6 classes in depth
-
----
-
-## 📚 Additional Resources
+## Additional Resources
 
 - [MDN: Working with Objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_Objects)
 - [MDN: Object.create()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create)
@@ -1704,5 +1171,3 @@ A: Use optional chaining (`?.`) to safely access nested properties that might no
 - [MDN: this](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this)
 - [JavaScript.info: Objects](https://javascript.info/object)
 - [JavaScript.info: Prototypes](https://javascript.info/prototype-inheritance)
-
-**Remember:** Objects are the foundation of JavaScript programming. Master them to build complex, maintainable applications! 💪
