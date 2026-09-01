@@ -27,6 +27,15 @@
 - "Which method gives you one value back, and which gives you a new array?"
 - "What would you use if you wanted all matching items?"
 
+
+### Instructor Note — Hidden Answers & Interactivity
+
+- **Hidden dropdowns:** Every `<details>` block contains answers, review code, or instructor-only notes. Keep them closed while students are working.
+- **Reveal only after the attempt:** Open each `Review`, `Issues`, `Fixed Version`, and `Answer Key` after students have shared their answers or completed the challenge.
+- **Make every `Guess` interactive:** ask students to raise their hands, type in chat, or write their prediction on paper before running the code.
+- **Live coding:** invite a student to type the `Code` block on the projector while the class reads along.
+- **Keep score:** award points for correct predictions and completed challenges. Celebrate the 'Bug Hunter' winners.
+
 ---
 
 ## Part 0: Warm-Up — The Shopping List Is Broken (5 minutes)
@@ -65,11 +74,16 @@ shoppingList.push("Butter");
 console.log(shoppingList);
 ```
 
+<details>
+<summary>Review — reveal after the warm-up</summary>
+
 ### Review
 
 Arrays solve the problem of storing many values. The first item is at index `0`. `length` gives the count.
 
 ---
+
+</details>
 
 ## Part 1: Creating and Accessing Arrays
 
@@ -113,9 +127,14 @@ console.log(range); // [1, 2, 3, 4, 5]
 - **Requirement:** Create three arrays: one with your top 3 movies, one with 3 numbers, and one mixed. Log each first and last item.
 - **Time limit:** 3 minutes
 
+<details>
+<summary>Review — reveal after the challenge</summary>
+
 #### Review
 
 Check that students use `array[0]` and `array[array.length - 1]`.
+
+</details>
 
 ### 1.2 Length and Index Access
 
@@ -331,11 +350,19 @@ if (index > 0) {
 console.log(cart);
 ```
 
+<details>
+<summary>Issues — reveal after the bug hunt</summary>
+
 ### Issues
 
 1. `cart[3]` is `undefined` because the array only has 3 items after pop.
 2. `indexOf("bread")` is case-sensitive, so it returns `-1`.
 3. The `if` condition uses `> 0` instead of `>= 0` or `> -1`, so it will not remove `"Bread"` even if found.
+
+</details>
+
+<details>
+<summary>Fixed Version — for the instructor</summary>
 
 ### Fixed Version (for the instructor)
 
@@ -353,6 +380,8 @@ if (index !== -1) {
 
 console.log(cart);
 ```
+
+</details>
 
 ### Points
 
@@ -825,11 +854,19 @@ tasks.sort((a, b) => a.completed > b.completed);
 console.log(tasks);
 ```
 
+<details>
+<summary>Issues — reveal after the bug hunt</summary>
+
 ### Issues
 
 1. `completeTask(2)` changes `completed` but then `deleteTask(2)` removes the same task. The order matters, but the logic is not obviously wrong.
 2. `tasks.sort((a, b) => a.completed > b.completed)` uses `>` which returns a boolean, not a number. This can cause inconsistent sort results.
 3. `completeTask` does not check if `task` exists. If `id` is not found, `task` is `undefined` and `task.completed` throws an error.
+
+</details>
+
+<details>
+<summary>Fixed Version — for the instructor</summary>
 
 ### Fixed Version (for the instructor)
 
@@ -856,6 +893,8 @@ console.log(tasks.find(t => t.id === 2));
 tasks.sort((a, b) => a.completed - b.completed);
 console.log(tasks);
 ```
+
+</details>
 
 ### Points
 
@@ -890,6 +929,9 @@ let students = [
 4. Calculate the average score.
 5. Sort the students by score, highest first.
 
+<details>
+<summary>Answer Key — for the instructor</summary>
+
 ### Instructor Answer Key
 
 ```javascript
@@ -910,6 +952,8 @@ students.sort((a, b) => b.score - a.score);
 ```
 
 ---
+
+</details>
 
 ## Individual Challenges — Progressive Difficulty
 
@@ -1354,6 +1398,9 @@ console.log(top3); // [100, 92, 88]
 
 ---
 
+<details>
+<summary>Review Questions — reveal at the end of the session</summary>
+
 ## Review Questions
 
 1. Which method adds an element to the end of an array?
@@ -1417,6 +1464,8 @@ console.log(top3); // [100, 92, 88]
     - [ ] Nothing
 
 ---
+
+</details>
 
 ## Additional Resources
 
