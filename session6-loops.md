@@ -1,37 +1,23 @@
-# Session 6: Loops — Active Learning Redesign
+# Session 6: Loops — Student Active-Learning Lab
 
-## Session Plan for the Instructor
-
-- **Total time:** approximately 90 to 120 minutes
-- **Pacing rule:** never explain theory continuously for more than 15–20 minutes. After every concept, students must predict, write, or fix code.
-- **Pedagogical pattern for every topic:**
-  1. **Problem** — a realistic mini-situation
-  2. **Guess** — ask: "What do you expect to happen?"
-  3. **Explain** — the shortest rule that fixes the problem
-  4. **Code** — live code written in front of the students, step by step
-  5. **Challenge** — students solve a small task on their own or in groups
-  6. **Review** — discuss the answer and the most common mistake
-
-### Competition and Points
-
-- 1 point per correct prediction in the "Guess" phase.
-- 1–3 points per completed challenge, depending on difficulty.
-- A "Bug Hunter" badge for each student who finds and fixes an intentional error.
-- Keep a simple tally on a shared board or in the chat.
-
-### Instructor Questions to Ask During the Session
-
-- "How many times will this loop run?"
-- "What is the value of `i` in this iteration?"
-- "Which loop should we use here?"
-- "What happens if `i` never changes?"
-- "Does this loop change the original array?"
+Welcome to this session. The goal today is not to copy code — it is to **predict, experiment, fix, and build**. Try every problem before you look at the answer.
 
 ---
 
-## Part 0: Warm-Up — The Manual Counter (5 minutes)
+## 🧭 How to move through this session
 
-### Problem
+1. **Read the problem first.**
+2. **Stop.** Cover the code if you have to.
+3. **Write your prediction** in your notebook or in a comment.
+4. **Type the code and run it.**
+5. **Compare, ask why, then change one thing.**
+6. **Do the mini-challenge before looking at the answer key.**
+
+---
+
+## Part 0: Warm-Up — The Manual Counter
+
+### The problem
 
 A teacher wants to print numbers `1` to `10` and their squares. A student writes this:
 
@@ -42,15 +28,25 @@ console.log(3);
 // ... all the way to 10
 ```
 
-### Guess
+It works, but it is slow.
 
-Ask: "What if the teacher wants numbers `1` to `100`? Is this the best way?"
+### 🤔 Think
 
-### Explain
+What if the teacher wants numbers `1` to `100`? How many `console.log` lines would that be?
 
-Loops let us run the same code many times without writing it many times. The `for` loop has three parts: initialization, condition, and increment.
+Write your answer here:
 
-### Live Code
+```text
+Number of console.log lines needed for 1 to 100: __________
+```
+
+### 🔧 Try
+
+Type the `1` to `10` version the long way if you want. Notice the pattern.
+
+### 🧠 Discover
+
+A **loop** runs the same block of code many times. A `for` loop has three parts: **start**, **condition**, and **change**.
 
 ```javascript
 for (let i = 1; i <= 10; i++) {
@@ -58,21 +54,31 @@ for (let i = 1; i <= 10; i++) {
 }
 ```
 
-### Review
+### ✅ Check
 
-The loop ran 10 times. The variable `i` changed each time. This is the power of loops.
+Run it. Did you expect `i * i` to give the square each time?
+
+### 🧪 Experiment
+
+Change only `i <= 10` to `i <= 20`. What happens? Change `i++` to `i += 2`. What happens?
 
 ---
 
-## Part 1: The For Loop
+## Part 1: The `for` Loop
 
 ### 1.1 Basic Syntax
 
-#### Problem
+### The problem
 
 Count from `0` to `4` and show each number.
 
-#### Live Code
+### 🔮 Predict
+
+Before you run it, answer:
+
+- How many lines will print?
+- What is the first number?
+- What is the last number?
 
 ```javascript
 for (let i = 0; i < 5; i++) {
@@ -80,67 +86,126 @@ for (let i = 0; i < 5; i++) {
 }
 ```
 
-#### Explain
+### ✅ Result
 
+Run the code. Was your prediction right?
+
+### 🧠 Why?
+
+The `for` loop is built like this:
+
+```javascript
+for (initialization; condition; increment) {
+  // body
+}
 ```
-for (initialization; condition; increment) { body }
+
+- **Initialization:** `let i = 0` — runs once at the start.
+- **Condition:** `i < 5` — checked before every loop.
+- **Body:** runs if the condition is `true`.
+- **Increment:** `i++` — runs after the body.
+
+### 🧪 Experiment
+
+```javascript
+for (let i = 0; i < 5; i++) {
+  console.log("Iteration:", i);
+}
 ```
 
-- Initialization: `let i = 0` — happens once.
-- Condition: `i < 5` — checked before each loop.
-- Body: runs if condition is true.
-- Increment: `i++` — runs after the body.
+1. Change `i < 5` to `i <= 5`. What is the new last value?
+2. Change `let i = 0` to `let i = 5`. Does the loop still run? Why or why not?
 
-#### Challenge 1.1 — Count Up (individual, 3 minutes)
+---
 
-- **Requirement:** Print numbers `1` to `20` using a `for` loop.
-- **Time limit:** 3 minutes
+### Challenge 1.1 — Count Up
 
-#### Challenge 1.2 — Count Down (individual, 3 minutes)
+Print numbers `1` to `20` using a `for` loop.
 
-- **Requirement:** Print numbers `10` down to `1`.
-- **Time limit:** 3 minutes
-- **Hint:** `for (let i = 10; i >= 1; i--)`.
+```javascript
+// your code here
+```
 
-#### Challenge 1.3 — Custom Step (individual, 3 minutes)
+Set a timer for 3 minutes. Do not peek at the answer key.
 
-- **Requirement:** Print all even numbers from `0` to `20`.
-- **Time limit:** 3 minutes
-- **Hint:** Use `i += 2`.
+### Challenge 1.2 — Count Down
+
+Print numbers `10` down to `1`.
+
+```javascript
+// your code here
+```
+
+**Hint:** What should the condition and the update step be? Try `for (let i = 10; i >= 1; i--)` if you get stuck.
+
+### Challenge 1.3 — Custom Step
+
+Print all even numbers from `0` to `20`.
+
+```javascript
+// your code here
+```
+
+**Hint:** Use `i += 2`.
+
+---
 
 ### 1.2 Summation and Accumulation
 
-#### Problem
+### The problem
 
 Add all numbers from `1` to `100`.
 
-#### Live Code
+### 🤔 Think
+
+If you had to do this with paper and pencil, you would keep a running total. In JavaScript, we use a variable to keep that total.
+
+### 🔮 Predict
+
+What number do you think `sum` will be at the end? (Hint: the famous answer is `5050`.)
 
 ```javascript
 let sum = 0;
 for (let i = 1; i <= 100; i++) {
   sum += i;
 }
-console.log("Sum:", sum); // 5050
+console.log("Sum:", sum);
 ```
 
-#### Challenge 1.4 — Sum Even (individual, 4 minutes)
+### ✅ Result
 
-- **Requirement:** Calculate the sum of all even numbers from `1` to `100`.
-- **Time limit:** 4 minutes
-- **Hint:** Add an `if` inside the loop or use `i += 2`.
+Run the code.
+
+### 🧠 Why?
+
+`sum += i` means `sum = sum + i`. Each time the loop runs, the current `i` is added to the running total.
+
+### 🧪 Experiment
+
+- Change `sum = 0` to `sum = 10`. What is the new result?
+- Change `i <= 100` to `i <= 10`. What happens?
+
+### Challenge 1.4 — Sum Even
+
+Calculate the sum of all even numbers from `1` to `100`.
+
+```javascript
+// your code here
+```
+
+**Hint:** Add an `if` inside the loop, or use `i += 2`.
 
 ---
 
 ## Part 2: Looping Through Arrays, Strings, and Objects
 
-### 2.1 Traditional For Loop Over an Array
+### 2.1 Traditional `for` Loop Over an Array
 
-#### Problem
+### The problem
 
 Print each fruit in a list with its index.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 let fruits = ["apple", "banana", "orange", "grape"];
@@ -150,18 +215,38 @@ for (let i = 0; i < fruits.length; i++) {
 }
 ```
 
-#### Challenge 2.1 — Sum Array (individual, 4 minutes)
+What will the first line print? What will the last line print?
 
-- **Requirement:** Sum `let numbers = [10, 20, 30, 40, 50]` using a `for` loop.
-- **Time limit:** 4 minutes
+### ✅ Result
 
-### 2.2 For...of
+Run it.
 
-#### Problem
+### 🧠 Why?
 
-We only need the values, not the indexes.
+`fruits.length` gives the number of items. We use the index `i` to read each value: `fruits[i]`.
 
-#### Live Code
+### 🧪 Experiment
+
+- Change `i < fruits.length` to `i <= fruits.length`. What happens to the last line?
+- What does `fruits[4]` return when there are only four items?
+
+### Challenge 2.1 — Sum Array
+
+Sum the values in `let numbers = [10, 20, 30, 40, 50]` using a `for` loop.
+
+```javascript
+// your code here
+```
+
+---
+
+### 2.2 `for...of`
+
+### The problem
+
+Sometimes we only need the values, not the indexes.
+
+### 🔮 Predict
 
 ```javascript
 let fruits = ["apple", "banana", "orange"];
@@ -169,31 +254,54 @@ let fruits = ["apple", "banana", "orange"];
 for (let fruit of fruits) {
   console.log(fruit);
 }
+```
 
-// With strings
+Will the output include numbers? Will it include `apple`, `banana`, `orange`? In what order?
+
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+`for...of` reads each **value** in an array, one by one. It is perfect when you do not need the index.
+
+### Try it with a string
+
+```javascript
 let text = "Hello";
 for (let char of text) {
   console.log(char);
 }
+```
 
-// With index and value
+What will this print? How many lines?
+
+### Get both index and value
+
+```javascript
 for (let [index, fruit] of fruits.entries()) {
   console.log(`${index}: ${fruit}`);
 }
 ```
 
-#### Challenge 2.2 — For...of Values (individual, 3 minutes)
+### Challenge 2.2 — `for...of` Values
 
-- **Requirement:** Use `for...of` to print each item in `let colors = ["red", "green", "blue"]`.
-- **Time limit:** 3 minutes
+Use `for...of` to print each item in `let colors = ["red", "green", "blue"]`.
 
-### 2.3 For...in
+```javascript
+// your code here
+```
 
-#### Problem
+---
+
+### 2.3 `for...in`
+
+### The problem
 
 Loop through the keys of an object.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 let user = {
@@ -207,27 +315,42 @@ for (let key in user) {
 }
 ```
 
-#### Explain
+What will `key` be on each line? Will the order be the same as the object?
 
-- `for...in` is for objects. Avoid using it on arrays because indexes are strings and order is not guaranteed.
-- Use `for...of` for arrays and `for...in` for objects.
+### ✅ Result
 
-#### Challenge 2.3 — Object Printer (individual, 4 minutes)
+Run it.
 
-- **Requirement:** Loop through `let book = { title: "JS", pages: 200, author: "Dev" }` and print each property.
-- **Time limit:** 4 minutes
+### 🧠 Why?
+
+- `for...in` is for **objects**.
+- It gives you the **keys** (property names).
+- `user[key]` gives you the value.
+- Avoid using `for...in` on arrays — indexes are strings and order is not guaranteed.
+
+### Challenge 2.3 — Object Printer
+
+Loop through `let book = { title: "JS", pages: 200, author: "Dev" }` and print each property.
+
+```javascript
+// your code here
+```
 
 ---
 
-## Part 3: While and Do-While
+## Part 3: `while` and `do...while`
 
-### 3.1 While Loop
+### 3.1 `while` Loop
 
-#### Problem
+### The problem
 
-A user must enter the correct password, but we do not know how many attempts.
+A user must enter the correct password, but we do not know how many attempts it will take.
 
-#### Live Code
+### 🤔 Think
+
+Can a `for` loop handle something where we do not know the number of tries? Why not?
+
+### 🔮 Predict
 
 ```javascript
 let attempts = 0;
@@ -248,18 +371,33 @@ if (password === "secret") {
 }
 ```
 
-#### Challenge 3.1 — While Count (individual, 4 minutes)
+How many times will the `while` loop run? What will the last message be?
 
-- **Requirement:** Use a `while` loop to print numbers `1` to `5`.
-- **Time limit:** 4 minutes
+### ✅ Result
 
-### 3.2 Do-While Loop
+Run it.
 
-#### Problem
+### 🧠 Why?
+
+A `while` loop checks a condition **before** each run. It is useful when the number of iterations is unknown.
+
+### Challenge 3.1 — `while` Count
+
+Use a `while` loop to print numbers `1` to `5`.
+
+```javascript
+// your code here
+```
+
+---
+
+### 3.2 `do...while` Loop
+
+### The problem
 
 A menu must show at least once before the user decides to exit.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 let choice;
@@ -277,12 +415,25 @@ do {
 console.log("Exiting menu...");
 ```
 
-#### Challenge 3.2 — Do-Once (individual, 4 minutes)
+Will this always print at least one menu? Could it print three menus?
 
-- **Requirement:** Write a `do...while` that prints a number once even though the condition starts as `false`.
-- **Time limit:** 4 minutes
+### ✅ Result
 
-#### Review
+Run it several times.
+
+### 🧠 Why?
+
+A `do...while` checks the condition **after** the first run. It always runs at least once.
+
+### Challenge 3.2 — Do-Once
+
+Write a `do...while` that prints a number once even though the condition starts as `false`.
+
+```javascript
+// your code here
+```
+
+### 🧪 Experiment
 
 ```javascript
 let x = 10;
@@ -291,17 +442,19 @@ do {
 } while (x < 5);
 ```
 
+What would happen if this was a `while` loop instead of a `do...while`?
+
 ---
 
 ## Part 4: Loop Control
 
-### 4.1 break
+### 4.1 `break`
 
-#### Problem
+### The problem
 
 Find the first number greater than `50` in an array. Stop once found.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 let numbers = [10, 25, 30, 55, 60, 70];
@@ -314,18 +467,33 @@ for (let num of numbers) {
 }
 ```
 
-#### Challenge 4.1 — Find First Even (individual, 3 minutes)
+Will the loop check `60`? Will it check `70`? Will it print more than one match?
 
-- **Requirement:** Loop through `[1, 3, 5, 7, 8, 9]` and print the first even number, then `break`.
-- **Time limit:** 3 minutes
+### ✅ Result
 
-### 4.2 continue
+Run it.
 
-#### Problem
+### 🧠 Why?
+
+`break` exits the loop immediately. Use it when you have found what you need.
+
+### Challenge 4.1 — Find First Even
+
+Loop through `[1, 3, 5, 7, 8, 9]` and print the first even number, then `break`.
+
+```javascript
+// your code here
+```
+
+---
+
+### 4.2 `continue`
+
+### The problem
 
 Print numbers `1` to `20` but skip multiples of `3`.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 for (let i = 1; i <= 20; i++) {
@@ -336,18 +504,33 @@ for (let i = 1; i <= 20; i++) {
 }
 ```
 
-#### Challenge 4.2 — Skip Evens (individual, 3 minutes)
+Will `3` print? Will `6` print? Will `20` print?
 
-- **Requirement:** Print all odd numbers from `1` to `20` using `continue`.
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+`continue` skips the rest of the current iteration and goes to the next one.
+
+### Challenge 4.2 — Skip Evens
+
+Print all odd numbers from `1` to `20` using `continue`.
+
+```javascript
+// your code here
+```
+
+---
 
 ### 4.3 Labels
 
-#### Problem
+### The problem
 
 In nested loops, how can we stop the outer loop from inside the inner loop?
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 outer: for (let i = 0; i < 3; i++) {
@@ -358,8 +541,19 @@ outer: for (let i = 0; i < 3; i++) {
     console.log(`i: ${i}, j: ${j}`);
   }
 }
+```
 
-// Continue outer
+What will the last line print? Will `i: 2` appear?
+
+### ✅ Result
+
+Run it.
+
+### 🧪 Experiment
+
+Change `break outer;` to `continue outer;` in the code below. What changes?
+
+```javascript
 outer: for (let i = 0; i < 3; i++) {
   for (let j = 0; j < 3; j++) {
     if (i === 1 && j === 1) {
@@ -370,10 +564,13 @@ outer: for (let i = 0; i < 3; i++) {
 }
 ```
 
-#### Challenge 4.3 — Stop the Matrix (individual, 5 minutes)
+### Challenge 4.3 — Stop the Matrix
 
-- **Requirement:** Write a nested loop that prints pairs `i, j` for `0 <= i < 3` and `0 <= j < 3`, but stops the entire outer loop when `i === 1 && j === 1`.
-- **Time limit:** 5 minutes
+Write a nested loop that prints pairs `i, j` for `0 <= i < 3` and `0 <= j < 3`, but stops the entire outer loop when `i === 1 && j === 1`.
+
+```javascript
+// your code here
+```
 
 ---
 
@@ -381,11 +578,11 @@ outer: for (let i = 0; i < 3; i++) {
 
 ### 5.1 Basic Nested Loop
 
-#### Problem
+### The problem
 
-A grid of rows and columns. Each row has a set of columns.
+A grid has rows and columns. Each row has a set of columns.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 for (let i = 0; i < 3; i++) {
@@ -395,14 +592,37 @@ for (let i = 0; i < 3; i++) {
 }
 ```
 
-#### Challenge 5.1 — Coordinate Pairs (individual, 4 minutes)
+How many total lines will print? What is the order?
 
-- **Requirement:** Print all pairs `(i, j)` where `i` is `0` to `2` and `j` is `0` to `2`.
-- **Time limit:** 4 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+The inner loop runs fully for every single step of the outer loop.
+
+### 🧪 Experiment
+
+Change `j < 3` to `j < i`. What happens?
+
+### Challenge 5.1 — Coordinate Pairs
+
+Print all pairs `(i, j)` where `i` is `0` to `2` and `j` is `0` to `2`.
+
+```javascript
+// your code here
+```
+
+---
 
 ### 5.2 Matrix Traversal
 
-#### Live Code
+### The problem
+
+Loop through every value in a 2D array (a matrix).
+
+### 🔮 Predict
 
 ```javascript
 let matrix = [
@@ -418,17 +638,35 @@ for (let i = 0; i < matrix.length; i++) {
 }
 ```
 
-#### Challenge 5.2 — Sum Matrix (individual, 5 minutes)
+What is the first value printed? What is the last?
 
-- **Requirement:** Calculate the sum of all numbers in the matrix above.
-- **Time limit:** 5 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+`matrix[i]` is the inner array. `matrix[i][j]` is one item inside that inner array.
+
+### Challenge 5.2 — Sum Matrix
+
+Calculate the sum of all numbers in the matrix above.
+
+```javascript
+// your code here
+```
+
+---
 
 ### 5.3 Pattern Printing
 
-#### Live Code
+### The problem
+
+Print shapes using stars and numbers.
+
+### Triangle
 
 ```javascript
-// Triangle
 for (let i = 1; i <= 5; i++) {
   let line = "";
   for (let j = 1; j <= i; j++) {
@@ -436,8 +674,15 @@ for (let i = 1; i <= 5; i++) {
   }
   console.log(line);
 }
+```
 
-// Square
+### 🔮 Predict
+
+How many stars will the last line have? How many total lines?
+
+### Square
+
+```javascript
 for (let i = 1; i <= 5; i++) {
   let line = "";
   for (let j = 1; j <= 5; j++) {
@@ -445,8 +690,11 @@ for (let i = 1; i <= 5; i++) {
   }
   console.log(line);
 }
+```
 
-// Number triangle
+### Number triangle
+
+```javascript
 for (let i = 1; i <= 5; i++) {
   let line = "";
   for (let j = 1; j <= i; j++) {
@@ -456,11 +704,15 @@ for (let i = 1; i <= 5; i++) {
 }
 ```
 
-#### Challenge 5.3 — Inverted Triangle (individual, 5 minutes)
+### 🧪 Experiment
 
-- **Requirement:** Print this pattern:
+Change `line += "* ";` to `line += i + " ";` in the triangle. What shape of numbers do you see?
 
-```
+### Challenge 5.3 — Inverted Triangle
+
+Print this pattern:
+
+```text
 * * * * *
 * * * *
 * * *
@@ -468,12 +720,21 @@ for (let i = 1; i <= 5; i++) {
 *
 ```
 
-- **Time limit:** 5 minutes
-- **Hint:** The outer loop goes down from `5` to `1`.
+**Hint:** The outer loop should go down from `5` to `1`.
+
+```javascript
+// your code here
+```
+
+---
 
 ### 5.4 Multiplication Table
 
-#### Live Code
+### The problem
+
+Print a 5 by 5 multiplication table.
+
+### 🔮 Predict
 
 ```javascript
 for (let i = 1; i <= 5; i++) {
@@ -485,10 +746,27 @@ for (let i = 1; i <= 5; i++) {
 }
 ```
 
-#### Challenge 5.4 — Table 1 to 10 (individual, 6 minutes)
+What number will appear at the bottom-right corner? What does `padStart(4, " ")` do?
 
-- **Requirement:** Generate a multiplication table from `1` to `10`.
-- **Time limit:** 6 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+The outer loop picks the row. The inner loop picks the column. `padStart(4, " ")` adds spaces so the numbers line up.
+
+### 🧪 Experiment
+
+Change `i <= 5` and `j <= 5` to `10`. Does the table still line up? Try `padStart(5, " ")`.
+
+### Challenge 5.4 — Table 1 to 10
+
+Generate a multiplication table from `1` to `10`.
+
+```javascript
+// your code here
+```
 
 ---
 
@@ -496,7 +774,11 @@ for (let i = 1; i <= 5; i++) {
 
 ### 6.1 Prime Numbers
 
-#### Live Code
+### The problem
+
+A prime number has no divisors except `1` and itself. How can we test for that?
+
+### Try this function
 
 ```javascript
 function isPrime(num) {
@@ -514,31 +796,68 @@ for (let i = 1; i <= 100; i++) {
 }
 ```
 
-#### Challenge 6.1 — Is It Prime? (individual, 5 minutes)
+### 🔮 Predict
 
-- **Requirement:** Write a function `isPrime(num)` that returns `true` or `false`.
-- **Time limit:** 5 minutes
+Will `1` be printed? Will `2` be printed? Why do we stop at `Math.sqrt(num)`?
+
+### 🧪 Experiment
+
+- Remove `if (num < 2) return false;`. Does the function still work?
+- Change `i <= Math.sqrt(num)` to `i < num`. Is it slower or faster? Does the answer change?
+
+### Challenge 6.1 — Is It Prime?
+
+Write a function `isPrime(num)` that returns `true` or `false`.
+
+```javascript
+// your code here
+```
+
+---
 
 ### 6.2 Fibonacci Sequence
 
-#### Live Code
+### The problem
+
+Each Fibonacci number is the sum of the two before it: `0, 1, 1, 2, 3, 5, 8, ...`
+
+### 🔮 Predict
 
 ```javascript
 let fib = [0, 1];
 for (let i = 2; i < 10; i++) {
   fib[i] = fib[i - 1] + fib[i - 2];
 }
-console.log(fib); // [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+console.log(fib);
 ```
 
-#### Challenge 6.2 — First 15 Fibonacci (individual, 4 minutes)
+What will the 10th value be? What is the 6th value?
 
-- **Requirement:** Generate the first `15` Fibonacci numbers.
-- **Time limit:** 4 minutes
+### ✅ Result
+
+Run it. The array should be `[0, 1, 1, 2, 3, 5, 8, 13, 21, 34]`.
+
+### 🧪 Experiment
+
+Change `i < 10` to `i < 15`. How many numbers do you get?
+
+### Challenge 6.2 — First 15 Fibonacci
+
+Generate the first 15 Fibonacci numbers.
+
+```javascript
+// your code here
+```
+
+---
 
 ### 6.3 Reverse an Array
 
-#### Live Code
+### The problem
+
+Build a new array that is the reverse of the original.
+
+### 🔮 Predict
 
 ```javascript
 let original = [1, 2, 3, 4, 5];
@@ -552,15 +871,35 @@ console.log("Original:", original);
 console.log("Reversed:", reversed);
 ```
 
-#### Challenge 6.3 — Reverse String (individual, 4 minutes)
+What will `reversed[0]` be? What will `reversed[4]` be?
 
-- **Requirement:** Reverse `"hello"` using a loop.
-- **Time limit:** 4 minutes
-- **Hint:** Loop from the last index to `0` and build a new string.
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+We start at the last index and count backwards. `reversed.push` adds the value to the end of the new array.
+
+### Challenge 6.3 — Reverse a String
+
+Reverse `"hello"` using a loop.
+
+```javascript
+// your code here
+```
+
+**Hint:** Loop from the last index to `0` and build a new string.
+
+---
 
 ### 6.4 Factorial
 
-#### Live Code
+### The problem
+
+`5! = 5 * 4 * 3 * 2 * 1 = 120`.
+
+### 🔮 Predict
 
 ```javascript
 let num = 5;
@@ -570,17 +909,32 @@ for (let i = 2; i <= num; i++) {
   factorial *= i;
 }
 
-console.log(`Factorial of ${num}:`, factorial); // 120
+console.log(`Factorial of ${num}:`, factorial);
 ```
 
-#### Challenge 6.4 — Factorial Function (individual, 4 minutes)
+What is `factorial of 6`? Change `num` and predict before running.
 
-- **Requirement:** Write a function `factorial(n)`.
-- **Time limit:** 4 minutes
+### ✅ Result
+
+Run it. `5!` is `120`.
+
+### Challenge 6.4 — Factorial Function
+
+Write a function `factorial(n)`.
+
+```javascript
+// your code here
+```
+
+---
 
 ### 6.5 Number Guessing Game
 
-#### Live Code
+### The problem
+
+The computer picks a random number. A loop guesses until it gets it right.
+
+### 🔮 Predict
 
 ```javascript
 let target = Math.floor(Math.random() * 10) + 1;
@@ -606,71 +960,25 @@ while (true) {
 }
 ```
 
----
+Will this loop always end? What does `break` do here? Could it take 100 attempts?
 
-## Bug Hunt 1
+### ✅ Result
 
-### Problem
+Run it a few times.
 
-The following code has three deliberate bugs or surprises. Ask students to find them.
+### 🧪 Experiment
 
-```javascript
-let numbers = [1, 2, 3, 4, 5];
-let sum = 0;
-
-for (let i = 0; i <= numbers.length; i++) {
-  sum += numbers[i];
-}
-
-console.log("Sum:", sum);
-
-for (let i = 0; i < 10; i++); {
-  console.log("Number:", i);
-}
-
-let count = 0;
-while (count < 5) {
-  console.log(count);
-}
-```
-
-### Issues
-
-1. `i <= numbers.length` tries to access `numbers[5]`, which is `undefined`. Should be `i < numbers.length`.
-2. `for (let i = 0; i < 10; i++);` has a semicolon after the loop, so the block after it runs once with `i` being `10` (out of scope in some cases, or the variable `i` is accessible due to `var`? It uses `let`, so `i` is not accessible and an error may occur).
-3. `while (count < 5)` does not increment `count`, causing an infinite loop.
-
-### Fixed Version (for the instructor)
-
-```javascript
-let numbers = [1, 2, 3, 4, 5];
-let sum = 0;
-
-for (let i = 0; i < numbers.length; i++) {
-  sum += numbers[i];
-}
-console.log("Sum:", sum);
-
-for (let i = 0; i < 10; i++) {
-  console.log("Number:", i);
-}
-
-let count = 0;
-while (count < 5) {
-  console.log(count);
-  count++;
-}
-```
-
-### Points
-
-1 point for each found bug.
+Change `Math.random() * 10` to `Math.random() * 100` for the guess range. How does the number of attempts change?
 
 ---
 
 ## Part 7: When to Use Which Loop
 
-### Live Code
+### The goal
+
+There is more than one way to loop. The right loop depends on the job.
+
+### Compare these examples
 
 ```javascript
 let numbers = [1, 2, 3, 4, 5];
@@ -703,7 +1011,7 @@ while (total < 50) {
 }
 console.log("Total:", total);
 
-// Use do...when when at least one run is required
+// Use do...while when at least one run is required
 console.log("\nDo-while:");
 let x = 5;
 do {
@@ -712,13 +1020,66 @@ do {
 } while (x < 3);
 ```
 
+### 🤔 Think
+
+For each of these jobs, which loop would you pick? Write your answer.
+
+1. Print every user name in an array: __________
+2. Print the index and value of an array: __________
+3. Keep asking for a password until it is correct: __________
+4. Show a menu at least once before asking to exit: __________
+
+---
+
+## Bug Hunt 1
+
+### The mission
+
+The following code has three deliberate bugs or surprises. Find and fix them.
+
+Do not run it yet. Read the whole code and write down what you think is wrong.
+
+```javascript
+let numbers = [1, 2, 3, 4, 5];
+let sum = 0;
+
+for (let i = 0; i <= numbers.length; i++) {
+  sum += numbers[i];
+}
+
+console.log("Sum:", sum);
+
+for (let i = 0; i < 10; i++); {
+  console.log("Number:", i);
+}
+
+let count = 0;
+while (count < 5) {
+  console.log(count);
+}
+```
+
+### 🐛 What I think is wrong
+
+1. _______________________________________________________________
+2. _______________________________________________________________
+3. _______________________________________________________________
+
+### ✅ Fixed version
+
+Write your fixed version below, then test it.
+
+```javascript
+// your fixed version here
+```
+
 ---
 
 ## Bug Hunt 2
 
-### Problem
+### The mission
 
-The pattern printer has bugs. Ask students to find them.
+The pattern printer has bugs. Find them and fix them.
 
 ```javascript
 for (let i = 1; i <= 5; i++) {
@@ -730,43 +1091,32 @@ for (let i = 1; i <= 5; i++) {
 }
 ```
 
-### Issues
+### 🐛 What I think is wrong
 
-1. The inner `for` loop has a semicolon `;` after it. The block `{ line += "*"; }` then runs once per outer iteration, not per inner iteration.
-2. Because of the semicolon, `line` will only have one `*` each time.
+1. _______________________________________________________________
+2. _______________________________________________________________
 
-### Fixed Version
+### ✅ Fixed version
 
 ```javascript
-for (let i = 1; i <= 5; i++) {
-  let line = "";
-  for (let j = 1; j <= i; j++) {
-    line += "*";
-  }
-  console.log(line);
-}
+// your fixed version here
 ```
-
-### Points
-
-1 point for the semicolon bug, 1 point for explaining the output.
 
 ---
 
 ## Group Challenge: Pattern Race
 
-- **Time:** 10 minutes
-- **Teams:** 2 or 3 students per team
-- **Task:** Each team must print the requested pattern using nested loops.
-- **Scoring:** 2 points for the first correct pattern, 1 point for each additional correct pattern within the time limit.
+If you are working with a group, split into teams of 2 or 3.
 
-### Patterns
+Each team must print the requested pattern using nested loops.
+
+### Patterns to build
 
 1. Right triangle of `*` with height `5`.
 2. Square of `*` with side `5`.
 3. Number triangle:
 
-```
+```text
 1
 1 2
 1 2 3
@@ -776,7 +1126,7 @@ for (let i = 1; i <= 5; i++) {
 
 4. Inverted right triangle:
 
-```
+```text
 * * * * *
 * * * *
 * * *
@@ -784,71 +1134,65 @@ for (let i = 1; i <= 5; i++) {
 *
 ```
 
-### Instructor Answer Key
-
-```javascript
-// 1
-for (let i = 1; i <= 5; i++) {
-  let line = "";
-  for (let j = 1; j <= i; j++) line += "*";
-  console.log(line);
-}
-
-// 2
-for (let i = 1; i <= 5; i++) {
-  let line = "";
-  for (let j = 1; j <= 5; j++) line += "*";
-  console.log(line);
-}
-
-// 3
-for (let i = 1; i <= 5; i++) {
-  let line = "";
-  for (let j = 1; j <= i; j++) line += j + " ";
-  console.log(line);
-}
-
-// 4
-for (let i = 5; i >= 1; i--) {
-  let line = "";
-  for (let j = 1; j <= i; j++) line += "* ";
-  console.log(line);
-}
-```
-
 ---
 
 ## Individual Challenges — Progressive Difficulty
 
-### Level 1: Count by 3 (3 minutes)
+Do these in order. Do not look at the answer key until you have tried.
 
-- **Requirement:** Print numbers from `1` to `30`, skipping multiples of `3`.
-- **Expected:** Use `continue`.
+### Level 1: Count by 3
 
-### Level 2: Sum of Odds (3 minutes)
+Print numbers from `1` to `30`, skipping multiples of `3`.
 
-- **Requirement:** Sum all odd numbers from `1` to `50`.
-- **Expected:** Use a `for` loop.
+```javascript
+// your code here
+```
 
-### Level 3: Find Largest (4 minutes)
+### Level 2: Sum of Odds
 
-- **Requirement:** Find the largest number in `let numbers = [10, 5, 20, 8, 15]` using a loop.
-- **Hint:** Track the largest value as you loop.
+Sum all odd numbers from `1` to `50`.
 
-### Level 4: Count Occurrences (5 minutes)
+```javascript
+// your code here
+```
 
-- **Requirement:** Count how many times each item appears in `let items = ["apple", "banana", "apple", "orange", "banana", "apple"]`.
-- **Hint:** Use an object as a counter.
+### Level 3: Find Largest
 
-### Level 5: Remove Duplicates (5 minutes)
+Find the largest number in `let numbers = [10, 5, 20, 8, 15]` using a loop.
 
-- **Requirement:** Remove duplicates from `let duplicates = [1, 2, 3, 2, 4, 5, 3, 6]` using loops.
-- **Hint:** Create a new array and use `includes` before pushing.
+```javascript
+// your code here
+```
 
-### Level 6: Number Guessing (6 minutes)
+### Level 4: Count Occurrences
 
-- **Requirement:** Generate a random number `1` to `10`. Use a `while` loop to guess until correct.
-- **Hint:** Use `Math.random` and `break`.
+Count how many times each item appears in `let items = ["apple", "banana", "apple", "orange", "banana", "apple"]`.
+
+**Hint:** Use an object as a counter.
+
+```javascript
+// your code here
+```
+
+### Level 5: Remove Duplicates
+
+Remove duplicates from `let duplicates = [1, 2, 3, 2, 4, 5, 3, 6]` using loops.
+
+**Hint:** Create a new array and use `includes` before pushing.
+
+```javascript
+// your code here
+```
+
+### Level 6: Number Guessing
+
+Generate a random number `1` to `10`. Use a `while` loop to guess until correct.
+
+**Hint:** Use `Math.random` and `break`.
+
+```javascript
+// your code here
+```
 
 ---
 
@@ -862,7 +1206,7 @@ for (let i = 5; i >= 1; i--) {
 
 Combine `for`, `while`, nested loops, `break`, and `continue` into one small HTML page.
 
-### Requirements for the Students
+### Requirements
 
 1. Create a page with two sections:
    - **Pattern Printer:** a dropdown to choose pattern (triangle, square, number triangle, multiplication table) and a button to render it.
@@ -872,13 +1216,9 @@ Combine `for`, `while`, nested loops, `break`, and `continue` into one small HTM
 
 3. Use `while` for the number guessing game.
 
-### Time Limit
-
-25 minutes
-
 ### Starter HTML
 
-```html
+```html copy
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -965,18 +1305,93 @@ Combine `for`, `while`, nested loops, `break`, and `continue` into one small HTM
 </html>
 ```
 
-### Review Questions for the Mini Project
+### Extension ideas
 
-- "Why does the pattern use nested `for` loops?"
-- "What is the difference between `while` and `do...while` in the game?"
-- "What happens if we forget `\n` inside the pattern loop?"
+- Add an option to choose the size of the pattern.
+- Change the guessing game to give "too low / too high" hints.
+- Add a `continue` or `break` challenge inside one of the patterns.
+
+---
+
+## Review Questions
+
+Answer these before you finish.
+
+1. What is the correct syntax for a `for` loop?
+   - [ ] `for (i = 0; i < 5; i++)`
+   - [ ] `for (let i = 0; i < 5; i++)`
+   - [ ] `for (i < 5; i++)`
+   - [ ] `for (let i = 0; i < 5)`
+
+2. What does the `break` statement do?
+   - [ ] Skips the current iteration
+   - [ ] Exits the loop immediately
+   - [ ] Restarts the loop
+   - [ ] Pauses the loop
+
+3. What does the `continue` statement do?
+   - [ ] Exits the loop
+   - [ ] Skips the current iteration
+   - [ ] Restarts the loop
+   - [ ] Pauses execution
+
+4. Which loop is best for iterating over array values?
+   - [ ] `for` loop
+   - [ ] `while` loop
+   - [ ] `for...of` loop
+   - [ ] `do-while` loop
+
+5. What is the difference between `while` and `do-while`?
+   - [ ] No difference
+   - [ ] `do-while` always executes at least once
+   - [ ] `while` always executes at least once
+   - [ ] `do-while` is faster
+
+6. How do you exit a nested loop from the inner loop?
+   - [ ] `break`
+   - [ ] `continue`
+   - [ ] labeled `break`
+   - [ ] `return`
+
+7. What happens if the loop condition is initially `false` in a `while` loop?
+   - [ ] Error
+   - [ ] Loop executes once
+   - [ ] Loop doesn't execute
+   - [ ] Infinite loop
+
+8. Which loop would you use when you don't know the number of iterations?
+   - [ ] `for` loop
+   - [ ] `while` loop
+   - [ ] `for...of` loop
+   - [ ] All of the above
+
+9. What does `for...in` iterate over?
+   - [ ] Array values
+   - [ ] Object properties
+   - [ ] String characters
+   - [ ] Map entries
+
+10. How many times will this loop execute? `for (let i = 0; i < 5; i++)`
+    - [ ] 4 times
+    - [ ] 5 times
+    - [ ] 6 times
+    - [ ] Infinite
+
+---
+
+## Additional Resources
+
+- [MDN: for](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for)
+- [MDN: while](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/while)
+- [MDN: for...of](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of)
+- [MDN: for...in](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in)
+- [JavaScript.info: Loops](https://javascript.info/while-for)
+- [JavaScript.info: for...of](https://javascript.info/for..of)
 
 ---
 
 <details>
-<summary>Trainer Solutions — Do Not Show Until Students Try</summary>
-
-## Trainer Solutions — Do Not Show Until Students Try
+<summary>Answer Key — Try everything first!</summary>
 
 ### Challenge 1.4
 
@@ -1121,6 +1536,40 @@ function factorial(n) {
 }
 ```
 
+### Bug Hunt 1 Fixed Version
+
+```javascript
+let numbers = [1, 2, 3, 4, 5];
+let sum = 0;
+
+for (let i = 0; i < numbers.length; i++) {
+  sum += numbers[i];
+}
+console.log("Sum:", sum);
+
+for (let i = 0; i < 10; i++) {
+  console.log("Number:", i);
+}
+
+let count = 0;
+while (count < 5) {
+  console.log(count);
+  count++;
+}
+```
+
+### Bug Hunt 2 Fixed Version
+
+```javascript
+for (let i = 1; i <= 5; i++) {
+  let line = "";
+  for (let j = 1; j <= i; j++) {
+    line += "*";
+  }
+  console.log(line);
+}
+```
+
 ### Individual Challenges Solutions
 
 ```javascript
@@ -1176,78 +1625,3 @@ while (true) {
 ```
 
 </details>
-
----
-
-## Review Questions
-
-1. What is the correct syntax for a for loop?
-   - [ ] for (i = 0; i < 5; i++)
-   - [x] for (let i = 0; i < 5; i++)
-   - [ ] for (i < 5; i++)
-   - [ ] for (let i = 0; i < 5)
-
-2. What does the `break` statement do?
-   - [ ] Skips the current iteration
-   - [x] Exits the loop immediately
-   - [ ] Restarts the loop
-   - [ ] Pauses the loop
-
-3. What does the `continue` statement do?
-   - [ ] Exits the loop
-   - [x] Skips the current iteration
-   - [ ] Restarts the loop
-   - [ ] Pauses execution
-
-4. Which loop is best for iterating over array values?
-   - [ ] for loop
-   - [ ] while loop
-   - [x] for...of loop
-   - [ ] do-while loop
-
-5. What is the difference between while and do-while?
-   - [ ] No difference
-   - [x] do-while always executes at least once
-   - [ ] while always executes at least once
-   - [ ] do-while is faster
-
-6. How do you exit a nested loop from the inner loop?
-   - [ ] break
-   - [ ] continue
-   - [x] labeled break
-   - [ ] return
-
-7. What happens if the loop condition is initially false in a while loop?
-   - [ ] Error
-   - [ ] Loop executes once
-   - [x] Loop doesn't execute
-   - [ ] Infinite loop
-
-8. Which loop would you use when you don't know the number of iterations?
-   - [ ] for loop
-   - [x] while loop
-   - [ ] for...of loop
-   - [ ] All of the above
-
-9. What does `for...in` iterate over?
-   - [ ] Array values
-   - [x] Object properties
-   - [ ] String characters
-   - [ ] Map entries
-
-10. How many times will this loop execute? `for (let i = 0; i < 5; i++)`
-    - [ ] 4 times
-    - [x] 5 times
-    - [ ] 6 times
-    - [ ] Infinite
-
----
-
-## Additional Resources
-
-- [MDN: for](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for)
-- [MDN: while](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/while)
-- [MDN: for...of](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of)
-- [MDN: for...in](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in)
-- [JavaScript.info: Loops](https://javascript.info/while-for)
-- [JavaScript.info: for...of](https://javascript.info/for..of)

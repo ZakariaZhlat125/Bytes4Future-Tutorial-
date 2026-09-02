@@ -1,39 +1,25 @@
-# Session 7: Functions (Part 1) — Active Learning Redesign
+# Session 7: Functions (Part 1) — Student Active-Learning Lab
 
-## Session Plan for the Instructor
-
-- **Total time:** approximately 90 to 120 minutes
-- **Pacing rule:** never explain theory continuously for more than 15–20 minutes. After every concept, students must predict, write, or fix code.
-- **Pedagogical pattern for every topic:**
-  1. **Problem** — a realistic mini-situation
-  2. **Guess** — ask: "What do you expect to happen?"
-  3. **Explain** — the shortest rule that fixes the problem
-  4. **Code** — live code written in front of the students, step by step
-  5. **Challenge** — students solve a small task on their own or in groups
-  6. **Review** — discuss the answer and the most common mistake
-
-### Competition and Points
-
-- 1 point per correct prediction in the "Guess" phase.
-- 1–3 points per completed challenge, depending on difficulty.
-- A "Bug Hunter" badge for each student who finds and fixes an intentional error.
-- Keep a simple tally on a shared board or in the chat.
-
-### Instructor Questions to Ask During the Session
-
-- "What does this function return?"
-- "What happens if we call the function without an argument?"
-- "Should this task be a new function?"
-- "Where should we use `return`?"
-- "What is the difference between `return` and `console.log`?"
+Welcome to this session. The goal today is to learn how to write, call, and reuse **functions**. Do not just read — predict, type, run, and fix.
 
 ---
 
-## Part 0: Warm-Up — The Repeated Code (5 minutes)
+## 🧭 How to move through this session
 
-### Problem
+1. **Read the problem first.**
+2. **Stop.** Do not look at the code yet.
+3. **Write your prediction** in a comment or notebook.
+4. **Type the code and run it.**
+5. **Compare, ask why, then change one thing.**
+6. **Do the challenge before you look at the answer key.**
 
-A program needs to greet three different people. The student copies the same code:
+---
+
+## Part 0: Warm-Up — The Repeated Code
+
+### The problem
+
+A program needs to greet three different people. A student copies the same code:
 
 ```javascript
 console.log("Hello, John!");
@@ -41,15 +27,19 @@ console.log("Hello, Jane!");
 console.log("Hello, Bob!");
 ```
 
-### Guess
+### 🤔 Think
 
-Ask: "What if we need to greet 100 people? How can we write this once and use it many times?"
+What if we need to greet `100` people? How many `console.log` lines would that be?
 
-### Explain
+```text
+Number of console.log lines needed for 100 people: __________
+```
 
-A function is a reusable block of code. We define it once and call it whenever we need it.
+Is copying the line the best way?
 
-### Live Code
+### 🔮 Predict
+
+Look at this code and write what you think will print:
 
 ```javascript
 function greet(name) {
@@ -61,9 +51,20 @@ greet("Jane");
 greet("Bob");
 ```
 
-### Review
+### ✅ Result
 
-Functions save time and reduce mistakes. The input `name` is called a parameter. The call `greet("John")` passes an argument.
+Run the code.
+
+### 🧠 Discover
+
+A **function** is a reusable block of code. We define it once and call it whenever we need it.
+
+- `name` inside the parentheses is a **parameter**.
+- `"John"`, `"Jane"`, `"Bob"` are the **arguments** passed in.
+
+### 🧪 Experiment
+
+Add `greet("You");` at the end. What happens? What happens if you call `greet();` with no argument?
 
 ---
 
@@ -71,11 +72,11 @@ Functions save time and reduce mistakes. The input `name` is called a parameter.
 
 ### 1.1 Basic Function
 
-#### Problem
+### The problem
 
 Add two numbers. We want to reuse the addition.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 function add(a, b) {
@@ -83,22 +84,37 @@ function add(a, b) {
 }
 
 let result = add(5, 3);
-console.log(result);        // 8
-console.log(add(10, 20));   // 30
+console.log(result);        // ?
+console.log(add(10, 20));   // ?
 ```
 
-#### Challenge 1.1 — Multiply (individual, 3 minutes)
+What will the two `console.log` lines print?
 
-- **Requirement:** Write a function `multiply(a, b)` that returns the product.
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+`return` sends a value back to the caller. `result` gets `8`. `add(10, 20)` returns `30`, which is passed directly to `console.log`.
+
+### Challenge 1.1 — Multiply
+
+Write a function `multiply(a, b)` that returns the product.
+
+```javascript
+// your code here
+```
+
+---
 
 ### 1.2 Function Without Return
 
-#### Problem
+### The problem
 
-A function that only prints a message.
+A function only prints a message. What happens if we try to save its result?
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 function logMessage(message) {
@@ -106,17 +122,36 @@ function logMessage(message) {
 }
 
 let output = logMessage("Hello");
-console.log(output); // undefined
+console.log(output);
 ```
 
-#### Challenge 1.2 — Return vs Log (individual, 3 minutes)
+What will the second `console.log` print?
 
-- **Requirement:** Predict what `output` will be, then run the code. Explain why.
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+If a function does not use `return`, it gives back `undefined`. `console.log` does **not** give a result back to the code — it only prints.
+
+### Challenge 1.2 — Return vs Log
+
+Predict what `output` will be, then run the code. Explain why.
+
+```javascript
+// your code here
+```
+
+---
 
 ### 1.3 Multiple Parameters
 
-#### Live Code
+### The problem
+
+Build a full name from two or three parts.
+
+### 🔮 Predict
 
 ```javascript
 function createFullName(firstName, lastName, middleName) {
@@ -126,14 +161,27 @@ function createFullName(firstName, lastName, middleName) {
   return `${firstName} ${lastName}`;
 }
 
-console.log(createFullName("John", "Doe"));                 // "John Doe"
-console.log(createFullName("John", "Doe", "William"));      // "John William Doe"
+console.log(createFullName("John", "Doe"));
+console.log(createFullName("John", "Doe", "William"));
 ```
 
-#### Challenge 1.3 — Full Name (individual, 4 minutes)
+What will each line print?
 
-- **Requirement:** Write a function `getInitials(firstName, lastName)` that returns `"J. Doe"`.
-- **Time limit:** 4 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+When a `return` is reached, the function stops immediately. The second `return` only runs if `middleName` is missing.
+
+### Challenge 1.3 — Full Name
+
+Write a function `getInitials(firstName, lastName)` that returns `"J. Doe"`.
+
+```javascript
+// your code here
+```
 
 ---
 
@@ -141,11 +189,11 @@ console.log(createFullName("John", "Doe", "William"));      // "John William Doe
 
 ### 2.1 Single Return
 
-#### Problem
+### The problem
 
 A function should give back a result that we can use later.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 function square(num) {
@@ -153,21 +201,36 @@ function square(num) {
 }
 
 let area = square(4);
-console.log(area); // 16
+console.log(area);
 ```
 
-#### Challenge 2.1 — Rectangle Area (individual, 3 minutes)
+What is `area`? What does `console.log` print?
 
-- **Requirement:** Write a function `rectangleArea(width, height)` that returns the area.
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+`return` lets the function output a value. `square(4)` becomes `16`.
+
+### Challenge 2.1 — Rectangle Area
+
+Write a function `rectangleArea(width, height)` that returns the area.
+
+```javascript
+// your code here
+```
+
+---
 
 ### 2.2 Multiple Returns
 
-#### Problem
+### The problem
 
 Categorize a number as positive, negative, or zero.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 function getNumberStatus(num) {
@@ -176,19 +239,38 @@ function getNumberStatus(num) {
   return "zero";
 }
 
-console.log(getNumberStatus(5));  // "positive"
-console.log(getNumberStatus(-5)); // "negative"
-console.log(getNumberStatus(0));  // "zero"
+console.log(getNumberStatus(5));
+console.log(getNumberStatus(-5));
+console.log(getNumberStatus(0));
 ```
 
-#### Challenge 2.2 — Grade (individual, 4 minutes)
+What will each line print?
 
-- **Requirement:** Write a function `getGrade(score)` with early returns for invalid scores and grades A, B, C, D, F.
-- **Time limit:** 4 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+This is called **early return**. As soon as a condition is met, the function stops. The last `return` is the default.
+
+### Challenge 2.2 — Grade
+
+Write a function `getGrade(score)` with early returns for invalid scores and grades A, B, C, D, F.
+
+```javascript
+// your code here
+```
+
+---
 
 ### 2.3 Returning Different Types
 
-#### Live Code
+### The problem
+
+A function can give back numbers, strings, booleans, arrays, or objects.
+
+### 🔮 Predict
 
 ```javascript
 function getValue(type) {
@@ -201,12 +283,25 @@ function getValue(type) {
     default: return null;
   }
 }
+
+console.log(typeof getValue("number"));
+console.log(Array.isArray(getValue("array")));
+console.log(getValue("banana"));
 ```
 
-#### Challenge 2.3 — Describe Value (individual, 4 minutes)
+What will each line print?
 
-- **Requirement:** Write `describe(value)` that returns `"number"`, `"string"`, `"boolean"`, or `"other"` using `typeof`.
-- **Time limit:** 4 minutes
+### ✅ Result
+
+Run it.
+
+### Challenge 2.3 — Describe Value
+
+Write `describe(value)` that returns `"number"`, `"string"`, `"boolean"`, or `"other"` using `typeof`.
+
+```javascript
+// your code here
+```
 
 ---
 
@@ -214,29 +309,48 @@ function getValue(type) {
 
 ### 3.1 Basic Defaults
 
-#### Problem
+### The problem
 
 A greeting function should work even if the caller does not pass a name.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 function greet(name = "Guest") {
   console.log(`Hello, ${name}!`);
 }
 
-greet("John"); // "Hello, John!"
-greet();       // "Hello, Guest!"
+greet("John");
+greet();
 ```
 
-#### Challenge 3.1 — Default Country (individual, 3 minutes)
+What will the second `greet()` print?
 
-- **Requirement:** Write `createUser(name, country = "Unknown")` that returns an object.
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+`name = "Guest"` is a **default parameter**. If no argument is given, `name` becomes `"Guest"`.
+
+### Challenge 3.1 — Default Country
+
+Write `createUser(name, country = "Unknown")` that returns an object.
+
+```javascript
+// your code here
+```
+
+---
 
 ### 3.2 Multiple Defaults
 
-#### Live Code
+### The problem
+
+Set defaults for many parameters.
+
+### 🔮 Predict
 
 ```javascript
 function createUser(name = "Anonymous", age = 0, country = "Unknown") {
@@ -249,31 +363,61 @@ console.log(createUser("John"));
 console.log(createUser());
 ```
 
-#### Challenge 3.2 — Default Price (individual, 4 minutes)
+For the third and fourth calls, what will `age` and `country` be?
 
-- **Requirement:** Write `calculateTotal(price, quantity = 1, tax = 0.1)` that returns the total.
-- **Time limit:** 4 minutes
-- **Hint:** `price * quantity * (1 + tax)`.
+### ✅ Result
 
-### 3.3 Defaults with undefined and Other Falsy Values
+Run it.
 
-#### Live Code
+### 🧠 Why?
+
+If an argument is not given, the default is used. Each parameter gets its own default.
+
+### Challenge 3.2 — Default Price
+
+Write `calculateTotal(price, quantity = 1, tax = 0.1)` that returns the total.
+
+```javascript
+// your code here
+```
+
+**Hint:** `price * quantity * (1 + tax)`
+
+---
+
+### 3.3 Defaults with `undefined` and Other Falsy Values
+
+### The problem
+
+When does the default actually kick in?
+
+### 🔮 Predict
 
 ```javascript
 function setVolume(value = 50) {
   console.log(value);
 }
 
-setVolume();          // 50
-setVolume(undefined); // 50
-setVolume(null);      // null
-setVolume(0);         // 0
-setVolume("");        // ""
+setVolume();
+setVolume(undefined);
+setVolume(null);
+setVolume(0);
+setVolume("");
 ```
 
-#### Explain
+For each line, what do you think will print? Will they all be `50`?
 
-Only `undefined` triggers the default. `null`, `0`, and `""` are real values.
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+Only `undefined` triggers the default. `null`, `0`, and `""` are real values that you passed in.
+
+### 🧪 Experiment
+
+Call `setVolume(false)` and `setVolume(NaN)`. Does the default work?
 
 ---
 
@@ -281,11 +425,11 @@ Only `undefined` triggers the default. `null`, `0`, and `""` are real values.
 
 ### 4.1 Basic Rest
 
-#### Problem
+### The problem
 
 Add any number of values without knowing how many in advance.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 function sumAll(...numbers) {
@@ -296,19 +440,38 @@ function sumAll(...numbers) {
   return sum;
 }
 
-console.log(sumAll(1, 2, 3));      // 6
-console.log(sumAll(1, 2, 3, 4, 5)); // 15
-console.log(sumAll());              // 0
+console.log(sumAll(1, 2, 3));
+console.log(sumAll(1, 2, 3, 4, 5));
+console.log(sumAll());
 ```
 
-#### Challenge 4.1 — Average (individual, 4 minutes)
+What is `numbers` inside the function? What does `sumAll()` return?
 
-- **Requirement:** Write `average(...numbers)` that returns the average.
-- **Time limit:** 4 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+`...numbers` is a **rest parameter**. It turns all the remaining arguments into an array.
+
+### Challenge 4.1 — Average
+
+Write `average(...numbers)` that returns the average.
+
+```javascript
+// your code here
+```
+
+---
 
 ### 4.2 Rest with Regular Parameters
 
-#### Live Code
+### The problem
+
+Use a normal parameter plus a rest parameter.
+
+### 🔮 Predict
 
 ```javascript
 function greetAll(greeting, ...names) {
@@ -320,15 +483,31 @@ function greetAll(greeting, ...names) {
 greetAll("Hello", "John", "Jane", "Bob");
 ```
 
-#### Challenge 4.2 — Build HTML (individual, 4 minutes)
+How many lines will print? What is `greeting`?
 
-- **Requirement:** Write `buildHTML(tag, ...content)` that returns `<tag>content joined</tag>`.
-- **Time limit:** 4 minutes
-- **Hint:** `content.join("")`.
+### ✅ Result
 
-### 4.3 Rest vs arguments
+Run it.
 
-#### Live Code
+### Challenge 4.2 — Build HTML
+
+Write `buildHTML(tag, ...content)` that returns `<tag>content joined</tag>`.
+
+```javascript
+// your code here
+```
+
+**Hint:** `content.join("")`
+
+---
+
+### 4.3 Rest vs `arguments`
+
+### The problem
+
+Older JavaScript used `arguments`. Modern JavaScript uses rest parameters.
+
+### 🔮 Predict
 
 ```javascript
 // Old way
@@ -345,17 +524,27 @@ function newSum(...numbers) {
   return numbers.reduce((sum, num) => sum + num, 0);
 }
 
-console.log(oldSum(1, 2, 3, 4, 5)); // 15
-console.log(newSum(1, 2, 3, 4, 5)); // 15
+console.log(oldSum(1, 2, 3, 4, 5));
+console.log(newSum(1, 2, 3, 4, 5));
 ```
+
+Will both give the same answer? What is `arguments`?
+
+### ✅ Result
+
+Run it.
+
+### 🧪 Experiment
+
+Change `newSum` to `newSum(1, 2, 3, 4, 5, 6)`. Does it still work? Does `oldSum` also work?
 
 ---
 
 ## Bug Hunt 1
 
-### Problem
+### The mission
 
-Find the bugs in this function.
+Find the bugs in this function. Do not run it yet. Read and write what you think is wrong.
 
 ```javascript
 function calculateDiscount(price, discount = 10) {
@@ -370,30 +559,18 @@ let result = calculateDiscount(100);
 console.log("Result:", result);
 ```
 
-### Issues
+### 🐛 What I think is wrong
 
-1. The function uses `console.log` instead of `return`, so `result` is `undefined`.
-2. The discount should not be returned as a negative if `discount` is `0` or `100`. The validation is fine but the design may not match expectations.
+1. _______________________________________________________________
+2. _______________________________________________________________
 
-### Fixed Version
+### ✅ Fixed version
+
+Write your fixed version, then test it.
 
 ```javascript
-function calculateDiscount(price, discount = 10) {
-  if (price < 0) {
-    return "Invalid price";
-  }
-  let final = price - (price * discount / 100);
-  return final;
-}
-
-console.log(calculateDiscount(100));        // 90
-console.log(calculateDiscount(100, 20));    // 80
-console.log(calculateDiscount(-50));        // "Invalid price"
+// your fixed version here
 ```
-
-### Points
-
-1 point for each found issue.
 
 ---
 
@@ -401,32 +578,47 @@ console.log(calculateDiscount(-50));        // "Invalid price"
 
 ### 5.1 Function Expression
 
-#### Problem
+### The problem
 
-Assign a function to a variable.
+A function can be assigned to a variable.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 const multiply = function(a, b) {
   return a * b;
 };
 
-console.log(multiply(5, 3)); // 15
+console.log(multiply(5, 3));
 ```
 
-#### Challenge 5.1 — Anonymous Greeting (individual, 3 minutes)
+Will `multiply(5, 3)` give `15`?
 
-- **Requirement:** Create an anonymous function assigned to `greet` and call it.
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+This is a **function expression**. The variable `multiply` holds the function.
+
+### Challenge 5.1 — Anonymous Greeting
+
+Create an anonymous function assigned to `greet` and call it.
+
+```javascript
+// your code here
+```
+
+---
 
 ### 5.2 IIFE
 
-#### Problem
+### The problem
 
 Run a function immediately to avoid global variables.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 (function() {
@@ -440,17 +632,36 @@ Run a function immediately to avoid global variables.
 const result = (function(a, b) {
   return a + b;
 })(5, 3);
-console.log(result); // 8
+console.log(result);
 ```
 
-#### Challenge 5.2 — IIFE Sum (individual, 4 minutes)
+How many outputs will you see? What will `result` be?
 
-- **Requirement:** Write an IIFE that prints the product of `7` and `8`.
-- **Time limit:** 4 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+An **IIFE** is an "Immediately Invoked Function Expression." It runs right after it is defined.
+
+### Challenge 5.2 — IIFE Sum
+
+Write an IIFE that prints the product of `7` and `8`.
+
+```javascript
+// your code here
+```
+
+---
 
 ### 5.3 Functions in Objects
 
-#### Live Code
+### The problem
+
+A calculator can be an object with several functions inside.
+
+### 🔮 Predict
 
 ```javascript
 const calculator = {
@@ -467,10 +678,23 @@ console.log(calculator.add(5, 3));
 console.log(calculator.divide(10, 0));
 ```
 
-#### Challenge 5.3 — Object of Operations (individual, 5 minutes)
+What will the second `console.log` print?
 
-- **Requirement:** Create an object `math` with `power` and `root` functions.
-- **Time limit:** 5 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+Functions can be values inside objects. You call them with `objectName.methodName()`.
+
+### Challenge 5.3 — Object of Operations
+
+Create an object `math` with `power` and `root` functions.
+
+```javascript
+// your code here
+```
 
 ---
 
@@ -478,11 +702,11 @@ console.log(calculator.divide(10, 0));
 
 ### 6.1 Returning a Function
 
-#### Problem
+### The problem
 
 Create a function that makes other greeting functions.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 function createGreeter(greeting) {
@@ -494,18 +718,37 @@ function createGreeter(greeting) {
 const sayHello = createGreeter("Hello");
 const sayGoodbye = createGreeter("Goodbye");
 
-console.log(sayHello("John"));    // "Hello, John!"
-console.log(sayGoodbye("John"));  // "Goodbye, John!"
+console.log(sayHello("John"));
+console.log(sayGoodbye("John"));
 ```
 
-#### Challenge 6.1 — Function Factory (individual, 4 minutes)
+What does `sayHello` become? What does it print when called?
 
-- **Requirement:** Write `createMultiplier(factor)` that returns a function.
-- **Time limit:** 4 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+A function can **return** another function. The inner function remembers the value of `greeting` from when it was created.
+
+### Challenge 6.1 — Function Factory
+
+Write `createMultiplier(factor)` that returns a function.
+
+```javascript
+// your code here
+```
+
+---
 
 ### 6.2 Counter with Closure
 
-#### Live Code
+### The problem
+
+Make a counter that keeps its own private count.
+
+### 🔮 Predict
 
 ```javascript
 function createCounter() {
@@ -521,21 +764,41 @@ function createCounter() {
 const counter1 = createCounter();
 const counter2 = createCounter();
 
-console.log(counter1.increment()); // 1
-console.log(counter1.increment()); // 2
-console.log(counter2.increment()); // 1
-console.log(counter1.getCount());  // 2
+console.log(counter1.increment()); // ?
+console.log(counter1.increment()); // ?
+console.log(counter2.increment()); // ?
+console.log(counter1.getCount());  // ?
 ```
 
-#### Challenge 6.2 — Bank Account (individual, 6 minutes)
+What will each line print? Is `counter2` connected to `counter1`?
 
-- **Requirement:** Write `createBankAccount(balance)` that returns `deposit(amount)`, `withdraw(amount)`, and `getBalance()`.
-- **Time limit:** 6 minutes
-- **Hint:** Use closure to keep `balance` private.
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+This is a **closure**. The inner functions remember the `count` variable. Each `createCounter()` call makes a new private `count`.
+
+### Challenge 6.2 — Bank Account
+
+Write `createBankAccount(balance)` that returns `deposit(amount)`, `withdraw(amount)`, and `getBalance()`.
+
+```javascript
+// your code here
+```
+
+**Hint:** Use closure to keep `balance` private.
+
+---
 
 ### 6.3 Private Data
 
-#### Live Code
+### The problem
+
+A bank account should not let anyone directly change the balance from outside.
+
+### 🔮 Predict
 
 ```javascript
 function createBankAccount(initialBalance) {
@@ -563,10 +826,20 @@ function createBankAccount(initialBalance) {
 }
 
 const account = createBankAccount(100);
-console.log(account.deposit(50));   // 150
-console.log(account.withdraw(30));  // 120
-console.log(account.getBalance());  // 120
+console.log(account.deposit(50));
+console.log(account.withdraw(30));
+console.log(account.getBalance());
 ```
+
+What will each line print? What happens if you write `account.balance = 1000` after this?
+
+### ✅ Result
+
+Run it.
+
+### 🧪 Experiment
+
+Try `console.log(account.balance)`. What do you get? Try `account.deposit(-100)`. What happens?
 
 ---
 
@@ -574,11 +847,11 @@ console.log(account.getBalance());  // 120
 
 ### 7.1 Basic Arrow
 
-#### Problem
+### The problem
 
 Write shorter functions.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 // Traditional
@@ -597,14 +870,33 @@ const addConcise = (a, b) => a + b;
 console.log(addConcise(5, 3));
 ```
 
-#### Challenge 7.1 — Arrow Square (individual, 3 minutes)
+Will `addConcise` give the same result as `add`?
 
-- **Requirement:** Write `const square = ...` as a concise arrow function.
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+Arrow functions can be written with `=>`. If the body is one expression, you can leave out `return` and the braces.
+
+### Challenge 7.1 — Arrow Square
+
+Write `const square = ...` as a concise arrow function.
+
+```javascript
+// your code here
+```
+
+---
 
 ### 7.2 Single Parameter and No Parameters
 
-#### Live Code
+### The problem
+
+Arrow functions can have even shorter syntax.
+
+### 🔮 Predict
 
 ```javascript
 const square = num => num * num;
@@ -614,28 +906,66 @@ console.log(square(4));
 sayHello();
 ```
 
-#### Challenge 7.2 — Arrow Greeting (individual, 3 minutes)
+Will `square(4)` work? Will `sayHello()` print?
 
-- **Requirement:** Write `const greet = name => ...` that returns a string.
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+With a single parameter, you can drop the parentheses. With no parameters, you need empty parentheses `()`.
+
+### Challenge 7.2 — Arrow Greeting
+
+Write `const greet = name => ...` that returns a string.
+
+```javascript
+// your code here
+```
+
+---
 
 ### 7.3 Returning Objects
 
-#### Live Code
+### The problem
+
+Return an object from a concise arrow function.
+
+### 🔮 Predict
 
 ```javascript
 const createUser = (name, age) => ({ name, age });
-console.log(createUser("John", 30)); // { name: "John", age: 30 }
+console.log(createUser("John", 30));
 ```
 
-#### Challenge 7.3 — Arrow Object (individual, 4 minutes)
+Why are there parentheses around `{ name, age }`?
 
-- **Requirement:** Write `const makeBook = (title, pages) => ...` that returns `{ title, pages }`.
-- **Time limit:** 4 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+Without the parentheses, `{ name, age }` would look like a function body with a block, not an object.
+
+### Challenge 7.3 — Arrow Object
+
+Write `const makeBook = (title, pages) => ...` that returns `{ title, pages }`.
+
+```javascript
+// your code here
+```
+
+---
 
 ### 7.4 Arrow as Callback
 
-#### Live Code
+### The problem
+
+Arrow functions work great as short callbacks.
+
+### 🔮 Predict
 
 ```javascript
 const numbers = [1, 2, 3, 4, 5];
@@ -645,13 +975,32 @@ const doubled = numbers.map(function(num) {
 });
 
 const doubledArrow = numbers.map(num => num * 2);
-console.log(doubledArrow); // [2, 4, 6, 8, 10]
+console.log(doubledArrow);
 ```
 
-#### Challenge 7.4 — Filter Adults (individual, 4 minutes)
+What will `doubledArrow` be?
 
-- **Requirement:** Use an arrow function with `filter` to return users aged `18` or older.
-- **Time limit:** 4 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+`map` runs a function for every item in an array. Arrow functions make this much shorter.
+
+### Challenge 7.4 — Filter Adults
+
+Use an arrow function with `filter` to return users aged `18` or older.
+
+```javascript
+let users = [
+  { name: "John", age: 30 },
+  { name: "Jane", age: 16 },
+  { name: "Bob", age: 21 }
+];
+
+// your code here
+```
 
 ---
 
@@ -659,7 +1008,7 @@ console.log(doubledArrow); // [2, 4, 6, 8, 10]
 
 ### 8.1 Calculator
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 function calculator(operation, ...numbers) {
@@ -685,9 +1034,21 @@ console.log(calculator("multiply", 2, 3, 4));
 console.log(calculator("divide", 100, 2, 5));
 ```
 
+What will each line print?
+
+### ✅ Result
+
+Run it.
+
+### 🧪 Experiment
+
+Call `calculator("subtract", 10, 2, 3)`. What is the result? Is it what you expected? Why?
+
+---
+
 ### 8.2 Validator
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 function validateUser(user) {
@@ -715,9 +1076,21 @@ console.log(validateUser({ name: "John", email: "john@example.com", age: 30 }));
 console.log(validateUser({ name: "", email: "invalid", age: -5 }));
 ```
 
+What will each `console.log` show?
+
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+The function builds an `errors` array and returns an object with two properties.
+
+---
+
 ### 8.3 Flexible Calculator
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 function flexibleCalculator(...args) {
@@ -746,11 +1119,21 @@ console.log(flexibleCalculator("+", 1, 2, 3, 4));
 console.log(flexibleCalculator("*", 2, 3, 4));
 ```
 
+What is `args`? What does `args.slice(1)` do?
+
+### ✅ Result
+
+Run it.
+
+### 🧪 Experiment
+
+Call `flexibleCalculator("-", 20, 5, 2)`. What do you get? Why?
+
 ---
 
 ## Bug Hunt 2
 
-### Problem
+### The mission
 
 Find the bugs in this closure code.
 
@@ -774,108 +1157,90 @@ c.increment();
 console.log(c.count);
 ```
 
-### Issues
+### 🐛 What I think is wrong
 
-1. `count` is private. `c.count` is `undefined` because the outer variable is not accessible from outside.
-2. `increment` does not return the new count.
+1. _______________________________________________________________
+2. _______________________________________________________________
 
-### Fixed Version
+### ✅ Fixed version
+
+Write your fixed version, then test it.
 
 ```javascript
-function createCounter() {
-  let count = 0;
-
-  return {
-    increment: function() {
-      return ++count;
-    },
-    getCount: function() {
-      return count;
-    }
-  };
-}
-
-let c = createCounter();
-console.log(c.increment()); // 1
-console.log(c.increment()); // 2
-console.log(c.getCount());  // 2
+// your fixed version here
 ```
-
-### Points
-
-1 point for each found issue.
 
 ---
 
 ## Group Challenge: Function Builder
 
-- **Time:** 10 minutes
-- **Teams:** 2 or 3 students per team
-- **Task:** Each team must write one small function for each situation.
-- **Scoring:** 2 points per correct function. The team with the most points wins.
+If you are working in a group, split into teams of 2 or 3.
+
+Each team must write one small function for each situation.
 
 ### Situations
 
-1. `celsiusToFahrenheit(c)`.
-2. `getInitials(firstName, lastName)`.
-3. `sumEven(...numbers)`.
-4. `createMultiplier(factor)`.
-5. `validateEmail(email)`.
+1. `celsiusToFahrenheit(c)`
+2. `getInitials(firstName, lastName)`
+3. `sumEven(...numbers)`
+4. `createMultiplier(factor)`
+5. `validateEmail(email)`
 
-### Instructor Answer Key
-
-```javascript
-function celsiusToFahrenheit(c) {
-  return (c * 9 / 5) + 32;
-}
-
-function getInitials(firstName, lastName) {
-  return `${firstName[0].toUpperCase()}. ${lastName}`;
-}
-
-function sumEven(...numbers) {
-  return numbers.filter(n => n % 2 === 0).reduce((sum, n) => sum + n, 0);
-}
-
-function createMultiplier(factor) {
-  return n => n * factor;
-}
-
-function validateEmail(email) {
-  if (!email) return "Email is required";
-  if (!email.includes("@")) return "Email must contain @";
-  if (!email.includes(".")) return "Email must contain .";
-  return "Valid";
-}
-```
+Set a timer for 10 minutes. The first team with all five correct functions wins.
 
 ---
 
 ## Individual Challenges — Progressive Difficulty
 
-### Level 1: Add and Multiply (3 minutes)
+Do these in order. Do not look at the answer key until you have tried.
 
-- **Requirement:** Write `add(a, b)` and `multiply(a, b)`.
+### Level 1: Add and Multiply
 
-### Level 2: Default Tax (4 minutes)
+Write `add(a, b)` and `multiply(a, b)`.
 
-- **Requirement:** Write `calculateTotal(price, tax = 0.1)`.
+```javascript
+// your code here
+```
 
-### Level 3: Sum Rest (4 minutes)
+### Level 2: Default Tax
 
-- **Requirement:** Write `sum(...numbers)` that adds all arguments.
+Write `calculateTotal(price, tax = 0.1)`.
 
-### Level 4: Arrow Average (4 minutes)
+```javascript
+// your code here
+```
 
-- **Requirement:** Write `const average = ...` as an arrow function.
+### Level 3: Sum Rest
 
-### Level 5: Validator Function (5 minutes)
+Write `sum(...numbers)` that adds all arguments.
 
-- **Requirement:** Write `validatePassword(password)` that returns `true` if the password has at least `8` characters.
+```javascript
+// your code here
+```
 
-### Level 6: Bank Account (6 minutes)
+### Level 4: Arrow Average
 
-- **Requirement:** Write a closure-based bank account with `deposit`, `withdraw`, and `getBalance`.
+Write `const average = ...` as an arrow function.
+
+```javascript
+// your code here
+```
+
+### Level 5: Validator Function
+
+Write `validatePassword(password)` that returns `true` if the password has at least `8` characters.
+
+```javascript
+// your code here
+```
+
+### Level 6: Bank Account
+
+Write a closure-based bank account with `deposit`, `withdraw`, and `getBalance`.
+
+```javascript
+// your code here
+```
 
 ---
 
@@ -887,9 +1252,9 @@ function validateEmail(email) {
 
 ### Goal
 
-Combine function declarations, parameters, return, defaults, rest, arrow functions, and a simple closure in one HTML page.
+Combine function declarations, parameters, `return`, defaults, rest, arrow functions, and a simple closure in one HTML page.
 
-### Requirements for the Students
+### Requirements
 
 1. Create an HTML page with sections:
    - **Greeting:** input for name, optional age; output a personalized greeting.
@@ -1001,18 +1366,100 @@ Combine function declarations, parameters, return, defaults, rest, arrow functio
 </html>
 ```
 
-### Review Questions for the Mini Project
+### Questions to think about
 
-- "What is the difference between `name || undefined` and just `name` in the greeting?"
-- "Which function uses rest parameters?"
-- "Why is the counter shared between button clicks?"
+1. What is the difference between `name || undefined` and just `name` in the greeting?
+2. Which function uses rest parameters?
+3. Why is the counter shared between button clicks?
+4. What happens if `showCalc` receives an empty input string?
+
+### Extension ideas
+
+- Add a `divide` option to the calculator.
+- Validate the password input before greeting.
+- Add a reset button for the counter.
+
+---
+
+## Review Questions
+
+Answer these before you finish.
+
+1. What is the correct syntax for a function declaration?
+   - [ ] `function add(a, b) { return a + b; }`
+   - [ ] `const add = function(a, b) { return a + b; }`
+   - [ ] `const add = (a, b) => a + b;`
+   - [ ] All of the above
+
+2. What does a function return if no return statement is provided?
+   - [ ] null
+   - [ ] undefined
+   - [ ] 0
+   - [ ] Error
+
+3. How do you set a default parameter value?
+   - [ ] `function greet(name = "Guest") {}`
+   - [ ] `function name = "Guest" {}`
+   - [ ] `function name(default = "Guest") {}`
+   - [ ] `function name("Guest") {}`
+
+4. What symbol is used for rest parameters?
+   - [ ] `*`
+   - [ ] `...`
+   - [ ] `&`
+   - [ ] `#`
+
+5. What is a closure?
+   - [ ] A way to close functions
+   - [ ] A function with access to outer scope variables
+   - [ ] A type of loop
+   - [ ] A method to end execution
+
+6. Which arrow function syntax is correct for a single parameter?
+   - [ ] `(num) => num * 2`
+   - [ ] `num => num * 2`
+   - [ ] `=> num * 2`
+   - [ ] `num -> num * 2`
+
+7. Can you have multiple rest parameters in one function?
+   - [ ] Yes
+   - [ ] No
+   - [ ] Only if they're the same type
+   - [ ] Only in arrow functions
+
+8. What is an IIFE?
+   - [ ] A function that returns immediately
+   - [ ] A function that runs immediately after definition
+   - [ ] A function inside another function
+   - [ ] A function with no parameters
+
+9. How do you return an object in a concise arrow function?
+   - [ ] `=> { key: value }`
+   - [ ] `=> ({ key: value })`
+   - [ ] `=> key: value`
+   - [ ] `=> return { key: value }`
+
+10. What is the main advantage of arrow functions?
+    - [ ] They're always faster
+    - [ ] They have a shorter syntax and lexical `this`
+    - [ ] They can be hoisted
+    - [ ] They support more features
+
+---
+
+## Additional Resources
+
+- [MDN: Functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions)
+- [MDN: Default Parameters](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Default_parameters)
+- [MDN: Rest Parameters](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters)
+- [MDN: Arrow Functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
+- [JavaScript.info: Functions](https://javascript.info/function-basics)
+- [JavaScript.info: Arrow Functions](https://javascript.info/arrow-functions-basics)
 
 ---
 
 <details>
-<summary>Trainer Solutions — Do Not Show Until Students Try</summary>
-
-## Trainer Solutions — Do Not Show Until Students Try
+<summary>Answer Key — Try everything first!</summary>
 
 ### Challenge 1.1
 
@@ -1179,6 +1626,44 @@ let adults = users.filter(u => u.age >= 18);
 console.log(adults);
 ```
 
+### Bug Hunt 1 Fixed Version
+
+```javascript
+function calculateDiscount(price, discount = 10) {
+  if (price < 0) {
+    return "Invalid price";
+  }
+  let final = price - (price * discount / 100);
+  return final;
+}
+
+console.log(calculateDiscount(100));        // 90
+console.log(calculateDiscount(100, 20));    // 80
+console.log(calculateDiscount(-50));        // "Invalid price"
+```
+
+### Bug Hunt 2 Fixed Version
+
+```javascript
+function createCounter() {
+  let count = 0;
+
+  return {
+    increment: function() {
+      return ++count;
+    },
+    getCount: function() {
+      return count;
+    }
+  };
+}
+
+let c = createCounter();
+console.log(c.increment()); // 1
+console.log(c.increment()); // 2
+console.log(c.getCount());  // 2
+```
+
 ### Individual Challenges Solutions
 
 ```javascript
@@ -1215,79 +1700,31 @@ function createBankAccount(balance) {
 }
 ```
 
+### Group Challenge Answer Key
+
+```javascript
+function celsiusToFahrenheit(c) {
+  return (c * 9 / 5) + 32;
+}
+
+function getInitials(firstName, lastName) {
+  return `${firstName[0].toUpperCase()}. ${lastName}`;
+}
+
+function sumEven(...numbers) {
+  return numbers.filter(n => n % 2 === 0).reduce((sum, n) => sum + n, 0);
+}
+
+function createMultiplier(factor) {
+  return n => n * factor;
+}
+
+function validateEmail(email) {
+  if (!email) return "Email is required";
+  if (!email.includes("@")) return "Email must contain @";
+  if (!email.includes(".")) return "Email must contain .";
+  return "Valid";
+}
+```
+
 </details>
-
----
-
-## Review Questions
-
-1. What is the correct syntax for a function declaration?
-   - [x] function add(a, b) { return a + b; }
-   - [ ] const add = function(a, b) { return a + b; }
-   - [ ] const add = (a, b) => a + b;
-   - [ ] All of the above
-
-2. What does a function return if no return statement is provided?
-   - [ ] null
-   - [x] undefined
-   - [ ] 0
-   - [ ] Error
-
-3. How do you set a default parameter value?
-   - [x] function greet(name = "Guest") {}
-   - [ ] function name = "Guest" {}
-   - [ ] function name(default = "Guest") {}
-   - [ ] function name("Guest") {}
-
-4. What symbol is used for rest parameters?
-   - [ ] *
-   - [x] ...
-   - [ ] &
-   - [ ] #
-
-5. What is a closure?
-   - [ ] A way to close functions
-   - [x] A function with access to outer scope variables
-   - [ ] A type of loop
-   - [ ] A method to end execution
-
-6. Which arrow function syntax is correct for a single parameter?
-   - [ ] (num) => num * 2
-   - [x] num => num * 2
-   - [ ] => num * 2
-   - [ ] num -> num * 2
-
-7. Can you have multiple rest parameters in one function?
-   - [ ] Yes
-   - [x] No
-   - [ ] Only if they're the same type
-   - [ ] Only in arrow functions
-
-8. What is an IIFE?
-   - [ ] A function that returns immediately
-   - [x] A function that runs immediately after definition
-   - [ ] A function inside another function
-   - [ ] A function with no parameters
-
-9. How do you return an object in a concise arrow function?
-   - [ ] => { key: value }
-   - [x] => ({ key: value })
-   - [ ] => key: value
-   - [ ] => return { key: value }
-
-10. What is the main advantage of arrow functions?
-    - [ ] They're always faster
-    - [x] They have a shorter syntax and lexical this
-    - [ ] They can be hoisted
-    - [ ] They support more features
-
----
-
-## Additional Resources
-
-- [MDN: Functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions)
-- [MDN: Default Parameters](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Default_parameters)
-- [MDN: Rest Parameters](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters)
-- [MDN: Arrow Functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
-- [JavaScript.info: Functions](https://javascript.info/function-basics)
-- [JavaScript.info: Arrow Functions](https://javascript.info/arrow-functions-basics)
