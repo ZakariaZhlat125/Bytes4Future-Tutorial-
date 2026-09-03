@@ -1,6 +1,6 @@
 # Training Project Generation — HTML, CSS & JavaScript (Sessions 1-7)
 
-This curriculum builds **one real application** across seven JavaScript sessions. Students see the same project grow from a static page to a fully interactive, data-persistent task manager.
+This curriculum builds **one real application** across seven JavaScript sessions. Students see the same project grow from a static page to a fully interactive task manager.
 
 ---
 
@@ -12,7 +12,7 @@ This curriculum builds **one real application** across seven JavaScript sessions
 
 ### Project Idea
 
-Students build a personal task manager where they can add, view, complete, delete, and filter tasks. The app calculates simple statistics and remembers tasks between page refreshes.
+Students build a personal task manager where they can add, view, complete, delete, and filter tasks. The app calculates simple statistics and provides a polished, responsive interface.
 
 ### What the Final Project Will Do
 
@@ -25,7 +25,6 @@ By the end of Session 7, the app will:
 - Filter tasks by status (All / Pending / Completed).
 - Show a task counter and completion percentage.
 - Validate form inputs.
-- Save tasks in `localStorage` so data survives page reloads.
 - Show helpful empty states and feedback messages.
 
 ### Why This Project is Suitable for Sessions 1-7
@@ -43,7 +42,7 @@ By the end of Session 7, the app will:
 
 - **HTML5** — semantic structure, forms, buttons, lists.
 - **CSS3** — resets, custom properties, flexbox, grid, media queries.
-- **Vanilla JavaScript** — variables, operators, conditionals, loops, functions, DOM, events, `localStorage`.
+- **Vanilla JavaScript** — variables, operators, conditionals, loops, functions, DOM, events.
 
 No build tools, frameworks, or external libraries are used.
 
@@ -53,15 +52,14 @@ No build tools, frameworks, or external libraries are used.
 
 | Feature | Description |
 | ------- | ----------- |
-| Add task | User fills a form with title, priority, and due date. |
+| Add task | User fills a form with title and priority. |
 | Task list | Tasks displayed as cards with status and priority. |
 | Complete task | Click a button to toggle completion. |
 | Delete task | Remove a task from the list. |
 | Filter | Show all, only pending, or only completed tasks. |
 | Statistics | Display total, pending, completed counts and percentage. |
-| Validation | Prevent empty or invalid task titles. |
+| Validation | Prevent empty, invalid, or duplicate task titles. |
 | Empty state | Friendly message when there are no tasks. |
-| Persistence | `localStorage` keeps data after reload. |
 | Responsive | Works on desktop and mobile screens. |
 
 ---
@@ -76,7 +74,7 @@ No build tools, frameworks, or external libraries are used.
 | 4 | Task list HTML string built from an array of objects | Arrays, objects, `for` loops, `for...of` |
 | 5 | Reusable functions to render tasks and stats to the page | Functions, parameters, `return`, DOM selection and updates |
 | 6 | Forms, click/submit events, and user interaction | Event listeners, form handling, input values, validation |
-| 7 | Save, load, and delete tasks from `localStorage` | `localStorage`, `JSON.stringify` / `JSON.parse`, complete app flow |
+| 7 | Filters, complete application behavior, and final polish | Filter logic, event listeners, complete app flow |
 
 ---
 
@@ -363,7 +361,6 @@ console.log("FocusTask was built by " + firstName + " " + lastName + ", who is "
 - DOM manipulation.
 - Event listeners.
 - Arrays and objects.
-- `localStorage`.
 - Functions.
 
 ---
@@ -1493,45 +1490,43 @@ document.getElementById("clearForm").addEventListener("click", function () {
 - Event bubbling.
 - Arrow functions.
 - Forms with many fields and complex validation patterns.
-- `localStorage`.
 
 ---
 
-## 11. Session 7 — LocalStorage & Complete Application Behavior
+## 11. Session 7 — Filters, Complete Application Behavior & Final Polish
 
 ### Learning Objectives
 
-1. Save data to `localStorage`.
-2. Read data from `localStorage` when the page loads.
-3. Convert objects to strings with `JSON.stringify` and back with `JSON.parse`.
-4. Delete and update data consistently.
-5. Create a complete, polished application flow.
+1. Add filter buttons that control which tasks are displayed.
+2. Use conditions to filter an array.
+3. Keep the UI in sync with the selected filter.
+4. Add final polish such as empty states and active filter highlighting.
+5. Review the complete data flow of the application.
 
 ### What We Already Have
 
-An interactive task manager with a form, buttons, validation, and dynamic rendering. Data is lost when the page is refreshed.
+An interactive task manager with a form, buttons, validation, and dynamic rendering. Tasks are kept in memory during the session.
 
 ### What We Will Add Today
 
-- Functions to save `tasks` to `localStorage` after every change.
-- A function to load `tasks` from `localStorage` on startup.
-- A fallback to a default task list if `localStorage` is empty.
-- Filtering buttons to show All, Pending, or Completed tasks.
+- Filter buttons to show All, Pending, or Completed tasks.
+- A function that returns only the tasks matching the selected filter.
+- Active state styling for the selected filter button.
+- A search mini challenge for stronger students.
 
 ### Problem
 
-"When we refresh the page, all the tasks disappear. A real app should remember the data. We need a way to save the tasks in the browser and load them again."
+"The app works, but when there are many tasks it becomes hard to focus. Users should be able to see only pending tasks or only completed tasks. We need a way to filter the list."
 
 ### Let Students Guess
 
-- Where can a website save data without a server?
-- Can we store an array directly in `localStorage`?
-- When should we save the data?
-- How do we convert a JavaScript object to text and back?
+- Where should the filter buttons go?
+- How can we show only pending tasks without deleting the others?
+- How do we know which filter is currently active?
 
 ### Explain
 
-`localStorage` is a small storage area in the browser. It only stores text, so we use `JSON.stringify` to turn our array of objects into a string before saving. When the page loads, we use `JSON.parse` to turn the string back into objects.
+Filtering means choosing which items from a list to display. We can create a function that looks at each task and decides whether it matches the filter. The `renderTasks` function already takes a list, so we can give it a filtered list instead of all tasks.
 
 ### Live Coding
 
@@ -1575,33 +1570,12 @@ An interactive task manager with a form, buttons, validation, and dynamic render
 }
 ```
 
-**script.js — add storage and filtering**
+**script.js — add filtering**
 
 Add these new functions near the other utility functions.
 
 ```javascript
-function saveTasks() {
-  let tasksString = JSON.stringify(tasks);
-  localStorage.setItem("focusTaskTasks", tasksString);
-}
-
-function loadTasks() {
-  let saved = localStorage.getItem("focusTaskTasks");
-
-  if (saved === null) {
-    return getDefaultTasks();
-  }
-
-  return JSON.parse(saved);
-}
-
-function getDefaultTasks() {
-  return [
-    { title: "Buy groceries", priority: "medium", completed: false },
-    { title: "Finish homework", priority: "high", completed: false },
-    { title: "Walk the dog", priority: "low", completed: true }
-  ];
-}
+let currentFilter = "all";
 
 function getFilteredTasks(filterType) {
   if (filterType === "completed") {
@@ -1639,36 +1613,9 @@ function updateFilterButtons(activeFilter) {
 }
 ```
 
-Update the action handlers and `refreshApp` to use storage and filtering.
+Update `refreshApp` to use filtering.
 
 ```javascript
-let currentFilter = "all";
-
-function handleComplete(event) {
-  let index = Number(event.target.getAttribute("data-index"));
-  tasks[index].completed = !tasks[index].completed;
-  saveTasks();
-  refreshApp();
-}
-
-function handleDelete(event) {
-  let index = Number(event.target.getAttribute("data-index"));
-  tasks.splice(index, 1);
-  saveTasks();
-  refreshApp();
-}
-
-function addTask(title, priority) {
-  let newTask = {
-    title: title,
-    priority: priority,
-    completed: false
-  };
-
-  tasks.push(newTask);
-  saveTasks();
-}
-
 function refreshApp() {
   let stats = calculateStats(tasks);
   updateStatsDisplay(stats);
@@ -1679,7 +1626,7 @@ function refreshApp() {
 }
 ```
 
-Add filter button listeners and load tasks at startup.
+Add filter button listeners and render the app.
 
 ```javascript
 // Filter buttons
@@ -1691,17 +1638,18 @@ for (let i = 0; i < filterButtons.length; i = i + 1) {
   });
 }
 
-// Load saved tasks when the page starts
-tasks = loadTasks();
+// Initial render
 refreshApp();
+
+console.log(`${appName} loaded with filters.`);
 ```
 
 ### Student Interaction
 
-- Add a task, refresh the page, and confirm it is still there.
-- Delete all tasks, refresh, and see the default tasks reappear from `getDefaultTasks`.
 - Switch between All, Pending, and Completed filters.
-- Open DevTools > Application > Local Storage and inspect the saved string.
+- Delete all tasks and see the empty state message.
+- Add a task while the Pending filter is active and predict whether it appears.
+- Predict what `getFilteredTasks("unknown")` returns.
 
 ### Mini Challenge
 
@@ -1745,42 +1693,38 @@ document.getElementById("searchInput").addEventListener("input", function (event
 
 ### Checkpoint
 
-1. Why do we need `JSON.stringify` before saving to `localStorage`?
-2. When should we call `saveTasks()`?
-3. What does `localStorage.getItem("focusTaskTasks")` return if nothing was saved?
-4. How do the filter buttons change what is displayed?
-5. What happens if the stored data is corrupted and `JSON.parse` fails?
+1. What does `getFilteredTasks("completed")` return?
+2. Why do we keep the original `tasks` array and only filter what we display?
+3. How does the app know which filter button is active?
+4. What happens if the user deletes the last pending task while the Pending filter is active?
+5. What are two ways we could combine the filter and the search feature?
 
 ### Common Student Mistakes
 
-- Forgetting to call `saveTasks()` after every data change.
-- Trying to store an object directly in `localStorage` without `JSON.stringify`.
-- Not handling the case where `localStorage` is empty.
-- Forgetting that `JSON.parse` returns the original objects, but methods are not stored.
-- Using the wrong key name when saving and loading.
+- Filtering the original `tasks` array and losing data.
+- Not calling `updateFilterButtons` after the filter changes.
+- Returning `tasks` by mistake when the filter should be empty.
+- Forgetting to call `refreshApp()` after deleting or adding a task.
 
 ### Questions Students May Ask
 
-- Can other websites read our `localStorage`?
-  - No. Each website can only read its own `localStorage`.
-- Is `localStorage` safe for passwords?
-  - No. Never store sensitive data like passwords in `localStorage`.
-- What is the storage limit?
-  - Usually around 5 MB, which is plenty for small apps.
+- Will the filter change the data permanently?
+  - No. Filtering only chooses what to display. The `tasks` array stays the same.
+- Can we have more than one active filter?
+  - Yes, but it needs more logic. For now, we keep one active filter.
 
 ### Instructor Tips
 
-- Open Chrome DevTools > Application > Local Storage to show the saved data live.
-- Explain that `JSON.stringify` turns objects into plain text, and `JSON.parse` reverses it.
-- Emphasize saving data after every change (add, complete, delete).
+- Show how the same `renderTasks` function works with any list: full, filtered, or searched.
+- Emphasize that filtering is a display concern, not a data change.
+- Encourage students to trace the flow: button click → `currentFilter` changes → `getFilteredTasks` → `renderTasks`.
 
 ### What NOT to Explain Yet
 
-- `sessionStorage` differences.
-- Cookies.
-- JSON deep concepts.
-- IndexedDB.
-- APIs and servers.
+- Multiple simultaneous filters.
+- Servers and databases.
+- APIs.
+- `localStorage` or cookies.
 
 ---
 
@@ -1795,7 +1739,6 @@ document.getElementById("searchInput").addEventListener("input", function (event
 - Search tasks by title.
 - Validate form input.
 - Display real-time statistics.
-- Persist tasks in `localStorage`.
 - Show empty states and feedback messages.
 - Responsive layout with clean CSS.
 
@@ -2087,7 +2030,12 @@ body {
 ```javascript
 const appName = "FocusTask";
 
-let tasks = [];
+let tasks = [
+  { title: "Buy groceries", priority: "medium", completed: false },
+  { title: "Finish homework", priority: "high", completed: false },
+  { title: "Walk the dog", priority: "low", completed: true }
+];
+
 let currentFilter = "all";
 
 function getPriorityClass(priority) {
@@ -2183,14 +2131,12 @@ function attachTaskButtonListeners() {
 function handleComplete(event) {
   let index = Number(event.target.getAttribute("data-index"));
   tasks[index].completed = !tasks[index].completed;
-  saveTasks();
   refreshApp();
 }
 
 function handleDelete(event) {
   let index = Number(event.target.getAttribute("data-index"));
   tasks.splice(index, 1);
-  saveTasks();
   refreshApp();
 }
 
@@ -2230,7 +2176,6 @@ function addTask(title, priority) {
   };
 
   tasks.push(newTask);
-  saveTasks();
 }
 
 function showMessage(text, type) {
@@ -2243,29 +2188,6 @@ function updateStatsDisplay(stats) {
   document.getElementById("totalTasks").textContent = stats.total;
   document.getElementById("pendingTasks").textContent = stats.pending;
   document.getElementById("completedTasks").textContent = stats.completed;
-}
-
-function saveTasks() {
-  let tasksString = JSON.stringify(tasks);
-  localStorage.setItem("focusTaskTasks", tasksString);
-}
-
-function loadTasks() {
-  let saved = localStorage.getItem("focusTaskTasks");
-
-  if (saved === null) {
-    return getDefaultTasks();
-  }
-
-  return JSON.parse(saved);
-}
-
-function getDefaultTasks() {
-  return [
-    { title: "Buy groceries", priority: "medium", completed: false },
-    { title: "Finish homework", priority: "high", completed: false },
-    { title: "Walk the dog", priority: "low", completed: true }
-  ];
 }
 
 function getFilteredTasks(filterType) {
@@ -2345,8 +2267,7 @@ for (let i = 0; i < filterButtons.length; i = i + 1) {
   });
 }
 
-// Load saved tasks when the page starts
-tasks = loadTasks();
+// Initial render
 refreshApp();
 
 console.log(`${appName} loaded with ${tasks.length} tasks.`);
@@ -2356,8 +2277,7 @@ console.log(`${appName} loaded with ${tasks.length} tasks.`);
 
 - Tasks are stored in one array: `tasks`.
 - Each task is an object with `title`, `priority`, and `completed`.
-- The array is converted to a string with `JSON.stringify` and saved to `localStorage`.
-- On load, the string is parsed back into an array with `JSON.parse`.
+- The app works with the data in memory during the session.
 
 ### How the UI Works
 
@@ -2373,13 +2293,12 @@ console.log(`${appName} loaded with ${tasks.length} tasks.`);
 
 ### Final User Flow
 
-1. User opens the page and sees the default tasks (or saved tasks).
+1. User opens the page and sees the default tasks.
 2. User types a title, chooses a priority, and clicks Add Task.
 3. Validation runs; if the input is valid, the task appears in the list.
 4. Stats update instantly.
 5. User clicks Complete or Delete on any task.
 6. User switches filters to view All, Pending, or Completed tasks.
-7. User refreshes the page; tasks are still there.
 
 ---
 
@@ -2399,10 +2318,9 @@ Students build **EventHorizon**, a personal Event Management App. Instead of tas
 6. Delete an event.
 7. Filter events by category and by status (All / Upcoming / Past).
 8. Show a count of total, upcoming, and attended events.
-9. Save events in `localStorage` and load them on page refresh.
-10. Show empty states and feedback messages.
-11. Use semantic HTML and responsive CSS.
-12. Build the project with Vanilla JavaScript only.
+9. Show empty states and feedback messages.
+10. Use semantic HTML and responsive CSS.
+11. Build the project with Vanilla JavaScript only.
 
 ### Optional Features (Level 2 and 3)
 
@@ -2425,7 +2343,6 @@ Students build **EventHorizon**, a personal Event Management App. Instead of tas
 - Use functions with parameters and return values.
 - Use `document.getElementById` and `document.querySelector`.
 - Use event listeners for form submission and button clicks.
-- Use `localStorage`, `JSON.stringify`, and `JSON.parse`.
 - Do not use frameworks, classes, modules, or external APIs.
 
 ### UI Requirements
@@ -2447,7 +2364,7 @@ Students build **EventHorizon**, a personal Event Management App. Instead of tas
 - As a user, I want to mark an event as attended or cancelled so I can record the outcome.
 - As a user, I want to delete an event so I can remove plans that are no longer needed.
 - As a user, I want to filter events by category so I can focus on one type of activity.
-- As a user, I want my events to remain after refreshing the page so I do not lose my data.
+- As a user, I want to see clear messages when I make a mistake in the form.
 
 ### Acceptance Criteria
 
@@ -2456,8 +2373,7 @@ Students build **EventHorizon**, a personal Event Management App. Instead of tas
 - Each event card displays the correct status badge.
 - Stats update automatically when events are added, changed, or deleted.
 - Filters show the correct subset of events.
-- `localStorage` contains the events as a JSON string.
-- After reload, the saved events appear exactly as before.
+- The app works without errors on desktop and mobile.
 
 ---
 
@@ -2465,7 +2381,7 @@ Students build **EventHorizon**, a personal Event Management App. Instead of tas
 
 ### Project Description
 
-Build **EventHorizon**, an event management web application. Users can add, view, classify, filter, and delete events. Events persist in `localStorage`.
+Build **EventHorizon**, an event management web application. Users can add, view, classify, filter, and delete events.
 
 ### Required Features
 
@@ -2478,9 +2394,8 @@ Build **EventHorizon**, an event management web application. Users can add, view
 7. Filter by category (Work, Personal, Social, Other).
 8. Show statistics: total, upcoming, attended.
 9. Validate form input.
-10. Save and load from `localStorage`.
-11. Show empty states and messages.
-12. Use only HTML, CSS, and Vanilla JavaScript.
+10. Show empty states and messages.
+11. Use only HTML, CSS, and Vanilla JavaScript.
 
 ### Optional Features
 
@@ -2499,7 +2414,6 @@ Build **EventHorizon**, an event management web application. Users can add, view
 - DOM manipulation.
 - Form submission handling.
 - Input validation.
-- `localStorage`.
 - No frameworks.
 
 ### UI Requirements
@@ -2517,7 +2431,7 @@ Build **EventHorizon**, an event management web application. Users can add, view
 - As a user, I want to see upcoming events first.
 - As a user, I want to mark events as attended or cancelled.
 - As a user, I want to filter by category.
-- As a user, I want my data to persist after refresh.
+- As a user, I want clear validation messages when I make a mistake.
 
 ### Acceptance Criteria
 
@@ -2525,7 +2439,6 @@ Build **EventHorizon**, an event management web application. Users can add, view
 - Invalid input shows a clear error.
 - Event status is calculated from the date.
 - Filters display the correct events.
-- `localStorage` saves and restores data.
 - The app works without errors on desktop and mobile.
 
 ---
@@ -2540,7 +2453,6 @@ Build **EventHorizon**, an event management web application. Users can add, view
 - Delete events.
 - Basic validation.
 - Basic stats.
-- `localStorage` save and load.
 
 ### Level 2 — Intermediate
 
@@ -2567,10 +2479,10 @@ Build **EventHorizon**, an event management web application. Users can add, view
 | -------- | ------ | ----------- |
 | HTML structure | 10 | Semantic, valid, accessible structure. |
 | CSS / UI | 15 | Clean layout, responsive design, visual hierarchy. |
-| JavaScript fundamentals | 20 | Correct use of variables, operators, conditionals, loops. |
+| JavaScript fundamentals | 25 | Correct use of variables, operators, conditionals, loops, and filter logic. |
 | DOM manipulation | 15 | Correct selection, creation, and updating of elements. |
 | Events / forms | 15 | Proper event handling, input reading, and validation. |
-| LocalStorage | 10 | Data saves and loads correctly. |
+| Filtering / search | 10 | Correct filter logic and active state handling. |
 | Code organization | 5 | Functions are clear and code is readable. |
 | User experience | 5 | Empty states, feedback messages, intuitive flow. |
 | Extra features | 5 | Optional features or polish beyond requirements. |
@@ -2618,13 +2530,15 @@ Build **EventHorizon**, an event management web application. Users can add, view
 
 - Forgetting `event.preventDefault()`.
 - Reading `.value` from the wrong element.
+- Not trimming the title before validating or saving it.
+- Checking for duplicates without ignoring uppercase/lowercase differences.
 - Not re-rendering the list after data changes.
 
 ### Session 7
 
-- Forgetting to call `saveTasks()` after changes.
-- Storing objects directly in `localStorage` without `JSON.stringify`.
-- Not handling empty `localStorage`.
+- Filtering the original `tasks` array and losing data.
+- Not updating the active filter button styling.
+- Forgetting to call `refreshApp()` after data changes.
 
 ---
 
@@ -2646,15 +2560,15 @@ Build **EventHorizon**, an event management web application. Users can add, view
 - **Session 4:** Draw the array of objects. Visualize the loop that builds the HTML string.
 - **Session 5:** Refactor live. Show before and after code side by side, then insert the HTML string into the page.
 - **Session 6:** Pause after each event handler. Test the form many times.
-- **Session 7:** Open Local Storage in DevTools to prove the data is saved.
+- **Session 7:** Show how the same `renderTasks` function works with full or filtered lists. Emphasize that filters are display-only.
 
 ### What to Emphasize
 
 - One project grows over seven sessions.
-- Data flows from variables → arrays → functions → DOM → localStorage.
+- Data flows from variables → arrays → functions → DOM.
 - Functions keep code clean.
 - Validation protects the app from bad data.
-- Persistence makes the app feel real.
+- Filtering does not change the underlying data.
 
 ### What NOT to Explain Yet
 
@@ -2665,9 +2579,10 @@ Build **EventHorizon**, an event management web application. Users can add, view
 - Advanced array methods such as `.map`, `.filter`, `.reduce`.
 - Frameworks (React, Vue, Angular).
 - Complex regular expressions.
+- `localStorage`, cookies, or databases.
 
 ---
 
 ## 19. Summary
 
-This curriculum builds **FocusTask** from a static page into a full task manager using only concepts from JavaScript Sessions 1-7. Each session adds one layer of behavior, and the final student assignment **EventHorizon** extends the same ideas into a larger, independent project. The focus is on active learning, visible progress, and a polished final product.
+This curriculum builds **FocusTask** from a static page into a fully interactive task manager using only concepts from JavaScript Sessions 1-7. Each session adds one layer of behavior, and the final student assignment **EventHorizon** extends the same ideas into a larger, independent project. The focus is on active learning, visible progress, and a polished final product.
