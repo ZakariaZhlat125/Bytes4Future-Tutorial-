@@ -1,37 +1,23 @@
-# Session 12: Destructuring, Set & Map — Active Learning Redesign
+# Session 12: Destructuring, Set & Map — Student Active-Learning Lab
 
-## Session Plan for the Instructor
-
-- **Total time:** approximately 90 to 120 minutes
-- **Pacing rule:** never explain theory continuously for more than 15–20 minutes. After every concept, students must predict, write, or fix code.
-- **Pedagogical pattern for every topic:**
-  1. **Problem** — a realistic mini-situation
-  2. **Guess** — ask: "What do you expect to happen?"
-  3. **Explain** — the shortest rule that fixes the problem
-  4. **Code** — live code written in front of the students, step by step
-  5. **Challenge** — students solve a small task on their own or in groups
-  6. **Review** — discuss the answer and the most common mistake
-
-### Competition and Points
-
-- 1 point per correct prediction in the "Guess" phase.
-- 1–3 points per completed challenge, depending on difficulty.
-- A "Bug Hunter" badge for each student who finds and fixes an intentional error.
-- Keep a simple tally on a shared board or in the chat.
-
-### Instructor Questions to Ask During the Session
-
-- "Which variable will get which value?"
-- "What does the rest operator collect?"
-- "Does a Set keep duplicates?"
-- "What can a Map key be?"
-- "When should we use spread vs destructuring?"
+Welcome to this session. The goal today is to unpack data with **destructuring**, remove duplicates with **Set**, store keyed data with **Map**, and combine arrays with modern helpers. Do not just read — predict, type, run, and fix.
 
 ---
 
-## Part 0: Warm-Up — Many Variables (5 minutes)
+## 🧭 How to move through this session
 
-### Problem
+1. **Read the problem first.**
+2. **Stop.** Do not look at the code yet.
+3. **Write your prediction** in a comment or notebook.
+4. **Type the code and run it.**
+5. **Compare, ask why, then change one thing.**
+6. **Do the challenge before you look at the answer key.**
+
+---
+
+## Part 0: Warm-Up — Many Variables
+
+### The problem
 
 A function returns an array with three values. We want to use them in separate variables.
 
@@ -39,24 +25,39 @@ A function returns an array with three values. We want to use them in separate v
 const result = ["John", 30, "New York"];
 ```
 
-### Guess
+### 🤔 Think
 
-Ask: "How can we get `name`, `age`, and `city` without writing three separate index accesses?"
+How can we get `name`, `age`, and `city` without writing three separate index accesses?
 
-### Explain
+```text
+My idea: _______________________________________________________________
+```
 
-Destructuring lets us unpack values from arrays and objects into variables in one line.
+### 🔮 Predict
 
-### Live Code
+Look at this code and write what you think will print:
 
 ```javascript
 const [name, age, city] = ["John", 30, "New York"];
 console.log(name, age, city);
+// ?
 ```
 
-### Review
+### ✅ Result
 
-One line created three variables from one array.
+Run the code.
+
+### 🧠 Discover
+
+Destructuring lets us unpack values from arrays and objects into variables in one line.
+
+### 🧪 Experiment
+
+Destructure your own array of three favorite things.
+
+```javascript
+// your code here
+```
 
 ---
 
@@ -64,66 +65,147 @@ One line created three variables from one array.
 
 ### 1.1 Basic Array Destructuring
 
-#### Problem
+### The problem
 
 Extract values from an array.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 const colors = ["red", "green", "blue"];
 const [first, second, third] = colors;
 
-console.log(first);
-console.log(second);
-console.log(third);
+console.log(first);   // ?
+console.log(second);  // ?
+console.log(third);   // ?
 ```
 
-#### Challenge 1.1 — Destructure Coordinates (individual, 2 minutes)
+What will each line print?
 
-- **Requirement:** Extract `x` and `y` from `const point = [10, 20]`.
-- **Time limit:** 2 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+Array destructuring matches each variable to the value in the same position.
+
+### Challenge 1.1 — Destructure Coordinates
+
+Extract `x` and `y` from `const point = [10, 20]`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const [x, y] = [10, 20];
+```
+
+</details>
+
+---
 
 ### 1.2 Skipping and Rest
 
-#### Live Code
+### The problem
+
+Sometimes you only want some values, or you want to gather the rest.
+
+### 🔮 Predict
 
 ```javascript
 const numbers = [1, 2, 3, 4, 5];
 
 const [one, , three] = numbers;
-console.log(one, three);
+console.log(one, three);           // ?
 
 const [first, second, ...rest] = numbers;
-console.log(first);
-console.log(second);
-console.log(rest);
+console.log(first);                // ?
+console.log(second);               // ?
+console.log(rest);                 // ?
 ```
 
-#### Challenge 1.2 — Skip and Rest (individual, 3 minutes)
+What is `rest`?
 
-- **Requirement:** From `const values = [10, 20, 30, 40, 50]`, get the first, skip the second, and collect the rest.
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+Use empty commas to skip positions. `...rest` collects the remaining values into a new array.
+
+### Challenge 1.2 — Skip and Rest
+
+From `const values = [10, 20, 30, 40, 50]`, get the first, skip the second, and collect the rest.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const [first, , ...rest] = values;
+```
+
+</details>
+
+---
 
 ### 1.3 Swapping and Defaults
 
-#### Live Code
+### The problem
+
+Swap two variables in one line, or give a variable a fallback value when the array is short.
+
+### 🔮 Predict
 
 ```javascript
 let a = 1;
 let b = 2;
 [a, b] = [b, a];
-console.log(a, b);
+console.log(a, b);                 // ?
 
 const pair = [1];
 const [x, y = 10] = pair;
-console.log(x, y);
+console.log(x, y);                 // ?
 ```
 
-#### Challenge 1.3 — Swap and Default (individual, 3 minutes)
+What will each `console.log` print?
 
-- **Requirement:** Swap `x` and `y`. Then destructure `const nums = [5]` and use a default of `0` for the second value.
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+Array destructuring can swap values without a temporary variable. A default value fills a missing position.
+
+### Challenge 1.3 — Swap and Default
+
+Swap `x` and `y`. Then destructure `const nums = [5]` and use a default of `0` for the second value.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+let x = 1, y = 2;
+[x, y] = [y, x];
+
+const [x2, y2 = 0] = [5];
+```
+
+</details>
 
 ---
 
@@ -131,27 +213,53 @@ console.log(x, y);
 
 ### 2.1 Basic Object Destructuring
 
-#### Problem
+### The problem
 
 Extract properties from an object without using dot notation repeatedly.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 const user = { name: "John", age: 30, city: "New York" };
 const { name, age, city } = user;
 
-console.log(name, age, city);
+console.log(name, age, city);      // ?
 ```
 
-#### Challenge 2.1 — Destructure User (individual, 2 minutes)
+### ✅ Result
 
-- **Requirement:** Extract `email` and `role` from `const account = { email: "john@example.com", role: "admin" }`.
-- **Time limit:** 2 minutes
+Run it.
+
+### 🧠 Why?
+
+Object destructuring uses property names. `const { name, age } = user` creates variables that match the keys.
+
+### Challenge 2.1 — Destructure User
+
+Extract `email` and `role` from `const account = { email: "john@example.com", role: "admin" }`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const { email, role } = account;
+```
+
+</details>
+
+---
 
 ### 2.2 Renaming and Nested
 
-#### Live Code
+### The problem
+
+An object can hold other objects. Sometimes the key name in the object is not the variable name you want.
+
+### 🔮 Predict
 
 ```javascript
 const person = {
@@ -163,42 +271,95 @@ const person = {
 };
 
 const { name: fullName, profile: { age, address: { city } } } = person;
-console.log(fullName, age, city);
+console.log(fullName, age, city);  // ?
 ```
 
-#### Challenge 2.2 — Nested Destructuring (individual, 4 minutes)
+What will it print?
 
-- **Requirement:** From `const data = { product: { name: "Laptop", price: 1000 } }`, extract `name` and `price`.
-- **Time limit:** 4 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+`name: fullName` renames the property. Nested destructuring reaches into objects inside objects.
+
+### Challenge 2.2 — Nested Destructuring
+
+From `const data = { product: { name: "Laptop", price: 1000 } }`, extract `name` and `price`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const { product: { name, price } } = data;
+```
+
+</details>
+
+---
 
 ### 2.3 Defaults and Function Parameters
 
-#### Live Code
+### The problem
+
+Missing properties can have defaults. Functions can also destructure their parameters.
+
+### 🔮 Predict
 
 ```javascript
 const config = { host: "localhost" };
 const { host, port = 8080, ssl = false } = config;
-console.log(host, port, ssl);
+console.log(host, port, ssl);      // ?
 
 function createUser({ name = "Guest", age = 18 } = {}) {
   return { name, age };
 }
 
-console.log(createUser({ name: "Jane" }));
+console.log(createUser({ name: "Jane" })); // ?
 ```
 
-#### Challenge 2.3 — Defaults in Function (individual, 4 minutes)
+### ✅ Result
 
-- **Requirement:** Write `connect({ url = "localhost", port = 3000 } = {})` and call it with and without arguments.
-- **Time limit:** 4 minutes
+Run it.
+
+### 🧠 Why?
+
+Defaults in object destructuring work the same as with arrays. `= {}` as a default parameter means the function can be called with no arguments.
+
+### Challenge 2.3 — Defaults in Function
+
+Write `connect({ url = "localhost", port = 3000 } = {})` and call it with and without arguments.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+function connect({ url = "localhost", port = 3000 } = {}) {
+  return { url, port };
+}
+
+connect();
+connect({ url: "example.com" });
+```
+
+</details>
 
 ---
 
 ## Bug Hunt 1
 
-### Problem
+### The mission
 
-Find the bugs in this destructuring code.
+Find the bugs in this destructuring code. Do not run it yet. Read and write what you think is wrong.
 
 ```javascript
 const user = {
@@ -212,20 +373,28 @@ const { name, address: city } = user;
 console.log(city);
 ```
 
-### Issues
+### 🐛 What I think is wrong
 
-1. `address: city` renames `address` to `city`, so `city` is the whole `address` object, not the city string.
+1. _______________________________________________________________
+2. _______________________________________________________________
 
-### Fixed Version
+### ✅ Fixed version
+
+Write your fixed version, then test it.
+
+```javascript
+// your fixed version here
+```
+
+<details>
+<summary>Answer — try first!</summary>
 
 ```javascript
 const { name, address: { city } } = user;
 console.log(city); // "New York"
 ```
 
-### Points
-
-1 point for finding the bug.
+</details>
 
 ---
 
@@ -233,33 +402,62 @@ console.log(city); // "New York"
 
 ### 3.1 Creating and Using Sets
 
-#### Problem
+### The problem
 
-Remove duplicate values from a list.
+Remove duplicate values from a list and check membership.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 const numbers = [1, 2, 2, 3, 3, 3];
 const unique = new Set(numbers);
 
-console.log(unique);
-console.log(unique.size);
-console.log(unique.has(2));
+console.log(unique);               // ?
+console.log(unique.size);          // ?
+console.log(unique.has(2));        // ?
 
 unique.add(4);
 unique.delete(1);
-console.log(unique);
+console.log(unique);               // ?
 ```
 
-#### Challenge 3.1 — Unique Names (individual, 3 minutes)
+What will each `console.log` show?
 
-- **Requirement:** Create a `Set` from `const names = ["Alice", "Bob", "Alice", "Carol"]` and log its size.
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+A `Set` stores each value only once. `size`, `has`, `add`, and `delete` are useful methods.
+
+### Challenge 3.1 — Unique Names
+
+Create a `Set` from `const names = ["Alice", "Bob", "Alice", "Carol"]` and log its size.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const unique = new Set(names);
+console.log(unique.size);
+```
+
+</details>
+
+---
 
 ### 3.2 Set Operations
 
-#### Live Code
+### The problem
+
+Combine sets, find common values, or find values that are in one set but not another.
+
+### 🔮 Predict
 
 ```javascript
 const a = new Set([1, 2, 3]);
@@ -269,15 +467,37 @@ const union = new Set([...a, ...b]);
 const intersection = new Set([...a].filter(x => b.has(x)));
 const difference = new Set([...a].filter(x => !b.has(x)));
 
-console.log(union);
-console.log(intersection);
-console.log(difference);
+console.log(union);                // ?
+console.log(intersection);         // ?
+console.log(difference);           // ?
 ```
 
-#### Challenge 3.2 — Common Tags (individual, 4 minutes)
+### ✅ Result
 
-- **Requirement:** Find the intersection of `const tags1 = ["js", "dom", "api"]` and `const tags2 = ["api", "react", "js"]`.
-- **Time limit:** 4 minutes
+Run it.
+
+### 🧠 Why?
+
+Spread `...a` turns the `Set` into an array. Array methods like `filter` work on arrays, so we convert first.
+
+### Challenge 3.2 — Common Tags
+
+Find the intersection of `const tags1 = ["js", "dom", "api"]` and `const tags2 = ["api", "react", "js"]`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const set1 = new Set(tags1);
+const set2 = new Set(tags2);
+const common = new Set([...set1].filter(tag => set2.has(tag)));
+```
+
+</details>
 
 ---
 
@@ -285,11 +505,11 @@ console.log(difference);
 
 ### 4.1 Map Basics
 
-#### Problem
+### The problem
 
 Store key-value pairs where keys can be of any type and order matters.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 const userMap = new Map();
@@ -297,48 +517,103 @@ userMap.set("name", "John");
 userMap.set(1, "admin");
 userMap.set(true, "verified");
 
-console.log(userMap.get("name"));
-console.log(userMap.has(1));
-console.log(userMap.size);
+console.log(userMap.get("name"));  // ?
+console.log(userMap.has(1));       // ?
+console.log(userMap.size);         // ?
 
 userMap.delete(true);
+console.log(userMap.has(true));    // ?
 ```
 
-#### Challenge 4.1 — Map of Users (individual, 3 minutes)
+### ✅ Result
 
-- **Requirement:** Create a `Map` with keys `1`, `2`, `3` and user objects as values. Use `get` to read user `2`.
-- **Time limit:** 3 minutes
+Run it.
+
+### 🧠 Why?
+
+A `Map` keeps insertion order, any key type, and has `get`, `set`, `has`, `delete`, and `size`.
+
+### Challenge 4.1 — Map of Users
+
+Create a `Map` with keys `1`, `2`, `3` and user objects as values. Use `get` to read user `2`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const users = new Map();
+users.set(1, { name: "John" });
+users.set(2, { name: "Jane" });
+users.set(3, { name: "Bob" });
+console.log(users.get(2));
+```
+
+</details>
+
+---
 
 ### 4.2 Map Iteration and Conversion
 
-#### Live Code
+### The problem
+
+Loop through a `Map` or convert it to and from an object.
+
+### 🔮 Predict
 
 ```javascript
 const map = new Map([["a", 1], ["b", 2]]);
 
 for (const [key, value] of map) {
-  console.log(key, value);
+  console.log(key, value);         // ?
 }
 
-const keys = [...map.keys()];
-const values = [...map.values()];
+const keys = [...map.keys()];      // ?
+const values = [...map.values()];  // ?
 
+const obj = Object.fromEntries(map);
+const map2 = new Map(Object.entries(obj));
+
+console.log(obj);                  // ?
+console.log(map2);                 // ?
+```
+
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+`for...of` works directly on a `Map`. `Object.fromEntries` and `Object.entries` let you switch between `Map` and plain object.
+
+### Challenge 4.2 — Map to Object
+
+Convert `const map = new Map([["name", "John"], ["age", 30]])` to an object, then back to a Map.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
 const obj = Object.fromEntries(map);
 const map2 = new Map(Object.entries(obj));
 ```
 
-#### Challenge 4.2 — Map to Object (individual, 4 minutes)
-
-- **Requirement:** Convert `const map = new Map([["name", "John"], ["age", 30]])` to an object, then back to a Map.
-- **Time limit:** 4 minutes
+</details>
 
 ---
 
 ## Bug Hunt 2
 
-### Problem
+### The mission
 
-Find the bugs in this Map/Set code.
+Find the bugs in this Map/Set code. Do not run it yet. Read and write what you think is wrong.
 
 ```javascript
 const users = new Map();
@@ -349,13 +624,21 @@ const john = { id: 1 };
 console.log(users.get(john));
 ```
 
-### Issues
+### 🐛 What I think is wrong
 
-1. `{ id: 1 }` used as a key is a different object each time. `users.get(john)` uses a new object and returns `undefined` because object equality is by reference, not value.
+1. _______________________________________________________________
+2. _______________________________________________________________
 
-### Fixed Version
+### ✅ Fixed version
 
-Use the same object reference or use a primitive key.
+Write your fixed version, then test it.
+
+```javascript
+// your fixed version here
+```
+
+<details>
+<summary>Answer — try first!</summary>
 
 ```javascript
 const users = new Map();
@@ -368,9 +651,7 @@ users.set(1, "John");
 console.log(users.get(1));
 ```
 
-### Points
-
-1 point for finding the issue.
+</details>
 
 ---
 
@@ -378,80 +659,174 @@ console.log(users.get(1));
 
 ### 5.1 Array.from
 
-#### Problem
+### The problem
 
-Turn something that is not an array into an array.
+Turn something that is not an array into an array, or build an array from a rule.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 const str = "hello";
-console.log(Array.from(str));
+console.log(Array.from(str));      // ?
 
 const numbers = [1, 2, 3];
-console.log(Array.from(numbers, n => n * 2));
+console.log(Array.from(numbers, n => n * 2)); // ?
 
 const range = Array.from({ length: 5 }, (_, i) => i + 1);
-console.log(range);
+console.log(range);                // ?
 ```
 
-#### Challenge 5.1 — Create Range (individual, 3 minutes)
+### ✅ Result
 
-- **Requirement:** Use `Array.from` to create `[10, 20, 30, 40, 50]`.
-- **Time limit:** 3 minutes
+Run it.
+
+### 🧠 Why?
+
+`Array.from` builds a real array from an iterable or array-like object. The second argument maps each new item.
+
+### 🧪 Experiment
+
+Use `Array.from` to build `[2, 4, 6, 8, 10]`.
+
+```javascript
+// your code here
+```
+
+### Challenge 5.1 — Create Range
+
+Use `Array.from` to create `[10, 20, 30, 40, 50]`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const range = Array.from({ length: 5 }, (_, i) => (i + 1) * 10);
+```
+
+</details>
+
+---
 
 ### 5.2 Array.some and Array.every
 
-#### Live Code
+### The problem
+
+Check whether any item passes a test, or all items pass a test.
+
+### 🔮 Predict
 
 ```javascript
 const numbers = [1, 2, 3, 4, 5];
 
-console.log(numbers.some(n => n > 4));   // true
-console.log(numbers.every(n => n > 0));  // true
-console.log(numbers.every(n => n > 2));  // false
+console.log(numbers.some(n => n > 4));   // ?
+console.log(numbers.every(n => n > 0));  // ?
+console.log(numbers.every(n => n > 2));  // ?
 ```
 
-#### Challenge 5.2 — Validate Users (individual, 4 minutes)
+### ✅ Result
 
-- **Requirement:** Check if any user in `const users = [{ active: true }, { active: false }]` is active. Check if all are active.
-- **Time limit:** 4 minutes
+Run it.
+
+### 🧠 Why?
+
+`some` is `true` if at least one item passes. `every` is `true` only if all items pass.
+
+### Challenge 5.2 — Validate Users
+
+Check if any user in `const users = [{ active: true }, { active: false }]` is active. Check if all are active.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+console.log(users.some(u => u.active));
+console.log(users.every(u => u.active));
+```
+
+</details>
+
+---
 
 ### 5.3 Spread Syntax
 
-#### Live Code
+### The problem
+
+Copy an array or object, or combine two into one.
+
+### 🔮 Predict
 
 ```javascript
 const arr1 = [1, 2, 3];
 const arr2 = [4, 5, 6];
 const combined = [...arr1, ...arr2];
-console.log(combined);
+console.log(combined);             // ?
 
 const obj1 = { a: 1, b: 2 };
 const obj2 = { c: 3 };
 const merged = { ...obj1, ...obj2 };
-console.log(merged);
+console.log(merged);               // ?
 
 const copy = [...arr1];
-console.log(copy);
+console.log(copy);                 // ?
 ```
 
-#### Challenge 5.3 — Merge and Copy (individual, 4 minutes)
+### ✅ Result
 
-- **Requirement:** Merge `const defaults = { theme: "light" }` and `const user = { theme: "dark" }` with spread, then copy `const nums = [1, 2, 3]`.
-- **Time limit:** 4 minutes
+Run it.
+
+### 🧠 Why?
+
+The spread operator `...` expands an iterable into individual items. It makes copying and merging easy.
+
+### 🧪 Experiment
+
+Merge `const more = [0, ...arr1, 10]` and log the result.
+
+```javascript
+// your code here
+```
+
+### Challenge 5.3 — Merge and Copy
+
+Merge `const defaults = { theme: "light" }` and `const user = { theme: "dark" }` with spread, then copy `const nums = [1, 2, 3]`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const merged = { ...defaults, ...user };
+const copy = [...nums];
+```
+
+</details>
 
 ---
 
 ## Part 6: WeakSet and WeakMap (Brief)
 
-### Live Code
+### The problem
+
+Store private references to objects without preventing them from being garbage collected.
+
+### 🔮 Predict
 
 ```javascript
 const weakSet = new WeakSet();
 let obj = { id: 1 };
 weakSet.add(obj);
-console.log(weakSet.has(obj));
+console.log(weakSet.has(obj));     // ?
 
 obj = null;
 // The object can be garbage collected
@@ -459,26 +834,43 @@ obj = null;
 const weakMap = new WeakMap();
 const key = { id: 1 };
 weakMap.set(key, "value");
-console.log(weakMap.get(key));
+console.log(weakMap.get(key));     // ?
 ```
 
-### Explain
+### ✅ Result
 
-WeakSet and WeakMap only accept objects as keys. They do not prevent garbage collection. You cannot iterate over them.
+Run it.
 
-#### Challenge 6.1 — When to Use WeakMap (individual, 3 minutes)
+### 🧠 Why?
 
-- **Requirement:** Explain one use case for `WeakMap` (e.g., private data for objects).
-- **Time limit:** 3 minutes
+`WeakSet` and `WeakMap` only accept objects as keys. They do not prevent garbage collection, and you cannot iterate over them.
+
+### Challenge 6.1 — When to Use WeakMap
+
+Explain one use case for `WeakMap` (e.g., private data for objects). Then try the example above.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+// Use `WeakMap` to attach private data to objects without preventing garbage collection.
+const privateData = new WeakMap();
+const user = { id: 1 };
+privateData.set(user, "secret");
+console.log(privateData.get(user));
+```
+
+</details>
 
 ---
 
 ## Group Challenge: Data Transformations
 
-- **Time:** 12 minutes
-- **Teams:** 2 or 3 students per team
-- **Task:** Each team completes two of the tasks.
-- **Scoring:** 2 points per correct solution.
+Work in a team of 2 or 3. Each team completes two of the tasks below.
 
 ### Tasks
 
@@ -487,77 +879,162 @@ WeakSet and WeakMap only accept objects as keys. They do not prevent garbage col
 3. Build a `Map` that counts the frequency of each character in a string.
 4. Use `some` and `every` to check if any or all numbers in `[2, 4, 6, 8]` are even.
 
-### Instructor Answer Key
-
-```javascript
-// 1
-const { user: { name, age }, posts: [{ title: firstTitle }] } = data;
-
-// 2
-const words = "hello world hello".split(" ");
-const unique = new Set(words);
-
-// 3
-const counts = new Map();
-for (const char of "abracadabra") {
-  counts.set(char, (counts.get(char) || 0) + 1);
-}
-
-// 4
-const nums = [2, 4, 6, 8];
-console.log(nums.some(n => n % 2 === 0));  // true
-console.log(nums.every(n => n % 2 === 0)); // true
-```
-
 ---
 
 ## Individual Challenges — Progressive Difficulty
 
-### Level 1: Basic Array Destructuring (2 minutes)
+Do these in order. Do not look at the answer key until you have tried.
 
-- **Requirement:** From `const rgb = [255, 128, 0]`, get `red`, `green`, and `blue`.
+### Level 1: Basic Array Destructuring
 
-### Level 2: Object Destructuring (3 minutes)
+From `const rgb = [255, 128, 0]`, get `red`, `green`, and `blue`.
 
-- **Requirement:** From `const product = { name: "Laptop", price: 999 }`, get `name` and `price`.
+```javascript
+// your code here
+```
 
-### Level 3: Rest and Defaults (3 minutes)
+<details>
+<summary>Answer — try first!</summary>
 
-- **Requirement:** From `const nums = [10, 20]`, get `first`, `second`, and `third = 0`.
+```javascript
+const [red, green, blue] = [255, 128, 0];
+```
 
-### Level 4: Nested Object (4 minutes)
+</details>
 
-- **Requirement:** Extract `city` from `const user = { address: { city: "Paris" } }`.
+### Level 2: Object Destructuring
 
-### Level 5: Set (4 minutes)
+From `const product = { name: "Laptop", price: 999 }`, get `name` and `price`.
 
-- **Requirement:** Create a `Set` from `[1, 2, 2, 3]` and log its size.
+```javascript
+// your code here
+```
 
-### Level 6: Map (4 minutes)
+<details>
+<summary>Answer — try first!</summary>
 
-- **Requirement:** Create a `Map` with two entries, iterate, and log each key-value pair.
+```javascript
+const { name, price } = product;
+```
 
-### Level 7: Spread (4 minutes)
+</details>
 
-- **Requirement:** Copy `const arr = [1, 2, 3]` with spread, then add `4` to the end.
+### Level 3: Rest and Defaults
 
-### Level 8: some/every (5 minutes)
+From `const nums = [10, 20]`, get `first`, `second`, and `third = 0`.
 
-- **Requirement:** Use `some` and `every` on `const scores = [85, 90, 78]` to check for passing (> 70) and excellent (> 80).
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const [first, second, third = 0] = [10, 20];
+```
+
+</details>
+
+### Level 4: Nested Object
+
+Extract `city` from `const user = { address: { city: "Paris" } }`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const { address: { city } } = user;
+```
+
+</details>
+
+### Level 5: Set
+
+Create a `Set` from `[1, 2, 2, 3]` and log its size.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const unique = new Set([1, 2, 2, 3]);
+console.log(unique.size);
+```
+
+</details>
+
+### Level 6: Map
+
+Create a `Map` with two entries, iterate, and log each key-value pair.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const map = new Map([["a", 1], ["b", 2]]);
+for (const [key, value] of map) {
+  console.log(key, value);
+}
+```
+
+</details>
+
+### Level 7: Spread
+
+Copy `const arr = [1, 2, 3]` with spread, then add `4` to the end.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const copy = [...arr, 4];
+```
+
+</details>
+
+### Level 8: some/every
+
+Use `some` and `every` on `const scores = [85, 90, 78]` to check for passing (> 70) and excellent (> 80).
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+console.log(scores.some(s => s > 70));   // true
+console.log(scores.every(s => s > 80));  // false
+```
+
+</details>
 
 ---
 
 ## Mini Project: Shopping Cart with Map and Set
 
-### Time
-
-25 minutes
-
 ### Goal
 
-Build a small product catalog and cart using Map, Set, and destructuring.
+Build a small product catalog and cart using `Map`, `Set`, and destructuring.
 
-### Requirements for the Students
+### Requirements
 
 1. Create an HTML page with:
    - Product name, price, quantity inputs
@@ -674,18 +1151,94 @@ Build a small product catalog and cart using Map, Set, and destructuring.
 </html>
 ```
 
-### Review Questions for the Mini Project
+### Questions to think about
 
-- "Why did we use a `Map` for the cart?"
-- "Why did we use a `Set` for discount codes?"
-- "How does destructuring help in the `for...of` loop?"
+1. Why did we use a `Map` for the cart?
+2. Why did we use a `Set` for discount codes?
+3. How does destructuring help in the `for...of` loop?
+
+---
+
+## Review Questions
+
+Answer these before you finish. Do not look at the answer key.
+
+1. What does array destructuring do?
+   - [ ] Creates a new array
+   - [ ] Unpacks array values into variables
+   - [ ] Deletes array elements
+   - [ ] Sorts array elements
+
+2. What is the rest operator in destructuring?
+   - [ ] Removes elements
+   - [ ] Collects remaining elements
+   - [ ] Duplicates elements
+   - [ ] Reverses elements
+
+3. What is the main difference between Set and WeakSet?
+   - [ ] No difference
+   - [ ] Set can store any value, WeakSet only objects
+   - [ ] WeakSet is iterable, Set is not
+   - [ ] Set prevents garbage collection, WeakSet allows it
+
+4. What is the main difference between Map and Object?
+   - [ ] No difference
+   - [ ] Map can have any key type, Object keys are strings
+   - [ ] Object is iterable, Map is not
+   - [ ] Map maintains insertion order, Object may not
+
+5. What does Array.from() do?
+   - [ ] Creates an array from an array-like object
+   - [ ] Converts array to string
+   - [ ] Sorts array elements
+   - [ ] Deletes array elements
+
+6. What does Array.some() return?
+   - [ ] true if all elements pass condition
+   - [ ] true if any element passes condition
+   - [ ] The first element
+   - [ ] All elements
+
+7. What does Array.every() return?
+   - [ ] true if all elements pass condition
+   - [ ] true if any element passes condition
+   - [ ] The first element
+   - [ ] All elements
+
+8. What does the spread operator do?
+   - [ ] Removes elements
+   - [ ] Expands an iterable into individual elements
+   - [ ] Sorts elements
+   - [ ] Filters elements
+
+9. What does copyWithin() do?
+   - [ ] Copies array from another array
+   - [ ] Copies array elements within the same array
+   - [ ] Removes array elements
+   - [ ] Reverses array elements
+
+10. Can you destructure objects in function parameters?
+    - [ ] No
+    - [ ] Yes
+    - [ ] Only with arrays
+    - [ ] Only with primitives
+
+---
+
+## Additional Resources
+
+- [MDN: Destructuring Assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)
+- [MDN: Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set)
+- [MDN: Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
+- [MDN: WeakSet](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet)
+- [MDN: WeakMap](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap)
+- [MDN: Array.from](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from)
+- [MDN: Spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator)
 
 ---
 
 <details>
-<summary>Trainer Solutions — Do Not Show Until Students Try</summary>
-
-## Trainer Solutions — Do Not Show Until Students Try
+<summary>Answer Key — Try everything first!</summary>
 
 ### Challenge 1.1
 
@@ -731,6 +1284,13 @@ connect();
 connect({ url: "example.com" });
 ```
 
+### Bug Hunt 1 Fixed Version
+
+```javascript
+const { name, address: { city } } = user;
+console.log(city); // "New York"
+```
+
 ### Challenge 3.1
 
 ```javascript
@@ -763,6 +1323,21 @@ const obj = Object.fromEntries(map);
 const map2 = new Map(Object.entries(obj));
 ```
 
+### Bug Hunt 2 Fixed Version
+
+Use the same object reference or use a primitive key.
+
+```javascript
+const users = new Map();
+const johnKey = { id: 1 };
+users.set(johnKey, "John");
+console.log(users.get(johnKey));
+
+// Or use a number/string key
+users.set(1, "John");
+console.log(users.get(1));
+```
+
 ### Challenge 5.1
 
 ```javascript
@@ -786,6 +1361,28 @@ const copy = [...nums];
 ### Challenge 6.1
 
 Use `WeakMap` to attach private data to objects without preventing garbage collection.
+
+### Group Challenge Answer Key
+
+```javascript
+// 1
+const { user: { name, age }, posts: [{ title: firstTitle }] } = data;
+
+// 2
+const words = "hello world hello".split(" ");
+const unique = new Set(words);
+
+// 3
+const counts = new Map();
+for (const char of "abracadabra") {
+  counts.set(char, (counts.get(char) || 0) + 1);
+}
+
+// 4
+const nums = [2, 4, 6, 8];
+console.log(nums.some(n => n % 2 === 0));  // true
+console.log(nums.every(n => n % 2 === 0)); // true
+```
 
 ### Individual Challenges Solutions
 
@@ -821,79 +1418,3 @@ console.log(scores.every(s => s > 80));  // false
 ```
 
 </details>
-
----
-
-## Review Questions
-
-1. What does array destructuring do?
-   - [ ] Creates a new array
-   - [x] Unpacks array values into variables
-   - [ ] Deletes array elements
-   - [ ] Sorts array elements
-
-2. What is the rest operator in destructuring?
-   - [ ] Removes elements
-   - [x] Collects remaining elements
-   - [ ] Duplicates elements
-   - [ ] Reverses elements
-
-3. What is the main difference between Set and WeakSet?
-   - [ ] No difference
-   - [x] Set can store any value, WeakSet only objects
-   - [ ] WeakSet is iterable, Set is not
-   - [ ] Set prevents garbage collection, WeakSet allows it
-
-4. What is the main difference between Map and Object?
-   - [ ] No difference
-   - [x] Map can have any key type, Object keys are strings
-   - [ ] Object is iterable, Map is not
-   - [ ] Map maintains insertion order, Object may not
-
-5. What does Array.from() do?
-   - [x] Creates an array from an array-like object
-   - [ ] Converts array to string
-   - [ ] Sorts array elements
-   - [ ] Deletes array elements
-
-6. What does Array.some() return?
-   - [ ] true if all elements pass condition
-   - [x] true if any element passes condition
-   - [ ] The first element
-   - [ ] All elements
-
-7. What does Array.every() return?
-   - [x] true if all elements pass condition
-   - [ ] true if any element passes condition
-   - [ ] The first element
-   - [ ] All elements
-
-8. What does the spread operator do?
-   - [ ] Removes elements
-   - [x] Expands an iterable into individual elements
-   - [ ] Sorts elements
-   - [ ] Filters elements
-
-9. What does copyWithin() do?
-   - [ ] Copies array from another array
-   - [x] Copies array elements within the same array
-   - [ ] Removes array elements
-   - [ ] Reverses array elements
-
-10. Can you destructure objects in function parameters?
-    - [ ] No
-    - [x] Yes
-    - [ ] Only with arrays
-    - [ ] Only with primitives
-
----
-
-## Additional Resources
-
-- [MDN: Destructuring Assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)
-- [MDN: Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set)
-- [MDN: Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
-- [MDN: WeakSet](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet)
-- [MDN: WeakMap](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap)
-- [MDN: Array.from](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from)
-- [MDN: Spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator)

@@ -1,37 +1,23 @@
-# Session 10: DOM Manipulation — Active Learning Redesign
+# Session 10: DOM Manipulation — Student Active-Learning Lab
 
-## Session Plan for the Instructor
-
-- **Total time:** approximately 90 to 120 minutes
-- **Pacing rule:** never explain theory continuously for more than 15–20 minutes. After every concept, students must predict, write, or fix code.
-- **Pedagogical pattern for every topic:**
-  1. **Problem** — a realistic mini-situation
-  2. **Guess** — ask: "What do you expect to happen?"
-  3. **Explain** — the shortest rule that fixes the problem
-  4. **Code** — live code written in front of the students, step by step
-  5. **Challenge** — students solve a small task on their own or in groups
-  6. **Review** — discuss the answer and the most common mistake
-
-### Competition and Points
-
-- 1 point per correct prediction in the "Guess" phase.
-- 1–3 points per completed challenge, depending on difficulty.
-- A "Bug Hunter" badge for each student who finds and fixes an intentional error.
-- Keep a simple tally on a shared board or in the chat.
-
-### Instructor Questions to Ask During the Session
-
-- "Which selector is fastest here?"
-- "Should we use `textContent` or `innerHTML`?"
-- "What does `event.target` point to?"
-- "How can we avoid adding 100 event listeners?"
-- "What is the default behavior we want to prevent?"
+Welcome to this session. Today you will make web pages do things. Do not just read — open the browser, try the code, predict what will change, and fix bugs.
 
 ---
 
-## Part 0: Warm-Up — The Static Page (5 minutes)
+## 🧭 How to move through this session
 
-### Problem
+1. **Read the problem first.**
+2. **Stop.** Try to picture what the code should do before you run it.
+3. **Write your prediction.**
+4. **Create the HTML, type the JavaScript, and run it.**
+5. **Compare, ask why, then change one thing.**
+6. **Do the challenge before looking at the answer key.**
+
+---
+
+## Part 0: Warm-Up — The Static Page
+
+### The problem
 
 A page has a heading, but the text needs to change when a button is clicked.
 
@@ -40,15 +26,15 @@ A page has a heading, but the text needs to change when a button is clicked.
 <button>Change</button>
 ```
 
-### Guess
+### 🤔 Think
 
-Ask: "How can JavaScript change the heading without reloading the page?"
+How can JavaScript change the heading without reloading the page?
 
-### Explain
+```text
+My idea: _______________________________________________________________
+```
 
-The browser turns HTML into a tree of objects. JavaScript can select and change those objects.
-
-### Live Code
+### 🔮 Predict
 
 ```javascript
 const title = document.getElementById("title");
@@ -59,21 +45,32 @@ button.addEventListener("click", () => {
 });
 ```
 
-### Review
+What will the heading say before the click? What will it say after the click?
 
-We selected an element and changed its `textContent` when an event happened.
+### ✅ Result
+
+Create the HTML file, add the script, and click the button.
+
+### 🧠 Discover
+
+The browser turns your HTML into a tree of objects. JavaScript can **select** and **change** those objects.
+
+### 🧪 Experiment
+
+- Change `textContent` to `innerHTML` and try setting it to `"<em>Hello, World!</em>"`. What is the difference?
+- What happens if you use `getElementById("title")` but the `id` is `"heading"`?
 
 ---
 
 ## Part 1: Selecting Elements
 
-### 1.1 getElementById
+### 1.1 `getElementById`
 
-#### Problem
+### The problem
 
 Select a specific element.
 
-#### Live Code
+### 🔮 Predict
 
 ```html
 <div id="main">Main content</div>
@@ -84,14 +81,43 @@ const main = document.getElementById("main");
 console.log(main.textContent);
 ```
 
-#### Challenge 1.1 — Get the Element (individual, 2 minutes)
+What will `console.log` print?
 
-- **Requirement:** Get the element with `id="hero"` and print its `textContent`.
-- **Time limit:** 2 minutes
+### ✅ Result
+
+Try it.
+
+### 🧠 Why?
+
+`document.getElementById` returns the single element with that `id`. It is one of the fastest selectors.
+
+### Challenge 1.1 — Get the Element
+
+Get the element with `id="hero"` and print its `textContent`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const hero = document.getElementById("hero");
+console.log(hero.textContent);
+```
+
+</details>
+
+---
 
 ### 1.2 Class and Tag Selectors
 
-#### Live Code
+### The problem
+
+Select many elements at once.
+
+### 🔮 Predict
 
 ```html
 <p class="intro">Intro 1</p>
@@ -107,14 +133,45 @@ const divs = document.getElementsByTagName("div");
 console.log(divs.length);
 ```
 
-#### Challenge 1.2 — Count Elements (individual, 3 minutes)
+What are the two `console.log` outputs?
 
-- **Requirement:** Count how many `.item` elements and `li` elements are on the page.
-- **Time limit:** 3 minutes
+### ✅ Result
 
-### 1.3 querySelector and querySelectorAll
+Try it.
 
-#### Live Code
+### 🧠 Why?
+
+- `getElementsByClassName` returns all elements with that class.
+- `getElementsByTagName` returns all elements with that tag name.
+
+### Challenge 1.2 — Count Elements
+
+Count how many `.item` elements and `li` elements are on the page.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const items = document.getElementsByClassName("item");
+const lis = document.getElementsByTagName("li");
+console.log(items.length, lis.length);
+```
+
+</details>
+
+---
+
+### 1.3 `querySelector` and `querySelectorAll`
+
+### The problem
+
+Select with CSS-style selectors.
+
+### 🔮 Predict
 
 ```html
 <ul id="list">
@@ -131,38 +188,94 @@ console.log(first.textContent);
 all.forEach(item => console.log(item.textContent));
 ```
 
-#### Challenge 1.3 — Select Items (individual, 3 minutes)
+How many `console.log` lines will the `forEach` produce?
 
-- **Requirement:** Use `querySelectorAll` to select all `li` elements inside `#menu`.
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Try it.
+
+### 🧠 Why?
+
+- `querySelector` returns the **first** match.
+- `querySelectorAll` returns a **NodeList** with all matches.
+
+### Challenge 1.3 — Select Items
+
+Use `querySelectorAll` to select all `li` elements inside `#menu`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const menuItems = document.querySelectorAll("#menu li");
+```
+
+</details>
 
 ---
 
 ## Part 2: Reading and Changing Content
 
-### 2.1 textContent vs innerHTML
+### 2.1 `textContent` vs `innerHTML`
 
-#### Problem
+### The problem
 
-Change text safely vs adding HTML.
+Change text safely or add real HTML.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 const box = document.getElementById("box");
 
-box.textContent = "<strong>Bold?</strong>"; // Shows as plain text
-box.innerHTML = "<strong>Bold!</strong>";   // Renders HTML
+box.textContent = "<strong>Bold?</strong>";
 ```
 
-#### Challenge 2.1 — Safe Update (individual, 3 minutes)
+Will the text appear bold or as plain text?
 
-- **Requirement:** Change `#message` to show "Welcome, User!" using only `textContent`.
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Try it.
+
+### 🧪 Experiment
+
+Now try this:
+
+```javascript
+box.innerHTML = "<strong>Bold!</strong>";
+```
+
+What is the difference between `textContent` and `innerHTML`?
+
+### Challenge 2.1 — Safe Update
+
+Change `#message` to show `Welcome, User!` using only `textContent`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+document.getElementById("message").textContent = "Welcome, User!";
+```
+
+</details>
+
+---
 
 ### 2.2 Attributes
 
-#### Live Code
+### The problem
+
+Read and change element attributes like `href`, `src`, and `alt`.
+
+### 🔮 Predict
 
 ```html
 <a id="link" href="https://old.com">Link</a>
@@ -178,13 +291,37 @@ const pic = document.getElementById("pic");
 pic.src = "new.jpg";
 pic.alt = "New";
 
-console.log(pic.hasAttribute("title")); // false
+console.log(pic.hasAttribute("title"));
 ```
 
-#### Challenge 2.2 — Change Image Source (individual, 3 minutes)
+What will the last `console.log` print?
 
-- **Requirement:** Change the `src` and `alt` of `#avatar` to a new image and description.
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Try it.
+
+### 🧠 Why?
+
+You can use `setAttribute`/`getAttribute` or direct properties like `.src` and `.alt`.
+
+### Challenge 2.2 — Change Image Source
+
+Change the `src` and `alt` of `#avatar` to a new image and description.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const avatar = document.getElementById("avatar");
+avatar.src = "new.jpg";
+avatar.alt = "User avatar";
+```
+
+</details>
 
 ---
 
@@ -192,11 +329,11 @@ console.log(pic.hasAttribute("title")); // false
 
 ### 3.1 Creating and Appending
 
-#### Problem
+### The problem
 
 Add a new item to a list from JavaScript.
 
-#### Live Code
+### 🔮 Predict
 
 ```html
 <ul id="fruits">
@@ -212,14 +349,52 @@ li.textContent = "Banana";
 fruits.appendChild(li);
 ```
 
-#### Challenge 3.1 — Add to List (individual, 4 minutes)
+How many `li` elements will the list have after this runs?
 
-- **Requirement:** Create a `li` with text "Orange" and add it to `#fruits`.
-- **Time limit:** 4 minutes
+### ✅ Result
+
+Try it.
+
+### 🧠 Why?
+
+1. `document.createElement("li")` makes a new `<li>`.
+2. `li.textContent = "Banana"` adds text.
+3. `fruits.appendChild(li)` adds it to the end of the list.
+
+### Challenge 3.1 — Add to List
+
+Create a `li` with text `"Orange"` and add it to `#fruits`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const li = document.createElement("li");
+li.textContent = "Orange";
+document.getElementById("fruits").appendChild(li);
+```
+
+</details>
+
+---
 
 ### 3.2 Modern Insertion Methods
 
-#### Live Code
+### The problem
+
+Put elements at the start, end, or before another element.
+
+### 🔮 Predict
+
+```html
+<div id="parent">
+  <div id="reference">Reference</div>
+</div>
+```
 
 ```javascript
 const parent = document.getElementById("parent");
@@ -238,14 +413,47 @@ const reference = document.getElementById("reference");
 reference.before(before);
 ```
 
-#### Challenge 3.2 — Insert Before (individual, 4 minutes)
+What is the final order of the `div` elements inside `#parent`?
 
-- **Requirement:** Create a `<p>Warning</p>` and insert it before `#target`.
-- **Time limit:** 4 minutes
+### ✅ Result
+
+Try it.
+
+### 🧠 Why?
+
+- `prepend` adds at the beginning.
+- `append` adds at the end.
+- `before` adds right before a reference element.
+
+### Challenge 3.2 — Insert Before
+
+Create a `<p>Warning</p>` and insert it before `#target`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const p = document.createElement("p");
+p.textContent = "Warning";
+const target = document.getElementById("target");
+target.before(p);
+```
+
+</details>
+
+---
 
 ### 3.3 Removing and Replacing
 
-#### Live Code
+### The problem
+
+Remove or replace elements.
+
+### 🔮 Predict
 
 ```javascript
 const old = document.getElementById("old");
@@ -257,19 +465,45 @@ replacement.textContent = "New";
 child.parentNode.replaceChild(replacement, child);
 ```
 
-#### Challenge 3.3 — Clear Container (individual, 3 minutes)
+What happens to `#old`? What happens to `#child`?
 
-- **Requirement:** Remove all children from `#container`.
-- **Time limit:** 3 minutes
-- **Hint:** `while (container.firstChild) { container.removeChild(container.firstChild); }`
+### ✅ Result
+
+Try it.
+
+### Challenge 3.3 — Clear Container
+
+Remove all children from `#container`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const container = document.getElementById("container");
+while (container.firstChild) {
+  container.removeChild(container.firstChild);
+}
+```
+
+</details>
+
+**Hint:** `while (container.firstChild) { container.removeChild(container.firstChild); }`
 
 ---
 
 ## Part 4: Styling and Classes
 
-### 4.1 classList
+### 4.1 `classList`
 
-#### Live Code
+### The problem
+
+Add, remove, and toggle CSS classes.
+
+### 🔮 Predict
 
 ```html
 <div id="box" class="card">Card</div>
@@ -284,14 +518,44 @@ box.classList.toggle("hidden");
 console.log(box.classList.contains("active"));
 ```
 
-#### Challenge 4.1 — Toggle Class (individual, 3 minutes)
+What will the `console.log` print? What classes will the `div` have at the end?
 
-- **Requirement:** Toggle the class `visible` on `#box` when `#toggleBtn` is clicked.
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Try it.
+
+### 🧠 Why?
+
+`classList` is the safest way to work with CSS classes. Use `add`, `remove`, `toggle`, and `contains`.
+
+### Challenge 4.1 — Toggle Class
+
+Toggle the class `visible` on `#box` when `#toggleBtn` is clicked.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+document.getElementById("toggleBtn").addEventListener("click", () => {
+  document.getElementById("box").classList.toggle("visible");
+});
+```
+
+</details>
+
+---
 
 ### 4.2 Inline Styles
 
-#### Live Code
+### The problem
+
+Change the style of an element directly.
+
+### 🔮 Predict
 
 ```javascript
 const box = document.getElementById("box");
@@ -300,22 +564,47 @@ box.style.backgroundColor = "blue";
 box.style.padding = "20px";
 ```
 
-#### Challenge 4.2 — Style Element (individual, 3 minutes)
+What color will the text be? What CSS property changes the background?
 
-- **Requirement:** Set `#banner` text color to red, background to yellow, and font size to `24px`.
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Try it.
+
+### 🧠 Why?
+
+CSS properties with a dash become camelCase in JavaScript: `backgroundColor`, `fontSize`.
+
+### Challenge 4.2 — Style Element
+
+Set `#banner` text color to red, background to yellow, and font size to `24px`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const banner = document.getElementById("banner");
+banner.style.color = "red";
+banner.style.backgroundColor = "yellow";
+banner.style.fontSize = "24px";
+```
+
+</details>
 
 ---
 
 ## Part 5: DOM Events
 
-### 5.1 addEventListener
+### 5.1 `addEventListener`
 
-#### Problem
+### The problem
 
 Run code when a user clicks a button.
 
-#### Live Code
+### 🔮 Predict
 
 ```html
 <button id="btn">Click me</button>
@@ -330,14 +619,44 @@ btn.addEventListener("click", function(event) {
 });
 ```
 
-#### Challenge 5.1 — Log Click (individual, 3 minutes)
+How many `console.log` lines will appear after one click?
 
-- **Requirement:** When `#btn` is clicked, log the button text.
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Click the button and check the console.
+
+### 🧠 Why?
+
+`addEventListener` waits for an event on an element and then runs a function. `event.target` is the element that was clicked.
+
+### Challenge 5.1 — Log Click
+
+When `#btn` is clicked, log the button text.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+document.getElementById("btn").addEventListener("click", (event) => {
+  console.log(event.target.textContent);
+});
+```
+
+</details>
+
+---
 
 ### 5.2 Event Types
 
-#### Live Code
+### The problem
+
+Run code on different user actions.
+
+### 🔮 Predict
 
 ```javascript
 const input = document.getElementById("name");
@@ -355,18 +674,47 @@ input.addEventListener("blur", () => {
 });
 ```
 
-#### Challenge 5.2 — Input Event (individual, 3 minutes)
+When will each event fire?
 
-- **Requirement:** Show the length of `#message` input below it while typing.
-- **Time limit:** 3 minutes
+### ✅ Result
 
-### 5.3 preventDefault
+Type in the input, click into it, and click out.
 
-#### Problem
+### 🧪 Experiment
+
+Add a `keydown` listener. What does `event.key` show?
+
+### Challenge 5.2 — Input Event
+
+Show the length of `#message` input below it while typing.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const input = document.getElementById("message");
+const output = document.getElementById("length");
+
+input.addEventListener("input", () => {
+  output.textContent = input.value.length;
+});
+```
+
+</details>
+
+---
+
+### 5.3 `preventDefault`
+
+### The problem
 
 A form reloads the page on submit. We want to stop that.
 
-#### Live Code
+### 🔮 Predict
 
 ```html
 <form id="myForm">
@@ -385,18 +733,45 @@ form.addEventListener("submit", function(event) {
 });
 ```
 
-#### Challenge 5.3 — Prevent Link (individual, 3 minutes)
+Will the page reload when the form is submitted?
 
-- **Requirement:** Add a click listener to `#link` that prevents navigation and logs "Link clicked".
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Try it.
+
+### 🧠 Why?
+
+`preventDefault()` stops the browser's default action. For forms, that means the page does not reload.
+
+### Challenge 5.3 — Prevent Link
+
+Add a click listener to `#link` that prevents navigation and logs `"Link clicked"`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+document.getElementById("link").addEventListener("click", (event) => {
+  event.preventDefault();
+  console.log("Link clicked");
+});
+```
+
+</details>
+
+---
 
 ### 5.4 Event Delegation
 
-#### Problem
+### The problem
 
 A list has 100 items. We do not want 100 listeners.
 
-#### Live Code
+### 🔮 Predict
 
 ```html
 <ul id="todo">
@@ -415,10 +790,36 @@ todo.addEventListener("click", function(event) {
 });
 ```
 
-#### Challenge 5.4 — Delete with Delegation (individual, 5 minutes)
+If you click on a `li`, what happens? Where is the listener attached?
 
-- **Requirement:** When a `.delete` button inside `#list` is clicked, remove its parent `li`.
-- **Time limit:** 5 minutes
+### ✅ Result
+
+Try clicking each item.
+
+### 🧠 Why?
+
+The listener is on the parent `<ul>`. When a child is clicked, the event bubbles up. This is **event delegation** — one listener handles many children.
+
+### Challenge 5.4 — Delete with Delegation
+
+When a `.delete` button inside `#list` is clicked, remove its parent `li`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+document.getElementById("list").addEventListener("click", (event) => {
+  if (event.target.classList.contains("delete")) {
+    event.target.closest("li").remove();
+  }
+});
+```
+
+</details>
 
 ---
 
@@ -426,11 +827,11 @@ todo.addEventListener("click", function(event) {
 
 ### 6.1 Basic Validation
 
-#### Problem
+### The problem
 
 A form should not submit if fields are empty or invalid.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 const form = document.getElementById("signup");
@@ -451,14 +852,53 @@ form.addEventListener("submit", function(event) {
 });
 ```
 
-#### Challenge 6.1 — Validate Name (individual, 4 minutes)
+What happens if the email has no `@`? What happens if it does?
 
-- **Requirement:** If `#name` is empty, show "Name is required" in `#nameError`.
-- **Time limit:** 4 minutes
+### ✅ Result
+
+Try it.
+
+### 🧠 Why?
+
+Validation stops bad data before it is submitted. `return` stops the rest of the function.
+
+### Challenge 6.1 — Validate Name
+
+If `#name` is empty, show `"Name is required"` in `#nameError`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const form = document.getElementById("signup");
+const nameInput = document.getElementById("name");
+const error = document.getElementById("nameError");
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  if (nameInput.value.trim() === "") {
+    error.textContent = "Name is required";
+  } else {
+    error.textContent = "";
+  }
+});
+```
+
+</details>
+
+---
 
 ### 6.2 Real-Time Validation
 
-#### Live Code
+### The problem
+
+Give feedback as the user types.
+
+### 🔮 Predict
 
 ```javascript
 const emailInput = document.getElementById("email");
@@ -470,18 +910,39 @@ emailInput.addEventListener("input", function() {
 });
 ```
 
-#### Challenge 6.2 — Live Password Check (individual, 4 minutes)
+What color will the border be while the user types `"hello"`? What color for `"test@example.com"`?
 
-- **Requirement:** While typing in `#password`, make the border green if length >= 8, red otherwise.
-- **Time limit:** 4 minutes
+### ✅ Result
+
+Try it.
+
+### Challenge 6.2 — Live Password Check
+
+While typing in `#password`, make the border green if length >= 8, red otherwise.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const password = document.getElementById("password");
+password.addEventListener("input", () => {
+  password.style.borderColor = password.value.length >= 8 ? "green" : "red";
+});
+```
+
+</details>
 
 ---
 
 ## Bug Hunt 1
 
-### Problem
+### The mission
 
-The following code has three deliberate bugs.
+The following code has three deliberate bugs. Do not run it yet. Read it and write what you think is wrong.
 
 ```html
 <div id="greeting">Hi</div>
@@ -499,15 +960,27 @@ button.addEventListener("onclick", function() {
 });
 ```
 
-### Issues
+### 🐛 What I think is wrong
 
-1. The event name is `"click"`, not `"onclick"`.
-2. To set a class, use `classList.add` or `className`. `greeting.class` is not the right property.
-3. The property is `textContent`, not `textcontent`.
+1. _______________________________________________________________
+2. _______________________________________________________________
+3. _______________________________________________________________
 
-### Fixed Version
+### ✅ Fixed version
+
+Write your fixed version, then test it.
 
 ```javascript
+// your fixed version here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const greeting = document.getElementById("greeting");
+const button = document.getElementById("btn");
+
 button.addEventListener("click", function() {
   greeting.textContent = "Hello";
   greeting.classList.add("active");
@@ -515,9 +988,7 @@ button.addEventListener("click", function() {
 });
 ```
 
-### Points
-
-1 point per found bug.
+</details>
 
 ---
 
@@ -525,7 +996,11 @@ button.addEventListener("click", function() {
 
 ### 7.1 Traversing
 
-#### Live Code
+### The problem
+
+Move around the DOM tree without a selector.
+
+### 🔮 Predict
 
 ```html
 <ul id="menu">
@@ -542,14 +1017,45 @@ console.log(first.nextElementSibling.textContent);
 console.log(first.children.length);
 ```
 
-#### Challenge 7.1 — Find Sibling (individual, 3 minutes)
+What will each `console.log` print?
 
-- **Requirement:** Log the `textContent` of `#start`'s next sibling.
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Try it.
+
+### 🧠 Why?
+
+- `parentElement` is the parent element.
+- `nextElementSibling` is the next element at the same level.
+- `children` is the child elements.
+
+### Challenge 7.1 — Find Sibling
+
+Log the `textContent` of `#start`'s next sibling.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const start = document.getElementById("start");
+console.log(start.nextElementSibling.textContent);
+```
+
+</details>
+
+---
 
 ### 7.2 Cloning
 
-#### Live Code
+### The problem
+
+Copy an existing element and change it.
+
+### 🔮 Predict
 
 ```javascript
 const original = document.getElementById("card");
@@ -560,16 +1066,41 @@ clone.querySelector("h3").textContent = "Copy";
 document.getElementById("container").appendChild(clone);
 ```
 
-#### Challenge 7.2 — Clone Item (individual, 4 minutes)
+Will the original change? Will the clone have the same content at first?
 
-- **Requirement:** Clone `.template` and change the title before appending it.
-- **Time limit:** 4 minutes
+### ✅ Result
+
+Try it.
+
+### 🧠 Why?
+
+`cloneNode(true)` copies an element and all of its children. `cloneNode(false)` copies only the element itself.
+
+### Challenge 7.2 — Clone Item
+
+Clone `.template` and change the title before appending it.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const template = document.querySelector(".template");
+const clone = template.cloneNode(true);
+clone.querySelector("h3").textContent = "New title";
+document.getElementById("container").appendChild(clone);
+```
+
+</details>
 
 ---
 
 ## Bug Hunt 2
 
-### Problem
+### The mission
 
 Find the bugs in this form and list code.
 
@@ -596,36 +1127,53 @@ list.addEventListener("click", (event) => {
     event.target.remove();
   }
 });
+});
 ```
 
-### Issues
+### 🐛 What I think is wrong
 
-1. `li.innerHTML = taskInput.value` is unsafe if users type HTML. Use `textContent` for plain text.
-2. `list` click listener removes the `li` itself, not a delete button. This is a design issue, but the main bug is that it is too easy to delete accidentally. For this exercise, the intended bug is using `innerHTML` with user input.
+1. _______________________________________________________________
+2. _______________________________________________________________
 
-### Fixed Version
+### ✅ Fixed version
+
+Write your fixed version, then test it.
 
 ```javascript
+// your fixed version here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const addBtn = document.getElementById("add");
+const taskInput = document.getElementById("task");
+const list = document.getElementById("todo");
+
 addBtn.addEventListener("click", () => {
   const li = document.createElement("li");
   li.textContent = taskInput.value;
   list.append(li);
   taskInput.value = "";
 });
+
+list.addEventListener("click", (event) => {
+  if (event.target.tagName === "LI") {
+    event.target.remove();
+  }
+});
 ```
 
-### Points
-
-1 point per found issue.
+</details>
 
 ---
 
 ## Group Challenge: DOM Builder Race
 
-- **Time:** 12 minutes
-- **Teams:** 2 or 3 students per team
-- **Task:** Each team writes the DOM code for one of the tasks.
-- **Scoring:** 2 points per working solution. The first team to finish all four gets 2 bonus points.
+If you are in a group, split into teams of 2 or 3.
+
+Each team writes the DOM code for one task.
 
 ### Tasks
 
@@ -634,66 +1182,126 @@ addBtn.addEventListener("click", () => {
 3. Add a new `li` from `#input` to `#list` when `#btn3` is clicked, and clear the input.
 4. Use event delegation on `#list2` so clicking any `li` toggles the class `selected`.
 
-### Instructor Answer Key
-
-```javascript
-// 1
-document.getElementById("btn1").addEventListener("click", () => {
-  const random = `hsl(${Math.random() * 360}, 70%, 80%)`;
-  document.getElementById("output").style.backgroundColor = random;
-});
-
-// 2
-document.getElementById("btn2").addEventListener("click", () => {
-  const box = document.getElementById("box");
-  const clone = box.cloneNode(true);
-  document.getElementById("container").appendChild(clone);
-});
-
-// 3
-document.getElementById("btn3").addEventListener("click", () => {
-  const input = document.getElementById("input");
-  const li = document.createElement("li");
-  li.textContent = input.value;
-  document.getElementById("list").appendChild(li);
-  input.value = "";
-});
-
-// 4
-document.getElementById("list2").addEventListener("click", (event) => {
-  if (event.target.tagName === "LI") {
-    event.target.classList.toggle("selected");
-  }
-});
-```
+Set a timer for 12 minutes.
 
 ---
 
 ## Individual Challenges — Progressive Difficulty
 
-### Level 1: Select and Change (3 minutes)
+Do these in order. Do not look at the answer key until you have tried.
 
-- **Requirement:** Select `#title` and change its `textContent` to "DOM Manipulation".
+### Level 1: Select and Change
 
-### Level 2: Add Class (3 minutes)
+Select `#title` and change its `textContent` to `"DOM Manipulation"`.
 
-- **Requirement:** Add the class `highlight` to `#paragraph`.
+```javascript
+// your code here
+```
 
-### Level 3: Create Element (4 minutes)
+<details>
+<summary>Answer — try first!</summary>
 
-- **Requirement:** Create a `div` with text "New box" and append it to `#container`.
+```javascript
+document.getElementById("title").textContent = "DOM Manipulation";
+```
 
-### Level 4: Button Click (4 minutes)
+</details>
 
-- **Requirement:** When `#changeColor` is clicked, set `#box` background to `blue`.
+### Level 2: Add Class
 
-### Level 5: Prevent Submit (4 minutes)
+Add the class `highlight` to `#paragraph`.
 
-- **Requirement:** Prevent `#form` from submitting and log the input value.
+```javascript
+// your code here
+```
 
-### Level 6: Event Delegation (5 minutes)
+<details>
+<summary>Answer — try first!</summary>
 
-- **Requirement:** Use event delegation on `#todoList` to remove the `li` when a `.delete` button inside it is clicked.
+```javascript
+document.getElementById("paragraph").classList.add("highlight");
+```
+
+</details>
+
+### Level 3: Create Element
+
+Create a `div` with text `"New box"` and append it to `#container`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const div = document.createElement("div");
+div.textContent = "New box";
+document.getElementById("container").appendChild(div);
+```
+
+</details>
+
+### Level 4: Button Click
+
+When `#changeColor` is clicked, set `#box` background to `blue`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+document.getElementById("changeColor").addEventListener("click", () => {
+  document.getElementById("box").style.backgroundColor = "blue";
+});
+```
+
+</details>
+
+### Level 5: Prevent Submit
+
+Prevent `#form` from submitting and log the input value.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+document.getElementById("form").addEventListener("submit", (event) => {
+  event.preventDefault();
+  console.log(document.getElementById("input").value);
+});
+```
+
+</details>
+
+### Level 6: Event Delegation
+
+Use event delegation on `#todoList` to remove the `li` when a `.delete` button inside it is clicked.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+document.getElementById("todoList").addEventListener("click", (event) => {
+  if (event.target.classList.contains("delete")) {
+    event.target.closest("li").remove();
+  }
+});
+```
+
+</details>
 
 ---
 
@@ -707,7 +1315,7 @@ document.getElementById("list2").addEventListener("click", (event) => {
 
 Build a complete interactive to-do list using DOM selection, creation, events, and form handling.
 
-### Requirements for the Students
+### Requirements
 
 1. Create an HTML page with:
    - Input field for new tasks
@@ -829,18 +1437,100 @@ Build a complete interactive to-do list using DOM selection, creation, events, a
 </html>
 ```
 
-### Review Questions for the Mini Project
+### Questions to think about
 
-- "Why do we use `textContent` instead of `innerHTML` for the task text?"
-- "How does event delegation help if we had 100 tasks?"
-- "What does `preventDefault` do and where would we use it?"
+1. Why do we use `textContent` instead of `innerHTML` for the task text?
+2. How does event delegation help if we had 100 tasks?
+3. What does `preventDefault` do and where would we use it?
+4. What happens if the user adds an empty task?
+
+### Extension ideas
+
+- Add a "Clear completed" button.
+- Save tasks to `localStorage`.
+- Add a delete button that uses event delegation instead of its own listener.
+
+---
+
+## Review Questions
+
+Answer these before you finish.
+
+1. What is the DOM?
+   - [ ] A programming language
+   - [ ] A programming interface for HTML/XML documents
+   - [ ] A database
+   - [ ] A styling language
+
+2. Which method selects an element by ID?
+   - [ ] querySelector
+   - [ ] getElementsByClassName
+   - [ ] getElementById
+   - [ ] getElementsByTagName
+
+3. What does querySelectorAll return?
+   - [ ] A single element
+   - [ ] A NodeList of all matching elements
+   - [ ] An HTMLCollection
+   - [ ] An array
+
+4. What does preventDefault() do?
+   - [ ] Prevents default browser behavior
+   - [ ] Removes event listeners
+   - [ ] Stops event propagation
+   - [ ] Deletes the element
+
+5. What is event delegation?
+   - [ ] Creating multiple event listeners
+   - [ ] Using a single listener on a parent to handle child events
+   - [ ] Removing event listeners
+   - [ ] Preventing events
+
+6. What does classList.add() do?
+   - [ ] Removes a class
+   - [ ] Adds a class
+   - [ ] Checks for a class
+   - [ ] Replaces a class
+
+7. What is the difference between append and prepend?
+   - [ ] No difference
+   - [ ] append adds at beginning, prepend at end
+   - [ ] append adds at end, prepend at beginning
+   - [ ] Both remove elements
+
+8. What does cloneNode(true) do?
+   - [ ] Clones only the element
+   - [ ] Clones element and all descendants
+   - [ ] Clones nothing
+   - [ ] Clones the parent only
+
+9. What is the difference between parentNode and parentElement?
+   - [ ] No difference
+   - [ ] parentNode can be any node, parentElement is always an element
+   - [ ] parentNode is always an element
+   - [ ] parentElement includes text nodes
+
+10. What does addEventListener do?
+    - [ ] Removes an event listener
+    - [ ] Adds an event listener to an element
+    - [ ] Creates an element
+    - [ ] Deletes an element
+
+---
+
+## Additional Resources
+
+- [MDN: DOM Introduction](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction)
+- [MDN: Locating DOM Elements](https://developer.mozilla.org/en-US/docs/Web/API/Document_object_model/Locating_DOM_elements)
+- [MDN: Event Reference](https://developer.mozilla.org/en-US/docs/Web/Events)
+- [MDN: classList](https://developer.mozilla.org/en-US/docs/Web/API/Element/classList)
+- [JavaScript.info: DOM](https://javascript.info/dom-navigation)
+- [JavaScript.info: Events](https://javascript.info/introduction-browser-events)
 
 ---
 
 <details>
-<summary>Trainer Solutions — Do Not Show Until Students Try</summary>
-
-## Trainer Solutions — Do Not Show Until Students Try
+<summary>Answer Key — Try everything first!</summary>
 
 ### Challenge 1.1
 
@@ -1033,79 +1723,37 @@ document.getElementById("todoList").addEventListener("click", (event) => {
 });
 ```
 
+### Group Challenge Answer Key
+
+```javascript
+// 1
+document.getElementById("btn1").addEventListener("click", () => {
+  const random = `hsl(${Math.random() * 360}, 70%, 80%)`;
+  document.getElementById("output").style.backgroundColor = random;
+});
+
+// 2
+document.getElementById("btn2").addEventListener("click", () => {
+  const box = document.getElementById("box");
+  const clone = box.cloneNode(true);
+  document.getElementById("container").appendChild(clone);
+});
+
+// 3
+document.getElementById("btn3").addEventListener("click", () => {
+  const input = document.getElementById("input");
+  const li = document.createElement("li");
+  li.textContent = input.value;
+  document.getElementById("list").appendChild(li);
+  input.value = "";
+});
+
+// 4
+document.getElementById("list2").addEventListener("click", (event) => {
+  if (event.target.tagName === "LI") {
+    event.target.classList.toggle("selected");
+  }
+});
+```
+
 </details>
-
----
-
-## Review Questions
-
-1. What is the DOM?
-   - [ ] A programming language
-   - [x] A programming interface for HTML/XML documents
-   - [ ] A database
-   - [ ] A styling language
-
-2. Which method selects an element by ID?
-   - [ ] querySelector
-   - [ ] getElementsByClassName
-   - [x] getElementById
-   - [ ] getElementsByTagName
-
-3. What does querySelectorAll return?
-   - [ ] A single element
-   - [x] A NodeList of all matching elements
-   - [ ] An HTMLCollection
-   - [ ] An array
-
-4. What does preventDefault() do?
-   - [x] Prevents default browser behavior
-   - [ ] Removes event listeners
-   - [ ] Stops event propagation
-   - [ ] Deletes the element
-
-5. What is event delegation?
-   - [ ] Creating multiple event listeners
-   - [x] Using a single listener on a parent to handle child events
-   - [ ] Removing event listeners
-   - [ ] Preventing events
-
-6. What does classList.add() do?
-   - [ ] Removes a class
-   - [x] Adds a class
-   - [ ] Checks for a class
-   - [ ] Replaces a class
-
-7. What is the difference between append and prepend?
-   - [ ] No difference
-   - [ ] append adds at beginning, prepend at end
-   - [x] append adds at end, prepend at beginning
-   - [ ] Both remove elements
-
-8. What does cloneNode(true) do?
-   - [ ] Clones only the element
-   - [x] Clones element and all descendants
-   - [ ] Clones nothing
-   - [ ] Clones the parent only
-
-9. What is the difference between parentNode and parentElement?
-   - [ ] No difference
-   - [x] parentNode can be any node, parentElement is always an element
-   - [ ] parentNode is always an element
-   - [ ] parentElement includes text nodes
-
-10. What does addEventListener do?
-    - [ ] Removes an event listener
-    - [x] Adds an event listener to an element
-    - [ ] Creates an element
-    - [ ] Deletes an element
-
----
-
-## Additional Resources
-
-- [MDN: DOM Introduction](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction)
-- [MDN: Locating DOM Elements](https://developer.mozilla.org/en-US/docs/Web/API/Document_object_model/Locating_DOM_elements)
-- [MDN: Event Reference](https://developer.mozilla.org/en-US/docs/Web/Events)
-- [MDN: classList](https://developer.mozilla.org/en-US/docs/Web/API/Element/classList)
-- [JavaScript.info: DOM](https://javascript.info/dom-navigation)
-- [JavaScript.info: Events](https://javascript.info/introduction-browser-events)

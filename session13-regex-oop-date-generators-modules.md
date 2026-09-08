@@ -1,58 +1,61 @@
-# Session 13: Regex, OOP, Date, Generators & Modules — Active Learning Redesign
+# Session 13: Regex, OOP, Date, Generators & Modules — Student Active-Learning Lab
 
-## Session Plan for the Instructor
-
-- **Total time:** approximately 90 to 120 minutes
-- **Pacing rule:** never explain theory continuously for more than 15–20 minutes. After every concept, students must predict, write, or fix code.
-- **Pedagogical pattern for every topic:**
-  1. **Problem** — a realistic mini-situation
-  2. **Guess** — ask: "What do you expect to happen?"
-  3. **Explain** — the shortest rule that fixes the problem
-  4. **Code** — live code written in front of the students, step by step
-  5. **Challenge** — students solve a small task on their own or in groups
-  6. **Review** — discuss the answer and the most common mistake
-
-### Competition and Points
-
-- 1 point per correct prediction in the "Guess" phase.
-- 1–3 points per completed challenge, depending on difficulty.
-- A "Bug Hunter" badge for each student who finds and fixes an intentional error.
-- Keep a simple tally on a shared board or in the chat.
-
-### Instructor Questions to Ask During the Session
-
-- "What does this regex pattern match?"
-- "What does `super()` do?"
-- "How do we keep data private?"
-- "What is the difference between `getDate` and `getDay`?"
-- "What does `yield` do?"
+Welcome to this session. Today you will unlock five powerful JavaScript tools: **regex** for pattern matching, **OOP** for reusable blueprints, `Date` for time, **generators** for controlled iteration, and **modules** for organizing code into files. Do not just read — predict, type, run, and fix.
 
 ---
 
-## Part 0: Warm-Up — Many Concepts (5 minutes)
+## 🧭 How to move through this session
 
-### Problem
+1. **Read the problem first.**
+2. **Stop.** Do not look at the code yet.
+3. **Write your prediction** in a comment or notebook.
+4. **Type the code and run it.**
+5. **Compare, ask why, then change one thing.**
+6. **Do the challenge before you look at the answer key.**
 
-A program needs to validate an email, create a reusable blueprint for users, work with dates, and split code into separate files.
+---
 
-### Guess
+## Part 0: Warm-Up — One Program, Five Problems
 
-Ask: "Which JavaScript features help with each of these tasks?"
+### The problem
 
-### Explain
+A real program needs to: validate an email, create a reusable blueprint for users, work with dates, produce values one at a time, and split code into separate files.
 
-Session 13 covers many advanced tools: regex for pattern matching, OOP for reusable structures, `Date` for time, generators for controlled iteration, and modules for organization.
+### 🤔 Think
 
-### Live Code
+Which JavaScript features could help with each of these tasks?
 
-```javascript
-console.log(/hello/i.test("HELLO")); // true
-console.log(new Date().getFullYear()); // current year
+```text
+Validate an email:            __________
+Blueprint for users:          __________
+Work with dates:              __________
+Values one at a time:         __________
+Split code into files:        __________
 ```
 
-### Review
+### 🔮 Predict
+
+Look at this code and write what you think will print:
+
+```javascript
+console.log(/hello/i.test("HELLO")); // ?
+console.log(new Date().getFullYear()); // ?
+```
+
+### ✅ Result
+
+Run the code.
+
+### 🧠 Discover
+
+- `/hello/i` is a **regular expression** — the `i` flag makes it case-insensitive, so it matches `"HELLO"`.
+- `new Date()` creates a date object for "right now", and `getFullYear()` returns the current year.
 
 These tools are powerful and used together in real applications.
+
+### 🧪 Experiment
+
+Change `/hello/i` to `/hello/` (no flag) and run again. Does it still match `"HELLO"`? Why or why not?
 
 ---
 
@@ -60,64 +63,152 @@ These tools are powerful and used together in real applications.
 
 ### 1.1 Creating and Testing Regex
 
-#### Problem
+### The problem
 
-Check if a string contains a pattern.
+You need to check if a string contains a specific pattern — like checking whether a user's message contains the word "hello".
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 const pattern = /hello/;
 const text = "hello world";
 
-console.log(pattern.test(text));    // true
-console.log(text.match(pattern));   // ["hello"]
+console.log(pattern.test(text));    // ?
+console.log(text.match(pattern));   // ?
 
 const pattern2 = new RegExp("world");
-console.log(pattern2.test(text));   // true
+console.log(pattern2.test(text));   // ?
 ```
 
-#### Challenge 1.1 — Test Pattern (individual, 3 minutes)
+What will each `console.log` print? What is the difference between `test` and `match`?
 
-- **Requirement:** Use `test` to check if `"javascript"` contains the pattern `/script/`.
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+- A regex can be written between slashes: `/hello/`, or with the constructor: `new RegExp("world")`.
+- `pattern.test(text)` returns `true` or `false`.
+- `text.match(pattern)` returns the matched text (or `null`).
+
+### Challenge 1.1 — Test Pattern
+
+Use `test` to check if `"javascript"` contains the pattern `/script/`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+console.log(/script/.test("javascript"));
+```
+
+</details>
+
+---
 
 ### 1.2 Flags and Character Classes
 
-#### Live Code
+### The problem
+
+A single fixed word is not enough. You need to match digits, letters, spaces — and find every match, not just the first.
+
+### 🔮 Predict
 
 ```javascript
-console.log(/hello/i.test("HELLO"));       // true
-console.log("hello hello".match(/hello/g)); // ["hello", "hello"]
+console.log(/hello/i.test("HELLO"));        // ?
+console.log("hello hello".match(/hello/g)); // ?
 
-console.log(/[aeiou]/.test("apple"));      // true
-console.log(/\d/.test("abc123"));          // true
-console.log(/\w/.test("_"));               // true
-console.log(/\s/.test("a b"));             // true
+console.log(/[aeiou]/.test("apple"));       // ?
+console.log(/\d/.test("abc123"));           // ?
+console.log(/\w/.test("_"));                // ?
+console.log(/\s/.test("a b"));              // ?
 ```
 
-#### Challenge 1.2 — Match Digits (individual, 3 minutes)
+What will each line print? What do you think `i`, `g`, `\d`, `\w`, and `\s` mean?
 
-- **Requirement:** Write a regex to test if a string has at least one digit, and use it on `"Room 42"`.
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+- `i` — case-insensitive. `g` — global (find all matches).
+- `[aeiou]` — a **character class**: any one of these letters.
+- `\d` — any digit. `\w` — any word character (letter, digit, `_`). `\s` — whitespace.
+
+### 🧪 Experiment
+
+Try `"HELLO HELLO".match(/hello/gi)`. How many matches do you get? What happens without `i`?
+
+### Challenge 1.2 — Match Digits
+
+Write a regex to test if a string has at least one digit, and use it on `"Room 42"`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+console.log(/\d/.test("Room 42"));
+```
+
+</details>
+
+---
 
 ### 1.3 Quantifiers
 
-#### Live Code
+### The problem
+
+How do you say "exactly 3 digits" or "one or more letters" without writing the pattern over and over?
+
+### 🔮 Predict
 
 ```javascript
-console.log(/a*/.test(""));      // true (0 or more)
-console.log(/a+/.test("a"));     // true (1 or more)
-console.log(/a?/.test("b"));     // true (0 or 1)
-console.log(/a{3}/.test("aaa")); // true (exactly 3)
-console.log(/\d{2,4}/.test("12")); // true (2 to 4 digits)
+console.log(/a*/.test(""));        // ?
+console.log(/a+/.test("a"));       // ?
+console.log(/a?/.test("b"));       // ?
+console.log(/a{3}/.test("aaa"));   // ?
+console.log(/\d{2,4}/.test("12")); // ?
 ```
 
-#### Challenge 1.3 — Validate Phone Pattern (individual, 4 minutes)
+For each line, what do you think will print? What do `*`, `+`, `?`, and `{n}` mean?
 
-- **Requirement:** Use a regex to test if a string starts with exactly 3 digits followed by a dash.
-- **Time limit:** 4 minutes
-- **Hint:** `^\d{3}-`
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+- `*` — 0 or more. `+` — 1 or more. `?` — 0 or 1.
+- `{3}` — exactly 3. `{2,4}` — between 2 and 4.
+
+### Challenge 1.3 — Validate Phone Pattern
+
+Use a regex to test if a string starts with exactly 3 digits followed by a dash.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+console.log(/^\d{3}-/.test("123-456"));
+```
+
+</details>
+
+**Hint:** `^\d{3}-` (`^` means "start of the string")
 
 ---
 
@@ -125,11 +216,11 @@ console.log(/\d{2,4}/.test("12")); // true (2 to 4 digits)
 
 ### 2.1 Constructor Functions
 
-#### Problem
+### The problem
 
-Create many objects with the same shape.
+You need to create many objects with the same shape — 100 users, 50 products, 200 cars. Copying object literals does not scale.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 function Person(name, age) {
@@ -142,23 +233,75 @@ Person.prototype.greet = function() {
 };
 
 const john = new Person("John", 30);
-console.log(john.greet());
+console.log(john.greet()); // ?
 ```
 
-#### Challenge 2.1 — Constructor and Prototype (individual, 4 minutes)
+What will print? Where does `greet` come from — it is not inside `Person`!
 
-- **Requirement:** Create a `Car(make, speed)` constructor and add `accelerate(amount)` and `brake(amount)` to its prototype.
-- **Time limit:** 4 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+- A **constructor function** is a normal function used with `new`. Inside it, `this` is the new object being built.
+- Methods go on `Person.prototype` so all instances **share** one copy instead of each carrying their own.
+
+### Challenge 2.1 — Constructor and Prototype
+
+Create a `Car(make, speed)` constructor and add `accelerate(amount)` and `brake(amount)` to its prototype.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+function Car(make, speed) {
+  this.make = make;
+  this.speed = speed;
+}
+
+Car.prototype.accelerate = function(amount) {
+  this.speed += amount;
+  return this.speed;
+};
+
+Car.prototype.brake = function(amount) {
+  this.speed = Math.max(0, this.speed - amount);
+  return this.speed;
+};
+```
+
+</details>
+
+---
 
 ### 2.2 `hasOwnProperty` and Prototype Chain
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
-console.log(john.hasOwnProperty("name"));   // true
-console.log(john.hasOwnProperty("greet"));  // false
-console.log(john.__proto__ === Person.prototype); // true
+console.log(john.hasOwnProperty("name"));         // ?
+console.log(john.hasOwnProperty("greet"));        // ?
+console.log(john.__proto__ === Person.prototype); // ?
 ```
+
+`john` can call `greet` — so why might `hasOwnProperty("greet")` be `false`?
+
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+When you access `john.greet`, JavaScript first looks on `john` itself. If it is not found, it walks up the **prototype chain** to `Person.prototype`. `hasOwnProperty` only checks the object itself — `greet` lives on the prototype, not on `john`.
+
+### 🧪 Experiment
+
+Add `john.greet = () => "custom";` then check `john.hasOwnProperty("greet")` again. What changed and why?
 
 ---
 
@@ -166,11 +309,11 @@ console.log(john.__proto__ === Person.prototype); // true
 
 ### 3.1 Basic Classes
 
-#### Problem
+### The problem
 
-A cleaner way to write constructors and methods.
+Constructor functions plus `.prototype` work, but the syntax is scattered. There is a cleaner way to write the same thing.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 class Animal {
@@ -184,17 +327,51 @@ class Animal {
 }
 
 const animal = new Animal("Buddy");
-console.log(animal.speak());
+console.log(animal.speak()); // ?
 ```
 
-#### Challenge 3.1 — Create a Class (individual, 3 minutes)
+What will print? How does this compare to the constructor function version?
 
-- **Requirement:** Write a `Rectangle` class with `width`, `height`, and `area()` method.
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+`class` is modern syntax for the same constructor + prototype idea. `constructor(name)` runs on `new`, and `speak()` is automatically placed on the prototype.
+
+### Challenge 3.1 — Create a Class
+
+Write a `Rectangle` class with `width`, `height`, and an `area()` method.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+class Rectangle {
+  constructor(w, h) {
+    this.w = w;
+    this.h = h;
+  }
+  area() { return this.w * this.h; }
+}
+```
+
+</details>
+
+---
 
 ### 3.2 Inheritance and `super`
 
-#### Live Code
+### The problem
+
+A `Dog` **is** an `Animal` — it should reuse the parent's code and add its own. How do we connect them?
+
+### 🔮 Predict
 
 ```javascript
 class Dog extends Animal {
@@ -209,13 +386,45 @@ class Dog extends Animal {
 }
 
 const dog = new Dog("Buddy", "Golden");
-console.log(dog.speak());
+console.log(dog.speak()); // ?
 ```
 
-#### Challenge 3.2 — Inheritance (individual, 5 minutes)
+What will print — `"makes a sound"` or `"barks"`? What does `super(name)` do?
 
-- **Requirement:** Create `Employee` extends `Person` (with `name`, `salary`) and add `getInfo()`.
-- **Time limit:** 5 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+- `extends` makes `Dog` a **subclass** of `Animal` — it inherits everything.
+- `super(name)` calls the parent constructor. You **must** call it before using `this` in a subclass.
+- `Dog`'s own `speak()` **overrides** the parent's version.
+
+### Challenge 3.2 — Inheritance
+
+Create `Employee` that extends `Person` (with `name`, `salary`) and add a `getInfo()` method.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+class Employee extends Person {
+  constructor(name, salary) {
+    super(name);
+    this.salary = salary;
+  }
+  getInfo() {
+    return `${this.name} earns $${this.salary}`;
+  }
+}
+```
+
+</details>
 
 ---
 
@@ -223,11 +432,11 @@ console.log(dog.speak());
 
 ### 4.1 Private Fields
 
-#### Problem
+### The problem
 
-Hide data so it cannot be changed directly.
+A bank account's balance should not be changeable from outside — `account.balance = -9999` must be impossible.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 class BankAccount {
@@ -248,18 +457,50 @@ class BankAccount {
 
 const acc = new BankAccount(100);
 acc.deposit(50);
-console.log(acc.getBalance()); // 150
-// console.log(acc.#balance);   // SyntaxError
+console.log(acc.getBalance()); // ?
+// console.log(acc.#balance);  // what happens if you uncomment this?
 ```
 
-#### Challenge 4.1 — Private Field (individual, 4 minutes)
+What will `getBalance()` return? What happens if you try `acc.#balance` from outside?
 
-- **Requirement:** Create a `Counter` class with a private `#count` and `increment()` and `getCount()` methods.
-- **Time limit:** 4 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+`#balance` is a **private field**. It exists only inside the class. Code outside cannot read or write it — trying to is a `SyntaxError`. The only way in is through the public methods you choose to provide.
+
+### Challenge 4.1 — Private Field
+
+Create a `Counter` class with a private `#count` and `increment()` and `getCount()` methods.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+class Counter {
+  #count = 0;
+  increment() { return ++this.#count; }
+  getCount() { return this.#count; }
+}
+```
+
+</details>
+
+---
 
 ### 4.2 Closures for Privacy
 
-#### Live Code
+### The problem
+
+Before `#fields` existed, developers hid data with **closures**.
+
+### 🔮 Predict
 
 ```javascript
 function createCounter() {
@@ -271,12 +512,29 @@ function createCounter() {
 }
 
 const c = createCounter();
-console.log(c.increment()); // 1
+console.log(c.increment()); // ?
+console.log(c.count);       // ?
 ```
+
+What will each line print? Can you reach `count` directly?
+
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+`count` lives inside `createCounter`'s scope. The returned methods are closures that remember it — but nothing outside can touch `count` directly.
+
+---
 
 ### 4.3 Getters and Setters
 
-#### Live Code
+### The problem
+
+You want `t.fahrenheit` to *look* like a property but secretly *compute* a value — and assignments like `t.fahrenheit = 212` to update Celsius.
+
+### 🔮 Predict
 
 ```javascript
 class Temperature {
@@ -292,18 +550,32 @@ class Temperature {
 }
 
 const t = new Temperature(0);
-console.log(t.fahrenheit);
+console.log(t.fahrenheit); // ?
 t.fahrenheit = 212;
-console.log(t.celsius);
+console.log(t.celsius);    // ?
 ```
+
+What will each line print? Notice — no parentheses on `t.fahrenheit`!
+
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+`get` and `set` define **computed properties**. Reading `t.fahrenheit` runs the getter; assigning `t.fahrenheit = 212` runs the setter. The underscore in `this._c` is a *convention* meaning "treat as internal" (unlike `#`, it is not truly private).
+
+### 🧪 Experiment
+
+Set `t.celsius = 100` and read `t.fahrenheit`. Then set `t.fahrenheit = 32` and read `t.celsius`. Do the conversions work both ways?
 
 ---
 
 ## Bug Hunt 1
 
-### Problem
+### The mission
 
-Find the bug in this OOP code.
+Find the bug in this OOP code. Do not run it yet. Read and write what you think is wrong.
 
 ```javascript
 class Animal {
@@ -322,11 +594,20 @@ const d = new Dog("Buddy", "Golden");
 console.log(d.name);
 ```
 
-### Issues
+### 🐛 What I think is wrong
 
-1. The `Dog` constructor does not call `super(name)` before using `this`, causing an error.
+1. _______________________________________________________________
 
-### Fixed Version
+### ✅ Fixed version
+
+Write your fixed version, then test it.
+
+```javascript
+// your fixed version here
+```
+
+<details>
+<summary>Answer — try first!</summary>
 
 ```javascript
 class Dog extends Animal {
@@ -337,9 +618,7 @@ class Dog extends Animal {
 }
 ```
 
-### Points
-
-1 point for finding the bug.
+</details>
 
 ---
 
@@ -347,40 +626,95 @@ class Dog extends Animal {
 
 ### 5.1 Creating and Reading Dates
 
-#### Problem
+### The problem
 
-Work with dates in JavaScript.
+Your app needs to show "member since 2021" and count down to a deadline. You need to work with real dates.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 const now = new Date();
-console.log(now.getFullYear());
-console.log(now.getMonth());    // 0-11
-console.log(now.getDate());
-console.log(now.getDay());      // 0-6
+console.log(now.getFullYear()); // ?
+console.log(now.getMonth());    // ?
+console.log(now.getDate());     // ?
+console.log(now.getDay());      // ?
 ```
 
-#### Challenge 5.1 — Format Date (individual, 3 minutes)
+Which of these returns a number from `0–11`? Which returns `0–6`? What is the difference between `getDate` and `getDay`?
 
-- **Requirement:** Create a date for `2025-12-25` and log the year, month, and day.
-- **Time limit:** 3 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+- `getMonth()` is **0-based**: January is `0`, December is `11`. (A classic bug source!)
+- `getDate()` — day of the month (1–31). `getDay()` — day of the **week** (0 = Sunday, 6 = Saturday).
+
+### Challenge 5.1 — Format Date
+
+Create a date for `2025-12-25` and log the year, month, and day.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const date = new Date("2025-12-25");
+console.log(date.getFullYear(), date.getMonth() + 1, date.getDate());
+```
+
+</details>
+
+---
 
 ### 5.2 Date Arithmetic
 
-#### Live Code
+### The problem
+
+How many days until the deadline? Subtracting dates needs a trick.
+
+### 🔮 Predict
 
 ```javascript
 const now = new Date();
 const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
 const diff = tomorrow - now;
-console.log(diff / (1000 * 60 * 60)); // hours
+console.log(diff / (1000 * 60 * 60)); // ?
 ```
 
-#### Challenge 5.2 — Days Between (individual, 4 minutes)
+What unit is `diff` in? What will the last line print?
 
-- **Requirement:** Calculate how many days are between `2024-01-01` and `2024-12-31`.
-- **Time limit:** 4 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+`getTime()` returns **milliseconds** since Jan 1, 1970. Subtracting dates gives milliseconds — divide by `1000 * 60 * 60` for hours, or `1000 * 60 * 60 * 24` for days.
+
+### Challenge 5.2 — Days Between
+
+Calculate how many days are between `2024-01-01` and `2024-12-31`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const start = new Date("2024-01-01");
+const end = new Date("2024-12-31");
+const days = (end - start) / (1000 * 60 * 60 * 24);
+console.log(days);
+```
+
+</details>
 
 ---
 
@@ -388,11 +722,11 @@ console.log(diff / (1000 * 60 * 60)); // hours
 
 ### 6.1 Basic Generator
 
-#### Problem
+### The problem
 
-Create a function that returns multiple values one at a time.
+A normal function returns once and is done. You want a function that hands out values **one at a time**, pausing between each — like a vending machine.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 function* count() {
@@ -402,23 +736,55 @@ function* count() {
 }
 
 const gen = count();
-console.log(gen.next().value); // 1
-console.log(gen.next().value); // 2
-console.log(gen.next().done);  // false
+console.log(gen.next().value); // ?
+console.log(gen.next().value); // ?
+console.log(gen.next().done);  // ?
 ```
 
-#### Challenge 6.1 — Range Generator (individual, 4 minutes)
+Notice the `function*` — what do you think `yield` does? What is `gen.next()`?
 
-- **Requirement:** Write a generator `range(start, end)` that yields numbers from `start` to `end`.
-- **Time limit:** 4 minutes
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+- `function*` declares a **generator**. Calling it does *not* run the body — it returns a generator object.
+- Each `gen.next()` runs the code up to the next `yield`, then **pauses** and returns `{ value, done }`.
+- `done` becomes `true` when the function finishes.
+
+### 🧪 Experiment
+
+Call `gen.next()` a fourth time. What are `value` and `done` now?
+
+### Challenge 6.1 — Range Generator
+
+Write a generator `range(start, end)` that yields numbers from `start` to `end`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+function* range(start, end) {
+  for (let i = start; i <= end; i++) {
+    yield i;
+  }
+}
+```
+
+</details>
 
 ---
 
 ## Bug Hunt 2
 
-### Problem
+### The mission
 
-Find the bug in this generator code.
+Find the bug in this generator code. Do not run it yet. Read and write what you think is wrong.
 
 ```javascript
 function* count() {
@@ -434,11 +800,20 @@ for (const value of count()) {
 }
 ```
 
-### Issues
+### 🐛 What I think is wrong
 
-1. `return` ends the generator completely. Should use `yield` to pause and return a value.
+1. _______________________________________________________________
 
-### Fixed Version
+### ✅ Fixed version
+
+Write your fixed version, then test it.
+
+```javascript
+// your fixed version here
+```
+
+<details>
+<summary>Answer — try first!</summary>
 
 ```javascript
 function* count() {
@@ -450,9 +825,7 @@ function* count() {
 }
 ```
 
-### Points
-
-1 point for finding the bug.
+</details>
 
 ---
 
@@ -460,11 +833,11 @@ function* count() {
 
 ### 7.1 Named and Default Exports
 
-#### Problem
+### The problem
 
-Split code into reusable files.
+All your code in one giant file does not scale. You want to split reusable pieces into separate files and pull in only what you need.
 
-#### Live Code
+### 🔮 Predict
 
 ```javascript
 // math.js
@@ -474,33 +847,79 @@ export default function multiply(a, b) { return a * b; }
 
 // main.js
 import multiply, { PI, add } from "./math.js";
-console.log(add(2, 3));
-console.log(PI);
-console.log(multiply(2, 3));
+console.log(add(2, 3));      // ?
+console.log(PI);             // ?
+console.log(multiply(2, 3)); // ?
 ```
 
-#### Challenge 7.1 — Write a Module (individual, 4 minutes)
+What will each line print? Why is `multiply` outside the braces but `PI` and `add` inside?
 
-- **Requirement:** Write a module that exports `greet(name)` as a named export and `User` class as a default export. Then write the import statement.
-- **Time limit:** 4 minutes
+### ✅ Result
+
+Run it (you will need two files — `math.js` and `main.js` — and a browser page or Node with modules enabled).
+
+### 🧠 Why?
+
+- `export const` / `export function` — **named exports**. Import them by exact name inside `{ }`.
+- `export default` — one **default export** per file. Import it with *any* name, no braces.
+- In the browser, the script tag needs `type="module"`.
+
+### Challenge 7.1 — Write a Module
+
+Write a module that exports `greet(name)` as a named export and a `User` class as a default export. Then write the import statement.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+// utils.js
+export function greet(name) { return `Hello, ${name}`; }
+export default class User {}
+
+// main.js
+import User, { greet } from "./utils.js";
+```
+
+</details>
+
+---
 
 ### 7.2 Import All
 
-#### Live Code
+### The problem
+
+A module has 20 exports and you want them all — writing 20 names in braces is painful.
+
+### 🔮 Predict
 
 ```javascript
 import * as math from "./math.js";
-console.log(math.add(1, 2));
+console.log(math.add(1, 2)); // ?
 ```
+
+What is `math` here?
+
+### ✅ Result
+
+Run it.
+
+### 🧠 Why?
+
+`import * as math` bundles **all** exports into one namespace object. Access each one as `math.add`, `math.PI`, and so on.
+
+### 🧪 Experiment
+
+Add `console.log(Object.keys(math))`. What do you see?
 
 ---
 
 ## Group Challenge: Advanced JavaScript Race
 
-- **Time:** 12 minutes
-- **Teams:** 2 or 3 students per team
-- **Task:** Each team completes one task.
-- **Scoring:** 2 points per correct solution.
+If you are working in a group, split into teams of 2 or 3. Each team completes one task — or race to finish all four. Set a timer for 12 minutes.
 
 ### Tasks
 
@@ -509,87 +928,162 @@ console.log(math.add(1, 2));
 3. Create a `Date` for next Monday and log it.
 4. Write a generator that yields even numbers from 0 to 10.
 
-### Instructor Answer Key
-
-```javascript
-// 1
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-console.log(emailPattern.test("test@example.com"));
-
-// 2
-class Product {
-  constructor(name, price) {
-    this.name = name;
-    this.price = price;
-  }
-}
-
-class Book extends Product {
-  constructor(title, price, author) {
-    super(title, price);
-    this.author = author;
-  }
-}
-
-// 3
-const now = new Date();
-const nextMonday = new Date(now);
-nextMonday.setDate(now.getDate() + ((1 + 7 - now.getDay()) % 7));
-console.log(nextMonday.toDateString());
-
-// 4
-function* evens() {
-  for (let i = 0; i <= 10; i += 2) {
-    yield i;
-  }
-}
-```
-
 ---
 
 ## Individual Challenges — Progressive Difficulty
 
-### Level 1: Regex (3 minutes)
+Do these in order. Do not look at the answer key until you have tried.
 
-- **Requirement:** Test if `"JavaScript"` starts with `J` (case-sensitive).
+### Level 1: Regex
 
-### Level 2: Class (3 minutes)
+Test if `"JavaScript"` starts with `J` (case-sensitive).
 
-- **Requirement:** Create a `Circle` class with `radius` and `area()`.
+```javascript
+// your code here
+```
 
-### Level 3: Inheritance (4 minutes)
+<details>
+<summary>Answer — try first!</summary>
 
-- **Requirement:** Create `Manager` that extends `Employee` and adds `teamSize`.
+```javascript
+console.log(/^J/.test("JavaScript"));
+```
 
-### Level 4: Private Field (4 minutes)
+</details>
 
-- **Requirement:** Create a `SafeBox` class with a private `#value` and `add()` and `get()`.
+### Level 2: Class
 
-### Level 5: Date (4 minutes)
+Create a `Circle` class with `radius` and `area()`.
 
-- **Requirement:** Log the current date in `YYYY-MM-DD` format.
+```javascript
+// your code here
+```
 
-### Level 6: Generator (5 minutes)
+<details>
+<summary>Answer — try first!</summary>
 
-- **Requirement:** Write a generator that yields the letters of a string one at a time.
+```javascript
+class Circle {
+  constructor(r) { this.r = r; }
+  area() { return Math.PI * this.r * this.r; }
+}
+```
 
-### Level 7: Module (4 minutes)
+</details>
 
-- **Requirement:** Write the export and import for a `calculateTax(amount)` named export.
+### Level 3: Inheritance
+
+Create `Manager` that extends `Employee` and adds `teamSize`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+class Manager extends Employee {
+  constructor(name, salary, teamSize) {
+    super(name, salary);
+    this.teamSize = teamSize;
+  }
+}
+```
+
+</details>
+
+### Level 4: Private Field
+
+Create a `SafeBox` class with a private `#value` and `add()` and `get()`.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+class SafeBox {
+  #value = 0;
+  add(amount) { this.#value += amount; }
+  get() { return this.#value; }
+}
+```
+
+</details>
+
+### Level 5: Date
+
+Log the current date in `YYYY-MM-DD` format.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+const now = new Date();
+const formatted = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+console.log(formatted);
+```
+
+</details>
+
+### Level 6: Generator
+
+Write a generator that yields the letters of a string one at a time.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+function* letters(str) {
+  for (const char of str) {
+    yield char;
+  }
+}
+```
+
+</details>
+
+### Level 7: Module
+
+Write the export and import for a `calculateTax(amount)` named export.
+
+```javascript
+// your code here
+```
+
+<details>
+<summary>Answer — try first!</summary>
+
+```javascript
+// utils.js
+export function calculateTax(amount) { return amount * 0.15; }
+
+// main.js
+import { calculateTax } from "./utils.js";
+```
+
+</details>
 
 ---
 
 ## Mini Project: User Dashboard
 
-### Time
-
-25 minutes
-
 ### Goal
 
-Build a small user dashboard that uses regex, classes, dates, and modules.
+Build a small user dashboard that uses regex, classes, dates, and modules — all together.
 
-### Requirements for the Students
+### Requirements
 
 1. Create a `User` class with `name`, `email`, and `joinDate`.
 2. Add an `isValidEmail()` method that uses a regex.
@@ -691,18 +1185,99 @@ users.forEach(user => {
 </html>
 ```
 
-### Review Questions for the Mini Project
+### Questions to think about
 
-- "Why did we use `type="module"` in the script tag?"
-- "What is the purpose of the private `#email` field?"
-- "How does `getYearsSinceJoin` use the `Date` object?"
+1. Why did we use `type="module"` in the script tag?
+2. What is the purpose of the private `#email` field?
+3. How does `getYearsSinceJoin` use the `Date` object?
+
+### Extension ideas
+
+- Show `getYearsSinceJoin()` in each list item.
+- Style invalid emails in red.
+- Add a `Guest` class that extends `User` with limited permissions.
+
+---
+
+## Review Questions
+
+Answer these before you finish.
+
+1. What does the regex modifier 'i' do?
+   - [ ] Global search
+   - [ ] Case insensitive
+   - [ ] Multiline
+   - [ ] Case sensitive
+
+2. What is a constructor function?
+   - [ ] A function that constructs strings
+   - [ ] A function used with 'new' to create objects
+   - [ ] A function that deletes objects
+   - [ ] A function that validates input
+
+3. What does 'extends' do in ES6 classes?
+   - [ ] Extends array length
+   - [ ] Creates a subclass that inherits from a parent class
+   - [ ] Extends string length
+   - [ ] Copies object properties
+
+4. What is encapsulation in OOP?
+   - [ ] Making everything public
+   - [ ] Hiding internal state and requiring interaction through methods
+   - [ ] Creating multiple objects
+   - [ ] Inheriting from parent classes
+
+5. What does getFullYear() return?
+   - [ ] Year as 2 digits
+   - [ ] Year as 4 digits
+   - [ ] Month
+   - [ ] Day
+
+6. What is a generator function?
+   - [ ] A function that generates random numbers
+   - [ ] A function that can pause and resume execution
+   - [ ] A function that generates HTML
+   - [ ] A function that creates objects
+
+7. What does 'yield' do in a generator?
+   - [ ] Stops the function permanently
+   - [ ] Pauses execution and returns a value
+   - [ ] Throws an error
+   - [ ] Returns from the function
+
+8. What is a named export?
+   - [ ] Export with no name
+   - [ ] Export with a specific name that must be imported with that name
+   - [ ] Export that exports everything
+   - [ ] Export that only works in Node.js
+
+9. What is a default export?
+   - [ ] The first export in a file
+   - [ ] A single export that can be imported with any name
+   - [ ] An export that is automatically imported
+   - [ ] An export that cannot be imported
+
+10. What does 'super()' do in a subclass?
+    - [ ] Calls the parent class constructor
+    - [ ] Creates a super object
+    - [ ] Deletes the parent class
+    - [ ] Exports the class
+
+---
+
+## Additional Resources
+
+- [MDN: Regular Expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions)
+- [Regex101](https://regex101.com) - Interactive regex tester
+- [MDN: Classes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes)
+- [MDN: Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date)
+- [MDN: Generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator)
+- [MDN: Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
 
 ---
 
 <details>
-<summary>Trainer Solutions — Do Not Show Until Students Try</summary>
-
-## Trainer Solutions — Do Not Show Until Students Try
+<summary>Answer Key — Try everything first!</summary>
 
 ### Challenge 1.1
 
@@ -814,6 +1389,33 @@ export default class User {}
 import User, { greet } from "./utils.js";
 ```
 
+### Bug Hunt 1 — What was wrong and the fix
+
+The `Dog` constructor does not call `super(name)` before using `this`, causing an error.
+
+```javascript
+class Dog extends Animal {
+  constructor(name, breed) {
+    super(name);
+    this.breed = breed;
+  }
+}
+```
+
+### Bug Hunt 2 — What was wrong and the fix
+
+`return` ends the generator completely after the first value. You must use `yield` to pause and produce each value, and increment `n` before looping.
+
+```javascript
+function* count() {
+  let n = 0;
+  while (n < 3) {
+    yield n;
+    n++;
+  }
+}
+```
+
 ### Individual Challenges Solutions
 
 ```javascript
@@ -861,79 +1463,40 @@ export function calculateTax(amount) { return amount * 0.15; }
 import { calculateTax } from "./utils.js";
 ```
 
+### Group Challenge Answer Key
+
+```javascript
+// 1
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+console.log(emailPattern.test("test@example.com"));
+
+// 2
+class Product {
+  constructor(name, price) {
+    this.name = name;
+    this.price = price;
+  }
+}
+
+class Book extends Product {
+  constructor(title, price, author) {
+    super(title, price);
+    this.author = author;
+  }
+}
+
+// 3
+const now = new Date();
+const nextMonday = new Date(now);
+nextMonday.setDate(now.getDate() + ((1 + 7 - now.getDay()) % 7));
+console.log(nextMonday.toDateString());
+
+// 4
+function* evens() {
+  for (let i = 0; i <= 10; i += 2) {
+    yield i;
+  }
+}
+```
+
 </details>
-
----
-
-## Review Questions
-
-1. What does the regex modifier 'i' do?
-   - [ ] Global search
-   - [x] Case insensitive
-   - [ ] Multiline
-   - [ ] Case sensitive
-
-2. What is a constructor function?
-   - [ ] A function that constructs strings
-   - [x] A function used with 'new' to create objects
-   - [ ] A function that deletes objects
-   - [ ] A function that validates input
-
-3. What does 'extends' do in ES6 classes?
-   - [ ] Extends array length
-   - [x] Creates a subclass that inherits from a parent class
-   - [ ] Extends string length
-   - [ ] Copies object properties
-
-4. What is encapsulation in OOP?
-   - [ ] Making everything public
-   - [x] Hiding internal state and requiring interaction through methods
-   - [ ] Creating multiple objects
-   - [ ] Inheriting from parent classes
-
-5. What does getFullYear() return?
-   - [ ] Year as 2 digits
-   - [x] Year as 4 digits
-   - [ ] Month
-   - [ ] Day
-
-6. What is a generator function?
-   - [ ] A function that generates random numbers
-   - [x] A function that can pause and resume execution
-   - [ ] A function that generates HTML
-   - [ ] A function that creates objects
-
-7. What does 'yield' do in a generator?
-   - [ ] Stops the function permanently
-   - [x] Pauses execution and returns a value
-   - [ ] Throws an error
-   - [ ] Returns from the function
-
-8. What is a named export?
-   - [ ] Export with no name
-   - [x] Export with a specific name that must be imported with that name
-   - [ ] Export that exports everything
-   - [ ] Export that only works in Node.js
-
-9. What is a default export?
-   - [ ] The first export in a file
-   - [x] A single export that can be imported with any name
-   - [ ] An export that is automatically imported
-   - [ ] An export that cannot be imported
-
-10. What does 'super()' do in a subclass?
-    - [x] Calls the parent class constructor
-    - [ ] Creates a super object
-    - [ ] Deletes the parent class
-    - [ ] Exports the class
-
----
-
-## Additional Resources
-
-- [MDN: Regular Expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions)
-- [Regex101](https://regex101.com) - Interactive regex tester
-- [MDN: Classes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes)
-- [MDN: Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date)
-- [MDN: Generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator)
-- [MDN: Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
