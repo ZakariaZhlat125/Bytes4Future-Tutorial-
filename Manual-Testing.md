@@ -175,6 +175,16 @@ Acceptance Testing  → does it satisfy the business/user? (UAT)
 - **Black-box**: test inputs/outputs without seeing the code (typical manual QA)
 - **White-box**: test with knowledge of the internal code (developers)
 
+**Static vs Dynamic:**
+- **Static testing**: checking without running the app — reviewing requirements, designs, code (walkthroughs, reviews)
+- **Dynamic testing**: running the software and observing behavior
+
+**Alpha vs Beta Testing:**
+- **Alpha**: tested internally by the organization before release
+- **Beta**: released to a limited group of real external users
+
+**Note:** Teams sometimes swap the smoke/sanity definitions — the concepts matter more than the label; check what your team calls them.
+
 ---
 
 ### Section 7: Test Scenarios and Test Cases
@@ -513,6 +523,18 @@ Simultaneous learning, test design, and execution without pre-scripted cases —
 
 **What is the difference between retesting and regression?**
 Retesting = re-checking a specific fixed bug. Regression = checking nothing else broke.
+
+**Difference between error, defect, and failure?**
+- **Error**: the human mistake (in code or requirements)
+- **Defect (bug/fault)**: the flaw in the software caused by the error
+- **Failure**: when the defect actually causes wrong behavior at runtime
+A defect can exist without ever failing — failure needs the defect to be executed.
+
+**Difference between alpha and beta testing?**
+Alpha = tested internally before release; beta = released to a limited group of real external users for feedback.
+
+**What is static testing?**
+Testing without executing the software — reviewing requirements, designs, and code to catch defects early.
 
 **Can testing prove software is bug-free?**
 No — testing shows the presence of defects, never their absence.
