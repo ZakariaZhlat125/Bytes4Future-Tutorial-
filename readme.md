@@ -24,25 +24,16 @@
 - Includes debugging techniques and practical exercises
 - **Duration:** 3 hours (1 hour theory, 1.5 hours practice, 0.5 hours review)
 
-## Session Materials
-
-### 4. Git Fundamentals (Session 11)
-**File:** `Session11.md`
-- Structured Git training session
-- Focus on practical Git workflow and team collaboration
-- Includes homework assignments and review questions
+### 4. Manual Testing
+**File:** `Manual-Testing.md`
+- Software testing fundamentals for QA beginners
+- Covers: testing types & levels, SDLC/STLC, test cases, bug reports, severity vs priority, exploratory testing
+- Includes practical exercises and reusable templates (test case, bug report, test plan)
 - **Duration:** 3 hours (1 hour theory, 1.5 hours practice, 0.5 hours review)
 
 ## Reference Materials
 
-### 5. Git Reference
-**File:** `git.md`
-- Original Git complete course for beginners
-- Comprehensive reference guide
-- Covers Git from zero to professional version control
-- Includes command cheat sheet and best practices
-
-### 6. Markdown Reference
+### 5. Markdown Reference
 **File:** `md-file.md`
 - Markdown syntax and formatting guide
 - Reference for creating documentation
@@ -52,7 +43,7 @@
 ### Complete Course Overview
 This training program covers essential web development tools and version control:
 
-1. **Git & Version Control** (Sessions 11 + Git Complete Training)
+1. **Git & Version Control** (Git Complete Training)
    - Git fundamentals and advanced features
    - GitHub collaboration
    - Team workflows
@@ -67,11 +58,17 @@ This training program covers essential web development tools and version control
    - Debugging techniques
    - Performance optimization
 
+4. **Manual Testing** (Session 14)
+   - Testing fundamentals and QA workflow
+   - Test cases, bug reports, test plans
+   - Exploratory testing
+
 ### Recommended Learning Path
 1. Start with **Git Complete Training** for comprehensive version control knowledge
-2. Practice with **Session 11** exercises for hands-on Git experience
+2. Practice with its **Practical Exercises** section for hands-on Git experience
 3. Learn **Terminal & npm** for development environment setup
 4. Master **DevTools and Debugging** for efficient development workflow
+5. Practice **Manual Testing** to build QA and quality mindset skills
 
 ## Usage Instructions
 
@@ -101,4 +98,5 @@ Upon completing all training materials, you will have:
 - ✅ npm package management expertise
 - ✅ DevTools mastery for debugging
 - ✅ Performance optimization knowledge
+- ✅ Manual testing and QA fundamentals
 - ✅ Team collaboration workflows

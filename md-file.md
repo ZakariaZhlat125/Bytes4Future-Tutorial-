@@ -116,6 +116,16 @@ This is the first paragraph.
 This is the second paragraph.
 ```
 
+## Line Breaks
+
+End a line with two spaces, or use `<br>`, to force a line break without a new paragraph:
+
+```md
+Line one.  
+Line two.
+Or use<br>an HTML break.
+```
+
 ---
 
 # 6. Text Formatting
@@ -199,6 +209,30 @@ Output:
 1. Learn HTML
 2. Learn CSS
 3. Learn JavaScript
+
+---
+
+## Nested List
+
+Indent items by 2–4 spaces (or a tab) to nest them:
+
+```md
+- Frontend
+  - HTML
+  - CSS
+- Backend
+  - Node.js
+  - Databases
+```
+
+Output:
+
+- Frontend
+  - HTML
+  - CSS
+- Backend
+  - Node.js
+  - Databases
 
 ---
 

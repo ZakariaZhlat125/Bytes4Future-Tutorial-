@@ -31,6 +31,8 @@ Terminal (or Command Line) is a text-based interface for interacting with your c
 
 ### Section 2: Basic Terminal Commands
 
+> **Windows users:** The commands below (`ls`, `touch`, `rm`, `man`, `history`, `mkdir -p`, `cd -`) are Unix-style. They work in **Git Bash** (installed with Git) and WSL. In PowerShell/cmd some differ — `dir` for `ls`, `type` for `cat`, `copy` for `cp`, `move` for `mv`, `echo hi > f.txt` for `touch`, and `cd -`/`man`/`history` don't exist. Use Git Bash to follow along.
+
 ## Navigation Commands
 
 ### pwd (Print Working Directory)
@@ -321,6 +323,25 @@ npm run test
 npm run build
 ```
 
+> `start`, `test`, `stop`, and `restart` are special — you can drop `run`: `npm start`, `npm test`.
+
+---
+
+## npm ci
+Clean install — deletes `node_modules` and installs exactly what `package-lock.json` says.
+
+```bash
+npm ci
+```
+
+Use it in CI/CD and when you want a guaranteed reproducible install. Faster and stricter than `npm install`, which may update the lock file.
+
+## npm audit / npm outdated
+```bash
+npm audit          # Check dependencies for known vulnerabilities
+npm outdated       # Show packages with newer versions available
+```
+
 ---
 
 ### Section 7: npx
@@ -335,8 +356,8 @@ npx is a package runner that executes npm packages without installing them globa
 
 **Examples:**
 ```bash
-# Run create-react-app without installing
-npx create-react-app my-app
+# Scaffold a new app without installing (create-react-app is deprecated — use Vite)
+npx create-vite my-app
 
 # Run prettier
 npx prettier --write index.js
@@ -587,14 +608,14 @@ npm run format
 Practice using npx for various tools.
 
 ```bash
-# Run create-react-app without installing
-npx create-react-app my-react-app
+# Scaffold a Vite app without installing anything globally
+npx create-vite my-react-app -- --template react
 
 # Run prettier without installing
 npx prettier --check index.html
 
-# Run typescript without installing
-npx typescript --version
+# Run typescript without installing (the binary is tsc, not typescript)
+npx tsc --version
 
 # Run http-server without installing
 npx http-server -p 8080
@@ -678,12 +699,12 @@ npm install express
 
 **Mistake 4: Not Using npx for One-off Commands**
 ```bash
-# Wrong - installing globally
-npm install -g create-react-app
-create-react-app my-app
+# Wrong - installing a scaffolding tool globally
+npm install -g create-vite
+create-vite my-app
 
 # Right - using npx
-npx create-react-app my-app
+npx create-vite my-app
 ```
 
 ---
@@ -704,6 +725,9 @@ npx create-react-app my-app
 
 **Question 5:** What is npx used for?
 **Answer:** To execute npm packages without installing them globally.
+
+**Question 5b:** What is the difference between `npm install` and `npm ci`?
+**Answer:** `npm install` resolves versions and may update `package-lock.json`; `npm ci` deletes `node_modules` and installs exactly what the lock file specifies — used in CI/CD for reproducible builds.
 
 **Question 6:** What is package-lock.json?
 **Answer:** A file that locks exact dependency versions for consistent installs.

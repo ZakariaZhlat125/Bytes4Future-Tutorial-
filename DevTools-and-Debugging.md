@@ -19,6 +19,12 @@ DevTools (Developer Tools) are built-in browser tools that help developers debug
 - **Firefox**: F12 or Ctrl+Shift+I (Windows), Cmd+Option+I (Mac)
 - **Safari**: Cmd+Option+I (Mac, need to enable in preferences)
 
+**Essential Shortcuts:**
+- **Ctrl+Shift+C**: Inspect element tool
+- **Ctrl+Shift+M**: Device toolbar (responsive/mobile view)
+- **Ctrl+Shift+P**: Command menu (access all DevTools features)
+- **Ctrl+P**: Quick file search (in Sources panel)
+
 **Key Panels:**
 - Elements
 - Console
@@ -97,7 +103,7 @@ console.warn('This is a warning');
 ```
 
 ## console.info()
-Info logging (blue color).
+Info-level logging (looks like `log` in Chrome; some browsers show an icon).
 
 ```javascript
 console.info('Information message');
@@ -137,6 +143,34 @@ Assertion logging.
 
 ```javascript
 console.assert(x > 0, 'x should be positive');
+```
+
+## console.trace()
+Print the call stack — see *how* code was reached.
+
+```javascript
+console.trace('How did we get here?');
+```
+
+## console.count()
+Count how many times a line runs.
+
+```javascript
+console.count('render'); // render: 1, render: 2, ...
+```
+
+## console.dir()
+Show an element's properties as a JS object (vs HTML view).
+
+```javascript
+console.dir(document.body);
+```
+
+## Console Utilities
+```javascript
+$0                    // Last element selected in Elements panel ($1, $2 = earlier)
+$_                    // Result of the last evaluated expression
+copy(object)          // Copy value to clipboard
 ```
 
 ---
@@ -556,8 +590,8 @@ Debug JavaScript code with intentional bugs.
 5. Step through code
 6. Watch variables
 7. Identify bugs
-5. Fix bugs in code
-6. Test again
+8. Fix bugs in code
+9. Test again
 
 **Expected Fix:**
 ```javascript
@@ -585,7 +619,7 @@ Monitor network requests using Network panel.
 <body>
     <h1>Network Practice</h1>
     <button onclick="fetchData()">Fetch Data</button>
-    <img src="https://via.placeholder.com/200" alt="Placeholder">
+    <img src="https://placehold.co/200" alt="Placeholder">
     
     <script>
         function fetchData() {
@@ -640,7 +674,7 @@ Run Lighthouse audit on a webpage.
 <body>
     <h1>Lighthouse Practice Page</h1>
     <p>This page is for Lighthouse testing.</p>
-    <img src="https://via.placeholder.com/1200x600" alt="Large Image">
+    <img src="https://placehold.co/1200x600" alt="Large Image">
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
 </body>
 </html>
@@ -704,10 +738,10 @@ Run Lighthouse audit on a webpage.
 
 **Scenario 3: API Request Failing**
 1. Check Network panel
-4. Verify URL is correct
-5. Check request headers
-6. Check response status
-7. Verify CORS settings
+2. Verify URL is correct
+3. Check request headers
+4. Check response status
+5. Verify CORS settings
 
 **Scenario 4: State Not Updating**
 1. Check if re-render is triggered
@@ -774,29 +808,4 @@ Run Lighthouse audit on a webpage.
 
 ## End of Session 13
 
-## 🎉 Complete Course Completion!
-
-**You have successfully completed the entire course!**
-
-**Course Summary:**
-- Sessions 1-8: CSS Fundamentals to Advanced
-- Sessions 9-10: Tailwind CSS Fundamentals & Advanced
-- Session 11: Git Fundamentals
-- Session 12: Terminal & npm
-- Session 13: DevTools and Debugging
-
-**Final Achievement:**
-You now have comprehensive knowledge of:
-- CSS (Traditional + Tailwind)
-- Version Control (Git)
-- Development Tools (Terminal, npm, DevTools)
-
-**Next Steps:**
-- Build real-world projects
-- Learn JavaScript frameworks (React, Vue, etc.)
-- Explore backend development
-- Stay updated with web technologies
-- Contribute to open source
-- Build your portfolio
-
-**Happy Coding! 🚀**
+**Next Session:** Manual Testing (Testing types & levels, SDLC/STLC, test cases, bug reports, severity vs priority, exploratory testing)

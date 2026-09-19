@@ -174,6 +174,13 @@ git config --global user.email "john@example.com"
 git config --list
 ```
 
+## Set Default Branch to `main`
+```bash
+git config --global init.defaultBranch main
+```
+
+Makes `git init` create a `main` branch instead of `master` (Git 2.28+). `main` is the standard on GitHub.
+
 ---
 
 # Creating Your First Repository
@@ -189,6 +196,8 @@ git init
 ```
 
 Git creates a hidden folder `.git` that stores the project's history.
+
+> **Note:** On older Git versions `git init` creates a `master` branch. Use `git init -b main`, or rename it afterwards with `git branch -M main`, to match the GitHub standard.
 
 ---
 
@@ -277,6 +286,9 @@ git log --graph --oneline
 
 # Show changes
 git log -p
+
+# Show details of a specific commit
+git show <commit-hash>
 ```
 
 ---
@@ -324,7 +336,6 @@ A file that tells Git which files/directories to ignore.
 ```gitignore
 # Dependencies
 node_modules/
-package-lock.json
 
 # Environment files
 .env
@@ -354,6 +365,18 @@ touch .gitignore
 
 # Or manually create .gitignore file
 ```
+
+> **Note:** Commit `package-lock.json` — it locks exact dependency versions so everyone installs the same ones. Only `node_modules/` should be ignored.
+
+## Stop Tracking an Already-Committed File
+If you committed a file that should be ignored (like `.env`):
+
+```bash
+git rm --cached .env
+git commit -m "chore: stop tracking .env"
+```
+
+Then add it to `.gitignore`. The file stays on your disk but is removed from Git's tracking. Remember to rotate any secrets that were pushed.
 
 ---
 
@@ -444,6 +467,28 @@ git branch
 git branch -d login-page
 ```
 
+`-d` is safe: it refuses to delete a branch with unmerged work.
+
+## Force Delete a Branch
+```bash
+git branch -D login-page
+```
+
+## Rename a Branch
+```bash
+git branch -m old-name new-name
+```
+
+## List All Branches (including remote)
+```bash
+git branch -a
+```
+
+## Delete a Remote Branch
+```bash
+git push origin --delete login-page
+```
+
 ---
 
 # Merging
@@ -458,6 +503,13 @@ git merge login-page
 ```
 
 Git combines the changes.
+
+## Merge Types
+- **Fast-forward**: your branch simply moved ahead — Git just moves the pointer, no merge commit
+- **Merge commit**: both branches diverged — Git creates a commit combining them
+
+## Merge vs Rebase
+`git rebase` replays your commits on top of another branch, producing a linear history. Prefer `merge` while learning — rebase rewrites history, so never rebase commits that are already pushed or shared.
 
 ---
 
@@ -479,12 +531,32 @@ Branch B:
 
 Git asks you to choose the correct version.
 
+## Conflict Markers
+```
+<<<<<<< HEAD
+<h1>Hello</h1>
+=======
+<h1>Welcome</h1>
+>>>>>>> login-page
+```
+
+- `<<<<<<< HEAD` — your current branch's version
+- `=======` — separator
+- `>>>>>>> login-page` — the incoming branch's version
+
 ## Resolve Conflicts
 1. Open the conflicted file
 2. Look for `<<<<<<<`, `=======`, `>>>>>>>`
-3. Edit to resolve
+3. Edit to resolve (keep one side, combine them, or rewrite)
 4. `git add` the file
 5. `git commit` to complete merge
+
+## Abort a Merge
+```bash
+git merge --abort
+```
+
+Cancels the merge and returns to the pre-merge state.
 
 ---
 
@@ -508,9 +580,21 @@ git remote -v
 git remote remove origin
 ```
 
+## Change Remote URL (e.g. HTTPS → SSH)
+```bash
+git remote set-url origin git@github.com:username/project.git
+```
+
 ---
 
 # GitHub Operations
+
+## Authentication (HTTPS vs SSH)
+GitHub no longer accepts your account password over HTTPS. Use one of:
+
+- **HTTPS + Personal Access Token (PAT)**: GitHub → Settings → Developer settings → Personal access tokens. Git Credential Manager stores it after your first push.
+- **SSH keys**: run `ssh-keygen`, add the public key at GitHub → Settings → SSH and GPG keys, then use `git@github.com:username/project.git` remote URLs.
+- **GitHub CLI**: `gh auth login` sets up credentials automatically.
 
 ## git push
 Upload local commits to remote.
@@ -661,6 +745,33 @@ git reset --mixed HEAD~1
 git reset --hard HEAD~1
 ```
 
+⚠️ `--hard` permanently discards uncommitted work. Use carefully.
+
+## Fix the Last Commit (message or forgotten files)
+```bash
+# Change the message
+git commit --amend -m "Corrected message"
+
+# Or stage forgotten files first, then:
+git commit --amend --no-edit
+```
+
+Only amend commits that haven't been pushed — it rewrites history.
+
+## Undo a Pushed Commit (safe)
+```bash
+git revert HEAD
+
+# or a specific commit
+git revert <commit-hash>
+```
+
+Creates a **new** commit that reverses the changes. Safe for shared history, unlike `reset` which deletes commits.
+
+## reset vs revert
+- `reset` — moves HEAD back, erasing commits. Only for local, unpushed work.
+- `revert` — adds a new commit that undoes changes. Safe for pushed/shared work.
+
 ---
 
 # Stashing
@@ -673,6 +784,16 @@ Temporarily save unfinished work.
 git stash
 ```
 
+## Stash Including Untracked Files
+```bash
+git stash -u
+```
+
+## Named Stash
+```bash
+git stash push -m "wip: navbar"
+```
+
 ## Show Stashes
 ```bash
 git stash list
@@ -680,7 +801,11 @@ git stash list
 
 ## Restore
 ```bash
+# Apply and remove the stash
 git stash pop
+
+# Apply but keep the stash
+git stash apply
 ```
 
 ## Delete
@@ -697,7 +822,11 @@ Tags mark releases.
 
 ## Create Tag
 ```bash
+# Lightweight tag
 git tag v1.0.0
+
+# Annotated tag (recommended for releases)
+git tag -a v1.0.0 -m "First stable release"
 ```
 
 ## List Tags
@@ -705,8 +834,17 @@ git tag v1.0.0
 git tag
 ```
 
+## Show Tag Details
+```bash
+git show v1.0.0
+```
+
 ## Push Tags
 ```bash
+# Push one tag
+git push origin v1.0.0
+
+# Push all tags
 git push origin --tags
 ```
 
@@ -841,8 +979,8 @@ Initialize a Git repository for a project and make commits.
 mkdir my-project
 cd my-project
 
-# Initialize Git
-git init
+# Initialize Git (with main as default branch)
+git init -b main
 
 # Create .gitignore
 echo "node_modules/" > .gitignore
@@ -1040,6 +1178,21 @@ A copy of a repository under your own account, used for contributing to open sou
 ### How do you enable GitHub Pages?
 Go to repository Settings → Pages → select branch and folder → Save.
 
+### What is `origin`?
+The default name Git gives to the remote you cloned from or added — it's a shortcut for the remote URL, not a special keyword.
+
+### Difference between `git checkout` and `git switch`?
+`git checkout` historically did two jobs: switching branches and restoring files. Since Git 2.23 these were split into `git switch` (branches) and `git restore` (files). `checkout` still works but the newer commands are clearer and safer.
+
+### How do you undo a commit that's already been pushed?
+Use `git revert <commit>` — it creates a new commit that reverses the changes without rewriting shared history. Avoid `git reset --hard` + force push on shared branches.
+
+### How do you stop tracking a file that was already committed?
+`git rm --cached <file>`, commit the change, and add the file to `.gitignore`.
+
+### What is `git commit --amend`?
+Rewrites the most recent commit — used to fix the message or add forgotten files. Only safe on commits that haven't been pushed.
+
 ---
 
 # Common Mistakes
@@ -1053,6 +1206,12 @@ Go to repository Settings → Pages → select branch and folder → Save.
 ❌ Committing `node_modules`
 
 ❌ Working directly on `main`
+
+❌ `git add .` without checking `git status` (commits unintended files)
+
+❌ `git push --force` on shared branches
+
+❌ `git reset --hard` / `--amend` on commits already pushed
 
 ❌ Using meaningless commit messages
 
@@ -1078,6 +1237,7 @@ Update user profile validation
 ```bash
 # Repository Setup
 git init
+git init -b main
 git clone
 
 # Status & Information
@@ -1085,11 +1245,13 @@ git status
 git log
 git log --oneline
 git log --graph --oneline
+git show <commit-hash>
 
 # Staging & Committing
 git add .
 git add filename
 git commit -m "message"
+git commit --amend -m "message"
 
 # Changes & Diff
 git diff
@@ -1098,19 +1260,25 @@ git diff commit-hash
 
 # Branching
 git branch
+git branch -a
 git branch branch-name
 git checkout branch-name
 git switch branch-name
 git checkout -b branch-name
 git switch -c branch-name
+git branch -m old-name new-name
 git branch -d branch-name
+git branch -D branch-name
+git push origin --delete branch-name
 
 # Merging
 git merge branch-name
+git merge --abort
 
 # Remote Operations
 git remote -v
 git remote add origin URL
+git remote set-url origin URL
 git remote remove origin
 git fetch
 git pull
@@ -1120,13 +1288,19 @@ git push --all origin
 
 # Stashing
 git stash
+git stash -u
+git stash push -m "message"
 git stash list
 git stash pop
+git stash apply
 git stash drop
 
 # Tags
 git tag
 git tag v1.0.0
+git tag -a v1.0.0 -m "message"
+git show v1.0.0
+git push origin v1.0.0
 git push origin --tags
 
 # Undo Operations
@@ -1135,11 +1309,13 @@ git restore --staged filename
 git reset --soft HEAD~1
 git reset --mixed HEAD~1
 git reset --hard HEAD~1
-git revert
+git revert HEAD
+git revert <commit-hash>
 
 # File Operations
 git mv old.txt new.txt
 git rm file.txt
+git rm --cached file.txt
 ```
 
 ---
