@@ -2,16 +2,168 @@
 
 **Duration:** 3 hours
 **Level:** Beginner
-**Prerequisites:** JavaScript fundamentals (variables, functions, objects, arrays)
+**Prerequisites:** JavaScript fundamentals (variables, functions, objects, arrays). No tools needed — we install everything from zero in Part 0.
 
 ---
 
 ## Session Timeline
 
-- **Part 1: TypeScript Basics (45 min)** — what/why TypeScript, annotations, primitives, special types, arrays & tuples
-- **Part 2: Objects and Interfaces (60 min)** — object types, interfaces, optional/readonly, extending, `type` vs `interface`
-- **Part 3: Functions and Advanced Types (60 min)** — function annotations, unions, literals & narrowing, generics
-- **Practice (15 min)** — exercises at the end
+- **Part 0: Setup from Zero (30 min)** — install Node.js & npm, create a project, install TypeScript, compile and run the first file
+- **Part 1: TypeScript Basics (40 min)** — what/why TypeScript, annotations, primitives, special types, arrays & tuples
+- **Part 2: Objects and Interfaces (50 min)** — object types, interfaces, optional/readonly, extending, `type` vs `interface`
+- **Part 3: Functions and Advanced Types (50 min)** — function annotations, unions, literals & narrowing, generics
+- **Practice (10 min)** — exercises at the end
+
+---
+
+## Part 0: Setup from Zero
+
+Browsers and Node.js only understand JavaScript, so TypeScript needs a **compiler** (`tsc`) that turns `.ts` files into `.js` files. We get that compiler through **npm**, and npm comes with **Node.js**.
+
+```
+index.ts  ──tsc──▶  index.js  ──node──▶  output
+```
+
+### 0.1 Install Node.js and npm
+
+1. Go to [nodejs.org](https://nodejs.org) and download the **LTS** version.
+2. Run the installer and keep the default options (npm is installed with it).
+3. **Close and reopen** the terminal, then check both tools:
+
+```bash
+node -v    # v22.x.x or newer
+npm -v     # 10.x.x or newer
+```
+
+| Tool | What it is |
+|------|------------|
+| **Node.js** | Runs JavaScript outside the browser |
+| **npm** | Node Package Manager — downloads and manages packages (libraries and tools) |
+| **npx** | Runs a package's command without installing it globally |
+
+**Common errors:** `'node' is not recognized` → the terminal was open during the install; reopen it (or restart the PC). On Windows PowerShell, `npm` blocked by "running scripts is disabled" → run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once.
+
+---
+
+### 0.2 Create the Project
+
+```bash
+mkdir ts-session-1
+cd ts-session-1
+npm init -y        # creates package.json
+code .             # open the folder in VS Code
+```
+
+`package.json` is the project's ID card: its name, its scripts, and the list of packages it depends on.
+
+---
+
+### 0.3 Install TypeScript
+
+```bash
+npm install --save-dev typescript    # short form: npm i -D typescript
+npx tsc -v                           # confirm the compiler works
+```
+
+After this command the project has three new things:
+
+| File / folder | Purpose | Commit to Git? |
+|---------------|---------|----------------|
+| `node_modules/` | The downloaded packages | No — add it to `.gitignore` |
+| `package-lock.json` | Exact installed versions | Yes |
+| `devDependencies` in `package.json` | Tools needed only during development | Yes |
+
+- `--save-dev` (`-D`) → development tool (TypeScript, test runners). Plain `npm install <name>` → a library the app needs at runtime.
+- Anyone who clones the project runs just `npm install` to rebuild `node_modules/` from `package.json`.
+- Install TypeScript **per project**, not globally (`-g`), so every project controls its own version.
+
+---
+
+### 0.4 Configure the Compiler: tsconfig.json
+
+Create a file named `tsconfig.json` in the project root:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "nodenext",
+    "rootDir": "src",
+    "outDir": "dist",
+    "strict": true
+  },
+  "include": ["src"]
+}
+```
+
+| Option | Meaning |
+|--------|---------|
+| `target` | Which JavaScript version to output |
+| `module` | Module system of the output (`nodenext` follows Node.js rules) |
+| `rootDir` | Where our `.ts` source files live |
+| `outDir` | Where the compiled `.js` files go |
+| `strict` | Turns on all strict type checks — always keep it `true` |
+
+`npx tsc --init` generates a full file with every option explained in comments; the short version above is all we need for now.
+
+---
+
+### 0.5 First File: Compile and Run
+
+Create `src/index.ts`:
+
+```ts
+const course: string = "TypeScript";
+console.log(`Hello, ${course}!`);
+```
+
+```bash
+npx tsc               # compiles src/ → dist/
+node dist/index.js    # Hello, TypeScript!
+```
+
+Now break it on purpose — change the value to `123` and compile again:
+
+```
+src/index.ts:1:7 - error TS2322: Type 'number' is not assignable to type 'string'.
+```
+
+The error appears **before** the code runs. That is the whole point of TypeScript.
+
+Add scripts to `package.json` so nobody has to remember the commands:
+
+```json
+"scripts": {
+  "build": "tsc",
+  "start": "node dist/index.js",
+  "dev": "tsc --watch"
+}
+```
+
+```bash
+npm run build    # compile once
+npm start        # run the compiled code
+npm run dev      # recompile automatically on every save
+```
+
+Final project structure:
+
+```
+ts-session-1/
+├── node_modules/
+├── dist/              ← compiled JavaScript (generated)
+│   └── index.js
+├── src/               ← our TypeScript code
+│   └── index.ts
+├── .gitignore         ← node_modules and dist
+├── package.json
+├── package-lock.json
+└── tsconfig.json
+```
+
+**Notes:** VS Code has TypeScript support built in — errors show as red underlines while typing, no extension needed. To try small snippets without any setup, use the [TypeScript Playground](https://www.typescriptlang.org/play).
+
+**Common errors:** running `tsc` instead of `npx tsc` (not installed globally), running `node src/index.ts` instead of the compiled `dist/index.js`, editing files inside `dist/` (they are overwritten on every build).
 
 ---
 
@@ -403,6 +555,7 @@ fetchData<User>("/api/users/1").then(res => console.log(res.data.name));
 
 ## Practice Exercises
 
+0. **Setup** — create a new project from zero: `npm init -y`, install TypeScript, add `tsconfig.json`, print your name from `src/index.ts` using `npm run build` and `npm start`.
 1. **Basic types** — declare `string`, `number`, `boolean`, `string[]`, `number[]` variables; write `sum(nums: number[]): number`.
 2. **Interfaces** — define `Employee` (`id`, `name`, `department`, optional `managerId`); write a function that finds employees by department.
 3. **Functions** — write `formatPrice(amount: number, currency?: string)` returning `"$19.99"` with `"$"` as default.
@@ -413,6 +566,7 @@ fetchData<User>("/api/users/1").then(res => console.log(res.data.name));
 
 ## Summary
 
+- Setup: install Node.js (includes npm) → `npm init -y` → `npm i -D typescript` → `tsconfig.json` → `npx tsc` → `node dist/index.js`
 - TypeScript adds compile-time type safety to JavaScript; types are erased at runtime
 - Primitives: `string`, `number`, `boolean`; special types: `unknown` (prefer), `never`, `void`, avoid `any`
 - Arrays: `type[]`; tuples: `[A, B]` for fixed shapes
