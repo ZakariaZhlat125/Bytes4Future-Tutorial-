@@ -7,6 +7,13 @@
 
 ---
 
+> **How to use this session**
+> - **Complete examples**: every normal code block. Read it, type it yourself, run it.
+> - **✍️ Your Turn**: unfinished code after each part. Fill every `____` and finish every `// TODO`, then run it.
+> - **📝 Student Worksheet** (end of session): questions to give students. Answers are hidden under **✅ Solution**. Delete those blocks before sharing if students should not see them.
+>
+> All exercises use the free practice API **https://jsonplaceholder.typicode.com**, so no backend is needed.
+
 ## Session Overview
 
 - **Part 1:** API fundamentals — REST, HTTP methods, status codes, JSON
@@ -143,6 +150,56 @@ Always wrap `JSON.parse` in `try/catch` — it throws on malformed input.
 
 ---
 
+### ✍️ Your Turn: Part 1
+
+**1.** Which HTTP method?
+
+| Action | Method | URL |
+|--------|--------|-----|
+| Get all books | ____ | `/api/books` |
+| Get book number 5 | ____ | `/api/books/5` |
+| Add a new book | ____ | `/api/books` |
+| Change only the price of book 5 | ____ | `/api/books/5` |
+| Remove book 5 | ____ | `/api/books/5` |
+
+**2.** Which status code?
+
+| Situation | Code |
+|-----------|------|
+| Everything is OK | ____ |
+| The new book was created | ____ |
+| Book 99 does not exist | ____ |
+| You are not logged in | ____ |
+| The server crashed | ____ |
+
+**3.** Complete the request that creates a book:
+
+```ts
+await fetch('/api/books', {
+  method: '____',
+  headers: { 'Content-Type': '____' },
+  body: ____({ title: 'Clean Code', price: 30 }),
+});
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+1. `GET`, `GET`, `POST`, `PATCH`, `DELETE`
+2. `200`, `201`, `404`, `401`, `500`
+3.
+```ts
+await fetch('/api/books', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ title: 'Clean Code', price: 30 }),
+});
+```
+
+</details>
+
+---
+
 ## Part 2: Fetching Data
 
 ### Fetch API
@@ -240,6 +297,93 @@ async function fetchWithRetry(url: string, retries = 3): Promise<Response> {
 
 ---
 
+### ✍️ Your Turn: Part 2
+
+Run this in your Session 1 TypeScript project (Node 18+ has `fetch` built in).
+
+```ts
+interface Todo {
+  userId: number;
+  id: number;
+  title: string;
+  completed: boolean;
+}
+
+const BASE = 'https://jsonplaceholder.typicode.com';
+
+// 1. Complete the function
+async function getTodos(): Promise<____> {
+  const res = await fetch(`${BASE}/todos?_limit=5`);
+  if (____) throw new Error(`HTTP ${res.status}`);
+  return ____;
+}
+
+// 2. TODO: getTodo(id: number): Promise<Todo>
+//    → GET /todos/:id   (don't forget to check res.ok)
+
+// 3. TODO: createTodo(title: string): Promise<Todo>
+//    → POST /todos with body { title, completed: false, userId: 1 }
+
+async function main() {
+  try {
+    // 4. TODO: print the 5 todo titles
+    // 5. TODO: get todo 1 and todo 2 AT THE SAME TIME (they don't depend on each other)
+    const [todo1, todo2] = await ____([getTodo(1), getTodo(2)]);
+    // 6. TODO: create a todo and print its new id
+  } catch (err) {
+    console.error('Failed:', err instanceof Error ? ____ : err);
+  }
+}
+
+main();
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+```ts
+async function getTodos(): Promise<Todo[]> {
+  const res = await fetch(`${BASE}/todos?_limit=5`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+async function getTodo(id: number): Promise<Todo> {
+  const res = await fetch(`${BASE}/todos/${id}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+async function createTodo(title: string): Promise<Todo> {
+  const res = await fetch(`${BASE}/todos`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title, completed: false, userId: 1 }),
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+async function main() {
+  try {
+    const todos = await getTodos();
+    todos.forEach(t => console.log(t.title));
+
+    const [todo1, todo2] = await Promise.all([getTodo(1), getTodo(2)]);
+    console.log(todo1.title, '|', todo2.title);
+
+    const created = await createTodo('Learn fetch');
+    console.log('New id:', created.id);   // 201 (fake API)
+  } catch (err) {
+    console.error('Failed:', err instanceof Error ? err.message : err);
+  }
+}
+```
+
+</details>
+
+---
+
 ## Part 3: Request States & `useEffect`
 
 Every API-driven UI moves through four states. Handle **all of them**:
@@ -294,6 +438,82 @@ function ProductList() {
 - Not ignoring `AbortError` in the catch (it shows as a fake error)
 - Missing dependency → stale data when a prop like `userId` changes
 - No error/empty handling → blank screens
+
+---
+
+### ✍️ Your Turn: Part 3
+
+Use `getTodos()` from the Part 2 exercise.
+
+```tsx
+function TodoList() {
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [loading, setLoading] = useState(____);
+  const [error, setError] = useState<____>(null);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        // TODO: call getTodos() and save the result
+      } catch (err) {
+        // TODO: save the error message
+      } finally {
+        // TODO: stop loading
+      }
+    };
+    load();
+  }, ____);
+
+  // TODO: loading → <p>Loading...</p>
+  // TODO: error   → <p>Error: ...</p>
+  // TODO: empty   → <p>No todos</p>
+  return (
+    <ul>
+      {/* TODO: show each title, with ✅ in front if completed */}
+    </ul>
+  );
+}
+```
+
+**Test the error state:** change the URL in `getTodos` to `/todoss` (wrong) and check that you see the error.
+
+<details>
+<summary>✅ Solution</summary>
+
+```tsx
+function TodoList() {
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        setTodos(await getTodos());
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load');
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+  if (todos.length === 0) return <p>No todos</p>;
+
+  return (
+    <ul>
+      {todos.map(t => (
+        <li key={t.id}>{t.completed && '✅ '}{t.title}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+</details>
 
 ---
 
@@ -458,6 +678,101 @@ function ProductList() {
 
 ---
 
+### ✍️ Your Turn: Parts 4 & 5
+
+Run `npm install axios` first.
+
+```ts
+// src/services/api.ts
+import axios from 'axios';
+
+export const api = axios.____({
+  baseURL: '____',          // https://jsonplaceholder.typicode.com
+  timeout: 10000,
+});
+
+// Attach a token to every request (if we have one)
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem('authToken');
+  if (token) config.headers.Authorization = `____ ${token}`;
+  return ____;
+});
+```
+
+```ts
+// src/services/post.service.ts
+import { api } from './api';
+
+export interface Post {
+  id: number;
+  userId: number;
+  title: string;
+  body: string;
+}
+
+export const postService = {
+  getAll: () => api.get<Post[]>('/posts', { params: { _limit: 10 } }).then(r => r.____),
+  getById: (id: number) => /* TODO: GET /posts/:id */,
+  create: (data: Omit<Post, 'id'>) => /* TODO: POST /posts */,
+  remove: (id: number) => /* TODO: DELETE /posts/:id */,
+};
+```
+
+```tsx
+// src/components/PostList.tsx: use the useFetch hook from Part 5
+function PostList() {
+  const { data: posts, loading, error, refetch } = useFetch(____);
+
+  // TODO: loading → <p>Loading...</p>
+  // TODO: error   → message + <button onClick={refetch}>Retry</button>
+  // TODO: list of post titles
+}
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+```ts
+// api.ts
+export const api = axios.create({
+  baseURL: 'https://jsonplaceholder.typicode.com',
+  timeout: 10000,
+});
+
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem('authToken');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+// post.service.ts
+export const postService = {
+  getAll: () => api.get<Post[]>('/posts', { params: { _limit: 10 } }).then(r => r.data),
+  getById: (id: number) => api.get<Post>(`/posts/${id}`).then(r => r.data),
+  create: (data: Omit<Post, 'id'>) => api.post<Post>('/posts', data).then(r => r.data),
+  remove: (id: number) => api.delete(`/posts/${id}`),
+};
+```
+
+```tsx
+function PostList() {
+  const { data: posts, loading, error, refetch } = useFetch(postService.getAll);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error} <button onClick={refetch}>Retry</button></p>;
+
+  return (
+    <ul>
+      {posts?.map(p => <li key={p.id}>{p.title}</li>)}
+    </ul>
+  );
+}
+```
+
+</details>
+
+---
+
 ## Part 6: React Router Fundamentals
 
 ### Why routing?
@@ -568,6 +883,94 @@ const [searchParams, setSearchParams] = useSearchParams();
 const q = searchParams.get('q') ?? '';
 setSearchParams({ q: 'shoes', page: '2' }); // updates URL → /search?q=shoes&page=2
 ```
+
+---
+
+### ✍️ Your Turn: Parts 6 & 7
+
+Run `npm install react-router-dom` first.
+
+```tsx
+import { BrowserRouter, Routes, Route, Link, NavLink, useParams, useNavigate } from 'react-router-dom';
+
+function Home() { return <h1>Home</h1>; }
+function About() { return <h1>About</h1>; }
+function NotFound() { return <h1>404: Page not found</h1>; }
+
+// 1. Complete the router
+function App() {
+  return (
+    <____>
+      <nav>
+        {/* TODO: links to "/", "/about", "/users/1" and "/users/2" */}
+      </nav>
+      <Routes>
+        <Route path="/" element={____} />
+        <Route path="____" element={<About />} />
+        <Route path="/users/____" element={<UserPage />} />
+        <Route path="____" element={<NotFound />} />
+      </Routes>
+    </____>
+  );
+}
+
+// 2. Read the id from the URL
+function UserPage() {
+  const { id } = ____<{ id: string }>();
+  const navigate = ____();
+  return (
+    <div>
+      <h2>User number {id}</h2>
+      {/* TODO: a "Back" button that goes to the previous page */}
+      {/* TODO: a "Next user" button that goes to /users/<id + 1> */}
+    </div>
+  );
+}
+
+// 3. TODO: change the nav links to NavLink, and make the active link bold
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+```tsx
+function App() {
+  const linkStyle = ({ isActive }: { isActive: boolean }) =>
+    ({ fontWeight: isActive ? 'bold' : 'normal', marginRight: 8 });
+
+  return (
+    <BrowserRouter>
+      <nav>
+        <NavLink to="/" end style={linkStyle}>Home</NavLink>
+        <NavLink to="/about" style={linkStyle}>About</NavLink>
+        <NavLink to="/users/1" style={linkStyle}>User 1</NavLink>
+        <NavLink to="/users/2" style={linkStyle}>User 2</NavLink>
+      </nav>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/users/:id" element={<UserPage />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+function UserPage() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  return (
+    <div>
+      <h2>User number {id}</h2>
+      <button onClick={() => navigate(-1)}>Back</button>
+      {/* params are strings → convert with Number() before adding */}
+      <button onClick={() => navigate(`/users/${Number(id) + 1}`)}>Next user</button>
+    </div>
+  );
+}
+```
+
+</details>
 
 ---
 
@@ -727,6 +1130,132 @@ export const useAuth = () => {
 
 ---
 
+### ✍️ Your Turn: Parts 8 & 9
+
+```tsx
+import { Routes, Route, Link, Outlet, Navigate, useNavigate } from 'react-router-dom';
+
+// 1. Layout: the sidebar stays, and the page on the right changes
+function DashboardLayout() {
+  return (
+    <div style={{ display: 'flex', gap: 16 }}>
+      <aside>
+        <Link to="/dashboard">Home</Link><br />
+        <Link to="/dashboard/profile">Profile</Link><br />
+        <Link to="/dashboard/settings">Settings</Link>
+      </aside>
+      <main>{/* TODO: child pages appear here */}</main>
+    </div>
+  );
+}
+
+// 2. A simple protected route (the user is saved in localStorage)
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const isLoggedIn = localStorage.getItem('user') !== null;
+  if (____) {
+    return <Navigate to="____" replace />;
+  }
+  return <>{children}</>;
+}
+
+// 3. TODO: Login page: a "Login" button that saves 'user' = 'demo' in localStorage
+//    and then navigates to /dashboard
+
+// 4. Complete the routes and PROTECT /dashboard
+function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/dashboard" element={/* TODO: protect DashboardLayout */}>
+        <Route ____ element={<DashboardHome />} />         {/* /dashboard */}
+        <Route path="____" element={<Profile />} />         {/* /dashboard/profile */}
+        {/* TODO: settings route */}
+      </Route>
+      <Route path="*" element={<h1>404</h1>} />
+    </Routes>
+  );
+}
+
+// 5. TODO: in Settings, add a "Logout" button that removes 'user' and goes to /login
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+```tsx
+function DashboardLayout() {
+  return (
+    <div style={{ display: 'flex', gap: 16 }}>
+      <aside>
+        <Link to="/dashboard">Home</Link><br />
+        <Link to="/dashboard/profile">Profile</Link><br />
+        <Link to="/dashboard/settings">Settings</Link>
+      </aside>
+      <main><Outlet /></main>
+    </div>
+  );
+}
+
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const isLoggedIn = localStorage.getItem('user') !== null;
+  if (!isLoggedIn) {
+    return <Navigate to="/login" replace />;
+  }
+  return <>{children}</>;
+}
+
+function Login() {
+  const navigate = useNavigate();
+  const login = () => {
+    localStorage.setItem('user', 'demo');
+    navigate('/dashboard');
+  };
+  return <button onClick={login}>Login</button>;
+}
+
+function DashboardHome() { return <h2>Dashboard home</h2>; }
+function Profile() { return <h2>My profile</h2>; }
+
+function Settings() {
+  const navigate = useNavigate();
+  const logout = () => {
+    localStorage.removeItem('user');
+    navigate('/login');
+  };
+  return (
+    <div>
+      <h2>Settings</h2>
+      <button onClick={logout}>Logout</button>
+    </div>
+  );
+}
+
+function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<DashboardHome />} />
+        <Route path="profile" element={<Profile />} />
+        <Route path="settings" element={<Settings />} />
+      </Route>
+      <Route path="*" element={<h1>404</h1>} />
+    </Routes>
+  );
+}
+```
+
+</details>
+
+---
+
 ## Part 10: Project Architecture
 
 A scalable feature folder structure:
@@ -785,6 +1314,339 @@ export function AppRoutes() {
 ```
 
 **Practice project — Products + Admin Dashboard:** combine both halves: a `productService` + `useFetch`-powered product list at `/app/products`, product details at `/app/products/:id`, protected by `ProtectedRoute`, inside an `AuthLayout` with `NavLink` sidebar, plus a styled 404 page.
+
+---
+
+## 📝 Student Worksheet
+
+### A. Quick Questions (answer in 1–2 sentences)
+
+1. What is an API? Explain it with a restaurant example.
+2. What is the difference between `GET` and `POST`?
+3. What is the difference between `PUT` and `PATCH`?
+4. What do the status codes `200`, `201`, `401`, `404` and `500` mean?
+5. `fetch` does **not** throw an error on a 404. How do you detect it?
+6. Why do we put API calls in a service file instead of inside the component?
+7. What are the four states of a request that the UI must handle?
+8. Why use `<Link>` instead of `<a href>` for pages inside the app?
+9. What type does `useParams()` always give you? Why does that matter?
+10. What does `<Outlet />` do?
+
+<details>
+<summary>✅ Solution</summary>
+
+1. A set of rules that lets two programs talk. You (the client) give an order to the waiter (the API), the kitchen (the server) prepares it, and the waiter brings the food (the response).
+2. `GET` reads data and has no body. `POST` sends data in the body to create something new.
+3. `PUT` replaces the whole resource. `PATCH` changes only the fields you send.
+4. 200 OK · 201 Created · 401 not logged in · 404 not found · 500 server error.
+5. Check `response.ok` (or `response.status`) and throw your own error when it is `false`.
+6. The code can be reused, it's easier to test and change, and the component only cares about the UI.
+7. Loading, error, empty, success.
+8. `<Link>` changes the page without reloading, so the app keeps its state. `<a href>` reloads the whole page.
+9. Always a `string`. Convert it with `Number(id)` before you compare it with numeric ids or do math.
+10. It is the place in a layout route where the child route's page is shown.
+
+</details>
+
+### B. Find the Bug
+
+```tsx
+// Bug 1: the server returned 404, but no error is shown
+const res = await fetch('/api/users/99');
+const user = await res.json();
+
+// Bug 2: the server receives "[object Object]"
+fetch('/api/users', { method: 'POST', body: { name: 'Ali' } });
+
+// Bug 3: inside a React Router app, every click reloads the whole page
+<a href="/about">About</a>
+
+// Bug 4: the product is never found (products have numeric ids)
+const { id } = useParams();
+const product = products.find(p => p.id === id);
+
+// Bug 5: when userId changes, the old user stays on the screen
+useEffect(() => {
+  fetch(`/api/users/${userId}`).then(r => r.json()).then(setUser);
+}, []);
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+```tsx
+// Bug 1: check res.ok
+const res = await fetch('/api/users/99');
+if (!res.ok) throw new Error(`HTTP ${res.status}`);
+const user = await res.json();
+
+// Bug 2: convert the object to JSON and set the header
+fetch('/api/users', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ name: 'Ali' }),
+});
+
+// Bug 3: use Link
+<Link to="/about">About</Link>
+
+// Bug 4: params are strings, so convert first
+const product = products.find(p => p.id === Number(id));
+
+// Bug 5: add userId to the dependency array
+useEffect(() => {
+  fetch(`/api/users/${userId}`).then(r => r.json()).then(setUser);
+}, [userId]);
+```
+
+</details>
+
+### C. Coding Tasks
+
+**Task 1: Users list (easy).** Fetch `https://jsonplaceholder.typicode.com/users` and show each name and email. Handle loading, error and empty.
+
+**Task 2: User details page (medium).** Add React Router. `/` shows the list from Task 1, and each name is a `Link` to `/users/:id`. The details page reads the id with `useParams`, fetches `/users/:id`, shows name, phone and website, and has a **Back** button.
+
+**Task 3: Post service + create form (medium).** Write `postService` with `getAll`, `getById` and `create` using an Axios instance. Build a form with a title input that creates a post and shows `Created post #101`.
+
+**Task 4: Search in the URL (medium).** A `/search` page with an input. Typing writes `?q=...` to the URL using `useSearchParams`, and the list of users is filtered by `q`. Refresh the page: the search must stay.
+
+**Task 5: Protected profile (medium).** Pages `/login` and `/profile`. `/profile` is protected: if `localStorage.user` is missing, redirect to `/login`. Login saves the user and goes to `/profile`. Profile has a **Logout** button.
+
+**Challenge: Mini blog.** A layout with `NavLink` navigation (Home, About). Home lists 10 posts. `/posts/:id` shows the post **and** its comments (`/posts/:id/comments`), fetched at the same time with `Promise.all`. Add a 404 page.
+
+<details>
+<summary>✅ Solution: Tasks 1–5 and Challenge</summary>
+
+```tsx
+import { useEffect, useState } from 'react';
+import {
+  BrowserRouter, Routes, Route, Link, NavLink, Navigate, Outlet,
+  useParams, useNavigate, useSearchParams,
+} from 'react-router-dom';
+
+const BASE = 'https://jsonplaceholder.typicode.com';
+interface User { id: number; name: string; email: string; phone: string; website: string; }
+
+// Task 1 (+ Links for Task 2)
+function UsersPage() {
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await fetch(`${BASE}/users`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        setUsers(await res.json());
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load');
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+  if (users.length === 0) return <p>No users</p>;
+
+  return (
+    <ul>
+      {users.map(u => (
+        <li key={u.id}>
+          <Link to={`/users/${u.id}`}>{u.name}</Link> ({u.email})
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+// Task 2
+function UserDetails() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const load = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(`${BASE}/users/${id}`);
+        if (!res.ok) throw new Error(res.status === 404 ? 'User not found' : `HTTP ${res.status}`);
+        setUser(await res.json());
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load');
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, [id]);
+
+  if (loading) return <p>Loading...</p>;
+  if (error || !user) return <p>Error: {error}</p>;
+
+  return (
+    <div>
+      <h2>{user.name}</h2>
+      <p>📞 {user.phone}</p>
+      <p>🌐 {user.website}</p>
+      <button onClick={() => navigate(-1)}>Back</button>
+    </div>
+  );
+}
+
+// Task 3: postService is the solution of "Your Turn: Parts 4 & 5"
+function NewPostForm() {
+  const [title, setTitle] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim()) return setMessage('Title is required');
+    try {
+      const post = await postService.create({ title, body: 'Hello', userId: 1 });
+      setMessage(`Created post #${post.id}`);
+      setTitle('');
+    } catch {
+      setMessage('Could not create the post');
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Post title" />
+      <button type="submit">Create</button>
+      {message && <p>{message}</p>}
+    </form>
+  );
+}
+
+// Task 4
+function SearchUsers() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const q = searchParams.get('q') ?? '';
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    fetch(`${BASE}/users`).then(r => r.json()).then(setUsers);
+  }, []);
+
+  const results = users.filter(u => u.name.toLowerCase().includes(q.toLowerCase()));
+
+  return (
+    <div>
+      <input value={q} onChange={e => setSearchParams({ q: e.target.value })} placeholder="Search users" />
+      <ul>{results.map(u => <li key={u.id}>{u.name}</li>)}</ul>
+    </div>
+  );
+}
+
+// Task 5
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  if (localStorage.getItem('user') === null) return <Navigate to="/login" replace />;
+  return <>{children}</>;
+}
+function LoginPage() {
+  const navigate = useNavigate();
+  const login = () => {
+    localStorage.setItem('user', 'demo');
+    navigate('/profile');
+  };
+  return <button onClick={login}>Login</button>;
+}
+function ProfilePage() {
+  const navigate = useNavigate();
+  const logout = () => {
+    localStorage.removeItem('user');
+    navigate('/login');
+  };
+  return (
+    <div>
+      <h1>My profile</h1>
+      <button onClick={logout}>Logout</button>
+    </div>
+  );
+}
+
+// Challenge
+interface Post { id: number; title: string; body: string; }
+interface Comment { id: number; name: string; body: string; }
+
+function BlogLayout() {
+  return (
+    <>
+      <nav>
+        <NavLink to="/" end>Home</NavLink> | <NavLink to="/about">About</NavLink>
+      </nav>
+      <Outlet />
+    </>
+  );
+}
+
+function PostsHome() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  useEffect(() => {
+    fetch(`${BASE}/posts?_limit=10`).then(r => r.json()).then(setPosts);
+  }, []);
+  return (
+    <ul>
+      {posts.map(p => <li key={p.id}><Link to={`/posts/${p.id}`}>{p.title}</Link></li>)}
+    </ul>
+  );
+}
+
+function PostDetails() {
+  const { id } = useParams<{ id: string }>();
+  const [post, setPost] = useState<Post | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+
+  useEffect(() => {
+    const load = async () => {
+      const [postRes, commentsRes] = await Promise.all([
+        fetch(`${BASE}/posts/${id}`),
+        fetch(`${BASE}/posts/${id}/comments`),
+      ]);
+      setPost(await postRes.json());
+      setComments(await commentsRes.json());
+    };
+    load();
+  }, [id]);
+
+  if (!post) return <p>Loading...</p>;
+  return (
+    <article>
+      <h2>{post.title}</h2>
+      <p>{post.body}</p>
+      <h3>Comments ({comments.length})</h3>
+      {comments.map(c => <p key={c.id}><b>{c.name}</b>: {c.body}</p>)}
+    </article>
+  );
+}
+
+function BlogApp() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<BlogLayout />}>
+          <Route index element={<PostsHome />} />
+          <Route path="about" element={<h2>About this blog</h2>} />
+          <Route path="posts/:id" element={<PostDetails />} />
+        </Route>
+        <Route path="*" element={<h1>404: Page not found</h1>} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+```
+
+</details>
 
 ---
 

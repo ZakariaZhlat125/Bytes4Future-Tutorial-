@@ -7,6 +7,11 @@
 
 ---
 
+> **How to use this session**
+> - **Complete examples**: every normal code block. Read it, type it yourself, run it.
+> - **✍️ Your Turn**: unfinished code after each part. Fill every `____` and finish every `// TODO`, then run it.
+> - **📝 Student Worksheet** (end of session): questions to give students. Answers are hidden under **✅ Solution**. Delete those blocks before sharing if students should not see them.
+
 ## Session Overview
 
 - **Part 1:** `useRef` — DOM access, mutable values, previous values
@@ -77,6 +82,102 @@ function usePrevious<T>(value: T): T | undefined {
   return ref.current;
 }
 ```
+
+---
+
+### ✍️ Your Turn: Part 1
+
+```tsx
+import { useRef, useState } from 'react';
+
+// 1. Put the cursor in the input when the button is clicked
+function FocusInput() {
+  const inputRef = useRef<____>(null);
+  const handleClick = () => {
+    inputRef.current?.____();
+  };
+  return (
+    <div>
+      <input ____={inputRef} placeholder="Type here" />
+      <button onClick={handleClick}>Focus</button>
+    </div>
+  );
+}
+
+// 2. Count clicks WITHOUT re-rendering, then show the number in an alert
+function SilentCounter() {
+  const clicks = useRef(____);
+  const handleClick = () => {
+    clicks.current = ____;
+    // TODO: alert(`Clicked ... times`)
+  };
+  return <button onClick={handleClick}>Click me</button>;
+}
+
+// 3. Stopwatch: keep the interval id in a ref so that Stop can clear it
+function Stopwatch() {
+  const [seconds, setSeconds] = useState(0);
+  const intervalRef = useRef<number | null>(null);
+
+  const start = () => {
+    if (intervalRef.current !== null) return;   // already running
+    intervalRef.current = window.setInterval(() => setSeconds(s => s + 1), 1000);
+  };
+  const stop = () => {
+    // TODO: clear the interval, then set intervalRef.current back to null
+  };
+
+  return (
+    <div>
+      <h2>{seconds}s</h2>
+      <button onClick={start}>Start</button>
+      <button onClick={stop}>Stop</button>
+    </div>
+  );
+}
+
+// 4. Question: in SilentCounter, the screen never shows the number. Why?
+//    When should you use state instead of a ref?
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+```tsx
+function FocusInput() {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const handleClick = () => {
+    inputRef.current?.focus();
+  };
+  return (
+    <div>
+      <input ref={inputRef} placeholder="Type here" />
+      <button onClick={handleClick}>Focus</button>
+    </div>
+  );
+}
+
+function SilentCounter() {
+  const clicks = useRef(0);
+  const handleClick = () => {
+    clicks.current = clicks.current + 1;
+    alert(`Clicked ${clicks.current} times`);
+  };
+  return <button onClick={handleClick}>Click me</button>;
+}
+
+const stop = () => {
+  if (intervalRef.current !== null) {
+    clearInterval(intervalRef.current);
+    intervalRef.current = null;
+  }
+};
+
+// 4. Changing ref.current does NOT re-render the component.
+//    Use state when the value must appear on the screen.
+```
+
+</details>
 
 ---
 
@@ -173,6 +274,76 @@ const config = useMemo(() => ({ count }), [count]);
 
 ---
 
+### ✍️ Your Turn: Parts 2 & 3
+
+```tsx
+import { useState, useMemo, useCallback, memo } from 'react';
+
+const numbers = Array.from({ length: 5000 }, (_, i) => i + 1);
+
+function NumberStats() {
+  const [min, setMin] = useState(0);
+  const [darkMode, setDarkMode] = useState(false);
+
+  // 1. Recalculate ONLY when `min` changes (not when darkMode changes)
+  const bigNumbers = ____(() => {
+    console.log('filtering...');
+    return numbers.filter(n => n > min);
+  }, [____]);
+
+  // 2. Keep the SAME function between renders
+  const reset = ____(() => setMin(0), [____]);
+
+  return (
+    <div style={{ background: darkMode ? '#222' : '#fff', color: darkMode ? '#fff' : '#000' }}>
+      <input type="number" value={min} onChange={e => setMin(Number(e.target.value))} />
+      <button onClick={() => setDarkMode(d => !d)}>Toggle theme</button>
+      <p>{bigNumbers.length} numbers are bigger than {min}</p>
+      <ResetButton onReset={reset} />
+    </div>
+  );
+}
+
+// 3. Wrap this component so it does NOT re-render when only the theme changes
+const ResetButton = ____(function ResetButton({ onReset }: { onReset: () => void }) {
+  console.log('ResetButton rendered');
+  return <button onClick={onReset}>Reset</button>;
+});
+
+// 4. Test: open the console and click "Toggle theme".
+//    You should NOT see "filtering..." or "ResetButton rendered". Why?
+
+// 5. Which ones need useMemo?
+//    a) const total = a + b;
+//    b) sorting 10,000 products
+//    c) const fullName = first + ' ' + last;
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+```tsx
+const bigNumbers = useMemo(() => {
+  console.log('filtering...');
+  return numbers.filter(n => n > min);
+}, [min]);
+
+const reset = useCallback(() => setMin(0), []);   // setMin never changes
+
+const ResetButton = memo(function ResetButton({ onReset }: { onReset: () => void }) {
+  console.log('ResetButton rendered');
+  return <button onClick={onReset}>Reset</button>;
+});
+```
+
+4. `useMemo` returns the saved list because `min` didn't change. `reset` is the same function (thanks to `useCallback`), so `memo` sees the same props and skips rendering `ResetButton`.
+
+5. Only **b**. A small calculation is cheaper than memoizing it.
+
+</details>
+
+---
+
 ## Part 4: Context API
 
 Context solves **prop drilling** — passing the same props through many intermediate components that don't use them.
@@ -235,6 +406,105 @@ function Header() {
 
 **Good for:** theme, locale, auth, feature flags — infrequently-changing global-ish data.
 **Bad for:** high-frequency updates, complex app state → use Zustand.
+
+---
+
+### ✍️ Your Turn: Part 4
+
+Build a language switcher (English / Arabic) with Context, without passing any props.
+
+```tsx
+import { createContext, useContext, useState, type ReactNode } from 'react';
+
+type Language = 'en' | 'ar';
+
+interface LanguageContextType {
+  language: Language;
+  toggleLanguage: () => void;
+}
+
+// 1. Create the context
+const LanguageContext = ____<LanguageContextType | null>(null);
+
+// 2. The provider holds the state
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [language, setLanguage] = useState<Language>(____);
+  const toggleLanguage = () => setLanguage(prev => (prev === 'en' ? ____ : ____));
+
+  return (
+    <LanguageContext.____ value={{ language, toggleLanguage }}>
+      {children}
+    </LanguageContext.____>
+  );
+}
+
+// 3. Custom hook with a safety check
+export function useLanguage() {
+  const ctx = ____(LanguageContext);
+  // TODO: if ctx is null → throw new Error('useLanguage must be used inside LanguageProvider')
+  return ctx;
+}
+
+// 4. Use it
+function Greeting() {
+  const { language } = useLanguage();
+  return <h1>{language === 'en' ? 'Hello' : 'مرحبا'}</h1>;
+}
+
+function LanguageButton() {
+  // TODO: get toggleLanguage from the context and show a "Switch language" button
+}
+
+// 5. TODO: wrap the app so Greeting and LanguageButton can use the context
+function App() {
+  return (
+    <>
+      <Greeting />
+      <LanguageButton />
+    </>
+  );
+}
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+```tsx
+const LanguageContext = createContext<LanguageContextType | null>(null);
+
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [language, setLanguage] = useState<Language>('en');
+  const toggleLanguage = () => setLanguage(prev => (prev === 'en' ? 'ar' : 'en'));
+
+  return (
+    <LanguageContext.Provider value={{ language, toggleLanguage }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+}
+
+export function useLanguage() {
+  const ctx = useContext(LanguageContext);
+  if (!ctx) throw new Error('useLanguage must be used inside LanguageProvider');
+  return ctx;
+}
+
+function LanguageButton() {
+  const { toggleLanguage } = useLanguage();
+  return <button onClick={toggleLanguage}>Switch language</button>;
+}
+
+function App() {
+  return (
+    <LanguageProvider>
+      <Greeting />
+      <LanguageButton />
+    </LanguageProvider>
+  );
+}
+```
+
+</details>
 
 ---
 
@@ -405,6 +675,108 @@ const useCartStore = create<CartStore>()(
 
 ---
 
+### ✍️ Your Turn: Parts 5 & 6
+
+Run `npm install zustand` first.
+
+**1.** Which kind of state is it? Write **local**, **lifted**, **context**, **global** or **server**.
+
+| Data | Kind |
+|------|------|
+| The text inside one search input | ____ |
+| Light / dark theme for the whole app | ____ |
+| A shopping cart used on 5 different pages | ____ |
+| The list of products that comes from the API | ____ |
+
+**2.** Complete the store and use it in two different components:
+
+```tsx
+import { create } from 'zustand';
+
+interface CounterStore {
+  count: number;
+  increment: () => void;
+  decrement: () => void;
+  reset: () => void;
+}
+
+const useCounterStore = ____<CounterStore>((set) => ({
+  count: ____,
+  increment: () => set((state) => ({ count: ____ })),
+  decrement: () => /* TODO */,
+  reset: () => /* TODO */,
+}));
+
+// No props and no Provider are needed
+function CounterDisplay() {
+  const count = useCounterStore((state) => ____);
+  return <h1>{count}</h1>;
+}
+
+function CounterButtons() {
+  const increment = useCounterStore((state) => state.increment);
+  // TODO: also select decrement and reset
+  // TODO: return three buttons: -  +  Reset
+}
+```
+
+**3.** TODO: create `useTodoStore` with `todos: { id: number; title: string; done: boolean }[]` and the actions `addTodo(title)`, `toggleTodo(id)` and `removeTodo(id)`. Don't mutate the array.
+
+<details>
+<summary>✅ Solution</summary>
+
+1. local · context · global · server
+
+```tsx
+const useCounterStore = create<CounterStore>((set) => ({
+  count: 0,
+  increment: () => set((state) => ({ count: state.count + 1 })),
+  decrement: () => set((state) => ({ count: state.count - 1 })),
+  reset: () => set({ count: 0 }),
+}));
+
+function CounterDisplay() {
+  const count = useCounterStore((state) => state.count);
+  return <h1>{count}</h1>;
+}
+
+function CounterButtons() {
+  const increment = useCounterStore((state) => state.increment);
+  const decrement = useCounterStore((state) => state.decrement);
+  const reset = useCounterStore((state) => state.reset);
+  return (
+    <div>
+      <button onClick={decrement}>-</button>
+      <button onClick={increment}>+</button>
+      <button onClick={reset}>Reset</button>
+    </div>
+  );
+}
+
+// 3
+interface Todo { id: number; title: string; done: boolean; }
+interface TodoStore {
+  todos: Todo[];
+  addTodo: (title: string) => void;
+  toggleTodo: (id: number) => void;
+  removeTodo: (id: number) => void;
+}
+
+const useTodoStore = create<TodoStore>((set) => ({
+  todos: [],
+  addTodo: (title) =>
+    set((s) => ({ todos: [...s.todos, { id: Date.now(), title, done: false }] })),
+  toggleTodo: (id) =>
+    set((s) => ({ todos: s.todos.map((t) => (t.id === id ? { ...t, done: !t.done } : t)) })),
+  removeTodo: (id) =>
+    set((s) => ({ todos: s.todos.filter((t) => t.id !== id) })),
+}));
+```
+
+</details>
+
+---
+
 ## Part 7: Custom Hooks Library
 
 Custom hooks are functions prefixed `use` that compose built-in hooks into reusable logic.
@@ -482,6 +854,87 @@ export const useTheme = () => {
 
 ---
 
+### ✍️ Your Turn: Part 7
+
+```tsx
+import { useState, useEffect } from 'react';
+
+// 1. useToggle → returns [value, toggle]
+function useToggle(initial = false) {
+  const [value, setValue] = useState(____);
+  const toggle = () => setValue(____);
+  return [value, toggle] as const;
+}
+
+function Faq() {
+  const [isOpen, toggle] = useToggle();
+  return (
+    <div>
+      <button onClick={toggle}>What is React?</button>
+      {isOpen && <p>A library for building user interfaces.</p>}
+    </div>
+  );
+}
+
+// 2. TODO: useCounter(start = 0, step = 1)
+//    returns { count, increment, decrement, reset }
+//    Example: const { count, increment } = useCounter(10, 5);  → 10, 15, 20...
+
+// 3. useWindowWidth → the current window width, updated on resize
+function useWindowWidth() {
+  const [width, setWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => setWidth(____);
+    window.addEventListener('resize', ____);
+    return () => /* TODO: remove the listener */;
+  }, []);
+  return width;
+}
+
+function ScreenInfo() {
+  const width = useWindowWidth();
+  // TODO: show "📱 Mobile" if width < 768, otherwise "💻 Desktop"
+}
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+```tsx
+function useToggle(initial = false) {
+  const [value, setValue] = useState(initial);
+  const toggle = () => setValue(v => !v);
+  return [value, toggle] as const;
+}
+
+function useCounter(start = 0, step = 1) {
+  const [count, setCount] = useState(start);
+  const increment = () => setCount(c => c + step);
+  const decrement = () => setCount(c => c - step);
+  const reset = () => setCount(start);
+  return { count, increment, decrement, reset };
+}
+
+function useWindowWidth() {
+  const [width, setWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  return width;
+}
+
+function ScreenInfo() {
+  const width = useWindowWidth();
+  return <p>{width < 768 ? '📱 Mobile' : '💻 Desktop'} ({width}px)</p>;
+}
+```
+
+</details>
+
+---
+
 ## Practice Project: Shopping Cart (Zustand)
 
 A compact spec — implement with the structure from Session 4's project architecture:
@@ -498,6 +951,318 @@ A compact spec — implement with the structure from Session 4's project archite
 Before: App → Layout → Products → ProductCard → AddToCartButton   (props every level)
 After:  each component calls useCartStore(selector) directly        (no drilling)
 ```
+
+---
+
+## 📝 Student Worksheet
+
+### A. Quick Questions (answer in 1–2 sentences)
+
+1. What is the difference between `useState` and `useRef`?
+2. Give two examples of things you store in a ref.
+3. What does `useMemo` save? What does `useCallback` save? What does `React.memo` do?
+4. Why is `{} === {}` false, and why does that matter in React?
+5. What is prop drilling?
+6. What are the 4 steps to create and use a Context?
+7. Why is Context not good for data that changes very often?
+8. Why do we pass a selector to a Zustand store: `useStore(s => s.count)`?
+9. What is the difference between client state and server state?
+10. What must a custom hook's name start with? Why?
+
+<details>
+<summary>✅ Solution</summary>
+
+1. Changing state re-renders the component. Changing `ref.current` doesn't.
+2. A DOM element (to focus or scroll it), a timer id, or the previous value of a prop.
+3. `useMemo` saves a calculated **value**. `useCallback` saves a **function**. `React.memo` skips re-rendering a **component** when its props didn't change.
+4. Objects are compared by reference, not by content. A new object or function on every render looks "changed" to `memo`, `useEffect` dependencies and Context.
+5. Passing props through components that don't need them, only to reach a deep child.
+6. `createContext` → a Provider component with the state → wrap the app in the Provider → read it with `useContext` (inside a custom hook).
+7. Every component that uses the context re-renders when the value changes. There are no selectors.
+8. So the component re-renders only when **that** piece of data changes, not on every store change.
+9. Client state lives in the browser (theme, modal open, form). Server state comes from an API and can become old, so it needs fetching, caching and refetching.
+10. `use`. React (and the linter) use that name to know it is a hook and to check the rules of hooks.
+
+</details>
+
+### B. Predict the Output / Find the Bug
+
+```tsx
+// 1. What does the button show after 3 clicks?
+const ref = useRef(0);
+return <button onClick={() => { ref.current++; }}>{ref.current}</button>;
+
+// 2. true or false?
+{} === {}
+[1] === [1]
+'a' === 'a'
+
+// 3. What happens?
+function Greeting() {
+  const { language } = useLanguage();   // the hook from "Your Turn: Part 4"
+  return <p>{language}</p>;
+}
+// App renders <Greeting /> WITHOUT <LanguageProvider> around it
+
+// 4. Find the bug: the cart badge never updates
+const useCartStore = create<CartStore>((set) => ({
+  items: [],
+  addItem: (item) => set((s) => {
+    s.items.push(item);
+    return { items: s.items };
+  }),
+}));
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+1. **0**, because changing a ref doesn't re-render. Use `useState` to see the number.
+2. `false`, `false`, `true`. Objects and arrays are compared by reference; strings by value.
+3. It throws `useLanguage must be used inside LanguageProvider`. Wrap the app in the Provider.
+4. `push` changes the same array, so Zustand sees the same reference. Create a new array:
+   ```tsx
+   addItem: (item) => set((s) => ({ items: [...s.items, item] })),
+   ```
+
+</details>
+
+### C. Coding Tasks
+
+**Task 1: Auto-focus (easy).** A search page where the cursor is already in the input when the page opens. Use `useRef` + `useEffect`.
+
+**Task 2: Theme context (medium).** `ThemeProvider` + `useTheme()` with `theme` and `toggleTheme`. A button switches light/dark, and the page background changes. Save the theme in `localStorage` so it stays after a refresh.
+
+**Task 3: Cart store (medium).** A Zustand store with `items: { id, name, price, quantity }[]`:
+- `addItem(product)`: if the product is already in the cart, add 1 to its quantity; otherwise add it with quantity 1
+- `removeItem(id)` and `clearCart()`
+- `CartBadge` shows the total quantity (`🛒 3`), and `CartPage` shows the total price
+
+**Task 4: `useOnlineStatus` hook (medium).** It returns `true` or `false` using `navigator.onLine` and the window events `online` and `offline` (with cleanup). Show `🟢 Online` or `🔴 Offline`. Test it in DevTools → Network → Offline.
+
+**Task 5: Optimize this component (medium).** Clicking 👍 must NOT re-filter the list and must NOT re-render the rows (check with `console.log`).
+
+```tsx
+interface Product { id: number; name: string; }
+
+function ProductPage({ products }: { products: Product[] }) {
+  const [search, setSearch] = useState('');
+  const [likes, setLikes] = useState(0);
+
+  const filtered = products.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
+  const handleSelect = (id: number) => console.log('selected', id);
+
+  return (
+    <div>
+      <button onClick={() => setLikes(likes + 1)}>👍 {likes}</button>
+      <input value={search} onChange={e => setSearch(e.target.value)} />
+      {filtered.map(p => <ProductRow key={p.id} product={p} onSelect={handleSelect} />)}
+    </div>
+  );
+}
+
+function ProductRow({ product, onSelect }: { product: Product; onSelect: (id: number) => void }) {
+  console.log('row rendered', product.id);
+  return <div onClick={() => onSelect(product.id)}>{product.name}</div>;
+}
+```
+
+**Challenge: Toast notifications.** A Zustand store with `toasts` and `add(message, type)` (`type` is `'success' | 'error' | 'info'`). Every toast removes itself after 3 seconds. A `Toasts` component shows them in the corner, and any component can call `add('Saved!', 'success')`.
+
+<details>
+<summary>✅ Solution: Tasks 1–5 and Challenge</summary>
+
+```tsx
+import { createContext, useContext, useEffect, useRef, useState, useMemo, useCallback, memo, type ReactNode } from 'react';
+import { create } from 'zustand';
+
+// Task 1
+function SearchPage() {
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+  return <input ref={inputRef} placeholder="Search..." />;
+}
+
+// Task 2
+type Theme = 'light' | 'dark';
+const ThemeContext = createContext<{ theme: Theme; toggleTheme: () => void } | null>(null);
+
+function ThemeProvider({ children }: { children: ReactNode }) {
+  const [theme, setTheme] = useState<Theme>(
+    () => (localStorage.getItem('theme') as Theme) ?? 'light'
+  );
+
+  useEffect(() => {
+    localStorage.setItem('theme', theme);
+    document.body.style.background = theme === 'dark' ? '#222' : '#fff';
+    document.body.style.color = theme === 'dark' ? '#fff' : '#000';
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(t => (t === 'light' ? 'dark' : 'light'));
+
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+
+function useTheme() {
+  const ctx = useContext(ThemeContext);
+  if (!ctx) throw new Error('useTheme must be used inside ThemeProvider');
+  return ctx;
+}
+
+function ThemeButton() {
+  const { theme, toggleTheme } = useTheme();
+  return <button onClick={toggleTheme}>{theme === 'light' ? '🌙 Dark' : '☀️ Light'}</button>;
+}
+
+// Task 3
+interface CartItem { id: number; name: string; price: number; quantity: number; }
+interface CartStore {
+  items: CartItem[];
+  addItem: (product: Omit<CartItem, 'quantity'>) => void;
+  removeItem: (id: number) => void;
+  clearCart: () => void;
+}
+
+const useCartStore = create<CartStore>((set) => ({
+  items: [],
+  addItem: (product) =>
+    set((s) => {
+      const existing = s.items.find((i) => i.id === product.id);
+      if (existing) {
+        return {
+          items: s.items.map((i) =>
+            i.id === product.id ? { ...i, quantity: i.quantity + 1 } : i
+          ),
+        };
+      }
+      return { items: [...s.items, { ...product, quantity: 1 }] };
+    }),
+  removeItem: (id) => set((s) => ({ items: s.items.filter((i) => i.id !== id) })),
+  clearCart: () => set({ items: [] }),
+}));
+
+function CartBadge() {
+  const count = useCartStore((s) => s.items.reduce((n, i) => n + i.quantity, 0));
+  return <span>🛒 {count}</span>;
+}
+
+function CartPage() {
+  const items = useCartStore((s) => s.items);
+  const removeItem = useCartStore((s) => s.removeItem);
+  const clearCart = useCartStore((s) => s.clearCart);
+  const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+
+  if (items.length === 0) return <p>Your cart is empty</p>;
+  return (
+    <div>
+      {items.map((i) => (
+        <p key={i.id}>
+          {i.name} × {i.quantity} = ${i.price * i.quantity}
+          <button onClick={() => removeItem(i.id)}>❌</button>
+        </p>
+      ))}
+      <h3>Total: ${total}</h3>
+      <button onClick={clearCart}>Clear cart</button>
+    </div>
+  );
+}
+
+// Task 4
+function useOnlineStatus() {
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  useEffect(() => {
+    const goOnline = () => setIsOnline(true);
+    const goOffline = () => setIsOnline(false);
+    window.addEventListener('online', goOnline);
+    window.addEventListener('offline', goOffline);
+    return () => {
+      window.removeEventListener('online', goOnline);
+      window.removeEventListener('offline', goOffline);
+    };
+  }, []);
+  return isOnline;
+}
+
+function StatusBar() {
+  const isOnline = useOnlineStatus();
+  return <p>{isOnline ? '🟢 Online' : '🔴 Offline'}</p>;
+}
+
+// Task 5
+interface Product { id: number; name: string; }
+
+function ProductPage({ products }: { products: Product[] }) {
+  const [search, setSearch] = useState('');
+  const [likes, setLikes] = useState(0);
+
+  const filtered = useMemo(
+    () => products.filter(p => p.name.toLowerCase().includes(search.toLowerCase())),
+    [products, search]
+  );
+  const handleSelect = useCallback((id: number) => console.log('selected', id), []);
+
+  return (
+    <div>
+      <button onClick={() => setLikes(likes + 1)}>👍 {likes}</button>
+      <input value={search} onChange={e => setSearch(e.target.value)} />
+      {filtered.map(p => <ProductRow key={p.id} product={p} onSelect={handleSelect} />)}
+    </div>
+  );
+}
+
+const ProductRow = memo(function ProductRow(
+  { product, onSelect }: { product: Product; onSelect: (id: number) => void }
+) {
+  console.log('row rendered', product.id);
+  return <div onClick={() => onSelect(product.id)}>{product.name}</div>;
+});
+
+// Challenge
+interface Toast { id: number; message: string; type: 'success' | 'error' | 'info'; }
+interface ToastStore {
+  toasts: Toast[];
+  add: (message: string, type?: Toast['type']) => void;
+  remove: (id: number) => void;
+}
+
+const useToastStore = create<ToastStore>((set, get) => ({
+  toasts: [],
+  add: (message, type = 'info') => {
+    const id = Date.now();
+    set((s) => ({ toasts: [...s.toasts, { id, message, type }] }));
+    setTimeout(() => get().remove(id), 3000);
+  },
+  remove: (id) => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),
+}));
+
+const toastColors = { success: 'green', error: 'red', info: 'steelblue' };
+
+function Toasts() {
+  const toasts = useToastStore((s) => s.toasts);
+  return (
+    <div style={{ position: 'fixed', top: 16, right: 16 }}>
+      {toasts.map((t) => (
+        <div key={t.id} style={{ background: toastColors[t.type], color: '#fff', padding: 8, marginBottom: 8 }}>
+          {t.message}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function SaveButton() {
+  const add = useToastStore((s) => s.add);
+  return <button onClick={() => add('Saved!', 'success')}>Save</button>;
+}
+```
+
+</details>
 
 ---
 

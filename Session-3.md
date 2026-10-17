@@ -7,6 +7,11 @@
 
 ---
 
+> **How to use this session**
+> - **Complete examples**: every normal code block. Read it, type it yourself, run it.
+> - **✍️ Your Turn**: unfinished code after each part. Fill every `____` and finish every `// TODO`, then run it.
+> - **📝 Student Worksheet** (end of session): questions to give students. Answers are hidden under **✅ Solution**. Delete those blocks before sharing if students should not see them.
+
 ## Session Overview
 
 - **Part 1:** State fundamentals and the `useState` hook
@@ -64,6 +69,80 @@ const [formData, setFormData] = useState({ name: '', email: '' });
 const [isLoading, setIsLoading] = useState(false);
 const [error, setError] = useState<string | null>(null);
 ```
+
+---
+
+### ✍️ Your Turn: Part 1
+
+```tsx
+import { useState } from 'react';
+
+// 1. Counter with three buttons
+function Counter() {
+  const [count, setCount] = useState(____);
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => ____}>+1</button>
+      <button onClick={() => ____}>-1</button>
+      {/* TODO: add a Reset button that sets count back to 0 */}
+    </div>
+  );
+}
+
+// 2. Give each state the right type
+interface User { id: number; name: string; }
+const [user, setUser] = useState<____>(null);     // a User, or nothing yet
+const [tags, setTags] = useState<____>([]);       // a list of strings
+const [mode, setMode] = useState<____>('light');  // only 'light' or 'dark'
+
+// 3. The screen never changes when you click. Why? Rewrite it with useState.
+function BrokenCounter() {
+  let count = 0;
+  return <button onClick={() => { count = count + 1; }}>Clicked {count}</button>;
+}
+
+// 4. TODO: create ThemeSwitch: a button that switches between 'light' and 'dark'
+//    and shows the current mode, e.g. "Mode: dark"
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+```tsx
+function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>+1</button>
+      <button onClick={() => setCount(count - 1)}>-1</button>
+      <button onClick={() => setCount(0)}>Reset</button>
+    </div>
+  );
+}
+
+const [user, setUser] = useState<User | null>(null);
+const [tags, setTags] = useState<string[]>([]);
+const [mode, setMode] = useState<'light' | 'dark'>('light');
+
+// 3. A normal variable resets to 0 on every render and does NOT trigger a re-render.
+function FixedCounter() {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(count + 1)}>Clicked {count}</button>;
+}
+
+function ThemeSwitch() {
+  const [mode, setMode] = useState<'light' | 'dark'>('light');
+  return (
+    <button onClick={() => setMode(mode === 'light' ? 'dark' : 'light')}>
+      Mode: {mode}
+    </button>
+  );
+}
+```
+
+</details>
 
 ---
 
@@ -160,6 +239,91 @@ useEffect(() => {
 
 ---
 
+### ✍️ Your Turn: Part 2
+
+```tsx
+interface Task { id: number; title: string; done: boolean; }
+
+function TaskManager() {
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [profile, setProfile] = useState({ name: 'Ali', city: 'Amman' });
+  const [count, setCount] = useState(0);
+
+  // 1. Add a task to the END of the list
+  const addTask = (title: string) => {
+    setTasks(prev => [____, { id: Date.now(), title, done: false }]);
+  };
+
+  // 2. Delete a task by id
+  const deleteTask = (id: number) => {
+    setTasks(prev => prev.____(t => ____));
+  };
+
+  // 3. Toggle done / not done
+  const toggleTask = (id: number) => {
+    setTasks(prev => prev.map(t => (t.id === id ? ____ : t)));
+  };
+
+  // 4. Change ONLY the city to 'Irbid' and keep the name
+  const moveToIrbid = () => {
+    setProfile(prev => ({ ____, city: 'Irbid' }));
+  };
+
+  // 5. Bug: this does NOT update the screen. Why? Fix it.
+  const renameFirst = () => {
+    tasks[0].title = 'Renamed';
+    setTasks(tasks);
+  };
+
+  // 6. Bug: this button should add 3, but it only adds 1. Fix it.
+  const addThree = () => {
+    setCount(count + 1);
+    setCount(count + 1);
+    setCount(count + 1);
+  };
+
+  return null; // UI not needed for this exercise
+}
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+```tsx
+const addTask = (title: string) => {
+  setTasks(prev => [...prev, { id: Date.now(), title, done: false }]);
+};
+
+const deleteTask = (id: number) => {
+  setTasks(prev => prev.filter(t => t.id !== id));
+};
+
+const toggleTask = (id: number) => {
+  setTasks(prev => prev.map(t => (t.id === id ? { ...t, done: !t.done } : t)));
+};
+
+const moveToIrbid = () => {
+  setProfile(prev => ({ ...prev, city: 'Irbid' }));
+};
+
+// 5. We changed the SAME array, so React sees the same reference and skips the render.
+//    Create a new array with a new object:
+const renameFirst = () => {
+  setTasks(prev => prev.map((t, i) => (i === 0 ? { ...t, title: 'Renamed' } : t)));
+};
+
+// 6. All three lines use the same old `count`. Use the functional update:
+const addThree = () => {
+  setCount(prev => prev + 1);
+  setCount(prev => prev + 1);
+  setCount(prev => prev + 1);
+};
+```
+
+</details>
+
+---
+
 ## Part 3: State Architecture
 
 ### Derived State
@@ -218,6 +382,107 @@ Lift to the *lowest* common parent — over-lifting creates unnecessary prop dri
 4. `useState(expensiveFn())` → runs every render; use `useState(() => fn())`
 5. `useState<any>(null)` → defeats TypeScript; write an interface
 6. Missing cleanup in effects → memory leaks
+
+---
+
+### ✍️ Your Turn: Part 3
+
+```tsx
+// 1. This component stores the same information 3 times.
+//    Remove the `total` and `count` state and CALCULATE them instead.
+function CartSummary() {
+  const [items, setItems] = useState([
+    { name: 'Pen', price: 2 },
+    { name: 'Book', price: 10 },
+  ]);
+  const [total, setTotal] = useState(12);
+  const [count, setCount] = useState(2);
+
+  const addNotebook = () => {
+    setItems(prev => [...prev, { name: 'Notebook', price: 5 }]);
+    setTotal(total + 5);
+    setCount(count + 1);
+  };
+
+  return (
+    <div>
+      <p>{count} items, total ${total}</p>
+      <button onClick={addNotebook}>Add notebook</button>
+    </div>
+  );
+}
+
+// 2. Lifting state up: SearchInput and ResultCount must use the SAME text.
+//    Put the state in App and pass it down with props.
+const names = ['Ali', 'Alaa', 'Sara', 'Samer'];
+
+function SearchInput(/* TODO: props */) {
+  return <input /* TODO: value + onChange */ placeholder="Search..." />;
+}
+
+function ResultCount(/* TODO: props */) {
+  // TODO: count the names that include the text (ignore upper/lower case)
+  return <p>____ results</p>;
+}
+
+function App() {
+  // TODO: const [text, setText] = ...
+  return (
+    <>
+      <SearchInput /* TODO */ />
+      <ResultCount /* TODO */ />
+    </>
+  );
+}
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+```tsx
+function CartSummary() {
+  const [items, setItems] = useState([
+    { name: 'Pen', price: 2 },
+    { name: 'Book', price: 10 },
+  ]);
+
+  // derived: always correct, nothing to keep in sync
+  const count = items.length;
+  const total = items.reduce((sum, item) => sum + item.price, 0);
+
+  const addNotebook = () => {
+    setItems(prev => [...prev, { name: 'Notebook', price: 5 }]);
+  };
+
+  return (
+    <div>
+      <p>{count} items, total ${total}</p>
+      <button onClick={addNotebook}>Add notebook</button>
+    </div>
+  );
+}
+
+function SearchInput({ text, onTextChange }: { text: string; onTextChange: (v: string) => void }) {
+  return <input value={text} onChange={e => onTextChange(e.target.value)} placeholder="Search..." />;
+}
+
+function ResultCount({ text }: { text: string }) {
+  const count = names.filter(n => n.toLowerCase().includes(text.toLowerCase())).length;
+  return <p>{count} results</p>;
+}
+
+function App() {
+  const [text, setText] = useState('');
+  return (
+    <>
+      <SearchInput text={text} onTextChange={setText} />
+      <ResultCount text={text} />
+    </>
+  );
+}
+```
+
+</details>
 
 ---
 
@@ -331,6 +596,88 @@ const resetForm = () => {
 
 ---
 
+### ✍️ Your Turn: Part 4
+
+```tsx
+function SignupForm() {
+  const [form, setForm] = useState({ name: '', email: '', agree: false });
+  const [error, setError] = useState('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    // a checkbox gives `checked`, other inputs give `value`
+    setForm(prev => ({ ...prev, [name]: type === 'checkbox' ? ____ : ____ }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    ____; // stop the page reload
+    // TODO: if name is empty               → setError('Name is required') and stop
+    // TODO: if email does not include '@'  → setError('Email is invalid') and stop
+    // TODO: if agree is false              → setError('You must accept the terms') and stop
+    setError('');
+    alert(`Welcome ${form.name}!`);
+    // TODO: reset the form to empty values
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input name="name" value={form.name} onChange={handleChange} placeholder="Name" />
+      <input name="email" value={____} onChange={____} placeholder="Email" />
+      <label>
+        <input name="agree" type="checkbox" ____={form.agree} onChange={handleChange} />
+        I accept the terms
+      </label>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <button type="submit">Sign up</button>
+    </form>
+  );
+}
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+```tsx
+const initialForm = { name: '', email: '', agree: false };
+
+function SignupForm() {
+  const [form, setForm] = useState(initialForm);
+  const [error, setError] = useState('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setForm(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name.trim()) return setError('Name is required');
+    if (!form.email.includes('@')) return setError('Email is invalid');
+    if (!form.agree) return setError('You must accept the terms');
+    setError('');
+    alert(`Welcome ${form.name}!`);
+    setForm(initialForm);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input name="name" value={form.name} onChange={handleChange} placeholder="Name" />
+      <input name="email" value={form.email} onChange={handleChange} placeholder="Email" />
+      <label>
+        <input name="agree" type="checkbox" checked={form.agree} onChange={handleChange} />
+        I accept the terms
+      </label>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <button type="submit">Sign up</button>
+    </form>
+  );
+}
+```
+
+</details>
+
+---
+
 ## Part 5: `useEffect` — Side Effects
 
 ### Rendering vs Events vs Side Effects
@@ -431,6 +778,112 @@ useEffect(() => {
 
 ---
 
+### ✍️ Your Turn: Part 5
+
+```tsx
+import { useState, useEffect } from 'react';
+
+// 1. Change the browser tab title every time count changes
+function TitleCounter() {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    document.title = `Clicked ${count} times`;
+  }, [____]);
+  return <button onClick={() => setCount(count + 1)}>Click</button>;
+}
+
+// 2. Clock: add 1 every second, and STOP the timer when the component is removed
+function Clock() {
+  const [seconds, setSeconds] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setSeconds(____), 1000);
+    return () => ____;
+  }, []);
+  return <p>{seconds}s</p>;
+}
+
+// 3. Load users ONE time when the component appears
+interface User { id: number; name: string; }
+
+function Users() {
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // TODO: write an async function inside the effect that:
+    //   - fetches https://jsonplaceholder.typicode.com/users
+    //   - saves the result with setUsers
+    //   - calls setLoading(false)
+    // TODO: call the function
+  }, ____);
+
+  if (loading) return <p>Loading...</p>;
+  return <ul>{users.map(u => <li key={u.id}>{u.name}</li>)}</ul>;
+}
+
+// 4. Remember the name after a page refresh
+function NameSaver() {
+  const [name, setName] = useState(() => localStorage.getItem('name') ?? '');
+  useEffect(() => {
+    // TODO: save name in localStorage with the key 'name'
+  }, [____]);
+  return <input value={name} onChange={e => setName(e.target.value)} />;
+}
+
+// 5. Bug: this component freezes the browser. Why? Fix it.
+function Broken() {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    setCount(count + 1);
+  });
+  return <p>{count}</p>;
+}
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+```tsx
+// 1
+useEffect(() => {
+  document.title = `Clicked ${count} times`;
+}, [count]);
+
+// 2
+useEffect(() => {
+  const id = setInterval(() => setSeconds(prev => prev + 1), 1000);
+  return () => clearInterval(id);
+}, []);
+
+// 3
+useEffect(() => {
+  const loadUsers = async () => {
+    const res = await fetch('https://jsonplaceholder.typicode.com/users');
+    const data: User[] = await res.json();
+    setUsers(data);
+    setLoading(false);
+  };
+  loadUsers();
+}, []);
+
+// 4
+useEffect(() => {
+  localStorage.setItem('name', name);
+}, [name]);
+
+// 5. No dependency array → the effect runs after EVERY render.
+//    It changes state → new render → effect runs again → forever.
+//    Fix: add a dependency array so it runs only once ([] = on mount).
+//    (In development, StrictMode runs effects twice on purpose, so you may see 2.)
+useEffect(() => {
+  setCount(prev => prev + 1);
+}, []);
+```
+
+</details>
+
+---
+
 ## Practical Project: Auth Forms + Shopping Cart
 
 The full course builds two projects; key patterns condensed:
@@ -466,6 +919,320 @@ const addToCart = (productId: number) => {
 ```
 
 Props flow down (`onAddToCart`, `isInCart`) through `ProductList` → `ProductCard`, and cart operations through `Cart` → `CartItem` — an explicit prop-drilling demo that motivates Context in Session 5.
+
+---
+
+## 📝 Student Worksheet
+
+### A. Quick Questions (answer in 1–2 sentences)
+
+1. What is the difference between a normal variable and state?
+2. What does `useState` return?
+3. Why must we never change state directly, like `user.name = 'x'`?
+4. When should you use the functional update `setCount(prev => prev + 1)`?
+5. What is derived state? Give an example.
+6. What does "lifting state up" mean?
+7. What is a controlled input?
+8. For a checkbox, which prop do we use: `value` or `checked`?
+9. What is the difference between no dependency array, `[]`, and `[userId]` in `useEffect`?
+10. What is a cleanup function? Give one example where you need it.
+
+<details>
+<summary>✅ Solution</summary>
+
+1. A normal variable resets on every render and doesn't update the screen. State is kept between renders, and changing it re-renders the component.
+2. An array with two items: the current value and a function to change it, e.g. `[count, setCount]`.
+3. React compares references. If you change the same object, React thinks nothing changed and doesn't re-render. Always create a new object or array.
+4. When the new value depends on the old value, especially when you update several times in a row or inside timers.
+5. A value you can calculate from other state, so you don't store it, e.g. `const total = items.reduce(...)`.
+6. Moving state to the closest common parent so that two or more children can share it through props.
+7. An input whose `value` comes from state and whose `onChange` updates that state.
+8. `checked`.
+9. No array: runs after every render. `[]`: runs once, after the first render. `[userId]`: runs first and then again every time `userId` changes.
+10. A function returned from the effect that undoes what the effect did, e.g. `clearInterval`, `removeEventListener`, or aborting a fetch.
+
+</details>
+
+### B. Predict the Output / Find the Bug
+
+```tsx
+// 1. What is count after ONE click?
+const [count, setCount] = useState(0);
+const handleClick = () => {
+  setCount(count + 1);
+  setCount(count + 1);
+};
+
+// 2. What does the <p> show after clicking "Add" 3 times? Why?
+const [list, setList] = useState<string[]>([]);
+const add = () => { list.push('x'); setList(list); };
+return <><button onClick={add}>Add</button><p>{list.length}</p></>;
+
+// 3. Find the bug
+useEffect(async () => {
+  const res = await fetch('/api/data');
+  setData(await res.json());
+}, []);
+
+// 4. Find the bug: the timer keeps running after the component is removed
+useEffect(() => {
+  setInterval(() => setSeconds(s => s + 1), 1000);
+}, []);
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+1. **1**, because both lines use the same old `count` (0). Fix: `setCount(prev => prev + 1)` twice gives 2.
+2. **0**. `push` changes the same array, so React doesn't re-render. Fix: `setList(prev => [...prev, 'x'])`
+3. The effect function can't be `async`. Write an async function inside and call it:
+   ```tsx
+   useEffect(() => {
+     const load = async () => {
+       const res = await fetch('/api/data');
+       setData(await res.json());
+     };
+     load();
+   }, []);
+   ```
+4. There is no cleanup. Fix:
+   ```tsx
+   useEffect(() => {
+     const id = setInterval(() => setSeconds(s => s + 1), 1000);
+     return () => clearInterval(id);
+   }, []);
+   ```
+
+</details>
+
+### C. Coding Tasks
+
+**Task 1: Character counter (easy).** A `<textarea>` with a 100-character limit. Show `37 / 100` under it. The counter turns red after 90 characters.
+
+**Task 2: Shopping list (easy).** An input and an "Add" button. Empty text can't be added. Each item has a ❌ delete button. Show `No items yet` when the list is empty.
+
+**Task 3: Todo app with filters (medium).** Add, toggle (click the title), and delete todos. Add filter buttons **All / Active / Done**, and show `3 items left` (derived, not stored).
+
+**Task 4: Login form with validation (medium).** Email and password fields. Show an error under each field: the email must include `@` and `.`, and the password needs at least 6 characters. When both are valid, show `Welcome, <email>!`
+
+**Task 5: Stopwatch (medium).** Buttons **Start**, **Stop**, **Reset**. Use `useEffect` with `setInterval` and a cleanup.
+
+**Challenge: Posts viewer.** Fetch `https://jsonplaceholder.typicode.com/posts?_limit=10`. Show `Loading...`, then the titles. If the request fails (try a wrong URL), show the error and a **Try again** button. Add a **Reload** button.
+
+<details>
+<summary>✅ Solution: Tasks 1–5 and Challenge</summary>
+
+```tsx
+import { useState, useEffect } from 'react';
+
+// Task 1
+function CharCounter() {
+  const [text, setText] = useState('');
+  const max = 100;
+  return (
+    <div>
+      <textarea value={text} maxLength={max} onChange={e => setText(e.target.value)} />
+      <p style={{ color: text.length > 90 ? 'red' : 'black' }}>
+        {text.length} / {max}
+      </p>
+    </div>
+  );
+}
+
+// Task 2
+function ShoppingList() {
+  const [items, setItems] = useState<string[]>([]);
+  const [text, setText] = useState('');
+
+  const addItem = () => {
+    if (!text.trim()) return;
+    setItems(prev => [...prev, text.trim()]);
+    setText('');
+  };
+  const removeItem = (index: number) => {
+    setItems(prev => prev.filter((_, i) => i !== index));
+  };
+
+  return (
+    <div>
+      <input value={text} onChange={e => setText(e.target.value)} />
+      <button onClick={addItem}>Add</button>
+      {items.length === 0 ? (
+        <p>No items yet</p>
+      ) : (
+        <ul>
+          {items.map((item, i) => (
+            <li key={i}>
+              {item} <button onClick={() => removeItem(i)}>❌</button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+// Note: index keys are OK here only because items have no own state.
+// In real apps give each item an id (see Task 3).
+
+// Task 3
+interface Todo { id: number; title: string; done: boolean; }
+type Filter = 'all' | 'active' | 'done';
+
+function TodoApp() {
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [text, setText] = useState('');
+  const [filter, setFilter] = useState<Filter>('all');
+
+  const addTodo = () => {
+    if (!text.trim()) return;
+    setTodos(prev => [...prev, { id: Date.now(), title: text.trim(), done: false }]);
+    setText('');
+  };
+  const toggleTodo = (id: number) =>
+    setTodos(prev => prev.map(t => (t.id === id ? { ...t, done: !t.done } : t)));
+  const deleteTodo = (id: number) =>
+    setTodos(prev => prev.filter(t => t.id !== id));
+
+  // derived values
+  const visible = todos.filter(t => {
+    if (filter === 'active') return !t.done;
+    if (filter === 'done') return t.done;
+    return true;
+  });
+  const leftCount = todos.filter(t => !t.done).length;
+
+  return (
+    <div>
+      <input value={text} onChange={e => setText(e.target.value)} />
+      <button onClick={addTodo}>Add</button>
+
+      <div>
+        <button onClick={() => setFilter('all')}>All</button>
+        <button onClick={() => setFilter('active')}>Active</button>
+        <button onClick={() => setFilter('done')}>Done</button>
+      </div>
+
+      <ul>
+        {visible.map(t => (
+          <li key={t.id}>
+            <span
+              onClick={() => toggleTodo(t.id)}
+              style={{ textDecoration: t.done ? 'line-through' : 'none', cursor: 'pointer' }}
+            >
+              {t.title}
+            </span>
+            <button onClick={() => deleteTodo(t.id)}>❌</button>
+          </li>
+        ))}
+      </ul>
+      <p>{leftCount} items left</p>
+    </div>
+  );
+}
+
+// Task 4
+interface LoginErrors { email?: string; password?: string; }
+
+function LoginForm() {
+  const [form, setForm] = useState({ email: '', password: '' });
+  const [errors, setErrors] = useState<LoginErrors>({});
+  const [success, setSuccess] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const newErrors: LoginErrors = {};
+    if (!form.email.includes('@') || !form.email.includes('.')) {
+      newErrors.email = 'Enter a valid email';
+    }
+    if (form.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+    setErrors(newErrors);
+    setSuccess(Object.keys(newErrors).length === 0);
+  };
+
+  if (success) return <h2>Welcome, {form.email}!</h2>;
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input name="email" value={form.email} onChange={handleChange} placeholder="Email" />
+      {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
+      <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="Password" />
+      {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
+      <button type="submit">Login</button>
+    </form>
+  );
+}
+
+// Task 5
+function Stopwatch() {
+  const [seconds, setSeconds] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+
+  useEffect(() => {
+    if (!isRunning) return;
+    const id = setInterval(() => setSeconds(prev => prev + 1), 1000);
+    return () => clearInterval(id);
+  }, [isRunning]);
+
+  return (
+    <div>
+      <h2>{seconds}s</h2>
+      <button onClick={() => setIsRunning(true)}>Start</button>
+      <button onClick={() => setIsRunning(false)}>Stop</button>
+      <button onClick={() => { setIsRunning(false); setSeconds(0); }}>Reset</button>
+    </div>
+  );
+}
+
+// Challenge
+interface Post { id: number; title: string; }
+
+function PostsViewer() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);   // change it to fetch again
+
+  useEffect(() => {
+    const load = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=10');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        setPosts(await res.json());
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Something went wrong');
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, [reloadKey]);
+
+  const reload = () => setReloadKey(k => k + 1);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error} <button onClick={reload}>Try again</button></p>;
+
+  return (
+    <div>
+      <button onClick={reload}>Reload</button>
+      <ul>
+        {posts.map(p => <li key={p.id}>{p.title}</li>)}
+      </ul>
+    </div>
+  );
+}
+```
+
+</details>
 
 ---
 

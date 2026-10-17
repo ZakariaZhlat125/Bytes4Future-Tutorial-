@@ -6,6 +6,11 @@
 
 ---
 
+> **How to use this session**
+> - **Complete examples**: every normal code block. Read it, type it yourself, run it.
+> - **✍️ Your Turn**: unfinished code after each part. Fill every `____` and finish every `// TODO`, then run it.
+> - **📝 Student Worksheet** (end of session): questions to give students. Answers are hidden under **✅ Solution**. Delete those blocks before sharing if students should not see them.
+
 ## Session Timeline
 
 - **Part 1: React Foundations (30 min)** — what React is, library vs framework, SPA/CSR, ecosystem
@@ -160,6 +165,73 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 ---
 
+### ✍️ Your Turn: Part 2
+
+**1.** Create a project called `my-react-app`. Fill the blanks:
+
+```bash
+npm create vite@latest my-react-app -- --template ____
+cd my-react-app
+npm ____
+npm run ____          # then open http://localhost:5173
+```
+
+**2.** Complete `main.tsx`:
+
+```tsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './____';
+
+ReactDOM.createRoot(document.getElementById('____')!).render(
+  <React.StrictMode>
+    <____ />
+  </React.StrictMode>
+);
+```
+
+**3.** Delete everything in `App.tsx` and write a component that shows your name in an `<h1>` and your city in a `<p>`. Save and watch the browser update by itself.
+
+**4.** Where do you put each file: (a) `favicon.ico` (b) a logo image you `import` inside a component (c) a reusable `Button.tsx`?
+
+<details>
+<summary>✅ Solution</summary>
+
+```bash
+npm create vite@latest my-react-app -- --template react-ts
+cd my-react-app
+npm install
+npm run dev
+```
+
+```tsx
+import App from './App';
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+```
+
+```tsx
+// App.tsx
+function App() {
+  return (
+    <div>
+      <h1>Sara Ahmed</h1>
+      <p>I live in Amman</p>
+    </div>
+  );
+}
+export default App;
+```
+
+4. (a) `public/` (b) `src/assets/` (c) `src/components/`
+
+</details>
+
+---
+
 ## Part 3: JSX Essentials
 
 JSX is HTML-like syntax inside JavaScript, transpiled to `React.createElement` calls. **Rules:**
@@ -199,6 +271,78 @@ function UserCard({ name, email }: { name: string; email: string }) {
   );
 }
 ```
+
+---
+
+### ✍️ Your Turn: Part 3
+
+```tsx
+// 1. This code was copied from HTML. It has 6 JSX mistakes.
+//    Find them all and fix them.
+function Profile() {
+  const name = "Lina";
+  return (
+    <div class="profile">
+      <img src="avatar.png" alt="avatar">
+      <label for="email">Email</label>
+      <input id="email" type="email">
+      <h2>name</h2>
+    </div>
+    <p>Welcome!</p>
+  );
+}
+
+// 2. Fill the blanks using { } expressions
+function Receipt() {
+  const item = "Coffee";
+  const price = 3.5;
+  const quantity = 2;
+  return (
+    <div>
+      <p>Item: ____</p>
+      {/* price × quantity with 2 decimals → 7.00 */}
+      <p>Total: $____</p>
+      {/* make this text green with an inline style */}
+      <p style={____}>Thank you!</p>
+    </div>
+  );
+}
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+```tsx
+function Profile() {
+  const name = "Lina";
+  return (
+    <>                                            {/* 6. one parent only → Fragment */}
+      <div className="profile">                   {/* 1. class → className */}
+        <img src="avatar.png" alt="avatar" />     {/* 2. self-close img */}
+        <label htmlFor="email">Email</label>      {/* 3. for → htmlFor */}
+        <input id="email" type="email" />         {/* 4. self-close input */}
+        <h2>{name}</h2>                           {/* 5. use { } for variables */}
+      </div>
+      <p>Welcome!</p>
+    </>
+  );
+}
+
+function Receipt() {
+  const item = "Coffee";
+  const price = 3.5;
+  const quantity = 2;
+  return (
+    <div>
+      <p>Item: {item}</p>
+      <p>Total: ${(price * quantity).toFixed(2)}</p>
+      <p style={{ color: 'green' }}>Thank you!</p>
+    </div>
+  );
+}
+```
+
+</details>
 
 ---
 
@@ -252,6 +396,71 @@ function Button({ children, onClick, variant = 'primary', disabled = false }: Bu
   );
 }
 ```
+
+---
+
+### ✍️ Your Turn: Part 4
+
+```tsx
+// 1. TODO: create a Header component that returns:
+//    <header><h1>My Shop</h1></header>
+
+// 2. TODO: create a Footer component that returns:
+//    <footer>© 2026 My Shop</footer>
+
+// 3. Fill the blanks to use them
+function App() {
+  return (
+    <>
+      <____ />
+      <main>Welcome to my shop!</main>
+      <____ />
+    </>
+  );
+}
+
+// 4. This component does NOT appear on the page. Why? Fix it.
+function menu() {
+  return <nav>Home | About | Contact</nav>;
+}
+// used like this: <menu />
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+```tsx
+function Header() {
+  return (
+    <header>
+      <h1>My Shop</h1>
+    </header>
+  );
+}
+
+function Footer() {
+  return <footer>© 2026 My Shop</footer>;
+}
+
+function App() {
+  return (
+    <>
+      <Header />
+      <main>Welcome to my shop!</main>
+      <Footer />
+    </>
+  );
+}
+
+// 4. Lowercase names are treated as HTML tags (<menu> is a real HTML tag).
+//    Components must start with a capital letter:
+function Menu() {
+  return <nav>Home | About | Contact</nav>;
+}
+// <Menu />
+```
+
+</details>
 
 ---
 
@@ -324,6 +533,101 @@ function Alert({ message, type = 'info', dismissible = true }: AlertProps) {
 
 ---
 
+### ✍️ Your Turn: Part 5
+
+```tsx
+// 1. Complete the props interface and the component
+interface StudentCardProps {
+  name: ____;
+  age: ____;
+  isGraduated?: ____;
+}
+
+function StudentCard({ name, age, isGraduated = ____ }: StudentCardProps) {
+  return (
+    <div className="card">
+      <h3>{____}</h3>
+      <p>Age: {____}</p>
+      {/* TODO: show "Graduated ✅" when isGraduated is true, otherwise "Student 📚" */}
+    </div>
+  );
+}
+
+// 2. TODO: show 3 StudentCard components with different data.
+//    At least one of them must be graduated.
+function App() {
+  return <div>{/* TODO */}</div>;
+}
+
+// 3. children: complete Box so this works:
+//    <Box title="Notice"><p>Class starts at 9:00</p></Box>
+interface BoxProps {
+  title: string;
+  children: ____;
+}
+
+function Box({ title, children }: BoxProps) {
+  return (
+    <section className="box">
+      <h4>{title}</h4>
+      {/* TODO: show the children here */}
+    </section>
+  );
+}
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+```tsx
+interface StudentCardProps {
+  name: string;
+  age: number;
+  isGraduated?: boolean;
+}
+
+function StudentCard({ name, age, isGraduated = false }: StudentCardProps) {
+  return (
+    <div className="card">
+      <h3>{name}</h3>
+      <p>Age: {age}</p>
+      <p>{isGraduated ? 'Graduated ✅' : 'Student 📚'}</p>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <div>
+      <StudentCard name="Ali" age={22} isGraduated={true} />
+      <StudentCard name="Mona" age={19} />
+      <StudentCard name="Omar" age={20} />
+      <Box title="Notice">
+        <p>Class starts at 9:00</p>
+      </Box>
+    </div>
+  );
+}
+
+interface BoxProps {
+  title: string;
+  children: React.ReactNode;
+}
+
+function Box({ title, children }: BoxProps) {
+  return (
+    <section className="box">
+      <h4>{title}</h4>
+      {children}
+    </section>
+  );
+}
+```
+
+</details>
+
+---
+
 ## Part 6: Events
 
 React uses **synthetic events** — wrappers around native events for cross-browser consistency, delegated at the root.
@@ -377,6 +681,113 @@ Common types: `React.MouseEvent`, `React.ChangeEvent<HTMLInputElement>`, `React.
 // With event + custom arg — event comes first in the wrapper
 <button onClick={(e) => deleteTask(task.id, e)}>Delete</button>
 ```
+
+---
+
+### ✍️ Your Turn: Part 6
+
+```tsx
+import { useState } from 'react';
+// useState keeps a value that can change. Session 3 explains it fully.
+
+// 1. Like button: every click adds 1
+function LikeButton() {
+  const [likes, setLikes] = useState(0);
+  return <button ____={() => setLikes(____)}>❤️ {likes}</button>;
+}
+
+// 2. Live greeting: show what the user types
+function NameInput() {
+  const [name, setName] = useState('');
+  return (
+    <div>
+      <input value={name} onChange={(e) => setName(____)} placeholder="Your name" />
+      <p>Hello, {name || 'stranger'}!</p>
+    </div>
+  );
+}
+
+// 3. Form: the page must NOT reload
+function FeedbackForm() {
+  const handleSubmit = (e: React.FormEvent) => {
+    // TODO: stop the page reload
+    alert('Thank you for your feedback!');
+  };
+  return (
+    <form ____={handleSubmit}>
+      <textarea placeholder="Your feedback" />
+      <button type="submit">Send</button>
+    </form>
+  );
+}
+
+// 4. Passing arguments: clicking a button shows "You picked <color>"
+function ColorPicker() {
+  const colors = ['red', 'green', 'blue'];
+  const pick = (color: string) => alert(`You picked ${color}`);
+  return (
+    <div>
+      {colors.map(c => (
+        <button key={c} onClick={____}>{c}</button>
+      ))}
+    </div>
+  );
+}
+
+// 5. Bug: the alert appears when the page LOADS, not when you click. Why? Fix it.
+// <button onClick={pick('red')}>Red</button>
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+```tsx
+function LikeButton() {
+  const [likes, setLikes] = useState(0);
+  return <button onClick={() => setLikes(likes + 1)}>❤️ {likes}</button>;
+}
+
+function NameInput() {
+  const [name, setName] = useState('');
+  return (
+    <div>
+      <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" />
+      <p>Hello, {name || 'stranger'}!</p>
+    </div>
+  );
+}
+
+function FeedbackForm() {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    alert('Thank you for your feedback!');
+  };
+  return (
+    <form onSubmit={handleSubmit}>
+      <textarea placeholder="Your feedback" />
+      <button type="submit">Send</button>
+    </form>
+  );
+}
+
+function ColorPicker() {
+  const colors = ['red', 'green', 'blue'];
+  const pick = (color: string) => alert(`You picked ${color}`);
+  return (
+    <div>
+      {colors.map(c => (
+        <button key={c} onClick={() => pick(c)}>{c}</button>
+      ))}
+    </div>
+  );
+}
+
+// 5. pick('red') CALLS the function right away during render.
+//    Pass a function instead, so React calls it on click:
+// <button onClick={() => pick('red')}>Red</button>
+```
+
+</details>
 
 ---
 
@@ -460,6 +871,104 @@ Keys let React identify items across renders — they must be **unique among sib
 ```
 
 Index keys are acceptable **only** for static lists that never reorder/change and hold no component state.
+
+---
+
+### ✍️ Your Turn: Part 7
+
+```tsx
+interface Fruit {
+  id: number;
+  name: string;
+  price: number;
+}
+
+const fruits: Fruit[] = [
+  { id: 1, name: 'Apple', price: 3 },
+  { id: 2, name: 'Banana', price: 1 },
+  { id: 3, name: 'Mango', price: 5 },
+  { id: 4, name: 'Orange', price: 2 },
+];
+
+// 1. Show every fruit
+function FruitList() {
+  return (
+    <ul>
+      {fruits.____(fruit => (
+        <li key={____}>{fruit.name}: ${fruit.price}</li>
+      ))}
+    </ul>
+  );
+}
+
+// 2. TODO: in FruitList, show "🔥 Cheap!" next to fruits with price < 2 (use &&)
+
+// 3. TODO: create ExpensiveFruits that shows ONLY fruits with price > 2
+//    Hint: .filter(...) first, then .map(...)
+
+// 4. TODO: create FruitBox({ items }: { items: Fruit[] })
+//    if items is empty → <p>No fruits today</p>
+//    otherwise        → the list of names
+//    Test it: <FruitBox items={[]} /> and <FruitBox items={fruits} />
+
+// 5. if / early return
+function OrderStatus({ status }: { status: 'pending' | 'shipped' | 'delivered' }) {
+  // TODO: pending   → <p>⏳ Preparing your order</p>
+  //       shipped   → <p>🚚 On the way</p>
+  //       delivered → <p>✅ Delivered</p>
+}
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+```tsx
+function FruitList() {
+  return (
+    <ul>
+      {fruits.map(fruit => (
+        <li key={fruit.id}>
+          {fruit.name}: ${fruit.price}
+          {fruit.price < 2 && <span> 🔥 Cheap!</span>}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function ExpensiveFruits() {
+  return (
+    <ul>
+      {fruits
+        .filter(fruit => fruit.price > 2)
+        .map(fruit => (
+          <li key={fruit.id}>{fruit.name}</li>
+        ))}
+    </ul>
+  );
+}
+
+function FruitBox({ items }: { items: Fruit[] }) {
+  if (items.length === 0) {
+    return <p>No fruits today</p>;
+  }
+  return (
+    <ul>
+      {items.map(item => (
+        <li key={item.id}>{item.name}</li>
+      ))}
+    </ul>
+  );
+}
+
+function OrderStatus({ status }: { status: 'pending' | 'shipped' | 'delivered' }) {
+  if (status === 'pending') return <p>⏳ Preparing your order</p>;
+  if (status === 'shipped') return <p>🚚 On the way</p>;
+  return <p>✅ Delivered</p>;
+}
+```
+
+</details>
 
 ---
 
@@ -632,6 +1141,217 @@ export default ProductList;
 ```
 
 Style with CSS grid (`grid-template-columns: repeat(auto-fill, minmax(280px, 1fr))`), card hover effects, and badge styles — see original session for the full stylesheet.
+
+---
+
+## 📝 Student Worksheet
+
+### A. Quick Questions (answer in 1–2 sentences)
+
+1. Is React a library or a framework? What is the difference?
+2. What is an SPA (Single Page Application)?
+3. What does `npm run dev` do in a Vite project?
+4. What is the job of `main.tsx`?
+5. Write 3 differences between JSX and HTML.
+6. Why must a component name start with a capital letter?
+7. Can a child component change its own props? Who can change them?
+8. What is the `children` prop? Name one component that would use it.
+9. Why do we call `e.preventDefault()` inside `onSubmit`?
+10. Why does every list item need a `key`? Why is the array index a bad key?
+
+<details>
+<summary>✅ Solution</summary>
+
+1. A library. You call a library when you need it (React only builds the UI). A framework calls your code and includes everything (routing, data, and so on).
+2. An app that loads one HTML page and then changes the content with JavaScript, without reloading the page.
+3. It starts a development server (usually at `http://localhost:5173`) that updates the browser every time you save.
+4. It is the entry point. It finds `<div id="root">` and renders `<App />` inside it.
+5. `className` instead of `class`. `htmlFor` instead of `for`. Every tag must be closed (`<img />`). Use `{}` for JavaScript. Only one parent element.
+6. Lowercase names are treated as normal HTML tags, so React won't render your component.
+7. No, props are read-only. The parent passes new props.
+8. Whatever you put between the opening and closing tags. Examples: `Card`, `Modal`, `Layout`.
+9. A form submit reloads the page by default. `preventDefault()` stops that.
+10. The key helps React know which item is which between renders. If you add, remove or reorder items, the index changes, so React can mix up the items.
+
+</details>
+
+### B. Predict the Output
+
+Write what the browser shows for each snippet.
+
+```tsx
+// 1
+const count = 0;
+return <div>{count && <p>You have messages</p>}</div>;
+
+// 2
+const user = { name: 'Sam', isAdmin: false };
+return <p>{user.isAdmin ? 'Admin' : 'Member'}: {user.name}</p>;
+
+// 3
+const items = ['A', 'B', 'C'];
+return <ul>{items.map(i => <li key={i}>{i.toLowerCase()}</li>)}</ul>;
+
+// 4
+function Hello({ name = 'Guest' }: { name?: string }) {
+  return <h1>Hi {name}</h1>;
+}
+// <Hello />  and  <Hello name="Nour" />
+```
+
+<details>
+<summary>✅ Solution</summary>
+
+1. It shows **`0`** (the falsy-value trap). Fix: `{count > 0 && <p>You have messages</p>}`
+2. `Member: Sam`
+3. A list with `a`, `b`, `c`
+4. `Hi Guest` and `Hi Nour`
+
+</details>
+
+### C. Coding Tasks
+
+**Task 1: Greeting (easy).** A `Greeting` component with props `name: string` and an optional `emoji` (default `"👋"`). `<Greeting name="Sara" />` shows `👋 Hello, Sara!`
+
+**Task 2: Counter (easy).** Buttons `−`, `+` and `Reset`. The count can never go below 0: disable the `−` button when the count is 0.
+
+**Task 3: Show / hide (easy).** A button that says "Show details" or "Hide details" and toggles a paragraph.
+
+**Task 4: Todo list (medium).**
+
+```tsx
+interface Todo { id: number; title: string; done: boolean; }
+
+const todos: Todo[] = [
+  { id: 1, title: 'Install Node.js', done: true },
+  { id: 2, title: 'Create Vite project', done: true },
+  { id: 3, title: 'Build my first component', done: false },
+];
+
+// TODO: show every todo with map + key
+// TODO: done todos get className "done" and a ✔ before the title
+// TODO: above the list show "2 of 3 done"
+```
+
+**Task 5: Product card with a callback (medium).** `ProductCard` takes `name`, `price`, `inStock` and `onAddToCart`. When out of stock, show "Out of stock" and disable the button. The parent `Shop` counts how many items were added and shows `🛒 3`.
+
+**Challenge: Contact search.** A list of contacts `{ id, name, phone }` and a search input. Filter by name (ignore upper/lower case), show `"X contact(s)"`, and show `No contacts found` when nothing matches.
+
+<details>
+<summary>✅ Solution: Tasks 1–5 and Challenge</summary>
+
+```tsx
+import { useState } from 'react';
+
+// Task 1
+interface GreetingProps { name: string; emoji?: string; }
+function Greeting({ name, emoji = '👋' }: GreetingProps) {
+  return <h2>{emoji} Hello, {name}!</h2>;
+}
+
+// Task 2
+function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count - 1)} disabled={count === 0}>−</button>
+      <button onClick={() => setCount(count + 1)}>+</button>
+      <button onClick={() => setCount(0)}>Reset</button>
+    </div>
+  );
+}
+
+// Task 3
+function Details() {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div>
+      <button onClick={() => setIsOpen(!isOpen)}>
+        {isOpen ? 'Hide details' : 'Show details'}
+      </button>
+      {isOpen && <p>React is a library for building user interfaces.</p>}
+    </div>
+  );
+}
+
+// Task 4  (CSS: .done { text-decoration: line-through; color: gray; })
+function TodoList() {
+  const doneCount = todos.filter(t => t.done).length;
+  return (
+    <div>
+      <p>{doneCount} of {todos.length} done</p>
+      <ul>
+        {todos.map(todo => (
+          <li key={todo.id} className={todo.done ? 'done' : ''}>
+            {todo.done && '✔ '}{todo.title}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+// Task 5
+interface ProductCardProps {
+  name: string;
+  price: number;
+  inStock: boolean;
+  onAddToCart: () => void;
+}
+function ProductCard({ name, price, inStock, onAddToCart }: ProductCardProps) {
+  return (
+    <div className="card">
+      <h3>{name}</h3>
+      <p>${price}</p>
+      {!inStock && <p style={{ color: 'gray' }}>Out of stock</p>}
+      <button disabled={!inStock} onClick={onAddToCart}>Add to cart</button>
+    </div>
+  );
+}
+function Shop() {
+  const [cartCount, setCartCount] = useState(0);
+  const add = () => setCartCount(cartCount + 1);
+  return (
+    <div>
+      <p>🛒 {cartCount}</p>
+      <ProductCard name="Laptop" price={999} inStock={true} onAddToCart={add} />
+      <ProductCard name="Phone" price={499} inStock={false} onAddToCart={add} />
+    </div>
+  );
+}
+
+// Challenge
+interface Contact { id: number; name: string; phone: string; }
+const contacts: Contact[] = [
+  { id: 1, name: 'Ahmad', phone: '0791111111' },
+  { id: 2, name: 'Sara', phone: '0792222222' },
+  { id: 3, name: 'Samer', phone: '0793333333' },
+];
+function ContactSearch() {
+  const [search, setSearch] = useState('');
+  const results = contacts.filter(c =>
+    c.name.toLowerCase().includes(search.toLowerCase())
+  );
+  return (
+    <div>
+      <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search..." />
+      <p>{results.length} contact(s)</p>
+      {results.length === 0 ? (
+        <p>No contacts found</p>
+      ) : (
+        <ul>
+          {results.map(c => (
+            <li key={c.id}>{c.name}: {c.phone}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+```
+
+</details>
 
 ---
 
