@@ -8,6 +8,7 @@
 ---
 
 > **How to use this session**
+> - **💡 In simple words**: a plain-language explanation under each topic. Read it first, then the code.
 > - **Complete examples**: every normal code block. Read it, type it yourself, run it.
 > - **✍️ Your Turn**: unfinished code after each part. Fill every `____` and finish every `// TODO`, then run it.
 > - **📝 Student Worksheet** (end of session): questions to give students. Answers are hidden under **✅ Solution**. Delete those blocks before sharing if students should not see them.
@@ -26,6 +27,8 @@
 ## Part 1: React Query — Server State
 
 ### Server State vs Client State
+
+> 💡 **In simple words:** Client state belongs to the browser (is the menu open?). Server state is **borrowed**: the real data lives on the server, and you only hold a copy that can become old. Borrowed data needs extra care (caching, refreshing, handling failures), and that is exactly what React Query does.
 
 **Client state** lives in the browser, is instant, and never needs syncing: form inputs, modals, theme, UI preferences → `useState` / Zustand.
 
@@ -50,6 +53,8 @@ const { data: users, isLoading, error } = useQuery({
 > **Rule:** React Query for server state, Zustand for client state. Don't put API data in Zustand — you'd re-implement caching, dedup, and refetching by hand.
 
 ### `useQuery`
+
+> 💡 **In simple words:** `useQuery` means "get this data for me and keep it fresh". You give it a name (`queryKey`) and a function that fetches (`queryFn`). It returns the data plus flags like `isLoading` and `isError`, so you don't write `useState`/`useEffect` yourself.
 
 ```tsx
 import { useQuery } from '@tanstack/react-query';
@@ -84,6 +89,8 @@ function UsersList() {
 
 ### `queryKey` — the cache identifier
 
+> 💡 **In simple words:** The query key is the **name** of the data in React Query's memory (the cache). Two components that use the same key share the same data and the same request. Put every value the request depends on (like an id or filters) in the key.
+
 Unique key per query; used for caching, dedup, refetching, invalidating.
 
 ```tsx
@@ -102,6 +109,8 @@ const QUERY_KEYS = {
 When `queryKey` changes, React Query treats it as a *different* query and refetches automatically — no `useEffect` needed for filters/pagination.
 
 ### Options: retry, refetch, caching
+
+> 💡 **In simple words:** These settings control behavior: how many times to retry after a failure, when to refresh automatically, and how long data counts as "fresh". The defaults are fine to start with; change them only when you have a reason.
 
 ```tsx
 useQuery({
@@ -125,6 +134,8 @@ useQuery({
 **`staleTime` strategy:** long for rarely-changing data (countries → 1h), short/zero for volatile data (orders → 0), medium for normal data (products → 5min).
 
 ### `useMutation` — POST/PUT/DELETE
+
+> 💡 **In simple words:** Queries **read** data; mutations **change** it (create, update, delete). `mutate(data)` sends the request, `isPending` tells you it's in progress, and `onSuccess`/`onError` let you react to the result.
 
 ```tsx
 const createUser = useMutation({
@@ -152,6 +163,8 @@ const deleteUser = useMutation({
 
 ### `invalidateQueries`
 
+> 💡 **In simple words:** After you change data on the server, the cached copy is old. `invalidateQueries` says "this data is outdated, fetch it again", so the list on the screen updates.
+
 Mark cache entries stale so they refetch:
 
 ```tsx
@@ -163,6 +176,8 @@ queryClient.invalidateQueries();                                  // everything
 ```
 
 ### Optimistic updates
+
+> 💡 **In simple words:** Normally the UI waits for the server. With an optimistic update, you update the screen **immediately** as if the request worked (it usually does). If the server says no, you put the old data back. The app feels instant.
 
 Update the UI instantly, roll back on failure:
 
@@ -320,6 +335,8 @@ onSuccess: () => {
 
 ### Login flow
 
+> 💡 **In simple words:** Logging in means sending the email and password to the server. If they're correct, the server sends back a **token**, a digital pass. The app saves the token and shows it with every later request to prove who you are.
+
 ```
 credentials → POST /auth/login → verify → { access_token, refresh_token, user }
 → save tokens (localStorage) → update auth store → redirect to intended page
@@ -345,6 +362,8 @@ function Login() {
 ```
 
 ### Access & refresh tokens
+
+> 💡 **In simple words:** The **access token** is like a short-term visitor badge: it opens the doors but expires quickly, so a stolen one is useful only briefly. The **refresh token** is used only to get a new badge without typing the password again.
 
 - **Access token** (JWT, ~15–30 min): sent as `Authorization: Bearer <token>` on every request.
 - **Refresh token** (long-lived): exchanged for a new access token when the old one expires — avoids forcing re-login.
@@ -384,6 +403,8 @@ api.interceptors.response.use(
 
 ### Authentication vs Authorization
 
+> 💡 **In simple words:** **Authentication** is showing your ID at the entrance: who are you? **Authorization** is which rooms your ID card opens: what are you allowed to do?
+
 - **Authentication** — *who are you?* (login, tokens)
 - **Authorization** — *what may you do?* (roles, permissions)
 
@@ -397,6 +418,8 @@ function DeleteUserButton({ userId }: { userId: number }) {
 ```
 
 ### Protected routes + roles
+
+> 💡 **In simple words:** It's the same guard idea as in Session 4, with a second check: a page can also require a **role**. A normal user who tries to open `/admin` is sent to an "unauthorized" page.
 
 ```tsx
 function ProtectedRoute({ children, allowedRoles }: Props) {
@@ -430,6 +453,8 @@ const hasPermission = (user: User | null, perm: string) =>
 ```
 
 ### Logout
+
+> 💡 **In simple words:** Logging out must remove everything that belongs to the user: the tokens, the user in the store and the cached server data. Then the next person on the same computer sees nothing private.
 
 ```tsx
 const handleLogout = () => {
@@ -570,6 +595,8 @@ Session 5 covered `useMemo` / `useCallback` / `React.memo`. This part adds **loa
 
 ### Lazy loading & Suspense
 
+> 💡 **In simple words:** Normally the browser downloads the code of every page at the start, even pages the user never opens. `lazy` downloads a page's code only when that page is opened. `Suspense` shows a fallback (like "Loading...") while it downloads.
+
 ```tsx
 import { lazy, Suspense } from 'react';
 
@@ -606,12 +633,16 @@ const Dashboard = lazy(() => import('./Dashboard').then(m => ({ default: m.Dashb
 
 ### Code splitting strategies
 
+> 💡 **In simple words:** Code splitting means cutting your app's JavaScript into smaller files called **chunks**. The best place to cut is usually per page (per route).
+
 - **Route-based** (best ROI): one lazy chunk per page
 - **Component-based**: charts, rich editors, admin panels
 - **Feature-based**: whole feature folders (`./features/admin`)
 - Vite/Webpack emit separate `.js` chunks automatically for `import()`
 
 ### Bundle size
+
+> 💡 **In simple words:** The **bundle** is the JavaScript the user must download. A bigger bundle means a slower first load, especially on phones. Check its size after `npm run build`, and avoid a heavy library when a small one does the job.
 
 ```bash
 npm run build                                  # Vite shows chunk sizes
@@ -625,6 +656,8 @@ Reduction tactics:
 - Enable gzip/brotli on the server
 
 ### React DevTools & Profiler
+
+> 💡 **In simple words:** React DevTools is a browser extension that shows your components with their props and state. Its **Profiler** shows which components rendered and how long each one took. Always measure before you optimize.
 
 - **Components tab:** inspect props/state, enable *"Highlight updates when components render"* to see unnecessary re-renders live.
 - **Profiler tab:** record an interaction → ranked list of slowest components, flame graph, per-render timings.
@@ -697,6 +730,14 @@ const Reports = lazy(() => import('./pages/Reports').then(m => ({ default: m.Rep
 ---
 
 ## Project: Admin Dashboard Architecture
+
+> 💡 **In simple words:** Each tool has one job:
+> - **React Query**: server data.
+> - **Zustand**: shared client data.
+> - **The Router**: pages.
+> - **The API layer**: HTTP.
+>
+> Keeping these jobs separate makes a big app easy to understand.
 
 ```
 ┌─────────────────────────────────────────┐

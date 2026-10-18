@@ -8,6 +8,7 @@
 ---
 
 > **How to use this session**
+> - **💡 In simple words**: a plain-language explanation under each topic. Read it first, then the code.
 > - **Complete examples**: every normal code block. Read it, type it yourself, run it.
 > - **✍️ Your Turn**: unfinished code after each part. Fill every `____` and finish every `// TODO`, then run it.
 > - **📝 Student Worksheet** (end of session): questions to give students. Answers are hidden under **✅ Solution**. Delete those blocks before sharing if students should not see them.
@@ -27,6 +28,8 @@
 
 ## Part 1: `useRef`
 
+> 💡 **In simple words:** A ref is a box (`{ current: ... }`) that React keeps for you between renders, like state. The difference: changing a ref does **not** redraw the screen. Use refs for things the user doesn't see: a DOM element, a timer id, an old value.
+
 `useRef` returns a mutable `{ current: value }` object that **persists across renders without triggering re-renders**. React doesn't track ref changes — that's the point.
 
 ```tsx
@@ -43,6 +46,8 @@ ref.current = newVal;  // write — no re-render
 | | Storing previous values |
 
 ### DOM access & focus
+
+> 💡 **In simple words:** Sometimes you need the real HTML element, to put the cursor in an input, scroll to a section or play a video. Give the element `ref={myRef}`, and React puts the element in `myRef.current`.
 
 ```tsx
 function LoginForm() {
@@ -68,6 +73,8 @@ function LoginForm() {
 Other DOM uses: `scrollIntoView()`, measuring (`offsetWidth`), media control, reading uncontrolled input values.
 
 ### Mutable values & previous values
+
+> 💡 **In simple words:** A timer id is needed later (to stop the timer) but is never shown on the screen. Keeping it in state would cause useless redraws; a ref keeps it quietly.
 
 ```tsx
 // Timer IDs — need persistence, not re-renders
@@ -185,6 +192,11 @@ const stop = () => {
 
 ### The trio
 
+> 💡 **In simple words:** Every time state changes, React runs your component function again and recalculates everything inside it. Usually that's fast. These three tools let React **remember** (memoize) work from the previous render and reuse it when nothing relevant changed:
+> - `useMemo` remembers a **value**.
+> - `useCallback` remembers a **function**.
+> - `React.memo` skips redrawing a **component** whose props didn't change.
+
 | | `useMemo` | `useCallback` | `React.memo` |
 |--|-----------|---------------|--------------|
 | Memoizes | A computed **value** | A **function** | A **component** |
@@ -235,10 +247,14 @@ const Card = React.memo(Component, (prev, next) => prev.product.id === next.prod
 
 ## Part 3: Re-renders & Referential Equality
 
+> 💡 **In simple words:** A component redraws (re-renders) when its state changes, when its parent redraws, or when a context it uses changes. Re-rendering is normal. It's only a problem when it is slow or happens far too often.
+
 **Re-renders are triggered by:** state changes, prop changes, parent re-rendering, context value changes.
 **Not triggered by:** ref changes, regular variable mutation.
 
 ### Referential equality
+
+> 💡 **In simple words:** JavaScript compares objects by their **address**, not by their content. Two boxes with the same toys inside are still two different boxes. An object created during every render is a "different box" each time, so React thinks it changed.
 
 React compares with `Object.is` / `===`. Primitives compare by value; objects/arrays/functions compare by **reference**:
 
@@ -263,6 +279,8 @@ const config = useMemo(() => ({ count }), [count]);
 ```
 
 ### Common performance mistakes
+
+> 💡 **In simple words:** A rule for beginners: write simple code first. Optimize only when something is actually slow, and measure it with React DevTools before and after.
 
 - ❌ `useMemo` on cheap calculations (`a + b`) — overhead > benefit
 - ❌ Inline functions/objects as props to memoized children — defeats `React.memo`
@@ -346,6 +364,8 @@ const ResetButton = memo(function ResetButton({ onReset }: { onReset: () => void
 
 ## Part 4: Context API
 
+> 💡 **In simple words:** Context works like a radio station. The **Provider** broadcasts a value, and any component inside it can tune in with `useContext`. There is no need to pass props through every level in between.
+
 Context solves **prop drilling** — passing the same props through many intermediate components that don't use them.
 
 ```tsx
@@ -354,6 +374,13 @@ Context solves **prop drilling** — passing the same props through many interme
 ```
 
 ### The standard pattern
+
+> 💡 **In simple words:** It's always the same five steps:
+> 1. Create the context.
+> 2. Make a Provider component that holds the state.
+> 3. Wrap your app in it.
+> 4. Write a small `useX()` hook.
+> 5. Use the hook in any component.
 
 ```tsx
 // 1. Create context + typed value
@@ -510,6 +537,13 @@ function App() {
 
 ## Part 5: Types of State — Picking the Right Tool
 
+> 💡 **In simple words:** Not all state is the same. Ask yourself: who needs this data?
+> - Only one component → `useState`.
+> - A few neighbors → lift the state up.
+> - Many components, and it rarely changes → Context.
+> - Many components, and it changes often → a store like Zustand.
+> - It comes from the server → React Query.
+
 | Type | What it is | Examples | Tool |
 |------|-----------|----------|------|
 | **Local** | One component's data | inputs, toggles, modals | `useState` |
@@ -523,6 +557,8 @@ The biggest conceptual win: **server state is not client state**. API data needs
 ---
 
 ## Part 6: Zustand — Global State Management
+
+> 💡 **In simple words:** A **store** is a global box of state that lives outside your components. Any component can read from it or call its actions, with no Provider and no prop drilling. `create` builds the store, and `set` changes it.
 
 Zustand is a tiny (~1KB) global store: no Provider, no boilerplate, selective re-renders via selectors, first-class TypeScript.
 
@@ -557,6 +593,8 @@ function Counter() {
 
 ### Selectors — the key to performance
 
+> 💡 **In simple words:** A selector is a small function that picks the piece of the store a component needs: `state => state.count`. The component then redraws only when **that** piece changes, not whenever anything in the store changes.
+
 ```tsx
 // ❌ subscribes to the WHOLE store — re-renders on any change
 const store = useCartStore();
@@ -573,6 +611,8 @@ const total = useCartStore(selectTotal);
 ```
 
 ### Actions — sync, async, and `get()`
+
+> 💡 **In simple words:** Actions are the functions inside the store that change the data (`addItem`, `login`). All the "how to change it" logic stays in the store, so components just call `addItem(product)`. Inside an action, `get()` reads the current values of the store.
 
 ```tsx
 const useStore = create<Store>((set, get) => ({
@@ -608,6 +648,8 @@ const useStore = create<Store>((set, get) => ({
 
 ### Immutable updates in stores
 
+> 💡 **In simple words:** The same rule as `useState`: never change arrays or objects directly; always return new ones. Otherwise the components won't notice the change.
+
 Same rules as `useState` — never mutate:
 
 ```tsx
@@ -620,6 +662,8 @@ updateUser: (patch) => set((s) => ({ user: s.user ? { ...s.user, ...patch } : nu
 ```
 
 ### Derived state
+
+> 💡 **In simple words:** Totals and counts are calculated from `items` whenever you need them, never stored separately, so they are always correct.
 
 Compute from state, don't store it:
 
@@ -641,6 +685,8 @@ const useCartStore = create<CartStore>((set, get) => ({
 ```
 
 ### Persist middleware — localStorage for free
+
+> 💡 **In simple words:** `persist` saves the store to the browser's `localStorage` automatically and loads it back when the page opens. With one extra wrapper, the cart survives a page refresh.
 
 ```tsx
 import { persist, createJSONStorage } from 'zustand/middleware';
@@ -779,9 +825,13 @@ const useTodoStore = create<TodoStore>((set) => ({
 
 ## Part 7: Custom Hooks Library
 
+> 💡 **In simple words:** A custom hook is a function whose name starts with `use` and that calls other hooks. It lets you reuse **logic** (not UI) in many components: write it once, use it everywhere.
+
 Custom hooks are functions prefixed `use` that compose built-in hooks into reusable logic.
 
 ### `useLocalStorage` — state that survives reloads
+
+> 💡 **In simple words:** It works like `useState`, but it also saves the value in the browser's `localStorage`, so the value is still there after the tab is closed.
 
 ```tsx
 function useLocalStorage<T>(key: string, initialValue: T) {
@@ -803,6 +853,8 @@ function useLocalStorage<T>(key: string, initialValue: T) {
 ```
 
 ### `useDebounce` — delay updates until input settles
+
+> 💡 **In simple words:** Debounce means "wait until the user stops". If we searched on every key press, typing "laptop" would send 6 requests. With debounce, we wait 500 ms after the last key and send just one.
 
 ```tsx
 function useDebounce<T>(value: T, delay = 500): T {
@@ -826,6 +878,12 @@ function Search() {
 ```
 
 ### `useTheme` — context + persistence
+
+> 💡 **In simple words:** This example combines everything from this session:
+> - **Context** shares the theme everywhere.
+> - **State** remembers it.
+> - **An effect** saves it and applies it to the page.
+> - **A custom hook** makes it easy to use.
 
 ```tsx
 type Theme = 'light' | 'dark';

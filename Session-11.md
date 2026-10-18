@@ -8,6 +8,7 @@
 ---
 
 > **How to use this session**
+> - **💡 In simple words**: a plain-language explanation under each topic. Read it first, then the code.
 > - **Complete examples**: every normal code block. Read it, type it yourself, run it.
 > - **✍️ Your Turn**: unfinished code after each part. Fill every `____` and finish every `// TODO`, then run it.
 > - **📝 Student Worksheet** (end of session): questions to give students. Answers are hidden under **✅ Solution**. Delete those blocks before sharing if students should not see them.
@@ -25,6 +26,8 @@
 ---
 
 ## Part 1: Schema Validation (Last Line of Defense)
+
+> 💡 **In simple words:** Never trust data that comes from users. Schema validation is the final guard right before data enters the database: if a field breaks a rule, Mongoose refuses to save it.
 
 ```js
 const productSchema = new mongoose.Schema({
@@ -111,9 +114,16 @@ const userSchema = new mongoose.Schema({
 
 ## Part 2: Request Validation (First Line of Defense)
 
+> 💡 **In simple words:** Request validation checks the input as soon as the request arrives, before any database work. It gives clear error messages and stops bad data early. Think of it as the guard at the front door, while the schema is the guard at the safe.
+
 Validate at the boundary — before the data ever reaches your model.
 
 ### express-validator
+
+> 💡 **In simple words:**
+> 1. Describe the rules for each field as a chain: `body('email').isEmail()`.
+> 2. Put the rules before your controller.
+> 3. Check `validationResult(req)` for errors.
 
 ```bash
 npm install express-validator
@@ -140,6 +150,8 @@ exports.createTodo = [
 ```
 
 ### Joi — schema-based validation (framework-agnostic)
+
+> 💡 **In simple words:** With Joi, you describe the whole expected object in one schema and check `req.body` against it. You can reuse the same schema on many routes.
 
 ```bash
 npm install joi
@@ -266,6 +278,8 @@ const bookSchema = Joi.object({
 
 ### The error middleware — 4 params, registered LAST
 
+> 💡 **In simple words:** Instead of writing error responses in every controller, send every error to **one** handler. One place decides the format and the status code, so errors are consistent and easy to change.
+
 ```js
 // middleware/errorHandler.js
 module.exports = (err, req, res, next) => {
@@ -298,6 +312,8 @@ exports.getTodoById = async (req, res, next) => {
 
 ### Custom error classes — one `throw` replaces status+message plumbing
 
+> 💡 **In simple words:** `AppError` is our own type of error that also carries an HTTP status. In a controller you just write `throw new AppError('Not found', 404)` (or pass it to `next(...)`), and the error handler does the rest.
+
 ```js
 // utils/AppError.js
 class AppError extends Error {
@@ -314,6 +330,8 @@ if (existing) return next(new AppError('Email already registered', 400));
 ```
 
 ### Async + Express 4 caveat
+
+> 💡 **In simple words:** In Express 4, an error inside an `async` function is not caught automatically, so the request hangs. `asyncHandler` wraps the function and passes any error to `next`. Express 5 does this for you.
 
 Express 4 doesn't catch rejected promises — either wrap every async handler in `try/catch → next(err)`, or use a wrapper:
 
@@ -403,6 +421,8 @@ module.exports = (err, req, res, next) => {
 
 ### Password hashing — bcrypt
 
+> 💡 **In simple words:** **Hashing** turns a password into scrambled text that can't be turned back. At login, we hash what the user typed and compare it with the saved hash. A **salt** (random extra text) makes the same password produce different hashes, so attackers can't use ready-made lists of common passwords and their hashes.
+
 Never store plain-text passwords. bcrypt = one-way hash + salt (defeats rainbow tables).
 
 ```bash
@@ -429,6 +449,11 @@ userSchema.pre('save', async function (next) {
 
 ### Register
 
+> 💡 **In simple words:** Registering is three steps:
+> 1. Check that the email isn't already taken.
+> 2. Save the new user (the pre-save hook hashes the password).
+> 3. Reply 201, **without** the password.
+
 ```js
 exports.register = async (req, res, next) => {
   try {
@@ -444,6 +469,8 @@ exports.register = async (req, res, next) => {
 ```
 
 ### Login → JWT
+
+> 💡 **In simple words:** To log in, find the user by email, then compare the password with bcrypt. If it's correct, create a **JWT**: a signed token that contains the user's id and role. The signature, made with your secret key, proves that your server created the token and nobody changed it.
 
 JWT = self-contained signed token (`header.payload.signature`). Client sends it as `Authorization: Bearer <token>` on every protected request — the server verifies the signature; no session storage needed.
 
@@ -472,6 +499,8 @@ exports.login = async (req, res, next) => {
 
 ### Protect middleware
 
+> 💡 **In simple words:** `protect` runs before the protected routes. It reads the token from the `Authorization` header, verifies it, and puts the user's info in `req.user` for the next functions. No valid token → 401.
+
 ```js
 // middleware/auth.js
 exports.protect = (req, res, next) => {
@@ -493,6 +522,8 @@ router.delete('/:id', protect, deleteTodo);          // or per-route
 ```
 
 ### Role-based access control (RBAC)
+
+> 💡 **In simple words:** With role-based access control, permissions depend on the user's **role**. `authorize('admin')` runs **after** `protect` and only lets admins continue; everyone else gets 403.
 
 **401** = not authenticated (who are you?). **403** = authenticated but not permitted (you can't do this).
 

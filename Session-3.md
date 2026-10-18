@@ -8,6 +8,7 @@
 ---
 
 > **How to use this session**
+> - **💡 In simple words**: a plain-language explanation under each topic. Read it first, then the code.
 > - **Complete examples**: every normal code block. Read it, type it yourself, run it.
 > - **✍️ Your Turn**: unfinished code after each part. Fill every `____` and finish every `// TODO`, then run it.
 > - **📝 Student Worksheet** (end of session): questions to give students. Answers are hidden under **✅ Solution**. Delete those blocks before sharing if students should not see them.
@@ -27,6 +28,8 @@
 
 ### What is State?
 
+> 💡 **In simple words:** State is the component's **memory**. A normal variable is forgotten every time the component redraws. State is remembered, and when you change it, React redraws the screen with the new value. Examples: the number in a counter, the text in a search box, whether a menu is open.
+
 State is **component-internal data that React watches and re-renders on change**. Unlike ordinary variables (which reset every render and don't trigger updates), state persists between renders and drives the UI.
 
 | Aspect | Regular Variable | State |
@@ -39,6 +42,8 @@ State is **component-internal data that React watches and re-renders on change**
 **Props vs State:** props are inputs passed *from a parent* (read-only inside the component); state is data the component *owns and changes*.
 
 ### `useState` Syntax
+
+> 💡 **In simple words:** `useState(0)` creates a piece of state that starts at 0. It gives you two things: the current value (`count`) and a function that changes it (`setCount`). Never change the value directly. Always call the setter, because that is how React knows it must redraw.
 
 ```tsx
 import { useState } from 'react';
@@ -150,6 +155,8 @@ function ThemeSwitch() {
 
 ### Never Mutate — React Uses Reference Equality
 
+> 💡 **In simple words:** To see whether state changed, React asks "is this the **same object** as before?" It does not look inside. If you change a property of the same object, React sees the same object and does nothing. So always make a **new copy** that includes the change; the `...` spread operator does the copying.
+
 ```tsx
 // ❌ Wrong — same reference, React won't re-render
 user.name = 'Jane';
@@ -160,6 +167,8 @@ setUser({ ...user, name: 'Jane' });
 ```
 
 ### Object Updates
+
+> 💡 **In simple words:** `{ ...prev, name: newName }` means: copy every property of the old object, then overwrite `name`. For nested objects, copy every level you change.
 
 ```tsx
 // Single property
@@ -184,6 +193,8 @@ setState(prev => produce(prev, draft => {
 ```
 
 ### Array Updates — Immutable Operations
+
+> 💡 **In simple words:** Don't use `push`, `splice` or `sort` on state arrays, because they change the original array. Use the ways that return a **new** array: `[...arr, x]` to add, `filter` to remove, `map` to change one item.
 
 ```tsx
 // Add
@@ -211,6 +222,8 @@ setItems([]);
 ```
 
 ### Functional Updates & Previous State
+
+> 💡 **In simple words:** React doesn't update state immediately: it waits and applies the updates together (**batching**). `setCount(prev => prev + 1)` means "take the newest value and add 1", so it stays correct even if you call it many times in a row.
 
 React **batches** state updates. `setCount(count + 1)` uses the count captured at call time — stale if multiple updates queue up. A functional update always receives the latest state.
 
@@ -328,6 +341,8 @@ const addThree = () => {
 
 ### Derived State
 
+> 💡 **In simple words:** If a value can be **calculated** from state you already have (a count, a total, a filtered list), don't store it in another state. Calculate it while rendering, and it can never be out of date.
+
 Don't store what you can compute. Derived values calculate during render and stay in sync automatically.
 
 ```tsx
@@ -346,9 +361,13 @@ Use `useMemo` only when the derivation is expensive (covered in Session 5).
 
 ### State Duplication
 
+> 💡 **In simple words:** Keeping the same information in two places is like keeping two copies of a phone number: when it changes, you will forget to update one of them. Keep each piece of information in **one** place only.
+
 Storing the same data in two places creates synchronization bugs. Keep **one source of truth** and derive everything else: filtered lists, counts, totals, full names, formatted values.
 
 ### Lifting State Up
+
+> 💡 **In simple words:** When two components need the same data, move the state **up** to their common parent. The parent passes the value down as a prop, and also passes down a function the children call to ask for changes.
 
 When sibling components need the same data, move state to their nearest common parent. Data flows **down via props**, changes flow **up via callbacks**.
 
@@ -490,6 +509,8 @@ function App() {
 
 ### HTML vs React Forms
 
+> 💡 **In simple words:** In React, the state is the boss of the input. The input shows what the state says (`value`), and every key press updates the state (`onChange`). This is called a **controlled input**. Because the data is always in state, it is easy to validate it or show it somewhere else.
+
 In HTML, the DOM owns form data and submit reloads the page. In React, **state owns the data** — inputs are *controlled*: `value` comes from state, `onChange` writes back to state.
 
 ```tsx
@@ -520,6 +541,8 @@ function MyForm() {
 
 ### Input Type Reference
 
+> 💡 **In simple words:** Each input type gives a different kind of value. Text inputs give a string. Checkboxes give true/false, so read `checked`, not `value`. Number inputs **still give a string**, so convert it with `Number()`.
+
 | Type | State | Key props |
 |------|-------|-----------|
 | text/email/password/tel/url | `string` | `value`, `onChange` |
@@ -530,6 +553,13 @@ function MyForm() {
 | textarea | `string` | `value`, `onChange`, `rows` |
 
 ### Validation & Errors
+
+> 💡 **In simple words:** Validation means checking the user's input before you use it. We keep three things in state:
+> - the values
+> - the error messages
+> - the fields the user has already visited (`touched`)
+>
+> `touched` stops us from showing errors before the user has had a chance to type.
 
 Track three pieces of state: `formData`, `errors`, `touched`. Validate **on blur** for real-time feedback and **on submit** as the gate.
 
@@ -682,6 +712,8 @@ function SignupForm() {
 
 ### Rendering vs Events vs Side Effects
 
+> 💡 **In simple words:** Rendering should only **calculate** what to show. Anything that reaches **outside** the component (the network, timers, the browser tab title, localStorage) is a **side effect**. A side effect caused by a click goes in the event handler. A side effect that should happen because the component is on the screen goes in `useEffect`.
+
 | | Rendering | Events | Side Effects |
 |--|-----------|--------|--------------|
 | Purpose | Display UI | Handle user interaction | External operations |
@@ -691,6 +723,8 @@ function SignupForm() {
 A **side effect** is anything outside rendering: data fetching, subscriptions, timers, DOM manipulation, `localStorage`, event listeners, third-party libraries.
 
 ### Syntax
+
+> 💡 **In simple words:** `useEffect(fn, deps)` means "after the screen is drawn, run `fn`". The dependency array says **when to run it again**: only when one of those values changes. The function you return is the **cleanup**: it undoes the effect, for example by stopping a timer or removing a listener.
 
 ```tsx
 useEffect(() => {
@@ -710,6 +744,14 @@ useEffect(() => {
 Effects run **after the DOM updates**, in declaration order. Never assume synchronous execution.
 
 ### Common Effects
+
+> 💡 **In simple words:** These four patterns cover most real uses:
+> - load data when the component appears
+> - run a timer
+> - listen to browser events
+> - cancel a request that is no longer needed
+>
+> Every effect that **starts** something also **stops** it in its cleanup.
 
 **Data fetching:**
 
@@ -768,6 +810,8 @@ useEffect(() => {
 5. **Unstable references** — objects/functions created in render are new every render; stabilize with `useMemo`/`useCallback` if used as deps.
 
 ### When NOT to Use `useEffect`
+
+> 💡 **In simple words:** Beginners often use `useEffect` to calculate one state from another. That causes an extra render and creates bugs. If you can calculate a value from props or state, calculate it directly in the component body.
 
 - Derived state → calculate during render (`const fullName = `${first} ${last}``)
 - Data transformation → render-time calc or `useMemo` if expensive

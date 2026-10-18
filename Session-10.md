@@ -8,6 +8,7 @@
 ---
 
 > **How to use this session**
+> - **💡 In simple words**: a plain-language explanation under each topic. Read it first, then the code.
 > - **Complete examples**: every normal code block. Read it, type it yourself, run it.
 > - **✍️ Your Turn**: unfinished code after each part. Fill every `____` and finish every `// TODO`, then run it.
 > - **📝 Student Worksheet** (end of session): questions to give students. Answers are hidden under **✅ Solution**. Delete those blocks before sharing if students should not see them.
@@ -26,6 +27,8 @@
 ---
 
 ## Part 1: Mongoose & ODM
+
+> 💡 **In simple words:** MongoDB accepts any document, even one with typos or missing fields. Mongoose adds rules on top: you describe what a document must look like (a **schema**), and Mongoose checks every save. It also gives you easy functions like `Book.find()`.
 
 **Mongoose** is an ODM (Object Data Modeling) library — it maps JS objects to MongoDB documents and adds what raw MongoDB lacks: **schemas** (enforced shape), **validation**, instance/static methods, middleware hooks, and a cleaner API.
 
@@ -64,6 +67,8 @@ app.listen(process.env.PORT || 3000);
 ---
 
 ## Part 2: Environment Variables
+
+> 💡 **In simple words:** Environment variables are settings that live **outside** your code: passwords, secret keys, database addresses. The code reads them from `process.env`. That way you can push code to GitHub without pushing secrets, and use different settings on your computer and on the server.
 
 Secrets (DB URIs, API keys, JWT secrets) belong in `.env` — never in code, never in git.
 
@@ -183,6 +188,8 @@ PORT=
 
 ## Part 3: Schemas — Types, Defaults, Validation
 
+> 💡 **In simple words:** A **schema** is the blueprint of a document: field names, their types, which ones are required, default values, and rules (min, max, allowed values). A **model** is the tool built from the schema that you use to save and find documents.
+
 ```js
 // models/Product.js
 const mongoose = require('mongoose');
@@ -293,6 +300,13 @@ Run each failing `create` on its own (comment out the others), because the first
 
 ## Part 4: MVC Structure
 
+> 💡 **In simple words:** MVC stands for Model, View, Controller. In an API:
+> - **Model**: the data and its rules (Mongoose).
+> - **Controller**: the logic for each request.
+> - **Routes**: the map from URL to controller.
+>
+> The "View" is the JSON response, or the React app that shows it. Small files with one job each are easier to read and fix.
+
 Separate concerns so each layer has one job:
 
 ```
@@ -392,6 +406,14 @@ a) models · b) routes · c) controllers
 
 ## Part 5: CRUD with Mongoose
 
+> 💡 **In simple words:** Every controller function follows the same recipe:
+> 1. Read the input from `req`.
+> 2. Ask the model.
+> 3. Handle "not found".
+> 4. Send the response with the right status.
+>
+> Database calls take time, so they are `async` and need `await`, and errors go to `next(err)`.
+
 ```js
 // controllers/todoController.js
 const Todo = require('../models/Todo');
@@ -453,6 +475,8 @@ exports.deleteTodo = async (req, res, next) => {
 
 ### Model methods cheat sheet
 
+> 💡 **In simple words:** Keep this table open while you code. Almost every API you build uses only these methods.
+
 | Task | Method |
 |------|--------|
 | Create | `Model.create(data)` · `new Model(data).save()` |
@@ -463,6 +487,8 @@ exports.deleteTodo = async (req, res, next) => {
 | Chain | `.sort() .limit() .skip() .select('name price')` |
 
 ### HTTP status codes
+
+> 💡 **In simple words:** Send the right code, so the frontend knows what happened without having to read the message.
 
 | Code | When |
 |------|------|

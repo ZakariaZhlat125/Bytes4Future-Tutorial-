@@ -9,6 +9,7 @@
 ---
 
 > **How to use this session**
+> - **💡 In simple words**: a plain-language explanation under each topic. Read it first, then the code.
 > - **Complete examples**: every normal code block. Read it, type it yourself, run it.
 > - **✍️ Your Turn**: unfinished starter code for each milestone. Fill every `____` and finish every `// TODO`.
 > - **📝 Student Worksheet** (end of session): planning questions, a code-review exercise, the milestone plan and a grading rubric. Answers are hidden under **✅ Solution**. Delete those blocks before sharing if students should not see them.
@@ -22,6 +23,8 @@ This session is a **blueprint**: it defines requirements, architecture, data mod
 ---
 
 ## 1. Requirements
+
+> 💡 **In simple words:** Before writing code, professionals write down **what** the app must do (functional requirements: the features) and **how well** it must do it (non-functional requirements: speed, security, accessibility). This list is your to-do list and your definition of "done".
 
 ### Functional
 
@@ -46,6 +49,8 @@ This session is a **blueprint**: it defines requirements, architecture, data mod
 ---
 
 ## 2. Routes
+
+> 💡 **In simple words:** List every page and its URL first. **Public** pages are for anyone; **protected** pages need a login. This list becomes your router configuration.
 
 ```
 Public:     /, /login, /register, /meals, /meals/:id, /cart, /404
@@ -75,6 +80,11 @@ Protected:  /checkout, /orders, /orders/:id, /profile
 ---
 
 ## 3. State Management Strategy
+
+> 💡 **In simple words:** Decide where each piece of data lives **before** you code:
+> - Data from the server → React Query.
+> - Data many components share → Zustand.
+> - Data used by one component → `useState`.
 
 | State type | Tool | Used for |
 |-----------|------|----------|
@@ -285,6 +295,8 @@ export const useCartStore = create<CartStore>()(
 
 ## 4. API Layer
 
+> 💡 **In simple words:** All communication with the backend goes through one Axios client and a few service files. Components never write URLs themselves; they call functions like `mealsService.getMeals()`.
+
 ```tsx
 // services/apiClient.ts — Axios instance + token attach + refresh-on-401
 const apiClient = axios.create({ baseURL: import.meta.env.VITE_API_URL });
@@ -477,6 +489,8 @@ Axios skips `undefined` params, so an empty search or "all categories" sends no 
 
 ## 5. Folder Structure
 
+> 💡 **In simple words:** A predictable folder structure means you always know where a file belongs. `@/` is a shortcut (an **alias**) for the `src/` folder, so imports stay short: `@/stores/cartStore` instead of `../../stores/cartStore`.
+
 ```
 src/
 ├── components/
@@ -505,6 +519,8 @@ Path aliases (`tsconfig` + `vite.config`): `@/components`, `@/pages`, `@/service
 
 ## 6. Setup
 
+> 💡 **In simple words:** These commands create the project and install every library from Sessions 2–6. `.env` holds settings that change from one computer to another, like the address of the API.
+
 ```bash
 npm create vite@latest food-ordering-app -- --template react-ts
 cd food-ordering-app
@@ -526,6 +542,12 @@ npm install -D tailwindcss postcss autoprefixer @types/node
 ---
 
 ## 7. Implementation Patterns
+
+> 💡 **In simple words:** These are the reusable "recipes" of the app. Every page follows the same pattern:
+> 1. Get the data with React Query.
+> 2. Handle loading, error and empty.
+> 3. Render the components.
+> 4. Change data with a mutation.
 
 ### Reusable base components
 
@@ -829,6 +851,8 @@ function validate(form: CheckoutForm): CheckoutErrors {
 
 ## 8. Performance Pass
 
+> 💡 **In simple words:** Build first, optimize last. Once everything works, add memoization and lazy loading only where they really help.
+
 Apply Session 5–6 techniques where they actually matter:
 
 ```tsx
@@ -852,6 +876,8 @@ Wrap lazy elements in `<Suspense fallback={<LoadingSpinner />}>` inside the rout
 
 ## 9. Checklists
 
+> 💡 **In simple words:** Use these lists before you submit: go through each line and tick it off. They are the same checks a senior developer does in a code review.
+
 ### Code review
 - Conventions followed, no `console.log`, no `any`, strict TS, all loading/error/empty states, reusable components, no duplication, clean API layer.
 
@@ -867,6 +893,8 @@ Wrap lazy elements in `<Suspense fallback={<LoadingSpinner />}>` inside the rout
 ---
 
 ## 10. Extension Ideas (Final Assignment)
+
+> 💡 **In simple words:** These features are optional, for students who finish early. Pick one, plan it, and build it on a new git branch.
 
 - **Real-time:** WebSocket order status updates + notifications
 - **Reviews & ratings** on meals

@@ -8,6 +8,7 @@
 ---
 
 > **How to use this session**
+> - **💡 In simple words**: a plain-language explanation under each topic. Read it first, then the code.
 > - **Complete examples**: every normal code block. Read it, type it yourself, run it.
 > - **✍️ Your Turn**: unfinished code after each part. Fill every `____` and finish every `// TODO`, then run it.
 > - **📝 Student Worksheet** (end of session): questions to give students. Answers are hidden under **✅ Solution**. Delete those blocks before sharing if students should not see them.
@@ -25,6 +26,8 @@
 ---
 
 ## Part 1: Middleware & the Request Lifecycle
+
+> 💡 **In simple words:** Middleware is like the security checks at an airport. Every passenger (request) passes several checkpoints in order before reaching the gate (your route). Each checkpoint can look at the passenger, add a stamp, stop them, or let them continue with `next()`.
 
 **Middleware** = functions that sit between the incoming request and your route handler. Each gets `(req, res, next)` and can inspect/modify the request, end the response, or pass control with `next()`.
 
@@ -126,6 +129,8 @@ app.use('/api/admin', checkApiKey);
 
 ## Part 2: Built-in Middleware
 
+> 💡 **In simple words:** Express includes ready-made middleware for common jobs: reading JSON bodies, reading HTML form data, and serving static files (HTML, CSS, images).
+
 ```js
 app.use(express.json());                          // parses JSON bodies → req.body (REQUIRED for APIs)
 app.use(express.urlencoded({ extended: true }));  // parses HTML form posts (x-www-form-urlencoded)
@@ -143,6 +148,11 @@ app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'dist', 'index.html
 ---
 
 ## Part 3: Third-Party Middleware
+
+> 💡 **In simple words:** Third-party middleware is packages written by other people, installed with npm. Almost every real Express app uses these three:
+> - **morgan**: logging.
+> - **cors**: permission for other websites to call your API.
+> - **helmet**: security headers.
 
 ```bash
 npm install morgan cors helmet
@@ -238,6 +248,8 @@ app.post('/contact', (req, res) => res.send(`Thanks, ${req.body.name}!`));
 
 ## Part 4: Custom Middleware
 
+> 💡 **In simple words:** You can write your own middleware for anything your app needs on many routes: logging, checking a key, validating input. It's just a function with `(req, res, next)`.
+
 ```js
 // Attaching data to the request
 const requestTime = (req, res, next) => {
@@ -257,6 +269,8 @@ app.post('/api/todos', validateTodo, (req, res) => { /* create */ });
 ```
 
 ### Error-handling middleware — signature is `(err, req, res, next)`
+
+> 💡 **In simple words:** When something goes wrong, call `next(err)`. Express skips all the normal routes and jumps straight to the error handler: one place that turns every error into a clean JSON response.
 
 4 parameters = error handler. **Register it LAST**, after all routes:
 
@@ -342,7 +356,11 @@ app.use((err, req, res, next) => {
 
 ## Part 5: MongoDB Fundamentals
 
+> 💡 **In simple words:** A database stores data **permanently**: it's still there after the server restarts. Our in-memory arrays were lost every time. MongoDB stores data as documents that look like JavaScript objects, grouped in collections.
+
 ### NoSQL vs SQL
+
+> 💡 **In simple words:** A SQL database is like an Excel sheet: fixed columns, and every row must fit them. MongoDB is like a folder of JSON files: each document can have its own fields. The hierarchy is **database** → **collections** (like "users" or "products") → **documents** (one user).
 
 | SQL | MongoDB (NoSQL) |
 |-----|-----------------|
@@ -361,6 +379,8 @@ Documents map 1:1 to JavaScript objects — natural fit for Node:
 
 ### Setup options
 
+> 💡 **In simple words:** You can run MongoDB on your own computer, or use **Atlas**, MongoDB in the cloud with a free tier. Atlas is easier for beginners: there's nothing to install, and you get a **connection string** (an address that includes a username and password) to connect from your code.
+
 - **Local:** install MongoDB Community Server → `mongod` → `mongodb://localhost:27017`
 - **Atlas (recommended):** free managed cluster → connection string `mongodb+srv://user:pass@cluster0.mongodb.net/mydb` → whitelist your IP → put the URI in `.env` (`MONGODB_URI=`)
 
@@ -369,6 +389,8 @@ Documents map 1:1 to JavaScript objects — natural fit for Node:
 ---
 
 ## Part 6: CRUD in mongosh
+
+> 💡 **In simple words:** CRUD stands for **C**reate, **R**ead, **U**pdate, **D**elete: the four things every app does with data. In mongosh, each one is a function on a collection: `insertOne`, `find`, `updateOne`, `deleteOne`. A **filter** is an object that describes which documents you want.
 
 ```js
 use shopdb;

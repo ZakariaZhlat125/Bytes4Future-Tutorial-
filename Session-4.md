@@ -8,6 +8,7 @@
 ---
 
 > **How to use this session**
+> - **💡 In simple words**: a plain-language explanation under each topic. Read it first, then the code.
 > - **Complete examples**: every normal code block. Read it, type it yourself, run it.
 > - **✍️ Your Turn**: unfinished code after each part. Fill every `____` and finish every `// TODO`, then run it.
 > - **📝 Student Worksheet** (end of session): questions to give students. Answers are hidden under **✅ Solution**. Delete those blocks before sharing if students should not see them.
@@ -33,6 +34,8 @@
 
 ### What is an API?
 
+> 💡 **In simple words:** An API is like a waiter in a restaurant. You (the frontend) can't go into the kitchen (the server and its database). You give your order to the waiter (a **request**), and the waiter brings back the food (a **response**). Orders and food usually travel as JSON text.
+
 An **API (Application Programming Interface)** is a set of rules that lets applications communicate. The client sends a request, the server processes it and returns a response — usually as JSON.
 
 ```ts
@@ -45,6 +48,8 @@ fetch('https://api.example.com/users')
 Common API styles: **REST** (most common, uses HTTP methods), GraphQL, SOAP, WebSocket, gRPC.
 
 ### REST API
+
+> 💡 **In simple words:** REST is a common way to design APIs. Every **thing** (users, products) has its own URL, and the HTTP method says **what to do** with it. `GET /users/1` reads user 1 and `DELETE /users/1` deletes it: same URL, different action.
 
 REST (Representational State Transfer) designs APIs around **resources identified by URLs** and standard HTTP methods:
 
@@ -64,6 +69,8 @@ DELETE /api/users/1     // delete user
 - Return consistent error responses
 
 ### HTTP Methods
+
+> 💡 **In simple words:** The method is the **verb** of the request: GET = read, POST = create, PUT = replace, PATCH = change some fields, DELETE = remove. **Safe** means the request never changes data. **Idempotent** means doing it twice has the same result as doing it once.
 
 | Method | Purpose | Idempotent | Safe | Body |
 |--------|---------|------------|------|------|
@@ -110,6 +117,12 @@ await fetch('/api/products/with-image', {
 
 ### HTTP Status Codes
 
+> 💡 **In simple words:** Every response comes with a number that says how it went. Remember the first digit:
+> - **2xx**: success
+> - **3xx**: go somewhere else
+> - **4xx**: you (the client) made a mistake
+> - **5xx**: the server made a mistake
+
 | Range | Category | Examples |
 |-------|----------|----------|
 | 2xx | Success | 200 OK, 201 Created, 204 No Content |
@@ -134,6 +147,8 @@ switch (response.status) {
 ```
 
 ### JSON
+
+> 💡 **In simple words:** JSON is text that looks like a JavaScript object. A network can only send text, so before sending we turn the object into text (`JSON.stringify`), and after receiving we turn the text back into an object (`JSON.parse`).
 
 JSON is the standard data format for APIs. Convert with `JSON.stringify` (object → string) and `JSON.parse` (string → object):
 
@@ -204,6 +219,8 @@ await fetch('/api/books', {
 
 ### Fetch API
 
+> 💡 **In simple words:** `fetch` is the browser's built-in function for sending requests. It returns a **Promise**, a value that arrives later. Watch out: fetch only fails when there is no network. A 404 or 500 still counts as success, so check `response.ok` yourself.
+
 ```ts
 const response = await fetch(url, options);
 const data = await response.json();
@@ -247,6 +264,8 @@ try {
 
 ### async/await
 
+> 💡 **In simple words:** Requests take time. `await` means "wait here until the answer arrives, then continue", so asynchronous code reads top to bottom like normal code. You can only use `await` inside a function marked `async`.
+
 `async` functions return Promises; `await` pauses until resolution. Equivalent but far more readable than `.then()` chains:
 
 ```ts
@@ -259,6 +278,11 @@ const [user, posts] = await Promise.all([fetchUser(id), fetchPosts()]);
 ```
 
 ### try/catch/finally
+
+> 💡 **In simple words:**
+> - `try`: run this code.
+> - `catch`: if anything fails, run this instead (for example, show an error message).
+> - `finally`: always run this at the end (for example, turn off the loading spinner).
 
 ```ts
 async function fetchData() {
@@ -385,6 +409,8 @@ async function main() {
 ---
 
 ## Part 3: Request States & `useEffect`
+
+> 💡 **In simple words:** A request has a life: it starts (**loading**), then it either fails (**error**) or succeeds (**data**, which may be **empty**). Your component keeps these in state and shows a different screen for each one.
 
 Every API-driven UI moves through four states. Handle **all of them**:
 
@@ -519,6 +545,8 @@ function TodoList() {
 
 ## Part 4: Axios
 
+> 💡 **In simple words:** Axios is a library that does the same job as `fetch`, with less code. It converts JSON automatically, throws an error on 4xx/5xx, and lets you set shared settings once.
+
 Axios is a popular HTTP client with a friendlier API than fetch:
 
 | Feature | Axios | Fetch |
@@ -542,6 +570,8 @@ const created = await axios.post('/api/users', { name: 'John' });
 
 ### Axios Instance
 
+> 💡 **In simple words:** An instance is a pre-configured copy of Axios. You set the base URL, timeout and headers once, and after that every request only needs the short path (`/users`).
+
 Create pre-configured clients with `axios.create` — one per API or environment:
 
 ```ts
@@ -556,6 +586,8 @@ api.get('/products', { params: { page: 1, category: 'electronics' } });
 ```
 
 ### Interceptors & Auth
+
+> 💡 **In simple words:** An interceptor is a checkpoint that every request or response passes through. It's perfect for jobs you'd otherwise repeat everywhere, like adding the login token to every request, or sending the user to the login page whenever a response says 401.
 
 Interceptors run middleware on every request/response — perfect for auth tokens and global error handling:
 
@@ -586,6 +618,13 @@ api.interceptors.response.use(
 
 ## Part 5: Architecture — Services, Hooks, Separation of Concerns
 
+> 💡 **In simple words:** "Separation of concerns" means each file has **one job**:
+> - **Components** draw the UI.
+> - **Services** talk to the server.
+> - **Hooks** hold the loading/error/data logic.
+>
+> When the API changes, you edit one service file instead of 20 components.
+
 **Rule:** components render UI, services talk to the API, hooks manage state. Never put raw `fetch` calls in a component.
 
 ```
@@ -598,6 +637,8 @@ src/
 ```
 
 ### Service layer
+
+> 💡 **In simple words:** A service is an object with one function per API action (`getAll`, `create`, ...). Components call `productService.getAll()` and don't need to know about URLs, headers or Axios.
 
 ```ts
 // services/product.service.ts
@@ -626,6 +667,8 @@ export const productService = {
 ```
 
 ### `useFetch` custom hook
+
+> 💡 **In simple words:** A custom hook is your own function that uses other hooks, so you can reuse logic that has state. `useFetch` hides the three `useState` calls and the `useEffect`; the component just receives `{ data, loading, error }`.
 
 Encapsulate loading/error/data/refetch once, reuse everywhere:
 
@@ -777,6 +820,8 @@ function PostList() {
 
 ### Why routing?
 
+> 💡 **In simple words:** Routing means showing a different page for each URL (`/`, `/about`, `/products/5`) without reloading the browser. Users can bookmark pages, share links and use the Back button.
+
 Without a router you'd swap views with `useState` — but the URL stays the same, so pages can't be bookmarked or shared, and the back button is broken. **SPA routing** syncs the URL to the view with no page reload.
 
 ```bash
@@ -784,6 +829,12 @@ npm install react-router-dom
 ```
 
 ### Core setup (v6)
+
+> 💡 **In simple words:**
+> - `BrowserRouter` watches the URL.
+> - `Routes` looks at the current URL and picks the matching `Route`.
+> - Each `Route` says: "for this path, show this component".
+> - `path="*"` matches everything else, which makes it the 404 page.
 
 ```tsx
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
@@ -817,6 +868,11 @@ function App() {
 
 ### Link vs NavLink vs useNavigate
 
+> 💡 **In simple words:**
+> - `Link` is the React version of `<a>`: it changes the page without reloading.
+> - `NavLink` is a `Link` that knows when it points to the current page, so you can highlight menu items.
+> - `useNavigate` changes the page from your code, for example after a successful login.
+
 | | Link | NavLink | useNavigate |
 |--|------|---------|-------------|
 | Type | Component | Component | Hook |
@@ -844,6 +900,8 @@ Use `<a href>` for external URLs; `Link` for internal ones.
 
 ### useParams — dynamic segments
 
+> 💡 **In simple words:** `:id` in a path is a placeholder. For the URL `/products/42`, `useParams()` gives `{ id: '42' }`, so one `ProductDetails` page works for every product. The value is always a **string**.
+
 ```tsx
 <Route path="/products/:id" element={<ProductDetails />} />
 <Route path="/users/:userId/posts/:postId" element={<PostDetails />} />
@@ -862,6 +920,8 @@ function ProductDetails() {
 Params arrive as **strings** — convert (`Number(id)`) and validate. Re-fetch inside `useEffect` keyed on the param.
 
 ### useLocation & query strings
+
+> 💡 **In simple words:** The query string is the part of the URL after `?`, as in `?page=2&q=shoes`. It holds optional settings like search text and filters. `useSearchParams` reads and changes it, so the search stays in the URL and survives a refresh.
 
 ```tsx
 const location = useLocation();
@@ -978,6 +1038,8 @@ function UserPage() {
 
 ### Nested routes + Outlet
 
+> 💡 **In simple words:** A **layout** is the part of the page that stays the same, like a sidebar or header. **Nested routes** are pages shown **inside** the layout. `<Outlet />` marks the spot in the layout where the child page appears.
+
 Child routes render inside the parent's `<Outlet />` — perfect for shared layouts:
 
 ```tsx
@@ -1017,6 +1079,8 @@ function DashboardLayout() {
 
 ### 404 page
 
+> 💡 **In simple words:** When no route matches the URL, show a friendly "page not found" screen with a way back, never a blank page.
+
 ```tsx
 function NotFound() {
   const navigate = useNavigate();
@@ -1037,6 +1101,8 @@ Place `<Route path="*" element={<NotFound />} />` last — it matches anything u
 ## Part 9: Route Protection
 
 ### ProtectedRoute component
+
+> 💡 **In simple words:** A protected route is a guard at the door. Before showing the page it asks: is the user logged in? If not, it redirects to `/login` and remembers where the user wanted to go.
 
 ```tsx
 import { Navigate, useLocation } from 'react-router-dom';
@@ -1087,6 +1153,8 @@ function Login() {
 ```
 
 ### Minimal auth context
+
+> 💡 **In simple words:** Many components need the logged-in user: the header, the protected routes, the profile page. **Context** keeps the user in one place that any component can read. Session 5 explains Context in detail.
 
 ```tsx
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -1257,6 +1325,8 @@ function AppRoutes() {
 ---
 
 ## Part 10: Project Architecture
+
+> 💡 **In simple words:** As an app grows, a clear folder structure saves time, because everyone knows where to find and put things. Group the files by their role: components, pages, services, hooks, types.
 
 A scalable feature folder structure:
 

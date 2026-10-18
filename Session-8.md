@@ -8,6 +8,7 @@
 ---
 
 > **How to use this session**
+> - **💡 In simple words**: a plain-language explanation under each topic. Read it first, then the code.
 > - **Complete examples**: every normal code block. Read it, type it yourself, run it.
 > - **✍️ Your Turn**: unfinished code after each part. Fill every `____` and finish every `// TODO`, then run it.
 > - **📝 Student Worksheet** (end of session): questions to give students. Answers are hidden under **✅ Solution**. Delete those blocks before sharing if students should not see them.
@@ -26,6 +27,8 @@
 ---
 
 ## Part 1: Node.js
+
+> 💡 **In simple words:** Until now, JavaScript ran inside the browser. Node.js lets it run on a computer or server, so it can do backend jobs: read files, talk to databases, and answer requests from many users. Same language, new place.
 
 **Node.js** is a JavaScript runtime built on Chrome's V8 engine — it runs JS outside the browser, so one language covers frontend and backend.
 
@@ -48,6 +51,8 @@ fs.readFile('data.txt', 'utf8', (err, data) => {
 **Gotchas:** browser-only APIs (`window`, `document`) don't exist; don't write blocking code (it stalls the event loop); always handle async errors.
 
 ### Raw `http` vs Express
+
+> 💡 **In simple words:** Node can already make a web server, but you have to handle every detail by hand. Express is a small library on top of it that makes the common jobs short and readable.
 
 Node's built-in `http` module can serve requests, but it's verbose:
 
@@ -115,9 +120,13 @@ console.log('CPUs:', os.cpus().length);
 
 ## Part 2: Express Setup & First Server
 
+> 💡 **In simple words:** A **server** is a program that waits for requests and sends back responses. With Express you create an `app`, tell it what to do for each URL (the **routes**), and start listening on a **port**: a numbered door on your computer, like 3000.
+
 **Express** = minimal web framework for Node: routing, middleware, request/response conveniences, huge ecosystem.
 
 ### Project setup
+
+> 💡 **In simple words:** `express` is needed to run the app, so it's a normal dependency. `nodemon` only helps while you develop, by restarting the server every time you save, so it's a dev dependency.
 
 ```bash
 mkdir my-api && cd my-api
@@ -134,6 +143,8 @@ npm install --save-dev nodemon # dev-only: auto-restart on file change
 `.gitignore`: `node_modules/`, `.env`. Never commit dependencies or secrets.
 
 ### First server
+
+> 💡 **In simple words:** `app.get('/', handler)` means: "when a GET request comes to `/`, run `handler`". The handler receives `req` (the request: what the client sent) and `res` (the response: what you send back).
 
 ```js
 const express = require('express');
@@ -156,6 +167,8 @@ app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`)
 **Common mistakes:** forgetting `app.listen`, forgetting `express.json()` (so `req.body` is `undefined` on POST), middleware registered *after* routes, hardcoding the port.
 
 ### Request & response objects
+
+> 💡 **In simple words:** `req` is the letter you received. It has **params** (parts of the path), **query** (the part after `?`), **body** (the content) and **headers** (extra information, like the login token). `res` is your reply: `res.json()` sends data, and `res.status()` sets the result code.
 
 | `req` property | Contains | Example URL |
 |----------------|----------|-------------|
@@ -247,6 +260,8 @@ app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`)
 ---
 
 ## Part 3: HTTP Methods & REST
+
+> 💡 **In simple words:** This is the same idea as Session 4, now from the server's side: the server decides what each method does and which status code it answers with. Choosing the right method and status makes your API predictable for frontend developers.
 
 | Method | Purpose | Success status | Notes |
 |--------|---------|----------------|-------|
@@ -377,6 +392,13 @@ app.patch('/api/books/:id', (req, res) => {
 
 ## Part 4: Params, Query, Body
 
+> 💡 **In simple words:** There are three ways the client sends information:
+> - **Params** say **which** thing: `/users/42`.
+> - **Query** adds options: `?page=2&sort=name`.
+> - **Body** carries the data to save, like the new user's name and email.
+>
+> Params and query values are always **strings**.
+
 ```js
 // Route params — identify a resource: /users/42
 app.get('/users/:id', (req, res) => {
@@ -472,6 +494,8 @@ app.get('/api/books', (req, res) => {
 
 ### `express.Router()` — mountable route modules
 
+> 💡 **In simple words:** When an app has many routes, one file gets too long. A Router is a "mini app" for one resource: put all the `/api/todos` routes in `routes/todos.js`, then plug them into the main app with `app.use`.
+
 ```js
 // routes/todos.js
 const express = require('express');
@@ -491,6 +515,14 @@ app.use('/api/todos', todoRoutes);
 One router file per resource; routers map paths → controllers handle logic.
 
 ### Scalable structure
+
+> 💡 **In simple words:** Each folder has one responsibility:
+> - **routes** say which URL.
+> - **controllers** say what to do.
+> - **models** describe the data.
+> - **middleware** runs checks in between.
+>
+> You'll fill these folders in the next sessions.
 
 ```
 my-api/
@@ -521,6 +553,8 @@ app.listen(PORT, () => console.log(`Server on :${PORT}`));
 ```
 
 ### Nodemon
+
+> 💡 **In simple words:** Without nodemon, you must stop and restart the server after every change. Nodemon watches your files and restarts the server automatically.
 
 Dev-time auto-restart: `npm i -D nodemon`, `"dev": "nodemon server.js"`. **Dev only** — production uses plain `node`.
 

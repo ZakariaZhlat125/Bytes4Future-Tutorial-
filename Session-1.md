@@ -7,6 +7,7 @@
 ---
 
 > **How to use this session**
+> - **💡 In simple words**: a plain-language explanation under each topic. Read it first, then the code.
 > - **Complete examples**: every normal code block. Read it, type it yourself, run it.
 > - **✍️ Your Turn**: unfinished code after each part. Fill every `____` and finish every `// TODO`, then run it.
 > - **📝 Student Worksheet** (end of session): questions to give students. Answers are hidden under **✅ Solution**. Delete those blocks before sharing if students should not see them.
@@ -31,6 +32,8 @@ index.ts  ──tsc──▶  index.js  ──node──▶  output
 
 ### 0.1 Install Node.js and npm
 
+> 💡 **In simple words:** Node.js lets your computer run JavaScript outside the browser. npm is like an app store for code: it downloads tools and libraries for you. You install both once per computer.
+
 1. Go to [nodejs.org](https://nodejs.org) and download the **LTS** version.
 2. Run the installer and keep the default options (npm is installed with it).
 3. **Close and reopen** the terminal, then check both tools:
@@ -52,6 +55,8 @@ npm -v     # 10.x.x or newer
 
 ### 0.2 Create the Project
 
+> 💡 **In simple words:** A project is just a folder. `npm init -y` creates `package.json`, a file that describes the project: its name, its commands, and the packages it uses. `-y` means "answer yes to all the questions".
+
 ```bash
 mkdir ts-session-1
 cd ts-session-1
@@ -64,6 +69,8 @@ code .             # open the folder in VS Code
 ---
 
 ### 0.3 Install TypeScript
+
+> 💡 **In simple words:** TypeScript is a package too. We install it **inside** the project so everyone on the team uses the same version. npm puts the downloaded code in `node_modules/`. You never edit that folder by hand.
 
 ```bash
 npm install --save-dev typescript    # short form: npm i -D typescript
@@ -85,6 +92,8 @@ After this command the project has three new things:
 ---
 
 ### 0.4 Configure the Compiler: tsconfig.json
+
+> 💡 **In simple words:** `tsconfig.json` is the settings file of the TypeScript compiler. It answers three questions: Where is my code? (`src`) Where should the JavaScript go? (`dist`) How strict should the checking be? (`strict: true`)
 
 Create a file named `tsconfig.json` in the project root:
 
@@ -114,6 +123,8 @@ Create a file named `tsconfig.json` in the project root:
 ---
 
 ### 0.5 First File: Compile and Run
+
+> 💡 **In simple words:** The workflow is always: write `.ts` → compile with `tsc` → run the `.js` file with `node`. The scripts in `package.json` are shortcuts, so you type `npm run build` instead of remembering long commands.
 
 Create `src/index.ts`:
 
@@ -249,6 +260,8 @@ console.log(`My name is ${myName} and I am ${myAge} years old.`);
 
 ### 1. What is TypeScript
 
+> 💡 **In simple words:** TypeScript = JavaScript + **types**. A type says what kind of value a variable holds: text, a number, true/false, and so on. TypeScript checks your code **before** it runs, like a spell-checker for programming mistakes. The final result is still normal JavaScript.
+
 TypeScript is a strongly typed language built on JavaScript. It adds **static type checking at compile time**, catching errors during development instead of at runtime. Types are stripped during compilation — the runtime behavior is still plain JavaScript.
 
 - Catches type bugs before running code
@@ -280,6 +293,8 @@ calculateTotal("100", 5); // Compile-time error instead of NaN at runtime
 
 ### 2. Type Annotations for Variables
 
+> 💡 **In simple words:** An annotation is a label on a variable. `let age: number` means "age can only hold numbers". When TypeScript can see the type from the value (`let age = 25`), you don't need to write it. This is called **inference**.
+
 Use `: type` after the variable name. TypeScript infers types from initial values, so annotate mainly when there's no initializer or the inferred type is wrong.
 
 ```ts
@@ -298,6 +313,8 @@ apiUrl = "https://api.example.com";
 ---
 
 ### 3. Primitive Types: string, number, boolean
+
+> 💡 **In simple words:** These are the three most basic kinds of values. `string` is text in quotes (`"Ali"`). `number` is any number, whole or decimal (`5`, `9.99`). `boolean` is only `true` or `false`, like a light switch.
 
 ```ts
 let firstName: string = "John";
@@ -330,6 +347,12 @@ function calculateTotal(items: CartItem[]): number {
 ---
 
 ### 4. Special Types: any, unknown, never, void
+
+> 💡 **In simple words:**
+> - `any` means "I don't care what it is". TypeScript stops checking, which is dangerous.
+> - `unknown` means "I don't know yet". You must check the type before you use it, which is safe.
+> - `void` means the function returns nothing.
+> - `never` means the function never finishes normally (for example, it always throws an error).
 
 | Type | Meaning |
 |------|---------|
@@ -370,6 +393,8 @@ function processInput(input: unknown): string {
 ---
 
 ### 5. Arrays and Tuples
+
+> 💡 **In simple words:** An **array** is a list of values of the same type: `number[]` is a list of numbers of any length. A **tuple** is a small array with a fixed size, where each position has its own type, like `[name, age]`.
 
 ```ts
 let numbers: number[] = [1, 2, 3];
@@ -480,6 +505,8 @@ function describe(value: unknown): string {
 
 ### 6. Object Type Annotations
 
+> 💡 **In simple words:** You can describe the **shape** of an object: which properties it has and the type of each one. If you forget a property or misspell one, TypeScript tells you right away.
+
 ```ts
 let person: { name: string; age: number } = {
   name: "John",
@@ -496,6 +523,8 @@ Missing required properties, extra properties, and typos all produce compile-tim
 ---
 
 ### 7. Interfaces
+
+> 💡 **In simple words:** An interface is a **named** description of an object, like a form template. Once you define `Product`, every product must have the same fields. You reuse the name everywhere instead of repeating the whole shape.
 
 Interfaces define **reusable object structures**. Name them in PascalCase.
 
@@ -517,6 +546,8 @@ const laptop: Product = { id: 1, name: "MacBook Pro", price: 1999, category: "El
 ---
 
 ### 8. Optional and Readonly Properties
+
+> 💡 **In simple words:** `?` means "this property may be missing", like an optional field in a form. `readonly` means "you set it when you create the object, and you can never change it later", like an ID number.
 
 - `?` after the name → optional (may be `undefined`)
 - `readonly` before the name → cannot be reassigned
@@ -542,6 +573,8 @@ initializeApp({ apiUrl: "https://api.example.com", version: "1.0.0" });
 
 ### 9. Extending Interfaces
 
+> 💡 **In simple words:** `extends` copies all the properties of one interface into another and lets you add more. `User extends BaseEntity` means a User has everything BaseEntity has, plus its own fields. You write the shared fields only once.
+
 Use `extends` to model *is-a* relationships and avoid duplication. Keep base interfaces small.
 
 ```ts
@@ -565,6 +598,8 @@ interface Post extends BaseEntity {
 ---
 
 ### 10. Type Aliases vs Interfaces
+
+> 💡 **In simple words:** Both give a **name** to a type. Use `interface` for objects. Use `type` when you need something an interface can't do, like "this OR that" (`string | number`) or a list of allowed words (`"small" | "large"`).
 
 Both describe object shapes, but:
 
@@ -666,6 +701,8 @@ let g: Genre = "science";
 
 ### 11. Function Type Annotations
 
+> 💡 **In simple words:** For a function, write the type of each **parameter** (the inputs) and the **return type** (the output) after the parentheses. Then TypeScript stops anyone from calling the function with the wrong inputs.
+
 Annotate every parameter and the return type (after the parentheses).
 
 ```ts
@@ -686,6 +723,8 @@ function updateUser(user: User, updates: Partial<User>): User {
 ---
 
 ### 12. Union Types
+
+> 💡 **In simple words:** A union (`|`) means "one of these types": `string | number` can be text **or** a number. Before you use something that only works on one of them (like `.toUpperCase()`), check which one you have. That check is called **narrowing**.
 
 A union (`|`) means "one of several types". You must **narrow** before using type-specific operations.
 
@@ -720,6 +759,8 @@ Narrow with `typeof`, `in`, `instanceof`, or a discriminant property.
 
 ### 13. Literal Types and Type Narrowing
 
+> 💡 **In simple words:** A literal type allows only **exact** values. `"light" | "dark"` accepts only those two words. It's like a dropdown menu instead of a free text box, so a typo becomes an error.
+
 Literal types restrict a variable to exact values — great for config and state machines.
 
 ```ts
@@ -739,6 +780,8 @@ move("up");
 ---
 
 ### 14. Generics Introduction
+
+> 💡 **In simple words:** Generics are type **variables**. `<T>` is a placeholder that gets filled in when the function is used. Call it with numbers and `T` becomes `number`; call it with strings and `T` becomes `string`. One function works for every type and is still type-safe.
 
 Generics let you write reusable code that **preserves type information** — the type-safe alternative to `any`.
 
