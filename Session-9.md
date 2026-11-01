@@ -1,9 +1,8 @@
-# Session 9: Express Middleware & MongoDB Fundamentals
+# Session 9: NestJS Request Lifecycle & MongoDB Fundamentals
 
 **Duration:** 3 hours
 **Level:** Beginner–Intermediate
-**Prerequisites:** Session 8 (Express basics, routing, req/res)
-**Condensed from:** Node Sessions 3–4
+**Prerequisites:** Session 8 (NestJS basics, controllers, services, modules)
 
 ---
 
@@ -15,50 +14,93 @@
 
 ## Session Overview
 
-- **Part 1:** Middleware — what it is, request lifecycle, ordering
-- **Part 2:** Built-in middleware — `express.json`, `urlencoded`, `static`
-- **Part 3:** Third-party middleware — morgan, cors, helmet
-- **Part 4:** Custom middleware + error middleware
+- **Part 1:** The request lifecycle + middleware
+- **Part 2:** Pipes & validation — built-in pipes, DTOs with `class-validator`, CORS, static files
+- **Part 3:** Interceptors + security headers (helmet) + logging
+- **Part 4:** Guards, exceptions & exception filters
 - **Part 5:** MongoDB — NoSQL concepts, documents & collections, setup
 - **Part 6:** CRUD in the shell — insert/find/update/delete, operators, projection
-- **Lab:** Middleware-hardened API + MongoDB query practice
+- **Lab:** Hardened to-do API + MongoDB query practice
 
 ---
 
-## Part 1: Middleware & the Request Lifecycle
+## Part 1: The Request Lifecycle & Middleware
 
-> 💡 **In simple words:** Middleware is like the security checks at an airport. Every passenger (request) passes several checkpoints in order before reaching the gate (your route). Each checkpoint can look at the passenger, add a stamp, stop them, or let them continue with `next()`.
-
-**Middleware** = functions that sit between the incoming request and your route handler. Each gets `(req, res, next)` and can inspect/modify the request, end the response, or pass control with `next()`.
+> 💡 **In simple words:** Before a request reaches your controller, it passes several checkpoints, like the security checks at an airport. Each checkpoint has one job. NestJS gives every job its own tool:
+> - **Middleware**: looks at every request first (logging, adding data).
+> - **Guards**: decide "may this request continue?" (auth, roles).
+> - **Interceptors**: run code before **and** after the handler (timing, changing the response).
+> - **Pipes**: check and convert the input (validation, `'42'` → `42`).
+> - **Exception filters**: turn errors into clean JSON responses.
 
 ```
-Request → middleware 1 → middleware 2 → route handler → Response
+Request
+  → Middleware        (app.use / MiddlewareConsumer)
+  → Guards            (@UseGuards)          can stop with 401/403
+  → Interceptors      (before)
+  → Pipes             (@Body, @Param ...)   can stop with 400
+  → Controller method
+  → Interceptors      (after)               can change the response
+  → Exception filters (only if something threw)
+Response
 ```
 
-```js
-// Global middleware — runs for EVERY request
-app.use((req, res, next) => {
-  req.requestTime = Date.now();        // attach data for later handlers
+### Middleware
+
+Middleware is a function `(req, res, next)`. It can inspect or change the request, or end the response. It **must** call `next()` to continue.
+
+```ts
+// src/common/middleware/logger.middleware.ts — functional middleware
+import { IncomingMessage, ServerResponse } from 'http';
+
+export function logger(req: IncomingMessage, res: ServerResponse, next: () => void) {
   console.log(`${req.method} ${req.url}`);
-  next();                               // REQUIRED — or the request hangs
-});
-
-// Route-scoped middleware — only on this route
-function authCheck(req, res, next) {
-  if (!req.headers.authorization) {
-    return res.status(401).json({ error: 'Unauthorized' });  // ends cycle, no next()
-  }
-  next();
+  next();                                   // REQUIRED — or the request hangs
 }
-app.use('/api/admin', authCheck);                          // path-scoped
-app.post('/api/todos', validateTodo, createTodo);          // per-route
+
+// src/main.ts — global: runs for EVERY request
+app.use(logger);
+```
+
+Class middleware can use dependency injection and is applied per controller or path in a module:
+
+```ts
+// src/common/middleware/request-time.middleware.ts
+import { Injectable, NestMiddleware } from '@nestjs/common';
+import { IncomingMessage, ServerResponse } from 'http';
+
+export type AppRequest = IncomingMessage & { requestTime?: string };
+
+@Injectable()
+export class RequestTimeMiddleware implements NestMiddleware {
+  use(req: AppRequest, res: ServerResponse, next: () => void) {
+    req.requestTime = new Date().toISOString();   // attach data for later handlers
+    next();
+  }
+}
+
+// src/app.module.ts
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+
+@Module({ imports: [BooksModule] })
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestTimeMiddleware).forRoutes(BooksController);   // only books routes
+  }
+}
+
+// read it in a controller
+@Get()
+findAll(@Req() req: AppRequest) {
+  return { requestTime: req.requestTime, books: this.booksService.findAll() };
+}
 ```
 
 **Critical rules:**
-- Middleware runs in **registration order** — `express.json()` before routes, error handler last
-- Always `next()` **or** send a response — never both, never neither
-- `return` after sending an error response
-- Keep each middleware small and single-purpose
+- Middleware runs **first**, in registration order
+- Always `next()` **or** end the response — never neither
+- Use middleware for "every request" jobs (logging). For "may it continue?" use a **guard**; for "is the input valid?" use a **pipe**
+- Keep each one small and single-purpose
 
 ---
 
@@ -66,59 +108,76 @@ app.post('/api/todos', validateTodo, createTodo);          // per-route
 
 Use your `my-api` project from Session 8.
 
-```js
+```ts
 // 1. Logger: print "GET /api/books" for every request, then continue
-app.use((req, res, ____) => {
+export function logger(req: IncomingMessage, res: ServerResponse, ____: () => void) {
   console.log(`${req.____} ${req.____}`);
   ____();
-});
+}
 
 // 2. Timer: print how long each request took
-app.use((req, res, next) => {
+export function timer(req: IncomingMessage, res: ServerResponse, next: () => void) {
   const start = Date.now();
-  res.on('finish', () => {           // runs when the response has been sent
+  res.on('finish', () => {            // runs when the response has been sent
     console.log(`Took ${____} ms`);
   });
   next();
-});
-
-// 3. API key check, ONLY for /api/admin
-function checkApiKey(req, res, next) {
-  // TODO: if req.headers['x-api-key'] !== 'secret123' → 401 { error: 'Invalid API key' }
-  // TODO: otherwise continue
 }
-app.use('/api/admin', ____);
-app.get('/api/admin/stats', (req, res) => res.json({ users: 10 }));
+
+// main.ts
+app.use(____);
+app.use(____);
+
+// 3. Class middleware that adds req.requestTime, applied ONLY to BooksController
+@____()
+export class RequestTimeMiddleware implements ____ {
+  use(req: AppRequest, res: ServerResponse, next: () => void) {
+    // TODO
+  }
+}
+
+export class AppModule implements NestModule {
+  configure(consumer: ____) {
+    consumer.apply(____).forRoutes(____);
+  }
+}
 
 // 4. Question: what happens if a middleware never calls next() and never sends a response?
 ```
 
-**Test:** call `/api/admin/stats` in Postman without a header (401), then with the header `x-api-key: secret123` (200).
-
 <details>
 <summary>✅ Solution</summary>
 
-```js
-app.use((req, res, next) => {
+```ts
+export function logger(req: IncomingMessage, res: ServerResponse, next: () => void) {
   console.log(`${req.method} ${req.url}`);
   next();
-});
+}
 
-app.use((req, res, next) => {
+export function timer(req: IncomingMessage, res: ServerResponse, next: () => void) {
   const start = Date.now();
   res.on('finish', () => {
     console.log(`Took ${Date.now() - start} ms`);
   });
   next();
-});
-
-function checkApiKey(req, res, next) {
-  if (req.headers['x-api-key'] !== 'secret123') {
-    return res.status(401).json({ error: 'Invalid API key' });
-  }
-  next();
 }
-app.use('/api/admin', checkApiKey);
+
+app.use(logger);
+app.use(timer);
+
+@Injectable()
+export class RequestTimeMiddleware implements NestMiddleware {
+  use(req: AppRequest, res: ServerResponse, next: () => void) {
+    req.requestTime = new Date().toISOString();
+    next();
+  }
+}
+
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestTimeMiddleware).forRoutes(BooksController);
+  }
+}
 ```
 
 4. The request hangs: the client waits until it times out.
@@ -127,228 +186,503 @@ app.use('/api/admin', checkApiKey);
 
 ---
 
-## Part 2: Built-in Middleware
+## Part 2: Pipes & Validation
 
-> 💡 **In simple words:** Express includes ready-made middleware for common jobs: reading JSON bodies, reading HTML form data, and serving static files (HTML, CSS, images).
+> 💡 **In simple words:** A pipe sits right in front of your method and works on its **input**. It can convert a value (`'42'` → `42`) or reject it with a 400 before your code even runs. The `ValidationPipe` checks the body against rules written on the DTO class, so you stop writing `if (!body.title)` by hand.
 
-```js
-app.use(express.json());                          // parses JSON bodies → req.body (REQUIRED for APIs)
-app.use(express.urlencoded({ extended: true }));  // parses HTML form posts (x-www-form-urlencoded)
-app.use(express.static('public'));                // serves files from ./public at /
+### Built-in pipes
+
+| Pipe | Does |
+|------|------|
+| `ParseIntPipe` / `ParseFloatPipe` | `'42'` → `42`, otherwise 400 |
+| `ParseBoolPipe` | `'true'` → `true` |
+| `ParseEnumPipe` | value must be one of an enum |
+| `DefaultValuePipe` | default when the query value is missing |
+| `ValidationPipe` | validates a DTO with `class-validator` |
+
+```ts
+@Get()
+findAll(
+  @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,     // ?page missing → 1
+  @Query('completed', new ParseBoolPipe({ optional: true })) completed?: boolean,
+) { ... }
 ```
 
-- `express.json()` — without it, `req.body` is `undefined` on POST/PUT/PATCH. Client must send `Content-Type: application/json`.
-- `express.static()` + SPA fallback:
-
-```js
-app.use(express.static('dist'));
-app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'dist', 'index.html')));
-```
-
----
-
-## Part 3: Third-Party Middleware
-
-> 💡 **In simple words:** Third-party middleware is packages written by other people, installed with npm. Almost every real Express app uses these three:
-> - **morgan**: logging.
-> - **cors**: permission for other websites to call your API.
-> - **helmet**: security headers.
+### DTO validation with `class-validator`
 
 ```bash
-npm install morgan cors helmet
+npm install class-validator class-transformer
 ```
 
-```js
-const morgan = require('morgan');
-const cors = require('cors');
-const helmet = require('helmet');
+```ts
+// src/todos/dto/create-todo.dto.ts
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-app.use(helmet());                       // security headers — first
-app.use(cors({                           // cross-origin access
-  origin: 'http://localhost:5173',       // restrict in production!
-  methods: ['GET', 'POST'],
+export class CreateTodoDto {
+  @IsString()
+  @IsNotEmpty({ message: 'text is required' })
+  text: string;
+
+  @IsOptional()
+  @IsBoolean()
+  completed?: boolean;
+}
+```
+
+```ts
+// src/main.ts — turn validation on for the whole app
+import { ValidationPipe } from '@nestjs/common';
+
+app.useGlobalPipes(new ValidationPipe({
+  whitelist: true,               // remove fields that are not in the DTO
+  forbidNonWhitelisted: true,    // ...or reject them with 400
+  transform: true,               // turn the body into a real CreateTodoDto instance
 }));
-app.use(morgan('dev'));                  // request logging — dev format
-app.use(express.json());
 ```
 
-| Middleware | Does | Notes |
-|-----------|------|-------|
-| `morgan` | Logs `METHOD URL STATUS - ms` | `'dev'`/`'tiny'` dev, `'combined'` prod; never log secrets |
-| `cors` | Adds CORS headers | `app.use(cors())` allows **all** origins — fine for dev, restrict in prod |
-| `helmet` | Sets ~15 security headers (CSP, X-Content-Type-Options…) | Apply early; always in production |
+```json
+// POST /api/todos with {} →
+{ "statusCode": 400, "message": ["text is required", "text must be a string"], "error": "Bad Request" }
+```
+
+Session 11 goes deeper (more decorators, update DTOs, custom messages).
+
+### CORS and static files
+
+> 💡 **In simple words:** **CORS** is the browser's rule that a website may only call an API on another address if the API allows it. Your React app runs on `localhost:5173` and your API on `localhost:3000`, so the API must say "5173 is allowed". **Static files** are files sent as they are (HTML, CSS, images), with no code in between.
+
+```ts
+// src/main.ts
+app.enableCors({
+  origin: 'http://localhost:5173',     // restrict in production!
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+});
+```
+
+```bash
+npm install @nestjs/serve-static
+```
+
+```ts
+// src/app.module.ts — serve ./public at /
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+
+@Module({
+  imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+      exclude: ['/api/{*path}'],         // never serve files for API routes
+    }),
+    BooksModule,
+  ],
+})
+export class AppModule {}
+```
 
 ---
 
-### ✍️ Your Turn: Parts 2 & 3
+### ✍️ Your Turn: Part 2
 
-Run `npm install morgan cors helmet` first.
+Run `npm install class-validator class-transformer @nestjs/serve-static` first.
 
-```js
-const express = require('express');
-const ____ = require('morgan');
-const cors = require('____');
-const helmet = require('helmet');
+```ts
+// 1. A DTO for books
+import { IsInt, IsNotEmpty, IsOptional, IsString, Min } from 'class-validator';
 
-const app = express();
+export class CreateBookDto {
+  @____()
+  @IsNotEmpty({ message: '____' })
+  title: string;
 
-// 1. Put them in the correct order:
-//    express.json(), helmet(), morgan('dev'), cors({ origin: ... })
-app.use(____);
-app.use(____);
-app.use(____);
-app.use(____);
-// 2. In the cors(...) line above, allow ONLY the React app: http://localhost:5173
+  @IsString()
+  @IsOptional()
+  author?: string;
 
-// 3. Serve the files in the "public" folder
-app.use(express.____('public'));
-// TODO: create public/index.html with <h1>Hello from static files</h1>
-//       and open http://localhost:3000/
+  @____()                // optional
+  @IsInt()
+  @____(1, { message: 'pages must be a positive number' })
+  pages?: number;
+}
 
-// 4. Read HTML form posts: <form method="POST" action="/contact">
-app.use(express.____({ extended: true }));
-app.post('/contact', (req, res) => res.send(`Thanks, ${req.body.name}!`));
-// TODO: add a form with an input name="name" to public/index.html and submit it
+// 2. main.ts: validate every body, strip unknown fields, convert types
+app.useGlobalPipes(new ____({ whitelist: ____, transform: ____ }));
+
+// 3. main.ts: allow ONLY the React app http://localhost:5173
+app.____({ origin: '____' });
+
+// 4. GET /api/books?page=2 → page is a number, default 1
+@Get()
+findAll(@Query('page', new ____(1), ____) page: number) {
+  return { page, type: typeof page };
+}
+
+// 5. TODO: serve public/index.html (<h1>Hello from static files</h1>) at http://localhost:3000/
 ```
+
+**Test:** `POST /api/books` with `{}`, then `{ "title": "X", "pages": -3 }`, then `{ "title": "X", "hacker": true }`. What do you get each time?
 
 <details>
 <summary>✅ Solution</summary>
 
-```js
-const express = require('express');
-const morgan = require('morgan');
-const cors = require('cors');
-const helmet = require('helmet');
+```ts
+export class CreateBookDto {
+  @IsString()
+  @IsNotEmpty({ message: 'title is required' })
+  title: string;
 
-const app = express();
+  @IsString()
+  @IsOptional()
+  author?: string;
 
-app.use(helmet());
-app.use(cors({ origin: 'http://localhost:5173' }));
-app.use(morgan('dev'));
-app.use(express.json());
+  @IsOptional()
+  @IsInt()
+  @Min(1, { message: 'pages must be a positive number' })
+  pages?: number;
+}
 
-app.use(express.static('public'));
+app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+app.enableCors({ origin: 'http://localhost:5173' });
 
-app.use(express.urlencoded({ extended: true }));
-app.post('/contact', (req, res) => res.send(`Thanks, ${req.body.name}!`));
+@Get()
+findAll(@Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number) {
+  return { page, type: typeof page };
+}
+
+// app.module.ts
+ServeStaticModule.forRoot({
+  rootPath: join(__dirname, '..', 'public'),
+  exclude: ['/api/{*path}'],
+}),
 ```
 
 ```html
-<!-- public/index.html -->
+<!-- public/index.html (in the project root, next to src/) -->
 <h1>Hello from static files</h1>
-<form method="POST" action="/contact">
-  <input name="name" placeholder="Your name" />
-  <button type="submit">Send</button>
-</form>
 ```
+
+- `{}` → 400 `["title is required", "title must be a string"]`
+- `pages: -3` → 400 `["pages must be a positive number"]`
+- `hacker: true` → 201, and `hacker` is **removed** (`whitelist`). With `forbidNonWhitelisted: true` you'd get 400 `property hacker should not exist`.
 
 </details>
 
 ---
 
-## Part 4: Custom Middleware
+## Part 3: Interceptors, Helmet & Logging
 
-> 💡 **In simple words:** You can write your own middleware for anything your app needs on many routes: logging, checking a key, validating input. It's just a function with `(req, res, next)`.
+> 💡 **In simple words:** An interceptor wraps your handler: it runs some code **before** it, lets it run, and then runs code **after** it, with access to the result. That makes it perfect for measuring time, logging the status code, or wrapping every response in the same shape.
 
-```js
-// Attaching data to the request
-const requestTime = (req, res, next) => {
-  req.requestTime = new Date().toISOString();
-  next();
-};
-app.use(requestTime);
+```ts
+// src/common/interceptors/logging.interceptor.ts
+import { CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } from '@nestjs/common';
+import { Observable, tap } from 'rxjs';
 
-// Validation
-function validateTodo(req, res, next) {
-  if (!req.body.text?.trim()) {
-    return res.status(400).json({ error: 'text is required' });
+@Injectable()
+export class LoggingInterceptor implements NestInterceptor {
+  private readonly logger = new Logger('HTTP');
+
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
+    const req = context.switchToHttp().getRequest();
+    const res = context.switchToHttp().getResponse();
+    const start = Date.now();
+
+    return next.handle().pipe(                         // next.handle() = run the handler
+      tap(() => this.logger.log(`${req.method} ${req.url} ${res.statusCode} - ${Date.now() - start}ms`)),
+    );
   }
-  next();
 }
-app.post('/api/todos', validateTodo, (req, res) => { /* create */ });
+
+// main.ts
+app.useGlobalInterceptors(new LoggingInterceptor());
 ```
 
-### Error-handling middleware — signature is `(err, req, res, next)`
+```ts
+// Change the response: wrap everything in { data: ... }
+import { map } from 'rxjs';
 
-> 💡 **In simple words:** When something goes wrong, call `next(err)`. Express skips all the normal routes and jumps straight to the error handler: one place that turns every error into a clean JSON response.
-
-4 parameters = error handler. **Register it LAST**, after all routes:
-
-```js
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(err.status || 500).json({ error: err.message || 'Internal server error' });
-});
+@Injectable()
+export class WrapInterceptor implements NestInterceptor {
+  intercept(context: ExecutionContext, next: CallHandler) {
+    return next.handle().pipe(map((data) => ({ data })));
+  }
+}
 ```
+
+> NestJS uses **RxJS** here: `next.handle()` returns an Observable (a stream with one value: your result). You only need two operators: `tap` (look at it) and `map` (change it).
+
+### Helmet — security headers
+
+```bash
+npm install helmet
+```
+
+```ts
+// main.ts — apply early
+import helmet from 'helmet';
+app.use(helmet());        // sets ~15 security headers (CSP, X-Content-Type-Options…)
+```
+
+| Tool | Does | Notes |
+|------|------|-------|
+| `Logger` / `LoggingInterceptor` | Logs `METHOD URL STATUS - ms` | Never log passwords or tokens |
+| `app.enableCors()` | Adds CORS headers | Without `origin` it allows **all** origins — fine for dev, restrict in prod |
+| `helmet()` | Security headers | Always in production |
 
 ---
 
-### ✍️ Your Turn: Part 4
+### ✍️ Your Turn: Part 3
 
-```js
-// 1. Validation middleware for books
-function validateBook(req, res, next) {
-  const { title, pages } = req.body;
-  // TODO: title missing or empty → 400 { error: 'title is required' }
-  // TODO: pages was sent but is not a positive number → 400 { error: 'pages must be a positive number' }
-  ____();
+Run `npm install helmet` first.
+
+```ts
+// 1. Complete the logging interceptor
+@____()
+export class LoggingInterceptor implements ____ {
+  intercept(context: ExecutionContext, next: ____): Observable<unknown> {
+    const req = context.____().getRequest();
+    const start = Date.now();
+    return next.____().pipe(
+      ____(() => console.log(`${req.method} ${req.url} - ${Date.now() - start}ms`)),
+    );
+  }
 }
-app.post('/api/books', ____, (req, res) => {
-  res.status(201).json({ id: Date.now(), ...req.body });
-});
 
-// 2. A route that fails on purpose
-app.get('/api/crash', (req, res, next) => {
-  const err = new Error('Something broke!');
-  err.status = 500;
-  ____(err);         // send the error to the error handler
-});
+// 2. main.ts: put these in a sensible order
+//    app.useGlobalPipes(...), app.use(helmet()), app.enableCors(...), app.useGlobalInterceptors(...)
 
-// 3. 404 handler for unknown routes (after all routes)
-app.use((req, res) => {
-  res.status(____).json({ error: `Route ${req.originalUrl} not found` });
-});
+// 3. TODO: a TimestampInterceptor that adds { servedAt: <ISO date> } to every object response
+//    hint: map((data) => ({ ...data, servedAt: new Date().toISOString() }))
+//    Apply it to ONE controller only with @UseInterceptors(TimestampInterceptor)
 
-// 4. Error handler: 4 parameters, registered LAST
-app.use((____, req, res, next) => {
-  console.error(err.message);
-  res.status(err.status || ____).json({ error: err.message || 'Internal server error' });
-});
+// 4. Question: open DevTools → Network on any API response. Which new headers did helmet add?
 ```
 
 <details>
 <summary>✅ Solution</summary>
 
-```js
-function validateBook(req, res, next) {
-  const { title, pages } = req.body;
-  if (!title || !title.trim()) {
-    return res.status(400).json({ error: 'title is required' });
+```ts
+@Injectable()
+export class LoggingInterceptor implements NestInterceptor {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
+    const req = context.switchToHttp().getRequest();
+    const start = Date.now();
+    return next.handle().pipe(
+      tap(() => console.log(`${req.method} ${req.url} - ${Date.now() - start}ms`)),
+    );
   }
-  if (pages !== undefined && (typeof pages !== 'number' || pages <= 0)) {
-    return res.status(400).json({ error: 'pages must be a positive number' });
-  }
-  next();
 }
-app.post('/api/books', validateBook, (req, res) => {
-  res.status(201).json({ id: Date.now(), ...req.body });
-});
 
-app.get('/api/crash', (req, res, next) => {
-  const err = new Error('Something broke!');
-  err.status = 500;
-  next(err);
-});
+// main.ts
+app.use(helmet());                     // security headers first
+app.enableCors({ origin: 'http://localhost:5173' });
+app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+app.useGlobalInterceptors(new LoggingInterceptor());
 
-app.use((req, res) => {
-  res.status(404).json({ error: `Route ${req.originalUrl} not found` });
-});
+@Injectable()
+export class TimestampInterceptor implements NestInterceptor {
+  intercept(context: ExecutionContext, next: CallHandler) {
+    return next.handle().pipe(map((data) => ({ ...data, servedAt: new Date().toISOString() })));
+  }
+}
 
-app.use((err, req, res, next) => {
-  console.error(err.message);
-  res.status(err.status || 500).json({ error: err.message || 'Internal server error' });
-});
+@Controller('about')
+@UseInterceptors(TimestampInterceptor)
+export class AboutController { ... }
 ```
+
+4. For example `Content-Security-Policy`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Strict-Transport-Security`. The `X-Powered-By` header is removed.
+
+</details>
+
+---
+
+## Part 4: Guards, Exceptions & Exception Filters
+
+### Guards
+
+> 💡 **In simple words:** A guard answers one question: **may this request continue?** It returns `true` (continue) or throws an exception (stop). Guards are the right place for checks like "is there a valid API key?" or "is this user an admin?".
+
+```ts
+// src/common/guards/api-key.guard.ts
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+
+@Injectable()
+export class ApiKeyGuard implements CanActivate {
+  canActivate(context: ExecutionContext): boolean {
+    const req = context.switchToHttp().getRequest();
+    if (req.headers['x-api-key'] !== 'secret123') {
+      throw new UnauthorizedException('Invalid API key');   // stop with 401
+    }
+    return true;                                            // continue
+  }
+}
+
+// whole controller
+@Controller('admin')
+@UseGuards(ApiKeyGuard)
+export class AdminController {
+  @Get('stats')
+  stats() { return { users: 10 }; }
+}
+
+// or one route only:  @Post() @UseGuards(ApiKeyGuard) create() { ... }
+```
+
+If a guard returns `false` instead of throwing, NestJS answers `403 Forbidden resource`.
+
+### Exceptions
+
+> 💡 **In simple words:** When something goes wrong, **throw**. NestJS stops everything, skips the rest of the handler, and sends an error response. Errors that are not `HttpException`s (a bug, a crash) become a safe `500 Internal server error`, so internal details don't leak.
+
+```ts
+throw new NotFoundException('Book not found');                  // 404
+throw new BadRequestException('Cannot divide by zero');          // 400
+throw new HttpException('I am a teapot', 418);                   // any status
+throw new Error('boom');                                         // → 500 { message: 'Internal server error' }
+```
+
+Unknown routes get a 404 automatically: `{ "statusCode": 404, "message": "Cannot GET /api/nothing", "error": "Not Found" }`.
+
+### Exception filters — one place for the error format
+
+> 💡 **In simple words:** An exception filter catches errors and decides how the error response looks. With one global filter, every error in your API has the same shape, and you can log it in one place.
+
+```ts
+// src/common/filters/all-exceptions.filter.ts
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger } from '@nestjs/common';
+import { HttpAdapterHost } from '@nestjs/core';
+
+@Catch()                                       // empty = catch EVERYTHING
+export class AllExceptionsFilter implements ExceptionFilter {
+  private readonly logger = new Logger('Errors');
+
+  constructor(private readonly adapterHost: HttpAdapterHost) {}
+
+  catch(exception: unknown, host: ArgumentsHost) {
+    const { httpAdapter } = this.adapterHost;
+    const ctx = host.switchToHttp();
+
+    const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+    const message = exception instanceof HttpException
+      ? (exception.getResponse() as { message?: unknown }).message ?? exception.message
+      : 'Internal server error';
+
+    if (status === 500) this.logger.error(exception);
+
+    httpAdapter.reply(ctx.getResponse(), {
+      statusCode: status,
+      message,
+      path: httpAdapter.getRequestUrl(ctx.getRequest()),
+      timestamp: new Date().toISOString(),
+    }, status);
+  }
+}
+```
+
+```ts
+// src/app.module.ts — register it globally (with dependency injection)
+import { APP_FILTER } from '@nestjs/core';
+
+@Module({
+  providers: [{ provide: APP_FILTER, useClass: AllExceptionsFilter }],
+})
+export class AppModule {}
+```
+
+| Tool | Answers | Typical status |
+|------|---------|----------------|
+| Guard | May it continue? | 401 / 403 |
+| Pipe | Is the input valid? | 400 |
+| Exception filter | How does the error look? | any |
+
+---
+
+### ✍️ Your Turn: Part 4
+
+```ts
+// 1. API key guard for /api/admin
+@Injectable()
+export class ApiKeyGuard implements ____ {
+  canActivate(context: ____): boolean {
+    const req = context.switchToHttp().____();
+    // TODO: header x-api-key !== 'secret123' → throw UnauthorizedException('Invalid API key')
+    return ____;
+  }
+}
+
+@Controller('admin')
+@____(ApiKeyGuard)
+export class AdminController {
+  @Get('stats')
+  stats() { return { users: 10 }; }
+}
+
+// 2. A route that fails on purpose with a normal Error
+@Get('crash')
+crash() {
+  throw new ____('Something broke!');
+}
+// What does the client receive? What do you see in the terminal?
+
+// 3. A route that fails with a 400
+@Get('divide')
+divide(@Query('a', ParseFloatPipe) a: number, @Query('b', ParseFloatPipe) b: number) {
+  // TODO: b === 0 → BadRequestException('Cannot divide by zero')
+  return { result: a / b };
+}
+
+// 4. Complete the global filter so every error looks like:
+//    { statusCode, message, path, timestamp }
+@____()
+export class AllExceptionsFilter implements ExceptionFilter {
+  constructor(private readonly adapterHost: HttpAdapterHost) {}
+  catch(exception: unknown, host: ArgumentsHost) {
+    const status = exception instanceof ____ ? exception.____() : 500;
+    // TODO
+  }
+}
+// app.module.ts → providers: [{ provide: ____, useClass: AllExceptionsFilter }]
+```
+
+**Test:** call `/api/admin/stats` without a header (401), with `x-api-key: secret123` (200), `/api/crash` (500), `/api/divide?a=1&b=0` (400) and `/api/nothing` (404). All errors must have the same shape.
+
+<details>
+<summary>✅ Solution</summary>
+
+```ts
+@Injectable()
+export class ApiKeyGuard implements CanActivate {
+  canActivate(context: ExecutionContext): boolean {
+    const req = context.switchToHttp().getRequest();
+    if (req.headers['x-api-key'] !== 'secret123') {
+      throw new UnauthorizedException('Invalid API key');
+    }
+    return true;
+  }
+}
+
+@Controller('admin')
+@UseGuards(ApiKeyGuard)
+export class AdminController {
+  @Get('stats')
+  stats() { return { users: 10 }; }
+}
+
+@Get('crash')
+crash() {
+  throw new Error('Something broke!');
+}
+// Client: 500 { message: 'Internal server error' }. Terminal: the real error + stack.
+
+@Get('divide')
+divide(@Query('a', ParseFloatPipe) a: number, @Query('b', ParseFloatPipe) b: number) {
+  if (b === 0) throw new BadRequestException('Cannot divide by zero');
+  return { result: a / b };
+}
+```
+
+The full filter is the `AllExceptionsFilter` example above, registered with `{ provide: APP_FILTER, useClass: AllExceptionsFilter }`.
 
 </details>
 
@@ -381,8 +715,8 @@ Documents map 1:1 to JavaScript objects — natural fit for Node:
 
 > 💡 **In simple words:** You can run MongoDB on your own computer, or use **Atlas**, MongoDB in the cloud with a free tier. Atlas is easier for beginners: there's nothing to install, and you get a **connection string** (an address that includes a username and password) to connect from your code.
 
-- **Local:** install MongoDB Community Server → `mongod` → `mongodb://localhost:27017`
-- **Atlas (recommended):** free managed cluster → connection string `mongodb+srv://user:pass@cluster0.mongodb.net/mydb` → whitelist your IP → put the URI in `.env` (`MONGODB_URI=`)
+- **Local:** install MongoDB Community Server → `mongod` → `mongodb://127.0.0.1:27017`
+- **Atlas (recommended):** free managed cluster → connection string `mongodb+srv://user:pass@cluster0.mongodb.net/mydb` → whitelist your IP → put the URI in `.env` (`MONGODB_URI=`, Session 10)
 
 **Tools:** `mongosh` (CLI — `use mydb`, `db.users.find()`) and **Compass** (GUI for browsing/querying visually). Learn both.
 
@@ -411,7 +745,7 @@ db.products.find({ $or:  [ { price: { $lt: 10 } }, { onSale: true } ] });
 db.products.find(
   { category: 'electronics' },
   { name: 1, price: 1, _id: 0 }                            // 1 = include, 0 = exclude
-).sort({ price: -1 }).skip(10).limit(5);                   // descending, page 2
+).sort({ price: -1 }).skip(10).limit(5);                   // descending, page 3 of 5-per-page
 
 // UPDATE — always use $set for partial updates (no $set = REPLACE whole doc)
 db.products.updateOne(
@@ -428,9 +762,9 @@ db.products.deleteMany({ discontinued: true });
 **Common operator set:** `$gt $gte $lt $lte $eq $ne $in $nin $and $or $not $exists`
 
 **Gotchas:**
-- Forgetting `$set` in `updateOne` **replaces the entire document** — data loss
+- Forgetting `$set` in `updateOne` **replaces the entire document** — data loss (mongosh refuses it with "Update document requires atomic operators")
 - `deleteOne({})`/`deleteOne()` deletes the first document it finds
-- `find` returns a cursor — `.toArray()` in drivers, iterate in shell
+- `find` returns a cursor — iterate it in the shell; Mongoose handles it for you (Session 10)
 - Use indexes on frequently-queried fields; never scan whole collections in production
 
 ---
@@ -499,27 +833,30 @@ Searching an array field with one value (`{ courses: 'math' }`) matches document
 
 ## Lab
 
-### Part A — Middleware-hardened to-do API
+### Part A — Hardened to-do API
 
 Extend the Session 8 lab:
 
-```js
-const app = express();
+```ts
+// main.ts
+const app = await NestFactory.create(AppModule);
+app.setGlobalPrefix('api');
 app.use(helmet());
-app.use(cors());
-app.use(morgan('dev'));
-app.use(express.json());
-app.use(requestTime);                       // custom: stamps req.requestTime
+app.enableCors({ origin: 'http://localhost:5173' });
+app.use(logger);                                            // functional middleware
+app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+app.useGlobalInterceptors(new LoggingInterceptor());
+await app.listen(process.env.PORT ?? 3000);
 
-app.get('/api/todos', ...);
-app.post('/api/todos', validateTodo, ...);  // 400 on empty text
-// …PUT/PATCH/DELETE
+// app.module.ts
+providers: [{ provide: APP_FILTER, useClass: AllExceptionsFilter }]   // one error format
 
-app.use((req, res) => res.status(404).json({ error: 'Route not found' }));  // 404 handler
-app.use((err, req, res, next) => { /* error handler */ });                  // last!
+// todos
+POST  /api/todos   → CreateTodoDto (400 on empty text)
+PATCH /api/todos/:id → UpdateTodoDto (every field optional)
 ```
 
-**Challenges:** apply `validateTodo` to PUT/PATCH; write `authCheck` middleware guarding DELETE; add a global error handler.
+**Challenges:** `CreateTodoDto` and `UpdateTodoDto` with `class-validator`; an `ApiKeyGuard` guarding DELETE only; every error (400/401/404/500) has the same JSON shape.
 
 ### Part B — MongoDB practice
 
@@ -546,80 +883,96 @@ db.products.insertMany([
 
 ### A. Quick Questions (answer in 1–2 sentences)
 
-1. What is middleware? What three things can it do?
-2. Why does the order of `app.use(...)` matter?
-3. What is the difference between global middleware and route middleware?
-4. How does Express know that a middleware is an error handler?
-5. What do `morgan`, `cors` and `helmet` do (one line each)?
-6. What does `express.static('public')` do?
-7. What is the difference between SQL tables and MongoDB collections?
-8. What is a document? What is `_id`?
-9. What does `{ price: { $gte: 10, $lte: 50 } }` find?
-10. What is projection? Write one example.
+1. Name the steps of the NestJS request lifecycle in order.
+2. When do you use middleware, when a guard, and when a pipe?
+3. What does `ValidationPipe` with `whitelist: true` do?
+4. What happens when a guard throws `UnauthorizedException`? When it returns `false`?
+5. What can an interceptor do that middleware can't?
+6. What happens when your code throws a plain `new Error()`?
+7. What is an exception filter for? How do you register one globally?
+8. What do `helmet()` and `enableCors()` do (one line each)?
+9. What is the difference between SQL tables and MongoDB collections? What is `_id`?
+10. What does `{ price: { $gte: 10, $lte: 50 } }` find? What is projection?
 
 <details>
 <summary>✅ Solution</summary>
 
-1. A function `(req, res, next)` that runs before the route handler. It can read or change `req`/`res`, end the request with a response, or call `next()` to continue.
-2. Middleware runs in the order it was added. For example, `express.json()` must come before the routes that read `req.body`, and the error handler must be last.
-3. Global middleware (`app.use(fn)`) runs for every request. Route middleware runs only for one path or route: `app.post('/x', fn, handler)`.
-4. It has **4 parameters**: `(err, req, res, next)`.
-5. `morgan` logs every request. `cors` lets other origins (like your React app) call the API. `helmet` adds security headers.
-6. It serves the files in the `public` folder directly (HTML, CSS, images).
-7. Tables have a fixed schema with rows. Collections hold flexible JSON-like documents that can have different fields.
-8. A document is one record (like a JS object). `_id` is its unique id, which MongoDB creates automatically.
-9. Documents whose price is between 10 and 50 (both included).
-10. Choosing which fields to return: `db.users.find({}, { name: 1, email: 1, _id: 0 })`.
+1. Middleware → guards → interceptors (before) → pipes → controller method → interceptors (after) → exception filters (on errors).
+2. Middleware for jobs on every request (logging). A guard for "may it continue?" (auth, roles). A pipe for checking and converting input (validation).
+3. It removes every body field that has no decorator in the DTO, so clients can't sneak in extra fields like `role: 'admin'`.
+4. Throwing → that exception's status (401). Returning `false` → `403 Forbidden resource`.
+5. It runs code **after** the handler too, with access to the result, so it can measure time or change the response.
+6. NestJS sends `500 { message: 'Internal server error' }` and logs the real error. The client never sees internal details.
+7. To control how error responses look (and log them) in one place. `{ provide: APP_FILTER, useClass: MyFilter }` in a module's providers (or `app.useGlobalFilters(...)`).
+8. `helmet()` adds security headers. `enableCors()` lets other origins (like your React app) call the API.
+9. Tables have a fixed schema with rows; collections hold flexible JSON-like documents. `_id` is the document's unique id, created automatically.
+10. Documents whose price is between 10 and 50 (both included). Projection chooses which fields to return: `db.users.find({}, { name: 1, email: 1, _id: 0 })`.
 
 </details>
 
 ### B. Find the Bug
 
-```js
-// Bug 1: errors are never caught by the handler
-app.use((err, req, res, next) => res.status(500).json({ error: err.message }));
-app.get('/api/users', getUsers);
-
-// Bug 2: every request hangs forever
-app.use((req, res) => {
+```ts
+// Bug 1: every request hangs forever
+export function logger(req: IncomingMessage, res: ServerResponse, next: () => void) {
   console.log(req.method, req.url);
-});
+}
 
-// Bug 3: this "error handler" never receives errors
-app.use((err, req, res) => {
-  res.status(500).json({ error: err.message });
-});
+// Bug 2: POST /api/books with { "pages": "abc" } is saved without an error
+export class CreateBookDto {
+  @IsInt() @Min(1) pages?: number;
+}
+// main.ts has no app.useGlobalPipes(...)
 
-// Bug 4 (mongosh): fails with "Update document requires atomic operators"
+// Bug 3: the guard is written, but the route is still open to everyone
+@Injectable()
+export class ApiKeyGuard implements CanActivate { ... }
+
+@Controller('admin')
+export class AdminController {
+  @Get('stats') stats() { return { users: 10 }; }
+}
+
+// Bug 4: the client gets 500 "Internal server error" instead of 400
+@Get('divide')
+divide(@Query('b', ParseFloatPipe) b: number) {
+  if (b === 0) throw new Error('Cannot divide by zero');
+}
+
+// Bug 5 (mongosh): fails with "Update document requires atomic operators"
 db.products.updateOne({ name: 'Mouse' }, { price: 30 });
 
-// Bug 5 (mongosh): we wanted to delete the Book, but another document was deleted
+// Bug 6 (mongosh): we wanted to delete the Book, but another document was deleted
 db.products.deleteOne({});
 ```
 
 <details>
 <summary>✅ Solution</summary>
 
-```js
-// Bug 1: the error handler must be registered AFTER the routes
-app.get('/api/users', getUsers);
-app.use((err, req, res, next) => res.status(500).json({ error: err.message }));
-
-// Bug 2: call next()
-app.use((req, res, next) => {
+```ts
+// Bug 1: call next()
+export function logger(req: IncomingMessage, res: ServerResponse, next: () => void) {
   console.log(req.method, req.url);
   next();
-});
+}
 
-// Bug 3: an error handler needs exactly 4 parameters
-app.use((err, req, res, next) => {
-  res.status(500).json({ error: err.message });
-});
+// Bug 2: the decorators do nothing without the ValidationPipe
+app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
-// Bug 4: use $set to change one field
+// Bug 3: attach the guard
+@Controller('admin')
+@UseGuards(ApiKeyGuard)
+export class AdminController { ... }
+
+// Bug 4: a plain Error is "unexpected" → 500. Throw an HttpException:
+if (b === 0) throw new BadRequestException('Cannot divide by zero');
+```
+
+```js
+// Bug 5: use $set to change one field
 db.products.updateOne({ name: 'Mouse' }, { $set: { price: 30 } });
 
-// Bug 5: an empty filter matches the first document, so always filter
+// Bug 6: an empty filter matches the first document, so always filter
 db.products.deleteOne({ name: 'Book' });
 ```
 
@@ -627,13 +980,13 @@ db.products.deleteOne({ name: 'Book' });
 
 ### C. Coding Tasks
 
-**Task 1: Request counter (easy).** A middleware that counts all requests. `GET /api/stats` returns `{ totalRequests: 12 }`.
+**Task 1: Request counter (easy).** A `StatsService` holds `totalRequests`. A global interceptor (registered with `APP_INTERCEPTOR`, so it can inject `StatsService`) adds 1 for every request. `GET /api/stats` returns `{ totalRequests: 12 }`.
 
-**Task 2: Maintenance mode (easy).** If `process.env.MAINTENANCE === 'true'`, every request gets `503 { error: 'We are under maintenance' }`. Test it with `MAINTENANCE=true npm run dev` (on PowerShell: `$env:MAINTENANCE='true'; npm run dev`).
+**Task 2: Maintenance mode (easy).** A global guard (`APP_GUARD`): if `process.env.MAINTENANCE === 'true'`, every request gets `503 { message: 'We are under maintenance' }`. Test it with `MAINTENANCE=true npm run start:dev` (on PowerShell: `$env:MAINTENANCE='true'; npm run start:dev`).
 
-**Task 3: Role middleware (medium).** Write `requireRole(role)`, which returns a middleware. It reads the header `x-role` and returns 403 `{ error: 'Forbidden' }` if it doesn't match. Use it: `app.delete('/api/books/:id', requireRole('admin'), ...)`.
+**Task 3: Roles guard (medium).** Write a `@Roles('admin')` decorator and a `RolesGuard` that reads the header `x-role` and throws `ForbiddenException` if it doesn't match. Routes without `@Roles` stay open. Use it on `DELETE /api/books/:id`.
 
-**Task 4: Divide with error handling (medium).** `GET /api/divide?a=10&b=0`. When `b` is 0, create an `Error`, set `err.status = 400` and call `next(err)`. The global error handler sends `{ error }` with the right status.
+**Task 4: Divide with error handling (medium).** `GET /api/divide?a=10&b=0` with `ParseFloatPipe`. When `b` is 0, throw a `BadRequestException`. `?a=x` must also give 400. The global filter sends `{ statusCode, message, path, timestamp }`.
 
 **Task 5: MongoDB queries (medium).** Insert these movies, then write the queries:
 
@@ -650,70 +1003,117 @@ db.movies.insertMany([
 
 a) movies after 2010 · b) sci-fi movies · c) animation movies with rating ≥ 8 · d) only titles, sorted by rating (best first) · e) set `watched: true` on all action movies · f) delete movies with rating < 8 · g) count the movies left
 
-**Challenge: Request logger to a file.** A middleware that adds one line per request to `logs.txt`: `2026-10-17T10:00:00.000Z GET /api/books 200 12ms`. Hint: `fs.appendFile` + `res.on('finish', ...)` + `res.statusCode`.
+**Challenge: Request logger to a file.** A middleware that adds one line per request to `logs.txt`: `2026-10-17T10:00:00.000Z GET /api/books 200 12ms`. Hint: `fs.appendFile` + `res.on('finish', ...)` + `res.statusCode`. Why is middleware a better place for this than an interceptor? (Think about 404s for unknown routes.)
 
 <details>
 <summary>✅ Solution: Tasks 1–5 and Challenge</summary>
 
-```js
+```ts
 // Task 1
-let totalRequests = 0;
-app.use((req, res, next) => {
-  totalRequests++;
-  next();
-});
-app.get('/api/stats', (req, res) => res.json({ totalRequests }));
-
-// Task 2 (put it near the top, before the routes)
-app.use((req, res, next) => {
-  if (process.env.MAINTENANCE === 'true') {
-    return res.status(503).json({ error: 'We are under maintenance' });
-  }
-  next();
-});
-
-// Task 3
-function requireRole(role) {
-  return (req, res, next) => {
-    if (req.headers['x-role'] !== role) {
-      return res.status(403).json({ error: 'Forbidden' });
-    }
-    next();
-  };
+@Injectable()
+export class StatsService {
+  totalRequests = 0;
 }
-app.delete('/api/books/:id', requireRole('admin'), (req, res) => {
-  res.status(204).send();
-});
 
-// Task 4
-app.get('/api/divide', (req, res, next) => {
-  const a = Number(req.query.a);
-  const b = Number(req.query.b);
-  if (b === 0) {
-    const err = new Error('Cannot divide by zero');
-    err.status = 400;
-    return next(err);
+@Injectable()
+export class CountInterceptor implements NestInterceptor {
+  constructor(private readonly stats: StatsService) {}
+  intercept(context: ExecutionContext, next: CallHandler) {
+    this.stats.totalRequests++;
+    return next.handle();
   }
-  res.json({ result: a / b });
-});
+}
 
-app.use((err, req, res, next) => {
-  res.status(err.status || 500).json({ error: err.message });
-});
+@Controller('stats')
+export class StatsController {
+  constructor(private readonly stats: StatsService) {}
+  @Get()
+  get() { return { totalRequests: this.stats.totalRequests }; }
+}
 
-// Challenge
-const fs = require('fs');
-app.use((req, res, next) => {
+// app.module.ts
+@Module({
+  controllers: [StatsController],
+  providers: [StatsService, { provide: APP_INTERCEPTOR, useClass: CountInterceptor }],
+})
+export class AppModule {}
+```
+
+```ts
+// Task 2
+@Injectable()
+export class MaintenanceGuard implements CanActivate {
+  canActivate(): boolean {
+    if (process.env.MAINTENANCE === 'true') {
+      throw new ServiceUnavailableException('We are under maintenance');
+    }
+    return true;
+  }
+}
+// app.module.ts → providers: [{ provide: APP_GUARD, useClass: MaintenanceGuard }]
+```
+
+```ts
+// Task 3: common/decorators/roles.decorator.ts
+import { SetMetadata } from '@nestjs/common';
+export const ROLES_KEY = 'roles';
+export const Roles = (...roles: string[]) => SetMetadata(ROLES_KEY, roles);
+
+// common/guards/roles.guard.ts
+@Injectable()
+export class RolesGuard implements CanActivate {
+  constructor(private readonly reflector: Reflector) {}
+
+  canActivate(context: ExecutionContext): boolean {
+    const roles = this.reflector.getAllAndOverride<string[]>(ROLES_KEY, [
+      context.getHandler(),        // @Roles on the method
+      context.getClass(),          // or on the controller
+    ]);
+    if (!roles) return true;       // no @Roles → open route
+
+    const req = context.switchToHttp().getRequest();
+    if (!roles.includes(req.headers['x-role'])) throw new ForbiddenException('Forbidden');
+    return true;
+  }
+}
+
+// books.controller.ts
+@Delete(':id')
+@HttpCode(204)
+@UseGuards(RolesGuard)
+@Roles('admin')
+remove(@Param('id', ParseIntPipe) id: number) {
+  this.booksService.remove(id);
+}
+```
+
+```ts
+// Task 4
+@Get('divide')
+divide(@Query('a', ParseFloatPipe) a: number, @Query('b', ParseFloatPipe) b: number) {
+  if (b === 0) throw new BadRequestException('Cannot divide by zero');
+  return { result: a / b };
+}
+// + AllExceptionsFilter from Part 4, registered with APP_FILTER
+```
+
+```ts
+// Challenge: main.ts → app.use(fileLogger)
+import { appendFile } from 'fs';
+
+export function fileLogger(req: IncomingMessage, res: ServerResponse, next: () => void) {
   const start = Date.now();
   res.on('finish', () => {
-    const line = `${new Date().toISOString()} ${req.method} ${req.originalUrl} ${res.statusCode} ${Date.now() - start}ms\n`;
-    fs.appendFile('logs.txt', line, (err) => {
+    const line = `${new Date().toISOString()} ${req.method} ${req.url} ${res.statusCode} ${Date.now() - start}ms\n`;
+    appendFile('logs.txt', line, (err) => {
       if (err) console.error('Could not write log:', err.message);
     });
   });
   next();
-});
+}
 ```
+
+Middleware runs for **every** request, even unknown routes. Interceptors only run when a controller method matched, so 404s for unknown URLs would be missing from the log.
 
 ```js
 // Task 5 (mongosh)
@@ -732,11 +1132,11 @@ db.movies.countDocuments();                                           // 5
 
 ## Review Questions
 
-1. What happens if middleware forgets `next()` and doesn't send a response?
-2. Why does middleware registration order matter? Give a broken example.
-3. What distinguishes error-handling middleware?
-4. `express.json()` vs `express.urlencoded()` — which requests does each parse?
-5. Why put `helmet()` and `cors()` before `express.json()`?
+1. Draw the request lifecycle. Where can a request be stopped, and with which status?
+2. What happens if middleware forgets `next()`?
+3. Guard vs pipe vs interceptor vs filter — one job each.
+4. Why `whitelist: true` on the `ValidationPipe`? What attack does it block?
+5. Why register global filters/guards/interceptors with `APP_FILTER` / `APP_GUARD` / `APP_INTERCEPTOR` instead of `new` in `main.ts`?
 6. Documents vs collections vs databases — hierarchy?
 7. What does `{ price: { $gt: 50 } }` mean? Write "price between 20 and 100 OR category books".
 8. What happens without `$set` in `updateOne`?
@@ -745,14 +1145,16 @@ db.movies.countDocuments();                                           // 5
 
 ## Common Mistakes
 
-- Middleware after routes / error handler before routes
-- `cors()` wide open in production
-- Missing `extended: true` on urlencoded when sending nested form data
-- `updateOne` without `$set` → document replaced
-- Vague delete filters (`deleteOne({})`)
+- Middleware that never calls `next()`
+- DTO decorators without a global `ValidationPipe` (they do nothing)
+- Throwing plain `Error` for expected problems → 500 instead of 400/404
+- Writing a guard but forgetting `@UseGuards(...)`
+- `enableCors()` with no `origin` in production
+- Using middleware for auth checks (use guards) or for validation (use pipes)
+- `updateOne` without `$set`; vague delete filters (`deleteOne({})`)
 - Treating MongoDB relationally — over-normalizing
 - Hardcoding the Atlas URI instead of `.env`
 
 ---
 
-**Session 9 complete.** Next: Session 10 — Mongoose & REST API CRUD.
+**Session 9 complete.** Next: Session 10 — Mongoose with NestJS & REST API CRUD.

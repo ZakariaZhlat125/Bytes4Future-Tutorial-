@@ -1,9 +1,8 @@
-# Session 10: Mongoose & REST API CRUD
+# Session 10: Mongoose with NestJS & REST API CRUD
 
 **Duration:** 3 hours
 **Level:** Intermediate
-**Prerequisites:** Session 9 (middleware, MongoDB shell CRUD)
-**Condensed from:** Node Sessions 5–6
+**Prerequisites:** Session 9 (request lifecycle, pipes, MongoDB shell CRUD)
 
 ---
 
@@ -13,14 +12,14 @@
 > - **✍️ Your Turn**: unfinished code after each part. Fill every `____` and finish every `// TODO`, then run it.
 > - **📝 Student Worksheet** (end of session): questions to give students. Answers are hidden under **✅ Solution**. Delete those blocks before sharing if students should not see them.
 >
-> The exercises build one project step by step: a **Library API** with a `Book` model.
+> The exercises build one project step by step: a **Library API** with a `Book` schema.
 
 ## Session Overview
 
-- **Part 1:** Mongoose (ODM) — why it exists, install, connect
-- **Part 2:** Environment variables with dotenv
-- **Part 3:** Schemas, types, defaults, validation
-- **Part 4:** MVC structure — models, controllers, routes
+- **Part 1:** Mongoose (ODM) and `@nestjs/mongoose`
+- **Part 2:** Environment variables with `@nestjs/config`
+- **Part 3:** Schemas with decorators — types, defaults, validation
+- **Part 4:** NestJS feature architecture — module, controller, service, schema, DTO
 - **Part 5:** Full CRUD with correct status codes
 - **Lab:** Convert the in-memory to-do API to MongoDB-backed
 
@@ -28,53 +27,46 @@
 
 ## Part 1: Mongoose & ODM
 
-> 💡 **In simple words:** MongoDB accepts any document, even one with typos or missing fields. Mongoose adds rules on top: you describe what a document must look like (a **schema**), and Mongoose checks every save. It also gives you easy functions like `Book.find()`.
+> 💡 **In simple words:** MongoDB accepts any document, even one with typos or missing fields. Mongoose adds rules on top: you describe what a document must look like (a **schema**), and Mongoose checks every save. It also gives you easy functions like `bookModel.find()`. The package `@nestjs/mongoose` connects Mongoose to NestJS, so you can **inject** a model into a service.
 
 **Mongoose** is an ODM (Object Data Modeling) library — it maps JS objects to MongoDB documents and adds what raw MongoDB lacks: **schemas** (enforced shape), **validation**, instance/static methods, middleware hooks, and a cleaner API.
 
 ```bash
-npm install mongoose dotenv
+npm install @nestjs/mongoose mongoose
 ```
 
-```js
-// config/db.js
-const mongoose = require('mongoose');
+```ts
+// src/app.module.ts — the quickest connection (we improve it in Part 2)
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
 
-async function connectDB() {
-  try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('MongoDB connected');
-  } catch (err) {
-    console.error('DB connection failed:', err.message);
-    process.exit(1);                     // don't run the server without a DB
-  }
-}
-module.exports = connectDB;
+@Module({
+  imports: [
+    MongooseModule.forRoot('mongodb://127.0.0.1:27017/library'),
+  ],
+})
+export class AppModule {}
 ```
 
-```js
-// server.js — connect BEFORE listening
-require('dotenv').config();
-const app = require('./app');
-const connectDB = require('./config/db');
+When the app starts you see `MongooseModule dependencies initialized`. If MongoDB is not running, NestJS retries a few times and then **stops the app** with an error. That is what we want: the API must not run without its database.
 
-connectDB();
-app.listen(process.env.PORT || 3000);
-```
-
-**Schema vs model:** a **schema** defines document shape; a **model** is the compiled class bound to a collection (`User` model → `users` collection). Models are what you query with.
+**Schema vs model:** a **schema** defines document shape; a **model** is the compiled class bound to a collection (`Book` model → `books` collection). Models are what you query with.
 
 ---
 
 ## Part 2: Environment Variables
 
-> 💡 **In simple words:** Environment variables are settings that live **outside** your code: passwords, secret keys, database addresses. The code reads them from `process.env`. That way you can push code to GitHub without pushing secrets, and use different settings on your computer and on the server.
+> 💡 **In simple words:** Environment variables are settings that live **outside** your code: passwords, secret keys, database addresses. The code reads them from a `.env` file on your computer and from the platform's settings on the server. That way you can push code to GitHub without pushing secrets.
 
 Secrets (DB URIs, API keys, JWT secrets) belong in `.env` — never in code, never in git.
 
 ```bash
+npm install @nestjs/config
+```
+
+```bash
 # .env                        ← gitignored
-MONGODB_URI=mongodb+srv://user:pass@cluster0.mongodb.net/mydb
+MONGODB_URI=mongodb+srv://user:pass@cluster0.mongodb.net/library
 PORT=3000
 JWT_SECRET=change-me-in-prod
 
@@ -84,18 +76,42 @@ PORT=
 JWT_SECRET=
 ```
 
-```js
-require('dotenv').config();           // FIRST thing in the entry file
-const uri = process.env.MONGODB_URI;
+```ts
+// src/app.module.ts
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),          // loads .env; usable in every module
+
+    MongooseModule.forRootAsync({                      // "Async" = wait for the config first
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        uri: config.get<string>('MONGODB_URI'),
+      }),
+    }),
+
+    BooksModule,
+  ],
+})
+export class AppModule {}
 ```
 
-**Rules:** `dotenv.config()` before anything reads `process.env`; `.env` in `.gitignore`; `.env.example` documents the shape; separate dev/prod databases; rotate credentials.
+Read a value anywhere by injecting `ConfigService`:
+
+```ts
+constructor(private readonly config: ConfigService) {}
+const secret = this.config.get<string>('JWT_SECRET');
+```
+
+**Rules:** `.env` in `.gitignore`; `.env.example` documents the shape; use `forRootAsync` so the URI is read **after** `.env` is loaded; separate dev/prod databases; rotate credentials.
 
 ---
 
 ### ✍️ Your Turn: Parts 1 & 2
 
-Start the Library API: `npm init -y`, `npm install express mongoose dotenv`, `npm install -D nodemon`.
+Start the Library API: `nest new library-api`, then `npm install @nestjs/mongoose mongoose @nestjs/config class-validator class-transformer`.
 
 ```bash
 # .env
@@ -104,44 +120,40 @@ PORT=3000
 ```
 
 ```bash
-# .gitignore: which two lines are required?
+# .gitignore: which line must you ADD? (node_modules and dist are already there)
 ____
-____
 ```
 
-```js
-// config/db.js
-const mongoose = require('____');
+```ts
+// src/app.module.ts
+import { ____, ConfigService } from '@nestjs/config';
+import { ____ } from '@nestjs/mongoose';
 
-async function connectDB() {
-  try {
-    await mongoose.____(process.env.____);
-    console.log('MongoDB connected');
-  } catch (err) {
-    console.error('DB connection failed:', err.message);
-    process.____(1);       // stop the app: it can't work without a database
-  }
+@Module({
+  imports: [
+    ConfigModule.____({ isGlobal: ____ }),
+    MongooseModule.____({
+      inject: [____],
+      useFactory: (config: ConfigService) => ({
+        uri: config.get<string>('____'),
+      }),
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+```ts
+// src/main.ts
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('api');
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  await app.listen(process.env.____ ?? 3000);
 }
-
-module.exports = connectDB;
 ```
 
-```js
-// server.js
-require('____').config();          // must be the FIRST line
-const app = require('./app');
-const connectDB = require('./config/db');
-
-async function start() {
-  await ____();                     // connect BEFORE listening
-  const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
-}
-
-start();
-```
-
-**TODO:** create `.env.example` with the variable names but no values, and commit it.
+**TODO:** create `.env.example` with the variable names but no values, and commit it. Then stop MongoDB (or write a wrong URI) and start the app. What happens?
 
 > Use `127.0.0.1` instead of `localhost` for a local MongoDB. On newer Node versions, `localhost` may resolve to IPv6 and fail to connect.
 
@@ -150,30 +162,24 @@ start();
 
 ```bash
 # .gitignore
-node_modules/
 .env
 ```
 
-```js
-// config/db.js
-const mongoose = require('mongoose');
+```ts
+@Module({
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    MongooseModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        uri: config.get<string>('MONGODB_URI'),
+      }),
+    }),
+  ],
+})
+export class AppModule {}
 
-async function connectDB() {
-  try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('MongoDB connected');
-  } catch (err) {
-    console.error('DB connection failed:', err.message);
-    process.exit(1);
-  }
-}
-
-module.exports = connectDB;
-
-// server.js
-require('dotenv').config();
-// ...
-await connectDB();
+await app.listen(process.env.PORT ?? 3000);
 ```
 
 ```bash
@@ -182,223 +188,332 @@ MONGODB_URI=
 PORT=
 ```
 
+With a wrong URI, NestJS logs `Unable to connect to the database. Retrying (1)...` several times and then stops. The API never runs without a database.
+
 </details>
 
 ---
 
 ## Part 3: Schemas — Types, Defaults, Validation
 
-> 💡 **In simple words:** A **schema** is the blueprint of a document: field names, their types, which ones are required, default values, and rules (min, max, allowed values). A **model** is the tool built from the schema that you use to save and find documents.
+> 💡 **In simple words:** A **schema** is the blueprint of a document: field names, their types, which ones are required, default values, and rules (min, max, allowed values). In NestJS you write it as a **class** with decorators: `@Schema()` on the class, `@Prop()` on each field. `SchemaFactory` turns the class into a real Mongoose schema.
 
-```js
-// models/Product.js
-const mongoose = require('mongoose');
+```ts
+// src/products/schemas/product.schema.ts
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument } from 'mongoose';
 
-const productSchema = new mongoose.Schema(
-  {
-    name:     { type: String, required: [true, 'Name is required'], trim: true },
-    price:    { type: Number, required: true, min: 0 },
-    category: { type: String, enum: ['electronics', 'books', 'clothing'] },
-    email:    { type: String, unique: true, lowercase: true },   // unique → index
-    inStock:  { type: Boolean, default: true },
-    tags:     [String],
-    createdAt:{ type: Date, default: Date.now },
-  },
-  { timestamps: true }               // auto adds createdAt + updatedAt
-);
+@Schema({ timestamps: true })                 // auto adds createdAt + updatedAt
+export class Product {
+  @Prop({ required: [true, 'Name is required'], trim: true })
+  name: string;
 
-module.exports = mongoose.model('Product', productSchema);   // singular name → 'products' collection
+  @Prop({ required: true, min: 0 })
+  price: number;
+
+  @Prop({ enum: ['electronics', 'books', 'clothing'] })
+  category?: string;
+
+  @Prop({ unique: true, lowercase: true })      // unique → index
+  supplierEmail?: string;
+
+  @Prop({ default: true })
+  inStock: boolean;
+
+  @Prop([String])                               // an array of strings
+  tags: string[];
+}
+
+export type ProductDocument = HydratedDocument<Product>;   // a Product with _id, save(), ...
+export const ProductSchema = SchemaFactory.createForClass(Product);
 ```
 
-**Field options:** `type` (`String Number Boolean Date [Array] ObjectId Mixed`), `required` (value or `[true, 'msg']`), `default`, `min`/`max`, `minlength`/`maxlength`, `enum`, `unique`, `match` (regex), `trim`, `lowercase`.
+Register the schema in its feature module, then inject the model:
 
-**Gotchas:** model names are singular (Mongoose pluralizes the collection); define schemas before server start; schema validation is the *last* line — still validate inputs at the route level.
+```ts
+// src/products/products.module.ts
+@Module({
+  imports: [MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema }])],
+  controllers: [ProductsController],
+  providers: [ProductsService],
+})
+export class ProductsModule {}
+
+// src/products/products.service.ts
+@Injectable()
+export class ProductsService {
+  constructor(@InjectModel(Product.name) private readonly productModel: Model<Product>) {}
+}
+```
+
+**Field options:** `type` (`String Number Boolean Date [Array] ObjectId Mixed` — usually read from the TypeScript type), `required` (value or `[true, 'msg']`), `default`, `min`/`max`, `minlength`/`maxlength`, `enum`, `unique`, `match` (regex), `trim`, `lowercase`.
+
+**Gotchas:** class names are singular (Mongoose pluralizes the collection: `Product` → `products`); for arrays and unions write the type explicitly (`@Prop([String])`, `@Prop({ type: String })`); schema validation is the *last* line — still validate input with DTOs (Session 9).
 
 ---
 
 ### ✍️ Your Turn: Part 3
 
-```js
-// models/Book.js
-const mongoose = require('mongoose');
-
-const bookSchema = new mongoose.____(
-  {
-    title:       { type: ____, required: [true, 'Title is required'], trim: true },
-    author:      { type: String, required: ____ },
-    pages:       { type: ____, min: [1, 'A book needs at least 1 page'] },
-    genre:       { type: String, ____: ['novel', 'science', 'history', 'kids'] },
-    isAvailable: { type: Boolean, ____: true },
-    tags:        ____,                         // a list of strings
-    isbn:        { type: String, unique: ____, sparse: true },   // sparse: many books may have no isbn
-  },
-  { ____: true }                               // adds createdAt and updatedAt
-);
-
-module.exports = mongoose.____('Book', bookSchema);   // collection name: "books"
+```bash
+nest g module books && nest g controller books && nest g service books
 ```
 
-Test the model with a small script, `scripts/try-book.js`, and run it with `node scripts/try-book.js`:
+```ts
+// src/books/schemas/book.schema.ts
+import { Prop, ____, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument } from 'mongoose';
 
-```js
-require('dotenv').config();
-const mongoose = require('mongoose');
-const Book = require('../models/Book');
+@Schema({ ____: true })                         // adds createdAt and updatedAt
+export class Book {
+  @____({ required: [true, 'Title is required'], trim: true })
+  title: string;
 
-async function main() {
-  await mongoose.connect(process.env.MONGODB_URI);
-  try {
-    // TODO 1: create a valid book with Book.create({...}) and print it
-    // TODO 2: create a book with pages: 0. What error message do you get?
-    // TODO 3: create a book with genre: 'sport'. What error message do you get?
-  } catch (err) {
-    console.log(err.name, '→', err.message);
-  } finally {
-    await mongoose.disconnect();
-  }
+  @Prop({ required: ____ })
+  author: string;
+
+  @Prop({ min: [1, 'A book needs at least 1 page'] })
+  pages?: number;
+
+  @Prop({ ____: ['novel', 'science', 'history', 'kids'] })
+  genre?: string;
+
+  @Prop({ ____: true })
+  isAvailable: boolean;
+
+  @Prop(____)                                   // a list of strings
+  tags: string[];
+
+  @Prop({ unique: ____, sparse: true })         // sparse: many books may have no isbn
+  isbn?: string;
 }
 
-main();
+export type BookDocument = HydratedDocument<Book>;
+export const BookSchema = SchemaFactory.____(Book);
+```
+
+```ts
+// src/books/books.module.ts
+@Module({
+  imports: [MongooseModule.____([{ name: ____.name, schema: ____ }])],
+  controllers: [BooksController],
+  providers: [BooksService],
+})
+export class BooksModule {}
+```
+
+Test the schema with a temporary route in `BooksController`:
+
+```ts
+constructor(@InjectModel(Book.name) private readonly bookModel: Model<Book>) {}
+
+@Post('try')
+async tryIt() {
+  // TODO 1: create a valid book with this.bookModel.create({...}) and return it
+  // TODO 2: create a book with pages: 0. What error do you get in the terminal?
+  // TODO 3: create a book with genre: 'sport'. What error do you get?
+}
 ```
 
 <details>
 <summary>✅ Solution</summary>
 
-```js
-const bookSchema = new mongoose.Schema(
-  {
-    title:       { type: String, required: [true, 'Title is required'], trim: true },
-    author:      { type: String, required: true },
-    pages:       { type: Number, min: [1, 'A book needs at least 1 page'] },
-    genre:       { type: String, enum: ['novel', 'science', 'history', 'kids'] },
-    isAvailable: { type: Boolean, default: true },
-    tags:        [String],
-    isbn:        { type: String, unique: true, sparse: true },
-  },
-  { timestamps: true }
-);
+```ts
+@Schema({ timestamps: true })
+export class Book {
+  @Prop({ required: [true, 'Title is required'], trim: true })
+  title: string;
 
-module.exports = mongoose.model('Book', bookSchema);
+  @Prop({ required: true })
+  author: string;
+
+  @Prop({ min: [1, 'A book needs at least 1 page'] })
+  pages?: number;
+
+  @Prop({ enum: ['novel', 'science', 'history', 'kids'] })
+  genre?: string;
+
+  @Prop({ default: true })
+  isAvailable: boolean;
+
+  @Prop([String])
+  tags: string[];
+
+  @Prop({ unique: true, sparse: true })
+  isbn?: string;
+}
+
+export type BookDocument = HydratedDocument<Book>;
+export const BookSchema = SchemaFactory.createForClass(Book);
+
+@Module({
+  imports: [MongooseModule.forFeature([{ name: Book.name, schema: BookSchema }])],
+  controllers: [BooksController],
+  providers: [BooksService],
+})
+export class BooksModule {}
 ```
 
-```js
-const book = await Book.create({ title: 'Clean Code', author: 'Robert Martin', pages: 464, genre: 'science' });
-console.log(book);   // has _id, isAvailable: true, createdAt, updatedAt
+```ts
+return this.bookModel.create({ title: 'Clean Code', author: 'Robert Martin', pages: 464, genre: 'science' });
+// → has _id, isAvailable: true, createdAt, updatedAt
 
-await Book.create({ title: 'Bad', author: 'X', pages: 0 });
-// ValidationError → Book validation failed: pages: A book needs at least 1 page
+await this.bookModel.create({ title: 'Bad', author: 'X', pages: 0 });
+// ValidationError: Book validation failed: pages: A book needs at least 1 page
 
-await Book.create({ title: 'Bad', author: 'X', genre: 'sport' });
-// ValidationError → Book validation failed: genre: `sport` is not a valid enum value for path `genre`.
+await this.bookModel.create({ title: 'Bad', author: 'X', genre: 'sport' });
+// ValidationError: Book validation failed: genre: `sport` is not a valid enum value for path `genre`.
 ```
 
-Run each failing `create` on its own (comment out the others), because the first error jumps straight to `catch`.
+The client gets a 500 for these errors (a Mongoose `ValidationError` is not an `HttpException`). DTO validation (Part 5) stops bad input earlier with a 400, and in Session 11 the global filter turns Mongoose errors into 400s too. Delete the `try` route when you're done.
 
 </details>
 
 ---
 
-## Part 4: MVC Structure
+## Part 4: NestJS Feature Architecture
 
-> 💡 **In simple words:** MVC stands for Model, View, Controller. In an API:
-> - **Model**: the data and its rules (Mongoose).
-> - **Controller**: the logic for each request.
-> - **Routes**: the map from URL to controller.
+> 💡 **In simple words:** Every feature (books, users, orders) is a folder with the same files, and each file has one job:
+> - **Schema**: the data and its rules (Mongoose).
+> - **DTO**: the shape and rules of the **input**.
+> - **Service**: the logic: talks to the model.
+> - **Controller**: the map from URL to service method.
+> - **Module**: ties them together and registers the schema.
 >
-> The "View" is the JSON response, or the React app that shows it. Small files with one job each are easier to read and fix.
-
-Separate concerns so each layer has one job:
+> This is the NestJS version of the classic MVC idea. Small files with one job each are easier to read, test and fix.
 
 ```
-project/
-├── app.js                 # app setup: middleware, routes, error handler — exports app
-├── server.js              # dotenv + connectDB + app.listen only
-├── config/db.js           # connection logic
-├── models/                # schemas → Todo.js, User.js
-├── controllers/           # request handlers (call models, send responses)
-├── routes/                # URL → controller mapping only
-├── middleware/            # auth, validation, errorHandler
-└── .env / .env.example / .gitignore
+src/
+├── main.ts                     # prefix, global pipes, listen
+├── app.module.ts               # ConfigModule + MongooseModule + feature modules
+├── common/                     # shared pipes, guards, filters
+│   └── pipes/parse-object-id.pipe.ts
+└── todos/
+    ├── dto/
+    │   ├── create-todo.dto.ts
+    │   └── update-todo.dto.ts
+    ├── schemas/todo.schema.ts
+    ├── todos.controller.ts     # URL → service
+    ├── todos.service.ts        # logic + model
+    └── todos.module.ts         # forFeature + controller + service
 ```
 
-```js
-// routes/todos.js — thin: only maps routes to controllers
-const router = require('express').Router();
-const controller = require('../controllers/todoController');
+```ts
+// todos.controller.ts — thin: only maps routes to the service
+@Controller('todos')
+export class TodosController {
+  constructor(private readonly todosService: TodosService) {}
 
-router.get('/', controller.getTodos);
-router.get('/:id', controller.getTodoById);
-router.post('/', controller.createTodo);
-router.put('/:id', controller.updateTodo);      // or PATCH
-router.delete('/:id', controller.deleteTodo);
-
-module.exports = router;
-
-// app.js
-app.use('/api/todos', require('./routes/todos'));
+  @Get()            findAll()                                  { return this.todosService.findAll(); }
+  @Get(':id')       findOne(@Param('id') id: string)           { return this.todosService.findOne(id); }
+  @Post()           create(@Body() dto: CreateTodoDto)         { return this.todosService.create(dto); }
+  @Patch(':id')     update(@Param('id') id: string, @Body() dto: UpdateTodoDto) { return this.todosService.update(id, dto); }
+  @Delete(':id') @HttpCode(204) remove(@Param('id') id: string) { return this.todosService.remove(id); }
+}
 ```
 
-**Anti-patterns:** business logic inside route files; routes importing other routes; controllers that talk HTTP *and* do heavy logic (push real work to services/models as it grows).
+**Anti-patterns:** model queries inside the controller; one giant module for everything; services that read `@Req()` or know about HTTP headers (pass plain values instead).
+
+### A pipe for MongoDB ids
+
+> 💡 **In simple words:** MongoDB ids are 24 hex characters, like `665f1c2e8a1b2c3d4e5f6a7b`. If someone sends `/api/books/123`, Mongoose throws a `CastError` and the client gets a 500. A small pipe checks the id first and answers a clean 400.
+
+```ts
+// src/common/pipes/parse-object-id.pipe.ts
+import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
+
+@Injectable()
+export class ParseObjectIdPipe implements PipeTransform<string, string> {
+  transform(value: string): string {
+    if (!/^[a-f\d]{24}$/i.test(value)) throw new BadRequestException('Invalid id');
+    return value;
+  }
+}
+
+// usage
+@Get(':id')
+findOne(@Param('id', ParseObjectIdPipe) id: string) { ... }
+```
 
 ---
 
 ### ✍️ Your Turn: Part 4
 
-```js
-// routes/books.js: only maps URLs to controller functions
-const router = require('express').____();
-const controller = require('../controllers/____');
+```ts
+// src/books/books.controller.ts: only maps URLs to service methods
+@Controller('____')
+export class BooksController {
+  constructor(private readonly ____: BooksService) {}
 
-router.get('/', controller.____);         // list
-router.get('/:id', controller.____);      // one book
-router.post('/', controller.____);        // create
-router.patch('/:id', controller.____);    // update
-router.delete('/:id', controller.____);   // delete
+  @Get()
+  findAll(@Query('genre') genre?: string) { return this.booksService.____(genre); }
 
-module.exports = router;
+  @Get(':id')
+  findOne(@Param('id', ____) id: string) { return this.booksService.____(id); }
+
+  @Post()
+  create(@Body() dto: ____) { return this.booksService.create(dto); }
+
+  @Patch(':id')
+  update(@Param('id', ParseObjectIdPipe) id: string, @Body() dto: UpdateBookDto) { return this.booksService.____(id, dto); }
+
+  @Delete(':id')
+  @HttpCode(____)
+  remove(@Param('id', ParseObjectIdPipe) id: string) { return this.booksService.remove(id); }
+}
 ```
 
-```js
-// app.js
-const express = require('express');
-const app = express();
+```ts
+// src/books/dto/create-book.dto.ts
+export class CreateBookDto {
+  @IsString() @IsNotEmpty() title: string;
+  @IsString() @IsNotEmpty() author: string;
+  @IsOptional() @IsInt() @Min(1) pages?: number;
+  @IsOptional() @IsIn(['novel', 'science', 'history', 'kids']) genre?: string;
+}
 
-app.use(express.json());
-app.use('____', require('./routes/books'));
-// TODO: 404 handler
-// TODO: error handler (last)
-
-module.exports = app;
+// src/books/dto/update-book.dto.ts — every field optional (Session 11 shows a shortcut)
+export class UpdateBookDto {
+  // TODO: the same four fields, all with @IsOptional()
+}
 ```
 
-**Question:** where does each one go: **routes**, **controllers** or **models**?
-a) the Book schema · b) `router.get('/:id', ...)` · c) `await Book.findById(id)` + `res.json(book)`
+**Question:** where does each one go: **schema**, **DTO**, **service** or **controller**?
+a) "pages must be at least 1" when **saving** · b) `@Get(':id')` · c) `await this.bookModel.findById(id)` · d) "title is required" in the **request body**
 
 <details>
 <summary>✅ Solution</summary>
 
-```js
-const router = require('express').Router();
-const controller = require('../controllers/bookController');
+```ts
+@Controller('books')
+export class BooksController {
+  constructor(private readonly booksService: BooksService) {}
 
-router.get('/', controller.getBooks);
-router.get('/:id', controller.getBookById);
-router.post('/', controller.createBook);
-router.patch('/:id', controller.updateBook);
-router.delete('/:id', controller.deleteBook);
+  @Get()
+  findAll(@Query('genre') genre?: string) { return this.booksService.findAll(genre); }
 
-module.exports = router;
+  @Get(':id')
+  findOne(@Param('id', ParseObjectIdPipe) id: string) { return this.booksService.findOne(id); }
+
+  @Post()
+  create(@Body() dto: CreateBookDto) { return this.booksService.create(dto); }
+
+  @Patch(':id')
+  update(@Param('id', ParseObjectIdPipe) id: string, @Body() dto: UpdateBookDto) { return this.booksService.update(id, dto); }
+
+  @Delete(':id')
+  @HttpCode(204)
+  remove(@Param('id', ParseObjectIdPipe) id: string) { return this.booksService.remove(id); }
+}
+
+export class UpdateBookDto {
+  @IsOptional() @IsString() @IsNotEmpty() title?: string;
+  @IsOptional() @IsString() @IsNotEmpty() author?: string;
+  @IsOptional() @IsInt() @Min(1) pages?: number;
+  @IsOptional() @IsIn(['novel', 'science', 'history', 'kids']) genre?: string;
+}
 ```
 
-```js
-app.use('/api/books', require('./routes/books'));
-app.use((req, res) => res.status(404).json({ error: 'Route not found' }));
-app.use((err, req, res, next) => {
-  res.status(err.status || 500).json({ error: err.message || 'Internal server error' });
-});
-```
-
-a) models · b) routes · c) controllers
+a) schema · b) controller · c) service · d) DTO
 
 </details>
 
@@ -406,71 +521,75 @@ a) models · b) routes · c) controllers
 
 ## Part 5: CRUD with Mongoose
 
-> 💡 **In simple words:** Every controller function follows the same recipe:
-> 1. Read the input from `req`.
+> 💡 **In simple words:** Every service method follows the same recipe:
+> 1. Get the input (already validated by the DTO).
 > 2. Ask the model.
-> 3. Handle "not found".
-> 4. Send the response with the right status.
+> 3. Handle "not found" by throwing `NotFoundException`.
+> 4. Return the result. The controller returns it, and NestJS sends it with the right status.
 >
-> Database calls take time, so they are `async` and need `await`, and errors go to `next(err)`.
+> Database calls take time, so they are `async` and need `await`. You don't need `try/catch`: if anything throws, NestJS catches it.
 
-```js
-// controllers/todoController.js
-const Todo = require('../models/Todo');
+```ts
+// src/todos/todos.service.ts
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Todo } from './schemas/todo.schema';
 
-// READ all — with filtering, sorting, pagination
-exports.getTodos = async (req, res, next) => {
-  try {
-    const { completed, page = 1, limit = 10 } = req.query;
-    const filter = completed !== undefined ? { completed: completed === 'true' } : {};
-    const todos = await Todo.find(filter)
+@Injectable()
+export class TodosService {
+  constructor(@InjectModel(Todo.name) private readonly todoModel: Model<Todo>) {}
+
+  // READ all — with filtering, sorting, pagination
+  findAll(completed?: boolean, page = 1, limit = 10) {
+    const filter = completed !== undefined ? { completed } : {};
+    return this.todoModel
+      .find(filter)
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
-      .limit(Number(limit));
-    res.json(todos);
-  } catch (err) { next(err); }
-};
-
-// READ one
-exports.getTodoById = async (req, res, next) => {
-  try {
-    const todo = await Todo.findById(req.params.id);
-    if (!todo) return res.status(404).json({ error: 'Todo not found' });
-    res.json(todo);
-  } catch (err) { next(err); }          // CastError on malformed ObjectId
-};
-
-// CREATE
-exports.createTodo = async (req, res, next) => {
-  try {
-    const todo = await Todo.create(req.body);      // schema validation runs here
-    res.status(201).json(todo);
-  } catch (err) {
-    if (err.name === 'ValidationError') return res.status(400).json({ error: err.message });
-    next(err);
+      .limit(limit);
   }
-};
 
-// UPDATE — findByIdAndUpdate(id, data, options)
-exports.updateTodo = async (req, res, next) => {
-  try {
-    const todo = await Todo.findByIdAndUpdate(req.params.id, req.body, {
+  // READ one
+  async findOne(id: string) {
+    const todo = await this.todoModel.findById(id);
+    if (!todo) throw new NotFoundException('Todo not found');
+    return todo;
+  }
+
+  // CREATE — schema validation runs here
+  create(dto: CreateTodoDto) {
+    return this.todoModel.create(dto);
+  }
+
+  // UPDATE — findByIdAndUpdate(id, data, options)
+  async update(id: string, dto: UpdateTodoDto) {
+    const todo = await this.todoModel.findByIdAndUpdate(id, dto, {
       new: true,               // return the UPDATED doc (default returns pre-update)
       runValidators: true,     // run schema validation on update
     });
-    if (!todo) return res.status(404).json({ error: 'Todo not found' });
-    res.json(todo);
-  } catch (err) { next(err); }
-};
+    if (!todo) throw new NotFoundException('Todo not found');
+    return todo;
+  }
 
-// DELETE
-exports.deleteTodo = async (req, res, next) => {
-  try {
-    const todo = await Todo.findByIdAndDelete(req.params.id);
-    if (!todo) return res.status(404).json({ error: 'Todo not found' });
-    res.status(204).send();
-  } catch (err) { next(err); }
-};
+  // DELETE
+  async remove(id: string) {
+    const todo = await this.todoModel.findByIdAndDelete(id);
+    if (!todo) throw new NotFoundException('Todo not found');
+  }
+}
+```
+
+```ts
+// controller: query params converted by pipes
+@Get()
+findAll(
+  @Query('completed', new ParseBoolPipe({ optional: true })) completed?: boolean,
+  @Query('page', new DefaultValuePipe(1), ParseIntPipe) page?: number,
+  @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit?: number,
+) {
+  return this.todosService.findAll(completed, page, limit);
+}
 ```
 
 ### Model methods cheat sheet
@@ -479,143 +598,119 @@ exports.deleteTodo = async (req, res, next) => {
 
 | Task | Method |
 |------|--------|
-| Create | `Model.create(data)` · `new Model(data).save()` |
-| Read all | `Model.find(filter)` |
-| Read one | `Model.findById(id)` · `Model.findOne(filter)` |
-| Update | `Model.findByIdAndUpdate(id, data, { new: true, runValidators: true })` |
-| Delete | `Model.findByIdAndDelete(id)` |
+| Create | `model.create(data)` · `new this.model(data).save()` |
+| Read all | `model.find(filter)` |
+| Read one | `model.findById(id)` · `model.findOne(filter)` |
+| Update | `model.findByIdAndUpdate(id, data, { new: true, runValidators: true })` |
+| Delete | `model.findByIdAndDelete(id)` |
+| Count | `model.countDocuments(filter)` |
 | Chain | `.sort() .limit() .skip() .select('name price')` |
 
 ### HTTP status codes
 
 > 💡 **In simple words:** Send the right code, so the frontend knows what happened without having to read the message.
 
-| Code | When |
-|------|------|
-| 200 | Success (GET/PUT/PATCH) |
-| 201 | Created (POST) |
-| 204 | Success, no body (DELETE) |
-| 400 | Validation error / bad request |
-| 401/403 | Unauthenticated / unauthorized |
-| 404 | Resource not found |
-| 500 | Server/DB error |
+| Code | When | In NestJS |
+|------|------|-----------|
+| 200 | Success (GET/PUT/PATCH) | default |
+| 201 | Created (POST) | default for `@Post()` |
+| 204 | Success, no body (DELETE) | `@HttpCode(204)` |
+| 400 | Validation error / bad id | `ValidationPipe`, `ParseObjectIdPipe`, `BadRequestException` |
+| 401/403 | Unauthenticated / unauthorized | guards (Session 11) |
+| 404 | Resource not found | `NotFoundException` |
+| 409 | Conflict (already exists, already borrowed) | `ConflictException` |
+| 500 | Server/DB error | anything unexpected |
 
 ---
 
 ### ✍️ Your Turn: Part 5
 
-```js
-// controllers/bookController.js
-const Book = require('../models/Book');
+```ts
+// src/books/books.service.ts
+@Injectable()
+export class BooksService {
+  constructor(@____(Book.name) private readonly bookModel: ____<Book>) {}
 
-// GET /api/books?genre=novel
-exports.getBooks = async (req, res, next) => {
-  try {
-    const filter = req.query.genre ? { genre: req.query.genre } : {};
-    const books = await Book.____(filter).sort({ createdAt: ____ });   // newest first
-    res.json(books);
-  } catch (err) { next(err); }
-};
-
-// GET /api/books/:id
-exports.getBookById = async (req, res, next) => {
-  try {
-    const book = await Book.____(req.params.id);
-    // TODO: 404 { error: 'Book not found' } if book is null
-    res.json(book);
-  } catch (err) { next(err); }
-};
-
-// POST /api/books
-exports.createBook = async (req, res, next) => {
-  try {
-    const book = await Book.____(req.body);
-    res.status(____).json(book);
-  } catch (err) {
-    if (err.name === '____') return res.status(400).json({ error: err.message });
-    next(err);
+  // GET /api/books?genre=novel
+  findAll(genre?: string) {
+    const filter = genre ? { genre } : {};
+    return this.bookModel.____(filter).sort({ createdAt: ____ });   // newest first
   }
-};
 
-// PATCH /api/books/:id
-exports.updateBook = async (req, res, next) => {
-  try {
-    const book = await Book.findByIdAndUpdate(req.params.id, req.body, {
+  // GET /api/books/:id
+  async findOne(id: string) {
+    const book = await this.bookModel.____(id);
+    // TODO: throw NotFoundException('Book not found') if book is null
+    return book;
+  }
+
+  // POST /api/books
+  create(dto: CreateBookDto) {
+    return this.bookModel.____(dto);
+  }
+
+  // PATCH /api/books/:id
+  async update(id: string, dto: UpdateBookDto) {
+    const book = await this.bookModel.findByIdAndUpdate(id, dto, {
       ____: true,          // return the UPDATED document
       ____: true,          // run the schema validation
     });
     // TODO: 404 if book is null
-    res.json(book);
-  } catch (err) { next(err); }
-};
+    return book;
+  }
 
-// DELETE /api/books/:id
-exports.deleteBook = async (req, res, next) => {
-  // TODO: findByIdAndDelete → 404 if null → 204 with no body
-};
+  // DELETE /api/books/:id
+  async remove(id: string) {
+    // TODO: findByIdAndDelete → 404 if null (the controller already has @HttpCode(204))
+  }
+}
 ```
 
-**Test in Postman:** create 3 books → list → `?genre=novel` → get one → patch its pages → delete it → get it again (404). Then try `GET /api/books/123`. What happens, and why?
+**Test in Postman:** create 3 books → list → `?genre=novel` → get one → patch its pages → delete it → get it again (404). Then try `GET /api/books/123`. What happens, and why? Then try `POST` with `{ "title": "X" }` (no author).
 
 <details>
 <summary>✅ Solution</summary>
 
-```js
-exports.getBooks = async (req, res, next) => {
-  try {
-    const filter = req.query.genre ? { genre: req.query.genre } : {};
-    const books = await Book.find(filter).sort({ createdAt: -1 });
-    res.json(books);
-  } catch (err) { next(err); }
-};
+```ts
+@Injectable()
+export class BooksService {
+  constructor(@InjectModel(Book.name) private readonly bookModel: Model<Book>) {}
 
-exports.getBookById = async (req, res, next) => {
-  try {
-    const book = await Book.findById(req.params.id);
-    if (!book) return res.status(404).json({ error: 'Book not found' });
-    res.json(book);
-  } catch (err) { next(err); }
-};
-
-exports.createBook = async (req, res, next) => {
-  try {
-    const book = await Book.create(req.body);
-    res.status(201).json(book);
-  } catch (err) {
-    if (err.name === 'ValidationError') return res.status(400).json({ error: err.message });
-    next(err);
+  findAll(genre?: string) {
+    const filter = genre ? { genre } : {};
+    return this.bookModel.find(filter).sort({ createdAt: -1 });
   }
-};
 
-exports.updateBook = async (req, res, next) => {
-  try {
-    const book = await Book.findByIdAndUpdate(req.params.id, req.body, {
+  async findOne(id: string) {
+    const book = await this.bookModel.findById(id);
+    if (!book) throw new NotFoundException('Book not found');
+    return book;
+  }
+
+  create(dto: CreateBookDto) {
+    return this.bookModel.create(dto);
+  }
+
+  async update(id: string, dto: UpdateBookDto) {
+    const book = await this.bookModel.findByIdAndUpdate(id, dto, {
       new: true,
       runValidators: true,
     });
-    if (!book) return res.status(404).json({ error: 'Book not found' });
-    res.json(book);
-  } catch (err) { next(err); }
-};
+    if (!book) throw new NotFoundException('Book not found');
+    return book;
+  }
 
-exports.deleteBook = async (req, res, next) => {
-  try {
-    const book = await Book.findByIdAndDelete(req.params.id);
-    if (!book) return res.status(404).json({ error: 'Book not found' });
-    res.status(204).send();
-  } catch (err) { next(err); }
-};
+  async remove(id: string) {
+    const book = await this.bookModel.findByIdAndDelete(id);
+    if (!book) throw new NotFoundException('Book not found');
+  }
+}
 ```
 
-`GET /api/books/123`: `123` is not a valid ObjectId, so Mongoose throws a **CastError**, which reaches the error handler as a 500. Better: return 400 for it in the error handler:
+- `GET /api/books/123` → **400 Invalid id**, from `ParseObjectIdPipe`. Without the pipe, Mongoose would throw a `CastError` and the client would get a 500.
+- `POST { "title": "X" }` → **400** from the `ValidationPipe` (`author should not be empty`). The database is never touched.
 
-```js
-app.use((err, req, res, next) => {
-  if (err.name === 'CastError') return res.status(400).json({ error: 'Invalid id' });
-  if (err.name === 'ValidationError') return res.status(400).json({ error: err.message });
-  res.status(err.status || 500).json({ error: err.message || 'Internal server error' });
-});
-```
+> `findAll` returns the query without `await`. That's fine: NestJS waits for anything "awaitable" that a controller returns. Inside a method that **uses** the result (like `findOne`), you must `await`.
 
 </details>
 
@@ -626,20 +721,20 @@ app.use((err, req, res, next) => {
 Convert the Session 8/9 in-memory API to a real database:
 
 ```
-1. npm install mongoose dotenv; add .env + .gitignore + .env.example
-2. config/db.js       → connectDB() (connect, log, exit(1) on fail)
-3. models/Todo.js     → { text: required String, completed: default false } + timestamps
-4. controllers/todoController.js → all 5 CRUD handlers with try/catch + next(err)
-5. routes/todos.js    → map verbs to controller
-6. app.js             → helmet, cors, morgan, express.json, mount router, 404 + error handler
-7. server.js          → dotenv, connectDB, listen
+1. npm install @nestjs/mongoose mongoose @nestjs/config; add .env + .gitignore + .env.example
+2. app.module.ts      → ConfigModule.forRoot({ isGlobal: true }) + MongooseModule.forRootAsync
+3. todos/schemas/todo.schema.ts → { text: required String, completed: default false } + timestamps
+4. todos/dto          → CreateTodoDto, UpdateTodoDto (class-validator)
+5. todos.service.ts   → all 5 CRUD methods with the injected model; NotFoundException on null
+6. todos.controller.ts→ map verbs to the service; ParseObjectIdPipe on :id; @HttpCode(204) on DELETE
+7. main.ts            → prefix, helmet, CORS, ValidationPipe; AllExceptionsFilter via APP_FILTER
 8. Test every endpoint in Postman: list, create, get, update, delete
 ```
 
 **Challenges:**
-- `GET /api/todos?completed=true&page=2&limit=5` — query-string filtering + pagination
-- `runValidators: true` on update — try sending `{ text: "" }` and confirm 400
-- `.select('text completed')` — projection via query params
+- `GET /api/todos?completed=true&page=2&limit=5` — query-string filtering + pagination with pipes
+- `runValidators: true` on update — remove the `@IsNotEmpty()` from `UpdateTodoDto`, send `{ "text": "" }`, and see the schema stop it
+- `?fields=text,completed` → `.select('text completed')` — projection via query params
 
 ---
 
@@ -647,93 +742,109 @@ Convert the Session 8/9 in-memory API to a real database:
 
 ### A. Quick Questions (answer in 1–2 sentences)
 
-1. What is Mongoose, and what does it add on top of MongoDB?
+1. What is Mongoose, and what does it add on top of MongoDB? What does `@nestjs/mongoose` add?
 2. What is the difference between a schema and a model?
-3. If the model is named `'Book'`, what is the collection called?
+3. If the schema class is named `Book`, what is the collection called?
 4. Why do we keep the connection string in `.env`? Why do we commit `.env.example`?
-5. Why must `require('dotenv').config()` be the first line in `server.js`?
-6. What does `{ timestamps: true }` add?
-7. Name 4 schema options that validate data.
+5. Why do we use `MongooseModule.forRootAsync` with `ConfigService` instead of `forRoot(process.env.MONGODB_URI)`?
+6. What does `@Schema({ timestamps: true })` add?
+7. What does `MongooseModule.forFeature(...)` do, and where do you put it?
 8. What do `new: true` and `runValidators: true` do in `findByIdAndUpdate`?
-9. What does `findById` return when nothing is found?
-10. Which status code for: created · deleted · validation error · not found?
+9. What does `findById` return when nothing is found? What must the service do then?
+10. Which status code for: created · deleted · validation error · not found · already exists?
 
 <details>
 <summary>✅ Solution</summary>
 
-1. A library (ODM) that adds schemas, validation, defaults and an easy API for working with MongoDB documents.
+1. Mongoose is an ODM that adds schemas, validation, defaults and an easy API for MongoDB. `@nestjs/mongoose` connects it to NestJS: schemas as decorated classes, and models you can inject with `@InjectModel`.
 2. A schema describes the shape and rules of a document. A model is made from the schema, and we use it to create and query documents.
 3. `books` (lowercase and plural).
 4. It holds secrets that must not go to GitHub. `.env.example` shows other developers which variables they need, without the values.
-5. Other files read `process.env`. If dotenv loads later, those values are `undefined`.
+5. `forRootAsync` waits until `ConfigModule` has loaded `.env`. With `forRoot(process.env...)` the value may be read too early and be `undefined`.
 6. `createdAt` and `updatedAt` fields, filled in automatically.
-7. `required`, `min`/`max`, `minlength`/`maxlength`, `enum`, `match` (also `unique` as an index).
+7. It registers the schema as a model in that feature's module, so the module's services can inject it. It goes in the feature module's `imports`.
 8. `new: true` returns the updated document (not the old one). `runValidators: true` checks the schema rules on update.
-9. `null`.
-10. 201 · 204 · 400 · 404.
+9. `null`. The service must `throw new NotFoundException(...)`.
+10. 201 · 204 · 400 · 404 · 409.
 
 </details>
 
 ### B. Find the Bug
 
-```js
-// Bug 1: the response is not the list of books
-exports.getBooks = async (req, res) => {
-  const books = Book.find();
-  res.json(books);
-};
+```ts
+// Bug 1: GET /api/books/<an id that doesn't exist> returns 200 with {} instead of 404
+async findOne(id: string) {
+  const book = this.bookModel.findById(id);
+  if (!book) throw new NotFoundException('Book not found');
+  return book;
+}
 
 // Bug 2: the response shows the OLD title after the update
-const book = await Book.findByIdAndUpdate(req.params.id, req.body);
-res.json(book);
+return this.bookModel.findByIdAndUpdate(id, dto);
 
-// Bug 3: "The `uri` parameter to `openUri()` must be a string, got undefined"
-// server.js
-const app = require('./app');
-const connectDB = require('./config/db');
-connectDB();
-require('dotenv').config();
+// Bug 3: "Nest can't resolve dependencies of the BooksService (?). Please make sure that
+//         the argument "BookModel" at index [0] is available in the BooksModule context."
+@Module({ controllers: [BooksController], providers: [BooksService] })
+export class BooksModule {}
 
-// Bug 4: PATCH with { "pages": -5 } is saved without an error (schema has min: 1)
-await Book.findByIdAndUpdate(req.params.id, req.body, { new: true });
+// Bug 4: PATCH with { "pages": -5 } is saved (the schema has min: 1, the DTO forgot @Min)
+await this.bookModel.findByIdAndUpdate(id, dto, { new: true });
 
-// Bug 5: the team pushed .env to GitHub. What 2 things must you do now?
+// Bug 5: the app crashes at start with "The `uri` parameter to `openUri()` must be a string, got undefined"
+@Module({
+  imports: [
+    MongooseModule.forRoot(process.env.MONGODB_URI),
+    ConfigModule.forRoot(),
+  ],
+})
+
+// Bug 6: the team pushed .env to GitHub. What 2 things must you do now?
 ```
 
 <details>
 <summary>✅ Solution</summary>
 
-```js
-// Bug 1: missing await (and add try/catch)
-const books = await Book.find();
+```ts
+// Bug 1: missing await. A Query object is always "truthy", so the 404 never happens.
+const book = await this.bookModel.findById(id);
 
 // Bug 2: add { new: true }
-const book = await Book.findByIdAndUpdate(req.params.id, req.body, { new: true });
+return this.bookModel.findByIdAndUpdate(id, dto, { new: true, runValidators: true });
 
-// Bug 3: load .env FIRST
-require('dotenv').config();
-const app = require('./app');
-const connectDB = require('./config/db');
-connectDB();
+// Bug 3: register the schema in the module
+@Module({
+  imports: [MongooseModule.forFeature([{ name: Book.name, schema: BookSchema }])],
+  controllers: [BooksController],
+  providers: [BooksService],
+})
 
-// Bug 4: validators don't run on update unless you ask
-await Book.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+// Bug 4: validators don't run on update unless you ask (and add @Min(1) to the DTO too)
+await this.bookModel.findByIdAndUpdate(id, dto, { new: true, runValidators: true });
+
+// Bug 5: process.env is read before .env is loaded. Use the async version:
+imports: [
+  ConfigModule.forRoot({ isGlobal: true }),
+  MongooseModule.forRootAsync({
+    inject: [ConfigService],
+    useFactory: (config: ConfigService) => ({ uri: config.get<string>('MONGODB_URI') }),
+  }),
+],
 ```
 
-Bug 5: (1) Change the database password / secrets right away, because they are public now. (2) Add `.env` to `.gitignore` and remove it from git: `git rm --cached .env`.
+Bug 6: (1) Change the database password / secrets right away, because they are public now. (2) Add `.env` to `.gitignore` and remove it from git: `git rm --cached .env`.
 
 </details>
 
 ### C. Coding Tasks
 
-**Task 1: Contact model (easy).** `models/Contact.js` with:
+**Task 1: Contact schema (easy).** `contacts/schemas/contact.schema.ts` with:
 - `name`: String, required, trim
 - `email`: String, required, unique, lowercase, must match `/\S+@\S+\.\S+/`
 - `phone`: String
 - `favorite`: Boolean, default `false`
 - timestamps
 
-**Task 2: Contacts CRUD API (medium).** MVC structure (`routes/contacts.js`, `controllers/contactController.js`) with all 5 endpoints at `/api/contacts` and the correct status codes (200/201/204/400/404).
+**Task 2: Contacts CRUD API (medium).** A `ContactsModule` (`nest g resource contacts`) with DTOs, a service and all 5 endpoints at `/api/contacts`, with the correct status codes (200/201/204/400/404). A duplicate email returns **409**.
 
 **Task 3: Filter + pagination (medium).** `GET /api/contacts?favorite=true&page=2&limit=5` returns `{ data, total, page, totalPages }`.
 
@@ -742,160 +853,188 @@ Bug 5: (1) Change the database password / secrets right away, because they are p
 **Task 5: Toggle favorite (easy).** `PATCH /api/contacts/:id/favorite` flips `favorite` from true to false or false to true and returns the contact.
 
 **Challenge: Borrow and return books.** In the Library API add:
-- `PATCH /api/books/:id/borrow`: if the book is not available → `409 { error: 'Book is already borrowed' }`, otherwise set `isAvailable: false`
-- `PATCH /api/books/:id/return`: the opposite, with `409 { error: 'Book is not borrowed' }`
-- `GET /api/books/available`: only available books (careful: this route must come **before** `/:id`)
+- `PATCH /api/books/:id/borrow`: if the book is not available → `409 'Book is already borrowed'` (`ConflictException`), otherwise set `isAvailable: false`
+- `PATCH /api/books/:id/return`: the opposite, with `409 'Book is not borrowed'`
+- `GET /api/books/available`: only available books (careful: this route must come **before** `:id`)
 
 <details>
 <summary>✅ Solution: Tasks 1–5 and Challenge</summary>
 
-```js
-// Task 1: models/Contact.js
-const mongoose = require('mongoose');
+```ts
+// Task 1: contacts/schemas/contact.schema.ts
+@Schema({ timestamps: true })
+export class Contact {
+  @Prop({ required: [true, 'Name is required'], trim: true })
+  name: string;
 
-const contactSchema = new mongoose.Schema(
-  {
-    name: { type: String, required: [true, 'Name is required'], trim: true },
-    email: {
-      type: String,
-      required: [true, 'Email is required'],
-      unique: true,
-      lowercase: true,
-      match: [/\S+@\S+\.\S+/, 'Email is invalid'],
-    },
-    phone: String,
-    favorite: { type: Boolean, default: false },
-  },
-  { timestamps: true }
-);
+  @Prop({
+    required: [true, 'Email is required'],
+    unique: true,
+    lowercase: true,
+    match: [/\S+@\S+\.\S+/, 'Email is invalid'],
+  })
+  email: string;
 
-module.exports = mongoose.model('Contact', contactSchema);
+  @Prop()
+  phone?: string;
+
+  @Prop({ default: false })
+  favorite: boolean;
+}
+
+export type ContactDocument = HydratedDocument<Contact>;
+export const ContactSchema = SchemaFactory.createForClass(Contact);
 ```
 
-```js
-// Tasks 2–5: controllers/contactController.js
-const Contact = require('../models/Contact');
+```ts
+// Task 2: contacts/dto/create-contact.dto.ts
+export class CreateContactDto {
+  @IsString() @IsNotEmpty() name: string;
+  @IsEmail() email: string;
+  @IsOptional() @IsString() phone?: string;
+  @IsOptional() @IsBoolean() favorite?: boolean;
+}
 
-exports.getContacts = async (req, res, next) => {
-  try {
-    const { favorite, search } = req.query;
-    const page = Math.max(Number(req.query.page) || 1, 1);
-    const limit = Math.min(Number(req.query.limit) || 10, 50);
+export class UpdateContactDto {
+  @IsOptional() @IsString() @IsNotEmpty() name?: string;
+  @IsOptional() @IsEmail() email?: string;
+  @IsOptional() @IsString() phone?: string;
+  @IsOptional() @IsBoolean() favorite?: boolean;
+}
+```
 
-    const filter = {};
-    if (favorite !== undefined) filter.favorite = favorite === 'true';
-    if (search) filter.name = { $regex: search, $options: 'i' };
+```ts
+// Tasks 2–5: contacts/contacts.service.ts
+@Injectable()
+export class ContactsService {
+  constructor(@InjectModel(Contact.name) private readonly contactModel: Model<Contact>) {}
+
+  async findAll(query: { favorite?: string; search?: string; page?: string; limit?: string }) {
+    const page = Math.max(Number(query.page) || 1, 1);
+    const limit = Math.min(Number(query.limit) || 10, 50);
+
+    const filter: Record<string, unknown> = {};
+    if (query.favorite !== undefined) filter.favorite = query.favorite === 'true';
+    if (query.search) filter.name = { $regex: query.search, $options: 'i' };
 
     const [data, total] = await Promise.all([
-      Contact.find(filter).sort({ name: 1 }).skip((page - 1) * limit).limit(limit),
-      Contact.countDocuments(filter),
+      this.contactModel.find(filter).sort({ name: 1 }).skip((page - 1) * limit).limit(limit),
+      this.contactModel.countDocuments(filter),
     ]);
 
-    res.json({ data, total, page, totalPages: Math.ceil(total / limit) });
-  } catch (err) { next(err); }
-};
-
-exports.getContactById = async (req, res, next) => {
-  try {
-    const contact = await Contact.findById(req.params.id);
-    if (!contact) return res.status(404).json({ error: 'Contact not found' });
-    res.json(contact);
-  } catch (err) { next(err); }
-};
-
-exports.createContact = async (req, res, next) => {
-  try {
-    const contact = await Contact.create(req.body);
-    res.status(201).json(contact);
-  } catch (err) {
-    if (err.name === 'ValidationError') return res.status(400).json({ error: err.message });
-    if (err.code === 11000) return res.status(400).json({ error: 'Email already exists' });
-    next(err);
+    return { data, total, page, totalPages: Math.ceil(total / limit) };
   }
-};
 
-exports.updateContact = async (req, res, next) => {
-  try {
-    const contact = await Contact.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    if (!contact) return res.status(404).json({ error: 'Contact not found' });
-    res.json(contact);
-  } catch (err) { next(err); }
-};
+  async findOne(id: string) {
+    const contact = await this.contactModel.findById(id);
+    if (!contact) throw new NotFoundException('Contact not found');
+    return contact;
+  }
 
-exports.deleteContact = async (req, res, next) => {
-  try {
-    const contact = await Contact.findByIdAndDelete(req.params.id);
-    if (!contact) return res.status(404).json({ error: 'Contact not found' });
-    res.status(204).send();
-  } catch (err) { next(err); }
-};
+  async create(dto: CreateContactDto) {
+    try {
+      return await this.contactModel.create(dto);
+    } catch (err) {
+      if ((err as { code?: number }).code === 11000) throw new ConflictException('Email already exists');
+      throw err;
+    }
+  }
 
-exports.toggleFavorite = async (req, res, next) => {
-  try {
-    const contact = await Contact.findById(req.params.id);
-    if (!contact) return res.status(404).json({ error: 'Contact not found' });
+  async update(id: string, dto: UpdateContactDto) {
+    const contact = await this.contactModel.findByIdAndUpdate(id, dto, { new: true, runValidators: true });
+    if (!contact) throw new NotFoundException('Contact not found');
+    return contact;
+  }
+
+  async remove(id: string) {
+    const contact = await this.contactModel.findByIdAndDelete(id);
+    if (!contact) throw new NotFoundException('Contact not found');
+  }
+
+  async toggleFavorite(id: string) {
+    const contact = await this.findOne(id);
     contact.favorite = !contact.favorite;
-    await contact.save();
-    res.json(contact);
-  } catch (err) { next(err); }
-};
+    return contact.save();
+  }
+}
 ```
 
-```js
-// routes/contacts.js
-const router = require('express').Router();
-const c = require('../controllers/contactController');
+```ts
+// contacts/contacts.controller.ts
+@Controller('contacts')
+export class ContactsController {
+  constructor(private readonly contactsService: ContactsService) {}
 
-router.get('/', c.getContacts);
-router.get('/:id', c.getContactById);
-router.post('/', c.createContact);
-router.patch('/:id/favorite', c.toggleFavorite);
-router.patch('/:id', c.updateContact);
-router.delete('/:id', c.deleteContact);
+  @Get()
+  findAll(@Query() query: { favorite?: string; search?: string; page?: string; limit?: string }) {
+    return this.contactsService.findAll(query);
+  }
 
-module.exports = router;
-// app.js → app.use('/api/contacts', require('./routes/contacts'));
+  @Get(':id')
+  findOne(@Param('id', ParseObjectIdPipe) id: string) { return this.contactsService.findOne(id); }
+
+  @Post()
+  create(@Body() dto: CreateContactDto) { return this.contactsService.create(dto); }
+
+  @Patch(':id/favorite')
+  toggleFavorite(@Param('id', ParseObjectIdPipe) id: string) { return this.contactsService.toggleFavorite(id); }
+
+  @Patch(':id')
+  update(@Param('id', ParseObjectIdPipe) id: string, @Body() dto: UpdateContactDto) {
+    return this.contactsService.update(id, dto);
+  }
+
+  @Delete(':id')
+  @HttpCode(204)
+  remove(@Param('id', ParseObjectIdPipe) id: string) { return this.contactsService.remove(id); }
+}
+
+// contacts.module.ts
+@Module({
+  imports: [MongooseModule.forFeature([{ name: Contact.name, schema: ContactSchema }])],
+  controllers: [ContactsController],
+  providers: [ContactsService],
+})
+export class ContactsModule {}
 ```
 
-```js
-// Challenge: add to bookController.js
-exports.getAvailableBooks = async (req, res, next) => {
-  try {
-    res.json(await Book.find({ isAvailable: true }));
-  } catch (err) { next(err); }
-};
+> Here `@Query()` with a plain type works because we don't validate it (every value is a string). In Session 12 you'll write a proper query DTO with `class-validator` instead.
 
-exports.borrowBook = async (req, res, next) => {
-  try {
-    const book = await Book.findById(req.params.id);
-    if (!book) return res.status(404).json({ error: 'Book not found' });
-    if (!book.isAvailable) return res.status(409).json({ error: 'Book is already borrowed' });
-    book.isAvailable = false;
-    await book.save();
-    res.json(book);
-  } catch (err) { next(err); }
-};
+```ts
+// Challenge: books.service.ts
+findAvailable() {
+  return this.bookModel.find({ isAvailable: true });
+}
 
-exports.returnBook = async (req, res, next) => {
-  try {
-    const book = await Book.findById(req.params.id);
-    if (!book) return res.status(404).json({ error: 'Book not found' });
-    if (book.isAvailable) return res.status(409).json({ error: 'Book is not borrowed' });
-    book.isAvailable = true;
-    await book.save();
-    res.json(book);
-  } catch (err) { next(err); }
-};
+async borrow(id: string) {
+  const book = await this.findOne(id);
+  if (!book.isAvailable) throw new ConflictException('Book is already borrowed');
+  book.isAvailable = false;
+  return book.save();
+}
 
-// routes/books.js: /available BEFORE /:id, otherwise "available" is treated as an id
-router.get('/available', controller.getAvailableBooks);
-router.get('/:id', controller.getBookById);
-router.patch('/:id/borrow', controller.borrowBook);
-router.patch('/:id/return', controller.returnBook);
+async giveBack(id: string) {
+  const book = await this.findOne(id);
+  if (book.isAvailable) throw new ConflictException('Book is not borrowed');
+  book.isAvailable = true;
+  return book.save();
+}
+
+// books.controller.ts: 'available' BEFORE ':id', otherwise "available" is treated as an id
+@Get('available')
+findAvailable() { return this.booksService.findAvailable(); }
+
+@Get(':id')
+findOne(@Param('id', ParseObjectIdPipe) id: string) { return this.booksService.findOne(id); }
+
+@Patch(':id/borrow')
+borrow(@Param('id', ParseObjectIdPipe) id: string) { return this.booksService.borrow(id); }
+
+@Patch(':id/return')
+giveBack(@Param('id', ParseObjectIdPipe) id: string) { return this.booksService.giveBack(id); }
 ```
+
+`return` is a reserved word in JavaScript, so the method is called `giveBack`.
 
 </details>
 
@@ -904,23 +1043,24 @@ router.patch('/:id/return', controller.returnBook);
 ## Review Questions
 
 1. What does an ODM add over the raw MongoDB driver?
-2. Schema vs model — what's the relationship?
-3. Why `process.exit(1)` when the DB connection fails?
+2. Schema vs model — what's the relationship? Where does `@InjectModel` come in?
+3. Why does the app stop when the DB connection fails? Why is that good?
 4. What do `{ new: true }` and `{ runValidators: true }` do on update?
 5. Why does `.env` go in `.gitignore`? What's `.env.example` for?
-6. Why keep controllers out of route files?
-7. When is 404 correct vs 400?
-8. How do you filter + paginate a `find()`?
+6. Why keep model queries out of controllers?
+7. When is 404 correct vs 400 vs 409?
+8. How do you filter + paginate a `find()`? Why `Promise.all` with `countDocuments`?
 
 ## Common Mistakes
 
-- Forgetting `await` — returning a pending query instead of data
+- Forgetting `await` before using a query result — the `if (!book)` check never fires
 - `findByIdAndUpdate` without `new: true` → returns the stale document
 - Missing `runValidators` → updates bypass schema validation
-- Not handling `null` from `findById` → crashes or wrong response
-- Malformed ObjectId throws `CastError` → catch it (500/400), don't crash
+- Not throwing `NotFoundException` on `null` → 200 with an empty body
+- Malformed ObjectId → `CastError` → 500; use `ParseObjectIdPipe` for a 400
+- Forgetting `MongooseModule.forFeature` → "can't resolve dependencies … BookModel"
+- `forRoot(process.env.X)` before config is loaded → `undefined` URI
 - Hardcoding `MONGODB_URI` in source
-- Listening before the DB is connected
 - Schema validation as the *only* validation layer
 
 ---

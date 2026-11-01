@@ -2,8 +2,7 @@
 
 **Duration:** 3 hours
 **Level:** Intermediate
-**Prerequisites:** Session 10 (Mongoose models, CRUD controllers)
-**Condensed from:** Node Sessions 7–8
+**Prerequisites:** Session 10 (Mongoose schemas, services, CRUD)
 
 ---
 
@@ -13,14 +12,14 @@
 > - **✍️ Your Turn**: unfinished code after each part. Fill every `____` and finish every `// TODO`, then run it.
 > - **📝 Student Worksheet** (end of session): questions to give students. Answers are hidden under **✅ Solution**. Delete those blocks before sharing if students should not see them.
 >
-> Keep building the **Library API** from Session 10. If `npm install bcrypt` fails on Windows, use `npm install bcryptjs` and `require('bcryptjs')` instead (same functions).
+> Keep building the **Library API** from Session 10. If `npm install bcrypt` fails on Windows, use `npm install bcryptjs` and `import * as bcrypt from 'bcryptjs'` instead (same functions).
 
 ## Session Overview
 
 - **Part 1:** Schema-level validation — built-in + custom validators
-- **Part 2:** Request-level validation — express-validator & Joi
-- **Part 3:** Centralized error handling — error middleware, custom error classes, 404
-- **Part 4:** Authentication — bcrypt hashing, register/login, JWT, protected routes, RBAC
+- **Part 2:** Request-level validation — DTOs, `class-validator`, `ValidationPipe`, `PartialType`
+- **Part 3:** Centralized error handling — built-in exceptions, custom exceptions, a global filter for database errors
+- **Part 4:** Authentication — bcrypt hashing, register/login, JWT, `JwtAuthGuard`, roles
 - **Lab:** Auth-protected to-do API
 
 ---
@@ -29,81 +28,106 @@
 
 > 💡 **In simple words:** Never trust data that comes from users. Schema validation is the final guard right before data enters the database: if a field breaks a rule, Mongoose refuses to save it.
 
-```js
-const productSchema = new mongoose.Schema({
-  name:     { type: String, required: [true, 'Name is required'], minlength: 2 },
-  price:    { type: Number, required: true, min: [0, 'Price cannot be negative'] },
-  sku:      { type: String, unique: true },
-  category: { type: String, enum: ['electronics', 'books', 'clothing'] },
-  email:    { type: String, lowercase: true, match: /\S+@\S+\.\S+/ },
-  tags: {
+```ts
+@Schema()
+export class Product {
+  @Prop({ required: [true, 'Name is required'], minlength: 2 })
+  name: string;
+
+  @Prop({ required: true, min: [0, 'Price cannot be negative'] })
+  price: number;
+
+  @Prop({ unique: true })
+  sku: string;
+
+  @Prop({ enum: ['electronics', 'books', 'clothing'] })
+  category: string;
+
+  @Prop({ lowercase: true, match: /\S+@\S+\.\S+/ })
+  supplierEmail: string;
+
+  @Prop({
     type: [String],
     validate: {                                        // custom validator
-      validator: (v) => v.length <= 5,
+      validator: (v: string[]) => v.length <= 5,
       message: 'A product can have at most 5 tags',
     },
-  },
-});
+  })
+  tags: string[];
+}
 ```
 
 - `min`/`max` → numbers & dates; `minlength`/`maxlength` → strings (don't confuse them)
 - Custom `validate` — return `true`/`false`; use **regular functions** if you need `this` (arrow functions lose it)
 - **Updates don't validate by default** — always pass `runValidators: true` to `findByIdAndUpdate`
-- `unique` is an index, not a validator — handle the duplicate-key error (code 11000) yourself
+- `unique` is an index, not a validator — handle the duplicate-key error (code 11000) yourself (Part 3)
 
 ---
 
 ### ✍️ Your Turn: Part 1
 
-```js
-// models/User.js
-const userSchema = new mongoose.Schema({
-  name:  { type: String, required: [true, '____'], ____: 2 },     // at least 2 characters
-  email: {
-    type: String,
+```ts
+// src/users/schemas/user.schema.ts
+@Schema({ timestamps: true })
+export class User {
+  @Prop({ required: [true, '____'], ____: 2 })     // at least 2 characters
+  name: string;
+
+  @Prop({
     required: true,
     unique: true,
     lowercase: true,
     ____: [/\S+@\S+\.\S+/, 'Invalid email'],
-  },
-  age:   { type: Number, ____: [13, 'You must be at least 13'] },
-  role:  { type: String, ____: ['user', 'admin'], default: 'user' },
-  skills: {
+  })
+  email: string;
+
+  @Prop({ ____: [13, 'You must be at least 13'] })
+  age?: number;
+
+  @Prop({ ____: ['user', 'admin'], default: 'user' })
+  role: string;
+
+  @Prop({
     type: [String],
     validate: {
-      validator: (v) => ____,              // at most 3 skills
+      validator: (v: string[]) => ____,              // at most 3 skills
       message: 'You can add at most 3 skills',
     },
-  },
-});
+  })
+  skills: string[];
+}
 
 // Question: this rule never works. Why?
-// name: { type: String, min: 2 }
+// @Prop({ min: 2 }) name: string;
 ```
 
 <details>
 <summary>✅ Solution</summary>
 
-```js
-const userSchema = new mongoose.Schema({
-  name:  { type: String, required: [true, 'Name is required'], minlength: 2 },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true,
-    match: [/\S+@\S+\.\S+/, 'Invalid email'],
-  },
-  age:   { type: Number, min: [13, 'You must be at least 13'] },
-  role:  { type: String, enum: ['user', 'admin'], default: 'user' },
-  skills: {
+```ts
+@Schema({ timestamps: true })
+export class User {
+  @Prop({ required: [true, 'Name is required'], minlength: 2 })
+  name: string;
+
+  @Prop({ required: true, unique: true, lowercase: true, match: [/\S+@\S+\.\S+/, 'Invalid email'] })
+  email: string;
+
+  @Prop({ min: [13, 'You must be at least 13'] })
+  age?: number;
+
+  @Prop({ enum: ['user', 'admin'], default: 'user' })
+  role: string;
+
+  @Prop({
     type: [String],
     validate: {
-      validator: (v) => v.length <= 3,
+      validator: (v: string[]) => v.length <= 3,
       message: 'You can add at most 3 skills',
     },
-  },
-});
+  })
+  skills: string[];
+}
 ```
 
 `min` is for **numbers and dates**. For strings, use `minlength`.
@@ -114,161 +138,145 @@ const userSchema = new mongoose.Schema({
 
 ## Part 2: Request Validation (First Line of Defense)
 
-> 💡 **In simple words:** Request validation checks the input as soon as the request arrives, before any database work. It gives clear error messages and stops bad data early. Think of it as the guard at the front door, while the schema is the guard at the safe.
+> 💡 **In simple words:** Request validation checks the input as soon as the request arrives, before any database work. It gives clear error messages and stops bad data early. Think of it as the guard at the front door, while the schema is the guard at the safe. In NestJS the front door is the **DTO** + `ValidationPipe` you met in Session 9.
 
-Validate at the boundary — before the data ever reaches your model.
+```ts
+// src/main.ts — once for the whole app
+app.useGlobalPipes(new ValidationPipe({
+  whitelist: true,               // strip unknown fields (blocks { "role": "admin" } on register!)
+  forbidNonWhitelisted: true,    // ...or reject them
+  transform: true,               // plain JSON → DTO instance; '5' → 5 for typed query/params
+}));
+```
 
-### express-validator
+### Common `class-validator` decorators
 
-> 💡 **In simple words:**
-> 1. Describe the rules for each field as a chain: `body('email').isEmail()`.
-> 2. Put the rules before your controller.
-> 3. Check `validationResult(req)` for errors.
+| Decorator | Checks |
+|-----------|--------|
+| `@IsString()` `@IsInt()` `@IsNumber()` `@IsBoolean()` `@IsDateString()` | type |
+| `@IsNotEmpty()` `@IsOptional()` | required / optional |
+| `@MinLength(6)` `@MaxLength(200)` | string length |
+| `@Min(1)` `@Max(100)` | number range |
+| `@IsEmail()` `@IsUrl()` `@IsMongoId()` | formats |
+| `@IsIn(['a', 'b'])` `@IsEnum(Role)` | allowed values |
+| `@Matches(/regex/)` | custom pattern |
+| `@IsArray()` `@ArrayMaxSize(3)` | arrays |
+
+Every decorator accepts `{ message: '...' }` for your own text.
+
+```ts
+// src/auth/dto/register.dto.ts
+import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+
+export class RegisterDto {
+  @IsString()
+  @IsNotEmpty({ message: 'name is required' })
+  name: string;
+
+  @IsEmail({}, { message: 'email is invalid' })
+  email: string;
+
+  @IsString()
+  @MinLength(6, { message: 'password needs at least 6 characters' })
+  password: string;
+}
+```
+
+### Update DTOs with `PartialType`
+
+> 💡 **In simple words:** An update DTO usually has the same fields as the create DTO, but all optional. `PartialType` builds it for you, with all the rules copied, so you never write the same rules twice.
 
 ```bash
-npm install express-validator
+npm install @nestjs/mapped-types
 ```
 
-```js
-const { body, validationResult } = require('express-validator');
+```ts
+import { PartialType, PickType, OmitType } from '@nestjs/mapped-types';
 
-const createTodoRules = [
-  body('text').notEmpty().trim().withMessage('text is required'),
-  body('completed').optional().isBoolean(),
-];
-
-exports.createTodo = [
-  ...createTodoRules,
-  async (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    // … create
-  },
-];
+export class UpdateBookDto extends PartialType(CreateBookDto) {}            // all fields optional
+export class LoginDto extends PickType(RegisterDto, ['email', 'password']) {} // only these two
+export class PublicUserDto extends OmitType(RegisterDto, ['password']) {}   // everything but password
 ```
 
-### Joi — schema-based validation (framework-agnostic)
-
-> 💡 **In simple words:** With Joi, you describe the whole expected object in one schema and check `req.body` against it. You can reuse the same schema on many routes.
-
-```bash
-npm install joi
+```json
+// POST /api/auth/register with { "email": "bad" } →
+{
+  "statusCode": 400,
+  "message": ["name is required", "email is invalid", "password needs at least 6 characters"],
+  "error": "Bad Request"
+}
 ```
-
-```js
-const Joi = require('joi');
-
-const todoSchema = Joi.object({
-  text: Joi.string().min(1).required(),
-  completed: Joi.boolean().default(false),
-});
-
-exports.validateTodo = (req, res, next) => {
-  const { error } = todoSchema.validate(req.body);
-  if (error) return res.status(400).json({ error: error.details[0].message });
-  next();
-};
-
-app.post('/api/todos', validateTodo, createTodo);
-```
-
-**Pick one, be consistent:** express-validator chains suit per-field rules; Joi suits validating whole payloads with reusable schema files.
 
 ---
 
 ### ✍️ Your Turn: Part 2
 
-```js
-// A) express-validator
-const { body, validationResult } = require('express-validator');
+```ts
+// 1. Register DTO
+export class RegisterDto {
+  @IsString()
+  @____({ message: 'name is required' })
+  name: string;
 
-// 1. Rules for registering
-const registerRules = [
-  body('name').trim().____().withMessage('name is required'),
-  body('email').____().withMessage('email is invalid'),
-  body('password').isLength({ ____: 6 }).withMessage('password needs at least 6 characters'),
-];
+  @____({}, { message: 'email is invalid' })
+  email: string;
 
-// 2. One reusable middleware that checks the result
-function handleValidation(req, res, next) {
-  const errors = ____(req);
-  if (!errors.isEmpty()) {
-    return res.status(____).json({ errors: errors.array() });
-  }
-  ____();
+  @IsString()
+  @____(6, { message: 'password needs at least 6 characters' })
+  password: string;
 }
 
-router.post('/register', registerRules, handleValidation, register);
-```
+// 2. Login DTO: only email + password, with the same rules (don't repeat them)
+export class LoginDto extends ____(RegisterDto, ['____', '____']) {}
 
-```js
-// B) The same rules with Joi
-const Joi = require('joi');
-
-const registerSchema = Joi.object({
-  name: Joi.string().min(2).____(),
-  email: Joi.string().____().required(),
-  password: Joi.string().min(____).required(),
-});
-
-// A middleware factory: works with ANY Joi schema
-function validate(schema) {
-  return (req, res, next) => {
-    const { error } = schema.____(req.body);
-    // TODO: if error → 400 { error: error.details[0].message }
-    // TODO: otherwise → next()
-  };
+// 3. Book DTOs
+export class CreateBookDto {
+  @IsString() @IsNotEmpty() title: string;
+  @IsString() @IsNotEmpty() author: string;
+  // TODO: pages → optional, integer, min 1
+  // TODO: genre → optional, one of: novel, science, history, kids
 }
 
-router.post('/register', validate(registerSchema), register);
+export class UpdateBookDto extends ____(CreateBookDto) {}
 
-// C) TODO: write bookSchema with Joi: title (required), author (required),
-//    pages (number, integer, min 1, optional), genre (one of: novel, science, history, kids)
+// 4. main.ts: strip unknown fields AND reject requests that send them
+app.useGlobalPipes(new ValidationPipe({ ____: true, ____: true, transform: true }));
 ```
+
+**Test:** register with `{ "name": "Sara", "email": "sara@test.com", "password": "secret1", "role": "admin" }`. What happens? Why does this matter?
 
 <details>
 <summary>✅ Solution</summary>
 
-```js
-const registerRules = [
-  body('name').trim().notEmpty().withMessage('name is required'),
-  body('email').isEmail().withMessage('email is invalid'),
-  body('password').isLength({ min: 6 }).withMessage('password needs at least 6 characters'),
-];
+```ts
+export class RegisterDto {
+  @IsString()
+  @IsNotEmpty({ message: 'name is required' })
+  name: string;
 
-function handleValidation(req, res, next) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  next();
-}
-```
+  @IsEmail({}, { message: 'email is invalid' })
+  email: string;
 
-```js
-const registerSchema = Joi.object({
-  name: Joi.string().min(2).required(),
-  email: Joi.string().email().required(),
-  password: Joi.string().min(6).required(),
-});
-
-function validate(schema) {
-  return (req, res, next) => {
-    const { error } = schema.validate(req.body);
-    if (error) return res.status(400).json({ error: error.details[0].message });
-    next();
-  };
+  @IsString()
+  @MinLength(6, { message: 'password needs at least 6 characters' })
+  password: string;
 }
 
-const bookSchema = Joi.object({
-  title: Joi.string().required(),
-  author: Joi.string().required(),
-  pages: Joi.number().integer().min(1),
-  genre: Joi.string().valid('novel', 'science', 'history', 'kids'),
-});
+export class LoginDto extends PickType(RegisterDto, ['email', 'password']) {}
+
+export class CreateBookDto {
+  @IsString() @IsNotEmpty() title: string;
+  @IsString() @IsNotEmpty() author: string;
+  @IsOptional() @IsInt() @Min(1) pages?: number;
+  @IsOptional() @IsIn(['novel', 'science', 'history', 'kids']) genre?: string;
+}
+
+export class UpdateBookDto extends PartialType(CreateBookDto) {}
+
+app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));
 ```
+
+You get `400 ["property role should not exist"]`. Without `whitelist`, anyone could register as an admin just by sending `"role": "admin"`.
 
 </details>
 
@@ -276,142 +284,160 @@ const bookSchema = Joi.object({
 
 ## Part 3: Centralized Error Handling
 
-### The error middleware — 4 params, registered LAST
+> 💡 **In simple words:** In NestJS you already have centralized error handling: you **throw**, and NestJS turns the exception into a response. Errors from `async` methods are caught automatically, so you need no `try/catch` in services. What's left is (1) clear exceptions for your own rules and (2) one global filter that also converts **database** errors into proper status codes.
 
-> 💡 **In simple words:** Instead of writing error responses in every controller, send every error to **one** handler. One place decides the format and the status code, so errors are consistent and easy to change.
+### Built-in exceptions — throw, don't build responses
 
-```js
-// middleware/errorHandler.js
-module.exports = (err, req, res, next) => {
-  const status = err.status || err.statusCode || 500;
-  res.status(status).json({
-    error: err.message || 'Internal Server Error',
-    ...(process.env.NODE_ENV !== 'production' && { stack: err.stack }), // no stack leaks in prod
-  });
-};
-
-// app.js — ORDER MATTERS:
-app.use('/api/todos', todoRoutes);
-app.use((req, res) => res.status(404).json({ error: 'Route not found' })); // unknown routes
-app.use(errorHandler);                                                      // errors — always last
+```ts
+if (!book) throw new NotFoundException('Book not found');           // 404
+if (exists) throw new ConflictException('Email already registered'); // 409
+if (!ok) throw new UnauthorizedException('Invalid credentials');     // 401
+throw new ForbiddenException('Only admins can do this');             // 403
 ```
 
-Controllers forward errors instead of handling them ad hoc:
+### Custom exceptions — a name for a business rule
 
-```js
-exports.getTodoById = async (req, res, next) => {
-  try {
-    const todo = await Todo.findById(req.params.id);
-    if (!todo) return res.status(404).json({ error: 'Todo not found' });
-    res.json(todo);
-  } catch (err) {
-    next(err);              // CastError etc. → centralized handler
-  }
-};
-```
+```ts
+// src/books/exceptions/book-not-available.exception.ts
+import { ConflictException } from '@nestjs/common';
 
-### Custom error classes — one `throw` replaces status+message plumbing
-
-> 💡 **In simple words:** `AppError` is our own type of error that also carries an HTTP status. In a controller you just write `throw new AppError('Not found', 404)` (or pass it to `next(...)`), and the error handler does the rest.
-
-```js
-// utils/AppError.js
-class AppError extends Error {
-  constructor(message, status = 500) {
-    super(message);
-    this.status = status;
-    this.isOperational = true;      // expected error vs bug
+export class BookNotAvailableException extends ConflictException {
+  constructor(title: string) {
+    super(`"${title}" is already borrowed`);       // status 409 comes from the parent
   }
 }
 
-// usage in a controller — works beautifully with next(err)
-if (!todo) return next(new AppError('Todo not found', 404));
-if (existing) return next(new AppError('Email already registered', 400));
+// in the service
+if (!book.isAvailable) throw new BookNotAvailableException(book.title);
 ```
 
-### Async + Express 4 caveat
+### A global filter that understands Mongoose errors
 
-> 💡 **In simple words:** In Express 4, an error inside an `async` function is not caught automatically, so the request hangs. `asyncHandler` wraps the function and passes any error to `next`. Express 5 does this for you.
+> 💡 **In simple words:** Mongoose throws its own errors (bad id, failed schema rule, duplicate email). They are not `HttpException`s, so NestJS would answer 500. Our filter recognizes them and answers 400 or 409 instead, so services stay clean.
 
-Express 4 doesn't catch rejected promises — either wrap every async handler in `try/catch → next(err)`, or use a wrapper:
+```ts
+// src/common/filters/all-exceptions.filter.ts
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, Logger } from '@nestjs/common';
+import { HttpAdapterHost } from '@nestjs/core';
 
-```js
-const asyncHandler = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
+type MongooseLikeError = {
+  name?: string;
+  code?: number;
+  errors?: Record<string, { message: string }>;
+};
 
-router.get('/:id', asyncHandler(controller.getTodoById));   // no try/catch needed
+@Catch()
+export class AllExceptionsFilter implements ExceptionFilter {
+  private readonly logger = new Logger('Errors');
+
+  constructor(private readonly adapterHost: HttpAdapterHost) {}
+
+  catch(exception: unknown, host: ArgumentsHost) {
+    const { httpAdapter } = this.adapterHost;
+    const ctx = host.switchToHttp();
+    const { status, message } = this.toResponse(exception);
+
+    if (status === 500) this.logger.error(exception);    // log real bugs, never send them
+
+    httpAdapter.reply(ctx.getResponse(), { statusCode: status, message }, status);
+  }
+
+  private toResponse(exception: unknown): { status: number; message: string | string[] } {
+    if (exception instanceof HttpException) {
+      const body = exception.getResponse();
+      const message = typeof body === 'string' ? body : (body as { message: string | string[] }).message;
+      return { status: exception.getStatus(), message };
+    }
+
+    const err = exception as MongooseLikeError;
+    if (err.name === 'CastError') return { status: 400, message: 'Invalid id' };
+    if (err.name === 'ValidationError') {
+      return { status: 400, message: Object.values(err.errors ?? {}).map((e) => e.message) };
+    }
+    if (err.code === 11000) return { status: 409, message: 'Already exists' };
+
+    return { status: 500, message: 'Internal server error' };
+  }
+}
+
+// src/app.module.ts
+providers: [{ provide: APP_FILTER, useClass: AllExceptionsFilter }],
 ```
+
+Now every error in the API has the same shape: `{ statusCode, message }`, where `message` is a string or a list of strings.
 
 ---
 
 ### ✍️ Your Turn: Part 3
 
-```js
-// utils/AppError.js
-class AppError extends ____ {
-  constructor(message, status) {
-    ____(message);
-    this.status = ____;
+```ts
+// 1. A custom exception for "you can borrow at most 3 books"
+export class TooManyBooksException extends ____ {      // 400
+  constructor(max: number) {
+    ____(`You can borrow at most ${max} books`);
   }
 }
-module.exports = AppError;
+
+// 2. Rewrite findOne with an exception (no try/catch!)
+async findOne(id: string) {
+  const book = await this.bookModel.findById(id);
+  if (!book) ____ new ____('Book not found');
+  return book;
+}
+
+// 3. Complete toResponse() in the filter
+private toResponse(exception: unknown) {
+  if (exception instanceof ____) {
+    // TODO: status from exception.getStatus(), message from exception.getResponse()
+  }
+  const err = exception as MongooseLikeError;
+  // TODO: CastError           → 400 'Invalid id'
+  // TODO: ValidationError     → 400 with the list of messages
+  // TODO: err.code === 11000  → 409 'Already exists'   (duplicate unique value)
+  // TODO: anything else       → 500 'Internal server error'
+}
+
+// 4. Register it for the whole app
+providers: [{ provide: ____, useClass: AllExceptionsFilter }]
 ```
 
-```js
-// utils/asyncHandler.js: passes any error to next(), so no try/catch is needed
-const asyncHandler = (fn) => (req, res, next) =>
-  Promise.resolve(fn(req, res, next)).____(next);
-
-module.exports = asyncHandler;
-```
-
-```js
-// controllers/bookController.js: rewrite getBookById with both helpers
-exports.getBookById = asyncHandler(async (req, res) => {
-  const book = await Book.findById(req.params.id);
-  if (!book) throw new ____('Book not found', ____);
-  res.json(book);
-});
-```
-
-```js
-// middleware/errorHandler.js
-module.exports = (err, req, res, next) => {
-  // TODO: CastError           → 400 { error: 'Invalid id' }
-  // TODO: ValidationError     → 400 { error: err.message }
-  // TODO: err.code === 11000  → 400 { error: 'Already exists' }   (duplicate unique value)
-  // TODO: anything else       → err.status or 500, and err.message
-};
-```
+**Test:** create two contacts with the same email (Session 10). Before the filter you had to catch `11000` in the service. Remove that `try/catch`: what does the client get now?
 
 <details>
 <summary>✅ Solution</summary>
 
-```js
-class AppError extends Error {
-  constructor(message, status) {
-    super(message);
-    this.status = status;
+```ts
+export class TooManyBooksException extends BadRequestException {
+  constructor(max: number) {
+    super(`You can borrow at most ${max} books`);
   }
 }
 
-const asyncHandler = (fn) => (req, res, next) =>
-  Promise.resolve(fn(req, res, next)).catch(next);
+async findOne(id: string) {
+  const book = await this.bookModel.findById(id);
+  if (!book) throw new NotFoundException('Book not found');
+  return book;
+}
 
-exports.getBookById = asyncHandler(async (req, res) => {
-  const book = await Book.findById(req.params.id);
-  if (!book) throw new AppError('Book not found', 404);
-  res.json(book);
-});
+private toResponse(exception: unknown): { status: number; message: string | string[] } {
+  if (exception instanceof HttpException) {
+    const body = exception.getResponse();
+    const message = typeof body === 'string' ? body : (body as { message: string | string[] }).message;
+    return { status: exception.getStatus(), message };
+  }
+  const err = exception as MongooseLikeError;
+  if (err.name === 'CastError') return { status: 400, message: 'Invalid id' };
+  if (err.name === 'ValidationError') {
+    return { status: 400, message: Object.values(err.errors ?? {}).map((e) => e.message) };
+  }
+  if (err.code === 11000) return { status: 409, message: 'Already exists' };
+  return { status: 500, message: 'Internal server error' };
+}
 
-module.exports = (err, req, res, next) => {
-  if (err.name === 'CastError') return res.status(400).json({ error: 'Invalid id' });
-  if (err.name === 'ValidationError') return res.status(400).json({ error: err.message });
-  if (err.code === 11000) return res.status(400).json({ error: 'Already exists' });
-  res.status(err.status || 500).json({ error: err.message || 'Internal server error' });
-};
+providers: [{ provide: APP_FILTER, useClass: AllExceptionsFilter }]
 ```
 
-> **Express 5** already sends errors from `async` handlers to the error handler, so `asyncHandler` is only required on Express 4. It is still fine (and clear) to use it.
+The second contact now gets `409 { statusCode: 409, message: 'Already exists' }`, and the service has no `try/catch`.
 
 </details>
 
@@ -426,25 +452,103 @@ module.exports = (err, req, res, next) => {
 Never store plain-text passwords. bcrypt = one-way hash + salt (defeats rainbow tables).
 
 ```bash
-npm install bcrypt jsonwebtoken
+npm install bcrypt @nestjs/jwt
+npm install -D @types/bcrypt
 ```
 
-```js
-const bcrypt = require('bcrypt');
-const SALT_ROUNDS = 10;
+```ts
+import * as bcrypt from 'bcrypt';
 
-const hash = await bcrypt.hash(password, SALT_ROUNDS);      // store this
+const hash = await bcrypt.hash(password, 10);              // store this
 const ok   = await bcrypt.compare(password, user.password); // verify at login
 ```
 
-Best practice — hash in a Mongoose pre-save hook so no code path forgets it:
+Best practice — hash in a schema `pre('save')` hook, so no code path forgets it, and hide the password from queries with `select: false`:
 
-```js
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();   // don't re-hash on unrelated updates
+```ts
+// src/users/schemas/user.schema.ts
+@Schema({ timestamps: true })
+export class User {
+  @Prop({ required: true, trim: true, minlength: 2 })
+  name: string;
+
+  @Prop({ required: true, unique: true, lowercase: true })
+  email: string;
+
+  @Prop({ required: true, select: false })        // never returned unless you ask with '+password'
+  password: string;
+
+  @Prop({ enum: ['user', 'admin'], default: 'user' })
+  role: string;
+}
+
+export type UserDocument = HydratedDocument<User>;
+export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.pre('save', async function () {
+  if (!this.isModified('password')) return;       // don't re-hash on unrelated updates
   this.password = await bcrypt.hash(this.password, 10);
-  next();
 });
+```
+
+### The modules
+
+> 💡 **In simple words:** Two features, two modules:
+> - **UsersModule** owns the `User` schema and a `UsersService` (create, find).
+> - **AuthModule** handles register, login and tokens. It **imports** UsersModule to use `UsersService`.
+
+```ts
+// src/users/users.service.ts
+@Injectable()
+export class UsersService {
+  constructor(@InjectModel(User.name) private readonly userModel: Model<User>) {}
+
+  create(data: { name: string; email: string; password: string }) {
+    return this.userModel.create(data);                       // pre-save hook hashes it
+  }
+
+  findByEmailWithPassword(email: string) {
+    return this.userModel.findOne({ email }).select('+password');
+  }
+
+  findById(id: string) {
+    return this.userModel.findById(id);                       // no password (select: false)
+  }
+
+  findAll() {
+    return this.userModel.find();
+  }
+}
+
+// src/users/users.module.ts
+@Module({
+  imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])],
+  providers: [UsersService],
+  exports: [UsersService],                                    // AuthModule needs it
+})
+export class UsersModule {}
+```
+
+```ts
+// src/auth/auth.module.ts
+import { JwtModule } from '@nestjs/jwt';
+
+@Module({
+  imports: [
+    UsersModule,
+    JwtModule.registerAsync({
+      global: true,                                           // JwtService usable in every module
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        secret: config.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '1d' },
+      }),
+    }),
+  ],
+  controllers: [AuthController],
+  providers: [AuthService],
+})
+export class AuthModule {}
 ```
 
 ### Register
@@ -454,19 +558,25 @@ userSchema.pre('save', async function (next) {
 > 2. Save the new user (the pre-save hook hashes the password).
 > 3. Reply 201, **without** the password.
 
-```js
-exports.register = async (req, res, next) => {
-  try {
-    const { email, password, name } = req.body;
+```ts
+// src/auth/auth.service.ts
+@Injectable()
+export class AuthService {
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-    const existing = await User.findOne({ email });
-    if (existing) return next(new AppError('Email already registered', 400));
+  async register(dto: RegisterDto) {
+    const existing = await this.usersService.findByEmailWithPassword(dto.email);
+    if (existing) throw new ConflictException('Email already registered');
 
-    const user = await User.create({ name, email, password });  // pre-save hook hashes it
-    res.status(201).json({ id: user._id, email: user.email });  // never return the hash
-  } catch (err) { next(err); }
-};
+    const user = await this.usersService.create(dto);
+    return { id: user._id, name: user.name, email: user.email, role: user.role };  // never the hash
+  }
 ```
+
+> `select: false` only hides the field in **queries**. The document returned by `create()` still contains the hash, so pick the fields you send back.
 
 ### Login → JWT
 
@@ -474,69 +584,119 @@ exports.register = async (req, res, next) => {
 
 JWT = self-contained signed token (`header.payload.signature`). Client sends it as `Authorization: Bearer <token>` on every protected request — the server verifies the signature; no session storage needed.
 
-```js
-const jwt = require('jsonwebtoken');
-
-exports.login = async (req, res, next) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
+```ts
+  async login(dto: LoginDto) {
+    const user = await this.usersService.findByEmailWithPassword(dto.email);
 
     // Generic message — never reveal WHICH field was wrong
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return next(new AppError('Invalid credentials', 401));
+    if (!user || !(await bcrypt.compare(dto.password, user.password))) {
+      throw new UnauthorizedException('Invalid credentials');
     }
 
-    const token = jwt.sign(
-      { userId: user._id, role: user.role },        // minimal payload — no secrets
-      process.env.JWT_SECRET,
-      { expiresIn: '24h' }
-    );
-    res.json({ token });
-  } catch (err) { next(err); }
-};
+    const payload: JwtPayload = { userId: user._id.toString(), role: user.role };  // minimal — no secrets
+    return { token: await this.jwtService.signAsync(payload) };
+  }
+}
+
+// src/auth/jwt-payload.ts
+export interface JwtPayload {
+  userId: string;
+  role: string;
+}
 ```
 
-### Protect middleware
+```ts
+// src/auth/auth.controller.ts
+@Controller('auth')
+export class AuthController {
+  constructor(private readonly authService: AuthService) {}
 
-> 💡 **In simple words:** `protect` runs before the protected routes. It reads the token from the `Authorization` header, verifies it, and puts the user's info in `req.user` for the next functions. No valid token → 401.
-
-```js
-// middleware/auth.js
-exports.protect = (req, res, next) => {
-  const header = req.headers.authorization;
-  if (!header?.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Unauthorized' });
+  @Post('register')
+  register(@Body() dto: RegisterDto) {          // 201
+    return this.authService.register(dto);
   }
-  try {
-    req.user = jwt.verify(header.split(' ')[1], process.env.JWT_SECRET); // { userId, role }
-    next();
-  } catch {
-    res.status(401).json({ error: 'Invalid or expired token' });
-  }
-};
 
-// mount it
-app.use('/api/todos', protect, todoRoutes);          // whole resource
-router.delete('/:id', protect, deleteTodo);          // or per-route
+  @Post('login')
+  @HttpCode(200)                                // login creates nothing
+  login(@Body() dto: LoginDto) {
+    return this.authService.login(dto);
+  }
+}
+```
+
+### `JwtAuthGuard` — only logged-in users
+
+> 💡 **In simple words:** The guard runs before the protected route. It reads the token from the `Authorization` header, verifies it, and puts the payload in `req.user` for the next steps. No valid token → 401.
+
+```ts
+// src/auth/guards/jwt-auth.guard.ts
+@Injectable()
+export class JwtAuthGuard implements CanActivate {
+  constructor(private readonly jwtService: JwtService) {}
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const req = context.switchToHttp().getRequest();
+    const [type, token] = req.headers.authorization?.split(' ') ?? [];
+    if (type !== 'Bearer' || !token) throw new UnauthorizedException('Not logged in');
+
+    try {
+      req.user = await this.jwtService.verifyAsync<JwtPayload>(token);   // { userId, role, iat, exp }
+    } catch {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
+    return true;
+  }
+}
+```
+
+```ts
+// src/auth/decorators/current-user.decorator.ts — read req.user nicely
+import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+
+export const CurrentUser = createParamDecorator(
+  (_data: unknown, ctx: ExecutionContext) => ctx.switchToHttp().getRequest().user,
+);
+
+// usage
+@Get('me')
+@UseGuards(JwtAuthGuard)
+me(@CurrentUser() user: JwtPayload) {
+  return this.usersService.findById(user.userId);
+}
 ```
 
 ### Role-based access control (RBAC)
 
-> 💡 **In simple words:** With role-based access control, permissions depend on the user's **role**. `authorize('admin')` runs **after** `protect` and only lets admins continue; everyone else gets 403.
+> 💡 **In simple words:** With role-based access control, permissions depend on the user's **role**. `@Roles('admin')` writes "admins only" on a route, and `RolesGuard` reads it. The roles guard runs **after** `JwtAuthGuard`, because it needs `req.user`. Everyone without the role gets 403.
 
 **401** = not authenticated (who are you?). **403** = authenticated but not permitted (you can't do this).
 
-```js
-exports.authorize = (...roles) => (req, res, next) => {
-  if (!roles.includes(req.user.role)) {
-    return res.status(403).json({ error: 'Forbidden' });
-  }
-  next();
-};
+```ts
+// src/auth/decorators/roles.decorator.ts
+export const ROLES_KEY = 'roles';
+export const Roles = (...roles: string[]) => SetMetadata(ROLES_KEY, roles);
 
-router.delete('/users/:id', protect, authorize('admin'), deleteUser);
-router.post('/products',    protect, authorize('admin', 'moderator'), createProduct);
+// src/auth/guards/roles.guard.ts
+@Injectable()
+export class RolesGuard implements CanActivate {
+  constructor(private readonly reflector: Reflector) {}
+
+  canActivate(context: ExecutionContext): boolean {
+    const roles = this.reflector.getAllAndOverride<string[]>(ROLES_KEY, [context.getHandler(), context.getClass()]);
+    if (!roles) return true;
+
+    const user: JwtPayload = context.switchToHttp().getRequest().user;
+    if (!roles.includes(user.role)) throw new ForbiddenException('Forbidden');
+    return true;
+  }
+}
+
+// usage — guards run left to right: first "who are you?", then "are you allowed?"
+@Delete(':id')
+@HttpCode(204)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('admin')
+remove(@Param('id', ParseObjectIdPipe) id: string) { ... }
 ```
 
 ---
@@ -545,74 +705,56 @@ router.post('/products',    protect, authorize('admin', 'moderator'), createProd
 
 Add `JWT_SECRET=some-long-random-text` to `.env` first.
 
-```js
-// models/User.js: 1. Hash the password automatically before saving
-userSchema.pre('save', async function () {        // a normal function, NOT an arrow (we need `this`)
+```ts
+// 1. users/schemas/user.schema.ts: hash the password automatically before saving
+UserSchema.pre('save', async function () {        // a normal function, NOT an arrow (we need `this`)
   if (!this.____('password')) return;             // only when the password changed
   this.password = await bcrypt.____(this.password, 10);
 });
 ```
 
-```js
-// controllers/authController.js
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const AppError = require('../utils/AppError');
-const asyncHandler = require('../utils/asyncHandler');
+```ts
+// 2. auth/auth.service.ts
+async register(dto: RegisterDto) {
+  const exists = await this.usersService.findByEmailWithPassword(dto.email);
+  if (exists) throw new ____('Email already registered');          // 409
 
-// 2. Register
-exports.register = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
-  const exists = await User.____({ email });
-  if (exists) throw new AppError('Email already registered', ____);
-
-  const user = await User.create({ name, email, password });
-  res.status(____).json({ id: user._id, name: user.name, email: user.email });  // never send the password
-});
+  const user = await this.usersService.create(dto);
+  return { id: user._id, name: user.name, email: user.email };      // never send the password
+}
 
 // 3. Login
-exports.login = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
-  const ok = user && (await bcrypt.____(password, user.password));
-  if (!ok) throw new AppError('____', 401);   // the SAME message for a wrong email or a wrong password
+async login(dto: LoginDto) {
+  const user = await this.usersService.findByEmailWithPassword(dto.email);
+  if (!user || !(await bcrypt.____(dto.password, user.password))) {
+    throw new UnauthorizedException('____');   // the SAME message for a wrong email or a wrong password
+  }
 
-  const token = jwt.____(
-    { userId: user._id, role: user.role },
-    process.env.____,
-    { expiresIn: '1d' }
-  );
-  res.json({ token });
-});
+  const payload = { userId: user._id.toString(), role: user.role };
+  return { token: await this.jwtService.____(payload) };
+}
 ```
 
-```js
-// middleware/auth.js
-// 4. protect: only logged-in users
-exports.protect = (req, res, next) => {
-  const header = req.headers.____;
-  if (!header || !header.startsWith('____ ')) {
-    return res.status(401).json({ error: 'Not logged in' });
-  }
+```ts
+// 4. auth/guards/jwt-auth.guard.ts
+async canActivate(context: ExecutionContext) {
+  const req = context.switchToHttp().getRequest();
+  const [type, token] = req.headers.____?.split(' ') ?? [];
+  if (type !== '____' || !token) throw new UnauthorizedException('Not logged in');
   try {
-    req.user = jwt.____(header.split(' ')[1], process.env.JWT_SECRET);
-    next();
+    req.____ = await this.jwtService.____(token);
   } catch {
-    res.status(401).json({ error: 'Invalid or expired token' });
+    throw new UnauthorizedException('Invalid or expired token');
   }
-};
+  return true;
+}
 
-// 5. authorize: only some roles
-exports.authorize = (...roles) => (req, res, next) => {
-  if (!roles.includes(req.user.____)) {
-    return res.status(____).json({ error: 'Forbidden' });
-  }
-  next();
-};
+// 5. auth/guards/roles.guard.ts
+const user = context.switchToHttp().getRequest().user;
+if (!roles.includes(user.____)) throw new ____('Forbidden');       // 403
 
 // 6. TODO: GET /api/auth/me (protected) → the logged-in user WITHOUT the password
-//    hint: User.findById(req.user.userId).select('-password')
+//    hint: @UseGuards(JwtAuthGuard) + @CurrentUser() + usersService.findById(user.userId)
 
 // 7. TODO: protect the book routes: anyone can GET, logged-in users can POST,
 //    only admins can DELETE
@@ -621,65 +763,63 @@ exports.authorize = (...roles) => (req, res, next) => {
 <details>
 <summary>✅ Solution</summary>
 
-```js
-userSchema.pre('save', async function () {
+```ts
+UserSchema.pre('save', async function () {
   if (!this.isModified('password')) return;
   this.password = await bcrypt.hash(this.password, 10);
 });
 
-exports.register = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
-  const exists = await User.findOne({ email });
-  if (exists) throw new AppError('Email already registered', 400);
-  const user = await User.create({ name, email, password });
-  res.status(201).json({ id: user._id, name: user.name, email: user.email });
-});
+async register(dto: RegisterDto) {
+  const exists = await this.usersService.findByEmailWithPassword(dto.email);
+  if (exists) throw new ConflictException('Email already registered');
+  const user = await this.usersService.create(dto);
+  return { id: user._id, name: user.name, email: user.email };
+}
 
-exports.login = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
-  const ok = user && (await bcrypt.compare(password, user.password));
-  if (!ok) throw new AppError('Invalid credentials', 401);
-  const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
-  res.json({ token });
-});
-
-exports.protect = (req, res, next) => {
-  const header = req.headers.authorization;
-  if (!header || !header.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Not logged in' });
+async login(dto: LoginDto) {
+  const user = await this.usersService.findByEmailWithPassword(dto.email);
+  if (!user || !(await bcrypt.compare(dto.password, user.password))) {
+    throw new UnauthorizedException('Invalid credentials');
   }
-  try {
-    req.user = jwt.verify(header.split(' ')[1], process.env.JWT_SECRET);
-    next();
-  } catch {
-    res.status(401).json({ error: 'Invalid or expired token' });
-  }
-};
+  const payload = { userId: user._id.toString(), role: user.role };
+  return { token: await this.jwtService.signAsync(payload) };
+}
 
-exports.authorize = (...roles) => (req, res, next) => {
-  if (!roles.includes(req.user.role)) {
-    return res.status(403).json({ error: 'Forbidden' });
-  }
-  next();
-};
+// guard
+const [type, token] = req.headers.authorization?.split(' ') ?? [];
+if (type !== 'Bearer' || !token) throw new UnauthorizedException('Not logged in');
+req.user = await this.jwtService.verifyAsync(token);
 
-// 6
-exports.me = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user.userId).select('-password');
-  if (!user) throw new AppError('User not found', 404);
-  res.json(user);
-});
-// routes/auth.js → router.get('/me', protect, me);
-
-// 7: routes/books.js
-router.get('/', controller.getBooks);
-router.get('/:id', controller.getBookById);
-router.post('/', protect, controller.createBook);
-router.delete('/:id', protect, authorize('admin'), controller.deleteBook);
+// roles guard
+if (!roles.includes(user.role)) throw new ForbiddenException('Forbidden');
 ```
 
-To make yourself an admin while testing, change your user's `role` to `"admin"` in Compass, then log in again to get a new token.
+```ts
+// 6: auth.controller.ts (AuthController injects UsersService too)
+@Get('me')
+@UseGuards(JwtAuthGuard)
+async me(@CurrentUser() user: JwtPayload) {
+  const found = await this.usersService.findById(user.userId);
+  if (!found) throw new NotFoundException('User not found');
+  return found;
+}
+
+// 7: books.controller.ts
+@Get()      findAll() { ... }                                  // public
+@Get(':id') findOne(...) { ... }                               // public
+
+@Post()
+@UseGuards(JwtAuthGuard)
+create(@Body() dto: CreateBookDto) { ... }
+
+@Delete(':id')
+@HttpCode(204)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('admin')
+remove(@Param('id', ParseObjectIdPipe) id: string) { ... }
+```
+
+To make yourself an admin while testing, change your user's `role` to `"admin"` in Compass, then log in again to get a new token (the role is inside the token).
 
 </details>
 
@@ -688,26 +828,27 @@ To make yourself an admin while testing, change your user's `role` to `"admin"` 
 ## Lab: Auth-Protected To-Do API
 
 ```
-1. models/User.js   → { name, email (unique), password (hashed via pre-save),
-                        role: enum ['user','admin'] default 'user' }
-2. controllers/authController.js → register, login (bcrypt.compare → jwt.sign)
-3. middleware/auth.js → protect + authorize
-4. routes/auth.js     → POST /api/auth/register, POST /api/auth/login
-5. Protect /api/todos with protect; DELETE /api/todos/:id = admin only
-6. All errors flow into the centralized handler via AppError
+1. users/        → User schema { name, email (unique), password (select: false, hashed via pre-save),
+                   role: enum ['user','admin'] default 'user' } + UsersService (exported)
+2. auth/         → RegisterDto, LoginDto, AuthService (register, login → JwtService.signAsync),
+                   AuthController (POST /api/auth/register, POST /api/auth/login, GET /api/auth/me)
+3. auth/guards   → JwtAuthGuard + RolesGuard; auth/decorators → @CurrentUser, @Roles
+4. todos         → @UseGuards(JwtAuthGuard) on the whole controller; DELETE = admin only
+5. All errors flow into AllExceptionsFilter (registered with APP_FILTER)
 ```
 
 **Test flow in Postman:**
 ```
 POST /api/auth/register  { name, email, password }  → 201
+POST /api/auth/register  (same email again)         → 409
 POST /api/auth/login     { email, password }        → { token }
 GET  /api/todos          (no token)                  → 401
 GET  /api/todos          Authorization: Bearer <t>  → 200
-DELETE /api/todos/1      (role: user)                → 403
-DELETE /api/todos/1      (role: admin)               → 204
+DELETE /api/todos/<id>   (role: user)                → 403
+DELETE /api/todos/<id>   (role: admin)               → 204
 ```
 
-**Challenges:** `GET /api/auth/me` returning the current user; refresh-token endpoint; password-strength validation via Joi.
+**Challenges:** `GET /api/auth/me`; a refresh-token endpoint; a password-strength rule with `@Matches(/^(?=.*[A-Za-z])(?=.*\d).{8,}$/)`.
 
 ---
 
@@ -715,240 +856,291 @@ DELETE /api/todos/1      (role: admin)               → 204
 
 ### A. Quick Questions (answer in 1–2 sentences)
 
-1. Why do we validate data twice: in the request (Joi / express-validator) and in the schema?
-2. What is the difference between `min` and `minlength`?
-3. What does `next(err)` do? How is it different from `next()`?
-4. Why do we create an `AppError` class?
-5. Why must we never save passwords as plain text? What does bcrypt do?
-6. Why does login say "Invalid credentials" and not "Wrong password"?
-7. What are the three parts of a JWT? Can anyone read the payload?
-8. How does the client send the token to the server?
-9. What is the difference between 401 and 403?
-10. Why do we check `isModified('password')` in the pre-save hook?
+1. Why do we validate data twice: in the request (DTO) and in the schema?
+2. What is the difference between `min` and `minlength`? Between `@Min()` and `@MinLength()`?
+3. What does `PartialType(CreateBookDto)` give you?
+4. Why don't NestJS services need `try/catch` around database calls?
+5. Why do we write a global exception filter for Mongoose errors?
+6. Why must we never save passwords as plain text? What does bcrypt do?
+7. Why does login say "Invalid credentials" and not "Wrong password"?
+8. What are the three parts of a JWT? Can anyone read the payload?
+9. What is the difference between 401 and 403? Which guard gives each one?
+10. Why must `JwtAuthGuard` come before `RolesGuard` in `@UseGuards(...)`?
 
 <details>
 <summary>✅ Solution</summary>
 
 1. Request validation stops bad data early with clear messages. Schema validation is the last protection: it also covers data saved from other places in the code.
-2. `min` is for numbers/dates. `minlength` is for string length.
-3. `next(err)` skips the normal routes and goes straight to the error handler. `next()` continues to the next middleware.
-4. To throw an error together with its status code (`new AppError('Not found', 404)`) and handle all errors in one place.
-5. If the database leaks, everyone's password is exposed. bcrypt makes a one-way hash with a salt, so the original password can't be read back.
-6. So attackers can't find out which emails are registered.
-7. Header, payload and signature. Yes, the payload is only base64-encoded (not encrypted), so never put secrets in it. The signature only proves it wasn't changed.
-8. In a header: `Authorization: Bearer <token>`.
-9. 401 means you are not logged in (or the token is bad). 403 means you are logged in but not allowed to do this.
-10. So the password isn't hashed again (double-hashed) when the user updates other fields like the name.
+2. `min` is for numbers/dates, `minlength` for string length (schema). The same idea in DTOs: `@Min()` for numbers, `@MinLength()` for strings.
+3. A new DTO class with the same fields and rules, but every field optional. Perfect for PATCH.
+4. NestJS catches errors thrown in `async` methods and passes them to the exception filters.
+5. Mongoose errors (`CastError`, `ValidationError`, duplicate key 11000) are not `HttpException`s, so NestJS would answer 500. The filter turns them into 400/409 with clear messages.
+6. If the database leaks, everyone's password is exposed. bcrypt makes a one-way hash with a salt, so the original password can't be read back.
+7. So attackers can't find out which emails are registered.
+8. Header, payload and signature. Yes, the payload is only base64-encoded (not encrypted), so never put secrets in it. The signature only proves it wasn't changed.
+9. 401 means you are not logged in (or the token is bad) → `JwtAuthGuard`. 403 means you are logged in but not allowed → `RolesGuard`.
+10. Guards run left to right. `RolesGuard` reads `req.user`, which only exists after `JwtAuthGuard` has verified the token.
 
 </details>
 
 ### B. Find the Bug
 
-```js
+```ts
 // Bug 1: passwords appear as plain text in the database
-const user = await User.create({ email, password });   // the schema has no pre-save hook
+const user = await this.userModel.create({ email, password });   // the schema has no pre-save hook
 
 // Bug 2: security problem
-if (!user) return res.status(401).json({ error: 'Email not found' });
+if (!user) throw new UnauthorizedException('Email not found');
 if (!(await bcrypt.compare(password, user.password))) {
-  return res.status(401).json({ error: 'Wrong password' });
+  throw new UnauthorizedException('Wrong password');
 }
 
-// Bug 3: three problems in one line
-const token = jwt.sign({ userId: user._id, password: user.password }, 'secret');
+// Bug 3: three problems in one module
+JwtModule.register({ secret: 'secret' })
+// ...
+this.jwtService.signAsync({ userId: user._id, password: user.password });
 
-// Bug 4: every request with a valid token gets "Invalid or expired token"
-const token = req.headers.authorization;
-req.user = jwt.verify(token, process.env.JWT_SECRET);
+// Bug 4: login always says "Invalid credentials", even with the right password.
+//        In Compass the user has a hashed password. (The schema has select: false.)
+const user = await this.userModel.findOne({ email });
+if (!user || !(await bcrypt.compare(password, user.password))) throw new UnauthorizedException('Invalid credentials');
 
 // Bug 5: "Cannot set properties of undefined (setting 'password')"
-userSchema.pre('save', async () => {
+UserSchema.pre('save', async () => {
   this.password = await bcrypt.hash(this.password, 10);
 });
 
 // Bug 6: "Cannot read properties of undefined (reading 'role')"
-router.delete('/:id', authorize('admin'), protect, deleteBook);
+@UseGuards(RolesGuard, JwtAuthGuard)
+@Roles('admin')
+@Delete(':id')
+remove() { ... }
+
+// Bug 7: anyone can register as admin with { ..., "role": "admin" }
+app.useGlobalPipes(new ValidationPipe());
+// RegisterDto has no role field; the service does userModel.create(dto)
 ```
 
 <details>
 <summary>✅ Solution</summary>
 
 1. Add the pre-save hook (or hash before `create`):
-   ```js
-   userSchema.pre('save', async function () {
+   ```ts
+   UserSchema.pre('save', async function () {
      if (!this.isModified('password')) return;
      this.password = await bcrypt.hash(this.password, 10);
    });
    ```
 2. Use the same message for both cases: `'Invalid credentials'`.
-3. (a) the password hash is in the payload (anyone can read it) (b) the secret is hardcoded and weak (c) no expiry.
-   ```js
-   const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
+3. (a) the secret is hardcoded and weak (b) no `expiresIn` (c) the password hash is in the payload (anyone can read it).
+   ```ts
+   JwtModule.registerAsync({
+     global: true,
+     inject: [ConfigService],
+     useFactory: (config: ConfigService) => ({ secret: config.get('JWT_SECRET'), signOptions: { expiresIn: '1d' } }),
+   })
+   this.jwtService.signAsync({ userId: user._id.toString(), role: user.role });
    ```
-4. The header is `Bearer <token>`, so remove the `Bearer ` part:
-   ```js
-   const token = req.headers.authorization?.split(' ')[1];
-   ```
+4. `select: false` hides the password, so `user.password` is `undefined`. Ask for it: `.findOne({ email }).select('+password')`.
 5. Arrow functions have no `this`. Use `async function () { ... }`.
-6. `authorize` runs before `protect`, so `req.user` doesn't exist yet. Swap them:
-   ```js
-   router.delete('/:id', protect, authorize('admin'), deleteBook);
-   ```
+6. `RolesGuard` runs before `JwtAuthGuard`, so `req.user` doesn't exist yet. Swap them: `@UseGuards(JwtAuthGuard, RolesGuard)`.
+7. Without `whitelist: true`, unknown fields stay in the body and go straight into `create()`. Use `new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true })`.
 
 </details>
 
 ### C. Coding Tasks
 
-**Task 1: Joi for books (easy).** Use the `validate(bookSchema)` middleware on `POST /api/books` and `PATCH /api/books/:id`. For PATCH, every field is optional, but at least one must be sent (`Joi.object({...}).min(1)`).
+**Task 1: DTOs for books (easy).** `CreateBookDto` and `UpdateBookDto extends PartialType(CreateBookDto)` on `POST /api/books` and `PATCH /api/books/:id`. For PATCH, every field is optional, but at least one must be sent: write a `NonEmptyBodyPipe` and use it as `@Body(NonEmptyBodyPipe) dto: UpdateBookDto`.
 
-**Task 2: Clean controllers (medium).** Rewrite all 5 book controllers with `asyncHandler` + `AppError`: no `try/catch` and no `res.status(404)` inside the controllers. All errors go to `errorHandler.js`.
+**Task 2: Clean services (medium).** Register the `AllExceptionsFilter` from Part 3 and remove every `try/catch` from the books and contacts services. A duplicate ISBN or email must still give 409, a bad id 400, and a schema error 400.
 
-**Task 3: Register + login flow (medium).** Build `POST /api/auth/register` and `POST /api/auth/login`, then test this flow in Postman:
+**Task 3: Register + login flow (medium).** Build `POST /api/auth/register`, `POST /api/auth/login` and `GET /api/auth/me`, then test this flow in Postman:
 
 ```
-register → 201          register same email again → 400
+register → 201          register same email again → 409
 login wrong password → 401          login correct → { token }
 GET /api/auth/me without token → 401          with token → user (no password)
 ```
 
-**Task 4: My notes (medium).** A `Note` model `{ text, owner: { type: ObjectId, ref: 'User' } }`. All note routes are protected:
-- `POST /api/notes` sets `owner` from `req.user.userId` (never from the body)
+**Task 4: My notes (medium).** A `Note` schema `{ text, owner: { type: Types.ObjectId, ref: 'User' } }` in a `NotesModule`. The whole controller is protected with `@UseGuards(JwtAuthGuard)`:
+- `POST /api/notes` sets `owner` from the token (`@CurrentUser()`), never from the body
 - `GET /api/notes` returns only **my** notes
 - `DELETE /api/notes/:id` deletes only if it's my note, otherwise 404
 
 **Task 5: Admin users list (easy).** `GET /api/users` is admin only and returns all users without passwords.
 
-**Challenge: Change password.** `PATCH /api/auth/password` (protected) with `{ currentPassword, newPassword }`. Check the current password (401 if wrong), require a new password of at least 6 characters (400), then save. The pre-save hook hashes it. Log in with the new password to prove it works.
+**Challenge: Change password.** `PATCH /api/auth/password` (protected) with `{ currentPassword, newPassword }` (DTO: new password at least 6 characters). Check the current password (401 if wrong), then save. The pre-save hook hashes it. Log in with the new password to prove it works.
 
 <details>
 <summary>✅ Solution: Tasks 1–5 and Challenge</summary>
 
-```js
-// Task 1
-const bookCreateSchema = Joi.object({
-  title: Joi.string().required(),
-  author: Joi.string().required(),
-  pages: Joi.number().integer().min(1),
-  genre: Joi.string().valid('novel', 'science', 'history', 'kids'),
-});
+```ts
+// Task 1: common/pipes/non-empty-body.pipe.ts
+@Injectable()
+export class NonEmptyBodyPipe implements PipeTransform {
+  transform(value: unknown) {
+    if (!value || typeof value !== 'object' || Object.keys(value).length === 0) {
+      throw new BadRequestException('Send at least one field to update');
+    }
+    return value;
+  }
+}
 
-const bookUpdateSchema = Joi.object({
-  title: Joi.string(),
-  author: Joi.string(),
-  pages: Joi.number().integer().min(1),
-  genre: Joi.string().valid('novel', 'science', 'history', 'kids'),
-}).min(1);
+// books.controller.ts
+@Post()
+@UseGuards(JwtAuthGuard)
+create(@Body() dto: CreateBookDto) { return this.booksService.create(dto); }
 
-router.post('/', protect, validate(bookCreateSchema), controller.createBook);
-router.patch('/:id', protect, validate(bookUpdateSchema), controller.updateBook);
+@Patch(':id')
+@UseGuards(JwtAuthGuard)
+update(@Param('id', ParseObjectIdPipe) id: string, @Body(NonEmptyBodyPipe) dto: UpdateBookDto) {
+  return this.booksService.update(id, dto);
+}
 ```
 
-```js
-// Task 2
-exports.getBooks = asyncHandler(async (req, res) => {
-  const filter = req.query.genre ? { genre: req.query.genre } : {};
-  res.json(await Book.find(filter).sort({ createdAt: -1 }));
-});
+The global `ValidationPipe` runs first and strips unknown fields, so `{ "hacker": 1 }` becomes `{}` and `NonEmptyBodyPipe` rejects it.
 
-exports.getBookById = asyncHandler(async (req, res) => {
-  const book = await Book.findById(req.params.id);
-  if (!book) throw new AppError('Book not found', 404);
-  res.json(book);
-});
+```ts
+// Task 2: app.module.ts
+providers: [{ provide: APP_FILTER, useClass: AllExceptionsFilter }]
 
-exports.createBook = asyncHandler(async (req, res) => {
-  res.status(201).json(await Book.create(req.body));
-});
-
-exports.updateBook = asyncHandler(async (req, res) => {
-  const book = await Book.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-  if (!book) throw new AppError('Book not found', 404);
-  res.json(book);
-});
-
-exports.deleteBook = asyncHandler(async (req, res) => {
-  const book = await Book.findByIdAndDelete(req.params.id);
-  if (!book) throw new AppError('Book not found', 404);
-  res.status(204).send();
-});
+// contacts.service.ts — no try/catch any more
+create(dto: CreateContactDto) {
+  return this.contactModel.create(dto);       // duplicate email → 11000 → filter → 409
+}
 ```
 
-```js
-// Task 3: register, login and me are the solution of "Your Turn: Part 4"
-// routes/auth.js
-const router = require('express').Router();
-const { register, login, me } = require('../controllers/authController');
-const { protect } = require('../middleware/auth');
+```ts
+// Task 3: auth.controller.ts
+@Controller('auth')
+export class AuthController {
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+  ) {}
 
-router.post('/register', validate(registerSchema), register);
-router.post('/login', login);
-router.get('/me', protect, me);
+  @Post('register')
+  register(@Body() dto: RegisterDto) { return this.authService.register(dto); }
 
-module.exports = router;
-// app.js → app.use('/api/auth', require('./routes/auth'));
+  @Post('login')
+  @HttpCode(200)
+  login(@Body() dto: LoginDto) { return this.authService.login(dto); }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  async me(@CurrentUser() user: JwtPayload) {
+    const found = await this.usersService.findById(user.userId);
+    if (!found) throw new NotFoundException('User not found');
+    return found;
+  }
+}
 ```
 
-```js
-// Task 4: models/Note.js
-const noteSchema = new mongoose.Schema(
-  {
-    text: { type: String, required: true, trim: true },
-    owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  },
-  { timestamps: true }
-);
-module.exports = mongoose.model('Note', noteSchema);
+```ts
+// Task 4: notes/schemas/note.schema.ts
+@Schema({ timestamps: true })
+export class Note {
+  @Prop({ required: true, trim: true })
+  text: string;
 
-// controllers/noteController.js
-exports.createNote = asyncHandler(async (req, res) => {
-  const note = await Note.create({ text: req.body.text, owner: req.user.userId });
-  res.status(201).json(note);
-});
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  owner: Types.ObjectId;
+}
+export const NoteSchema = SchemaFactory.createForClass(Note);
 
-exports.getMyNotes = asyncHandler(async (req, res) => {
-  res.json(await Note.find({ owner: req.user.userId }).sort({ createdAt: -1 }));
-});
+// notes/notes.service.ts
+@Injectable()
+export class NotesService {
+  constructor(@InjectModel(Note.name) private readonly noteModel: Model<Note>) {}
 
-exports.deleteNote = asyncHandler(async (req, res) => {
-  const note = await Note.findOneAndDelete({ _id: req.params.id, owner: req.user.userId });
-  if (!note) throw new AppError('Note not found', 404);
-  res.status(204).send();
-});
-
-// routes/notes.js
-router.use(protect);              // every route below is protected
-router.get('/', getMyNotes);
-router.post('/', createNote);
-router.delete('/:id', deleteNote);
-```
-
-```js
-// Task 5
-exports.getUsers = asyncHandler(async (req, res) => {
-  res.json(await User.find().select('-password'));
-});
-router.get('/', protect, authorize('admin'), getUsers);   // mounted at /api/users
-```
-
-```js
-// Challenge
-exports.changePassword = asyncHandler(async (req, res) => {
-  const { currentPassword, newPassword } = req.body;
-  if (!newPassword || newPassword.length < 6) {
-    throw new AppError('New password needs at least 6 characters', 400);
+  create(text: string, ownerId: string) {
+    return this.noteModel.create({ text, owner: ownerId });
   }
 
-  const user = await User.findById(req.user.userId);
-  if (!user) throw new AppError('User not found', 404);
+  findMine(ownerId: string) {
+    return this.noteModel.find({ owner: ownerId }).sort({ createdAt: -1 });
+  }
 
-  const ok = await bcrypt.compare(currentPassword ?? '', user.password);
-  if (!ok) throw new AppError('Current password is wrong', 401);
+  async removeMine(id: string, ownerId: string) {
+    const note = await this.noteModel.findOneAndDelete({ _id: id, owner: ownerId });
+    if (!note) throw new NotFoundException('Note not found');
+  }
+}
 
-  user.password = newPassword;    // the pre-save hook hashes it
+// notes/notes.controller.ts
+@Controller('notes')
+@UseGuards(JwtAuthGuard)                 // every route below is protected
+export class NotesController {
+  constructor(private readonly notesService: NotesService) {}
+
+  @Get()
+  findMine(@CurrentUser() user: JwtPayload) {
+    return this.notesService.findMine(user.userId);
+  }
+
+  @Post()
+  create(@Body() dto: CreateNoteDto, @CurrentUser() user: JwtPayload) {
+    return this.notesService.create(dto.text, user.userId);
+  }
+
+  @Delete(':id')
+  @HttpCode(204)
+  remove(@Param('id', ParseObjectIdPipe) id: string, @CurrentUser() user: JwtPayload) {
+    return this.notesService.removeMine(id, user.userId);
+  }
+}
+
+export class CreateNoteDto {
+  @IsString() @IsNotEmpty() text: string;
+}
+```
+
+```ts
+// Task 5: users/users.controller.ts (add it to UsersModule's controllers)
+@Controller('users')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('admin')
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
+
+  @Get()
+  findAll() {
+    return this.usersService.findAll();     // select: false → no passwords
+  }
+}
+```
+
+```ts
+// Challenge
+export class ChangePasswordDto {
+  @IsString() currentPassword: string;
+  @IsString() @MinLength(6, { message: 'New password needs at least 6 characters' }) newPassword: string;
+}
+
+// users.service.ts
+findByIdWithPassword(id: string) {
+  return this.userModel.findById(id).select('+password');
+}
+
+// auth.service.ts
+async changePassword(userId: string, dto: ChangePasswordDto) {
+  const user = await this.usersService.findByIdWithPassword(userId);
+  if (!user) throw new NotFoundException('User not found');
+
+  const ok = await bcrypt.compare(dto.currentPassword, user.password);
+  if (!ok) throw new UnauthorizedException('Current password is wrong');
+
+  user.password = dto.newPassword;          // the pre-save hook hashes it
   await user.save();
-  res.json({ message: 'Password changed' });
-});
-// routes/auth.js → router.patch('/password', protect, changePassword);
+  return { message: 'Password changed' };
+}
+
+// auth.controller.ts
+@Patch('password')
+@UseGuards(JwtAuthGuard)
+changePassword(@CurrentUser() user: JwtPayload, @Body() dto: ChangePasswordDto) {
+  return this.authService.changePassword(user.userId, dto);
+}
 ```
 
 </details>
@@ -959,25 +1151,26 @@ exports.changePassword = asyncHandler(async (req, res) => {
 
 1. Why validate at BOTH request and schema level? What does each catch?
 2. `min` vs `minlength` — which fields do they apply to?
-3. Why must error middleware have 4 params and be registered last?
-4. What does `next(err)` do vs `next()`?
-5. Why does Express 4 need `try/catch` or `asyncHandler` around async controllers?
+3. What do `whitelist`, `forbidNonWhitelisted` and `transform` do on the `ValidationPipe`?
+4. Why do NestJS services need no `try/catch` around async database calls?
+5. How does the global filter turn a duplicate email into 409?
 6. Why is bcrypt better than SHA-256 for passwords?
 7. Why generic "Invalid credentials" instead of "wrong password"?
 8. JWT: what's in the three segments? Why shouldn't the payload contain secrets?
-9. 401 vs 403?
-10. What does the pre-save hook's `isModified('password')` check prevent?
+9. 401 vs 403? Which guard produces each?
+10. What does the pre-save hook's `isModified('password')` check prevent? Why `select: false` + `.select('+password')`?
 
 ## Common Mistakes
 
-- Plain-text passwords anywhere (DB, logs, responses)
+- Plain-text passwords anywhere (DB, logs, responses) — or returning the document from `create()` with the hash in it
 - Revealing whether email or password failed
 - JWT secret hardcoded or weak; sensitive data in payload; no `expiresIn`
-- Checking `Bearer ` prefix incorrectly or forgetting it
-- Error handler registered before routes; 404 handler before routes
+- Checking the `Bearer` prefix incorrectly or forgetting it
+- `@UseGuards(RolesGuard, JwtAuthGuard)` — wrong order
+- `ValidationPipe` without `whitelist` → mass assignment (`role: 'admin'`)
 - Forgetting `runValidators` on updates
-- `bcrypt.compare` on a user that doesn't exist → crash on `user.password`
-- `req.user` accessed before `protect` ran
+- `select: false` on the password but forgetting `.select('+password')` at login
+- Catching errors in every service instead of one global filter
 
 ---
 
