@@ -210,8 +210,10 @@ findAll(
 
 ### DTO validation with `class-validator`
 
+If `class-validator` and `class-transformer` are not installed in your `my-api` project yet, run this from the project root:
+
 ```bash
-npm install class-validator class-transformer
+npm i class-validator class-transformer
 ```
 
 ```ts
@@ -284,7 +286,11 @@ export class AppModule {}
 
 ### ✍️ Your Turn: Part 2
 
-Run `npm install class-validator class-transformer @nestjs/serve-static` first.
+Before starting, make sure `class-validator` and `class-transformer` are installed (see above). Install `@nestjs/serve-static` if you have not installed it yet:
+
+```bash
+npm i @nestjs/serve-static
+```
 
 ```ts
 // 1. A DTO for books
