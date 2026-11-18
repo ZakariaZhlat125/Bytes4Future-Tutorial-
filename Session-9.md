@@ -4,6 +4,10 @@
 **Level:** Beginner–Intermediate
 **Prerequisites:** Session 8 (NestJS basics, controllers, services, modules)
 
+> **Session project repository:** [collect-sessions-nest-js](https://github.com/ZakariaZhlat125/collect-sessions-nest-js-)
+>
+> Clone it with: `git clone https://github.com/ZakariaZhlat125/collect-sessions-nest-js-.git`
+
 ---
 
 > **How to use this session**
