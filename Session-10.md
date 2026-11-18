@@ -4,10 +4,6 @@
 **Level:** Intermediate
 **Prerequisites:** Session 9 (request lifecycle, pipes, MongoDB shell CRUD)
 
-> **Session project repository:** [collect-sessions-nest-js](https://github.com/ZakariaZhlat125/collect-sessions-nest-js-)
->
-> Clone it with: `git clone https://github.com/ZakariaZhlat125/collect-sessions-nest-js-.git`
-
 ---
 
 > **How to use this session**
